@@ -1,11 +1,20 @@
 # Beta validation scope
 
-Release: 1.0.0-beta.1. Upstream snapshot:
+Release: 1.0.0-beta.2. Upstream snapshot:
 `3b19a22dc5a64c983d2eafd6c2c94000fadc4f8d`.
 
-## Completed checks
+## Current release
 
-- The release-source full repository suite passed 777 tests with 20 skips
+- The documentation and metadata update passed 33 focused regression checks.
+- All 83 research skill entrypoints and helper implementations are unchanged
+  from beta.1; preservation against the pinned upstream snapshot passed.
+- Public README links and namespaced usage examples resolved.
+- Full Linux and macOS suites run before the current release assets are
+  published. Actual GitHub Actions results define their validation status.
+
+## Previous release and development evidence
+
+- Beta.1's full repository suite passed 777 tests with 20 skips
   on Linux x86_64, Python 3.12.14 (275.03 seconds).
 - The skip inventory includes 12 Windows PowerShell tests, 4 credential-gated
   MiniMax live tests, and 4 interactive installer/picker tests.

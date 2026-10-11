@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.0-beta.2 — 2026-10-11
+
+- Introduce the toolkit through its research capabilities and practical usage examples.
+- Replace both public READMEs with aligned installation, workflow, and contribution guidance.
+- Use EvoInquiry as the documented checkout directory.
+- Update public plugin descriptions to describe research tasks.
+- Preserve the 83 research skill entrypoints and their workflow contracts.
+
 ## 1.0.0-beta.1 — 2026-10-11
 
 First public beta of EvoInquiry, a Codex research-workflow edition of ARIS.

@@ -1,22 +1,7 @@
 {
-  "version": "1.0.0-beta.1",
-  "validated_at_utc": "2026-10-11T08:03:10.992007+00:00",
+  "version": "1.0.0-beta.2",
+  "validated_at_utc": "2026-10-11T08:44:18.570470+00:00",
   "upstream_commit": "3b19a22dc5a64c983d2eafd6c2c94000fadc4f8d",
-  "release_source_suite": {
-    "command": "python -m pytest tests/ -q -rs",
-    "platform": "Linux x86_64",
-    "python": "3.12.14",
-    "passed": 777,
-    "skipped": 20,
-    "seconds": 275.03,
-    "exit_code": 0,
-    "credential_environment_removed": true,
-    "skip_categories": {
-      "Windows_PowerShell": 12,
-      "live_MiniMax_requires_API_key": 4,
-      "interactive_expect_tool_missing": 4
-    }
-  },
   "upstream_preservation": {
     "status": "PASS",
     "Codex_entrypoints": 83,
@@ -26,7 +11,7 @@
   "inventory_check": "PASS",
   "public_document_local_links": {
     "documents_checked": 8,
-    "local_links_checked": 34,
+    "local_links_checked": 29,
     "errors": []
   },
   "development_checks": {
@@ -35,7 +20,7 @@
     "relocated_shared_principle_links": "PASS",
     "behavior_exercises": "Synthetic only; no randomized outcome comparison"
   },
-  "CI_scope": "GitHub Actions reruns Linux and macOS suites for a beta tag; actual run results are authoritative and are not pre-claimed here.",
+  "CI_scope": "The current beta tag runs full Linux and macOS regression suites before publishing assets; actual Actions results are authoritative.",
   "artifact_integrity": "Git-tracked source archives and their SHA256SUMS are produced separately; release-manifest.json identifies their commit and inventory.",
   "limits": [
     "Windows and credential-gated integration checks were not exercised by the local full suite.",
@@ -43,5 +28,36 @@
     "Inherited workflows primarily target ML/AI and related engineering research; broad discipline coverage is untested.",
     "No validation proves general scientific correctness or improved research outcomes.",
     "Raw local session/validation records are excluded from public Git content."
-  ]
+  ],
+  "previous_release_validation": {
+    "version": "1.0.0-beta.1",
+    "local_full_suite": {
+      "command": "python -m pytest tests/ -q -rs",
+      "platform": "Linux x86_64",
+      "python": "3.12.14",
+      "passed": 777,
+      "skipped": 20,
+      "seconds": 275.03,
+      "exit_code": 0,
+      "credential_environment_removed": true,
+      "skip_categories": {
+        "Windows_PowerShell": 12,
+        "live_MiniMax_requires_API_key": 4,
+        "interactive_expect_tool_missing": 4
+      }
+    },
+    "Linux_and_macOS_CI": "PASS",
+    "CI_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/38124082863"
+  },
+  "local_checks": {
+    "scope": "Documentation and metadata update; research skill content and helper implementations unchanged",
+    "focused_regressions": {
+      "command": "python -m pytest tests/test_auto_proceed_contract.py tests/test_plugin_manifest.py tests/test_codex_skill_mirror.py tests/test_evo_inquiry.py -q",
+      "passed": 33,
+      "seconds": 0.83,
+      "exit_code": 0
+    },
+    "inventory_check": "PASS",
+    "upstream_preservation": "PASS"
+  }
 }

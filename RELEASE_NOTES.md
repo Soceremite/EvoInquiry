@@ -1,23 +1,17 @@
-# EvoInquiry 1.0 Beta
+# EvoInquiry 1.0 Beta 2
 
-EvoInquiry combines 83 ARIS Codex research skills with six shared principles
-for independent judgment, grounded inquiry, explanatory simplicity,
-discriminating research, honest conclusions, and reflective progress.
+EvoInquiry provides 83 Codex research skills for literature discovery, research
+design, theory and proofs, experiments, evidence review, paper preparation,
+talks, submissions, proposals, and patent drafting.
 
-This first beta preserves existing research workflows and their output/recovery
-contracts, adds backend compatibility guidance, and provides a complete skill
-inventory. The proposed 45-core / 38-optional profile is documented; this
-release installs the full 83-entrypoint package.
+This update introduces the toolkit through its capabilities and practical
+usage examples, with aligned English and Chinese READMEs. Installation uses
+the EvoInquiry checkout directory. Existing research workflows are preserved.
 
-Install from the pinned tag using README.md / README_CN.md. Downloadable
-source archives and SHA256SUMS accompany the release. External providers
-require their own setup and credentials.
+Install the v1.0.0-beta.2 tag using README.md or README_CN.md. The release
+includes source archives, SHA256SUMS, and a manifest identifying their commit.
+Linux and macOS regression suites run before these assets are published.
+External services require their own setup; validation scope and beta limits
+are described in docs/BETA_VALIDATION.md and release-validation.json.
 
-Release-source validation on Linux/Python 3.12: 777 passed, 20 skipped;
-fresh-session plugin discovery and relocation checks passed. See
-docs/BETA_VALIDATION.md and release-validation.json for the precise scope.
-This is a prerelease. Broad platform, provider, and discipline support remains
-under evaluation; the package is not a guarantee of research correctness.
-
-Based on ARIS snapshot 3b19a22dc5a64c983d2eafd6c2c94000fadc4f8d by
-wanshuiyin. The original MIT license and attribution are retained.
+MIT licensed. Upstream attribution is retained in LICENSE and NOTICE.

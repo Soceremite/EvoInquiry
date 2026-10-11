@@ -1,6 +1,6 @@
 {
   "name": "evo-inquiry",
-  "description": "EvoInquiry: the ARIS Codex research workflows with six portable research principles.",
+  "description": "Research workflows for literature discovery, research design, experiments, evidence review, proofs, and paper preparation.",
   "author": {
     "name": "lyd",
     "url": "https://github.com/Soceremite"
@@ -17,10 +17,10 @@
   "skills": "./skills/skills-codex/",
   "interface": {
     "displayName": "EvoInquiry",
-    "shortDescription": "ARIS research workflows guided by independent judgment and honest evidence",
+    "shortDescription": "Research workflows from literature and experiments to review and paper preparation",
     "developerName": "lyd"
   },
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0-beta.2",
   "homepage": "https://github.com/Soceremite/EvoInquiry",
   "repository": "https://github.com/Soceremite/EvoInquiry"
 }
