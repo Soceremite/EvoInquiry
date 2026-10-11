@@ -1,0 +1,26 @@
+{
+  "name": "evo-inquiry",
+  "description": "EvoInquiry: the ARIS Codex research workflows with six portable research principles.",
+  "author": {
+    "name": "lyd",
+    "url": "https://github.com/Soceremite"
+  },
+  "license": "MIT",
+  "keywords": [
+    "research",
+    "paper",
+    "literature-review",
+    "skills",
+    "workflow",
+    "codex"
+  ],
+  "skills": "./skills/skills-codex/",
+  "interface": {
+    "displayName": "EvoInquiry",
+    "shortDescription": "ARIS research workflows guided by independent judgment and honest evidence",
+    "developerName": "lyd"
+  },
+  "version": "1.0.0-beta.1",
+  "homepage": "https://github.com/Soceremite/EvoInquiry",
+  "repository": "https://github.com/Soceremite/EvoInquiry"
+}

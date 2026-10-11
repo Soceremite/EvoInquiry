@@ -1,0 +1,20 @@
+{
+  "name": "evo-inquiry",
+  "interface": {
+    "displayName": "EvoInquiry"
+  },
+  "plugins": [
+    {
+      "name": "evo-inquiry",
+      "source": {
+        "source": "local",
+        "path": "./"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

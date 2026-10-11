@@ -1,0 +1,58 @@
+name: Publish beta release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*-beta.*'
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install test dependencies
+        run: python -m pip install -r requirements-dev.txt
+      - name: Verify release version and package
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          python -c 'import os; from pathlib import Path; assert os.environ["RELEASE_TAG"] == "v" + Path("VERSION").read_text().strip()'
+          python tools/verify_evo_inquiry.py
+          python tools/check_skills_inventory.py
+      - name: Run regression suite
+        run: python -m pytest tests/ -q -rs
+
+  publish:
+    needs: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Build committed source assets
+        run: python tools/build_beta_release.py
+      - name: Publish prerelease
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          gh release create "$RELEASE_TAG" dist/*.tar.gz dist/*.zip dist/SHA256SUMS dist/release-manifest.json --repo "$GITHUB_REPOSITORY" --verify-tag --prerelease --title "EvoInquiry 1.0 Beta" --notes-file RELEASE_NOTES.md

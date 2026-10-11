@@ -1,0 +1,640 @@
+{
+  "date": "2026-10-11",
+  "source_commit": "3b19a22dc5a64c983d2eafd6c2c94000fadc4f8d",
+  "entrypoints": 83,
+  "catalog_group_counts": {
+    "lit-search": 10,
+    "ideation": 9,
+    "review-loop": 5,
+    "theory": 4,
+    "experiments": 16,
+    "paper-core": 13,
+    "paper-visuals": 10,
+    "submission": 3,
+    "patent": 9,
+    "meta-utils": 4
+  },
+  "identical_bodies_after_removing_custom_hook": [],
+  "retired_redirects": [
+    "paper-poster"
+  ],
+  "proposal_only": true,
+  "proposed_general_research_seeds": [
+    "alphaxiv",
+    "analyze-results",
+    "arxiv",
+    "experiment-audit",
+    "formula-derivation",
+    "openalex",
+    "paper-writing",
+    "proof-orchestrator",
+    "proof-writer",
+    "rebuttal",
+    "research-implement-feature",
+    "research-pipeline",
+    "research-wiki",
+    "resubmit-pipeline",
+    "semantic-scholar",
+    "system-profile",
+    "wiki-enrich"
+  ],
+  "proposed_dependency_closed_core": [
+    "ablation-planner",
+    "alphaxiv",
+    "analyze-results",
+    "arxiv",
+    "auto-paper-improvement-loop",
+    "auto-review-loop",
+    "citation-audit",
+    "experiment-audit",
+    "experiment-bridge",
+    "experiment-plan",
+    "experiment-queue",
+    "figure-spec",
+    "formula-derivation",
+    "idea-creator",
+    "idea-discovery",
+    "integrity-forensics",
+    "kill-argument",
+    "monitor-experiment",
+    "novelty-check",
+    "openalex",
+    "paper-claim-audit",
+    "paper-compile",
+    "paper-figure",
+    "paper-plan",
+    "paper-write",
+    "paper-writing",
+    "proof-checker",
+    "proof-orchestrator",
+    "proof-writer",
+    "rebuttal",
+    "render-html",
+    "research-implement-feature",
+    "research-lit",
+    "research-pipeline",
+    "research-refine",
+    "research-refine-pipeline",
+    "research-review",
+    "research-wiki",
+    "resubmit-pipeline",
+    "result-to-claim",
+    "run-experiment",
+    "semantic-scholar",
+    "system-profile",
+    "training-check",
+    "wiki-enrich"
+  ],
+  "proposed_core_count": 45,
+  "remaining_optional": [
+    "auto-review-loop-llm",
+    "auto-review-loop-minimax",
+    "claims-drafting",
+    "comm-lit-review",
+    "deepxiv",
+    "dse-loop",
+    "embodiment-description",
+    "exa-search",
+    "feishu-notify",
+    "figure-description",
+    "gemini-search",
+    "grant-proposal",
+    "idea-discovery-robot",
+    "interview-cheatsheet",
+    "invention-structuring",
+    "jurisdiction-format",
+    "mermaid-diagram",
+    "meta-apply",
+    "meta-optimize",
+    "overleaf-sync",
+    "paper-illustration",
+    "paper-illustration-image2",
+    "paper-poster",
+    "paper-poster-html",
+    "paper-slides",
+    "paper-talk",
+    "patent-novelty-check",
+    "patent-pipeline",
+    "patent-review",
+    "pixel-art",
+    "prior-art-search",
+    "qzcli",
+    "serverless-modal",
+    "slides-polish",
+    "specification-writing",
+    "vast-gpu",
+    "web-debug-search",
+    "writing-systems-papers"
+  ],
+  "skills": {
+    "arxiv": {
+      "group": "lit-search",
+      "requires": [],
+      "summary": "arXiv 搜索/下载/入库"
+    },
+    "alphaxiv": {
+      "group": "lit-search",
+      "requires": [],
+      "summary": "单篇论文快速解读(AlphaXiv 摘要)"
+    },
+    "deepxiv": {
+      "group": "lit-search",
+      "requires": [],
+      "summary": "DeepXiv 渐进式论文阅读"
+    },
+    "semantic-scholar": {
+      "group": "lit-search",
+      "requires": [],
+      "summary": "正式发表论文检索(引用数/venue)"
+    },
+    "openalex": {
+      "group": "lit-search",
+      "requires": [],
+      "summary": "OpenAlex 引用图谱与机构元数据"
+    },
+    "exa-search": {
+      "group": "lit-search",
+      "requires": [],
+      "summary": "Exa AI 网页搜索+内容抽取"
+    },
+    "web-debug-search": {
+      "group": "lit-search",
+      "requires": [],
+      "summary": "多来源调试检索（GitHub/Stack Exchange/中文社区/General Web）与版本兼容性"
+    },
+    "gemini-search": {
+      "group": "lit-search",
+      "requires": [],
+      "summary": "Gemini 驱动的文献发现"
+    },
+    "research-lit": {
+      "group": "lit-search",
+      "requires": [],
+      "summary": "文献综述与相关工作分析"
+    },
+    "comm-lit-review": {
+      "group": "lit-search",
+      "requires": [],
+      "summary": "通信领域专用文献综述"
+    },
+    "idea-creator": {
+      "group": "ideation",
+      "requires": [],
+      "summary": "给定方向生成并排序研究 idea"
+    },
+    "idea-discovery": {
+      "group": "ideation",
+      "requires": [
+        "idea-creator",
+        "novelty-check",
+        "research-lit",
+        "research-review",
+        "research-refine-pipeline",
+        "research-refine",
+        "render-html"
+      ],
+      "summary": "W1:从方向到验证过的 idea 全流程"
+    },
+    "idea-discovery-robot": {
+      "group": "ideation",
+      "requires": [
+        "idea-creator",
+        "novelty-check",
+        "research-lit",
+        "research-review"
+      ],
+      "summary": "W1 机器人/具身智能特化版"
+    },
+    "novelty-check": {
+      "group": "ideation",
+      "requires": [],
+      "summary": "idea 查新(有没有人做过)"
+    },
+    "research-refine": {
+      "group": "ideation",
+      "requires": [],
+      "summary": "粗糙方向打磨成聚焦提案"
+    },
+    "research-refine-pipeline": {
+      "group": "ideation",
+      "requires": [
+        "research-refine",
+        "experiment-plan"
+      ],
+      "summary": "refine+实验计划一条龙"
+    },
+    "research-wiki": {
+      "group": "ideation",
+      "requires": [],
+      "summary": "跨生命周期研究知识库"
+    },
+    "wiki-enrich": {
+      "group": "ideation",
+      "requires": [
+        "research-wiki"
+      ],
+      "summary": "补全 wiki 论文页 TODO"
+    },
+    "research-pipeline": {
+      "group": "ideation",
+      "requires": [
+        "idea-discovery",
+        "experiment-bridge",
+        "auto-review-loop",
+        "render-html"
+      ],
+      "summary": "端到端总 pipeline:找 idea→实验→论文"
+    },
+    "research-review": {
+      "group": "review-loop",
+      "requires": [],
+      "summary": "研究方案/结果批判性评审"
+    },
+    "auto-review-loop": {
+      "group": "review-loop",
+      "requires": [
+        "result-to-claim",
+        "training-check",
+        "render-html"
+      ],
+      "summary": "外部模型多轮 review→修复循环"
+    },
+    "auto-review-loop-llm": {
+      "group": "review-loop",
+      "requires": [],
+      "summary": "用任意 OpenAI 兼容 API 做 review"
+    },
+    "auto-review-loop-minimax": {
+      "group": "review-loop",
+      "requires": [],
+      "summary": "用 MiniMax API 做 review"
+    },
+    "kill-argument": {
+      "group": "review-loop",
+      "requires": [
+        "render-html"
+      ],
+      "summary": "对抗性双线程评审(最强拒稿论证)"
+    },
+    "formula-derivation": {
+      "group": "theory",
+      "requires": [],
+      "summary": "公式推导与理论线组织"
+    },
+    "proof-writer": {
+      "group": "theory",
+      "requires": [],
+      "summary": "撰写严格数学证明"
+    },
+    "proof-checker": {
+      "group": "theory",
+      "requires": [
+        "render-html"
+      ],
+      "summary": "证明缺口审查与修复"
+    },
+    "proof-orchestrator": {
+      "group": "theory",
+      "requires": [],
+      "summary": "本地优先的证明编排、人工 GPT Pro 交接与显式 DeepSeek 复审"
+    },
+    "experiment-plan": {
+      "group": "experiments",
+      "requires": [],
+      "summary": "claim 驱动的实验路线图"
+    },
+    "experiment-bridge": {
+      "group": "experiments",
+      "requires": [
+        "run-experiment",
+        "experiment-queue",
+        "monitor-experiment",
+        "training-check",
+        "ablation-planner"
+      ],
+      "summary": "W1.5:从实验计划到跑通初步结果"
+    },
+    "research-implement-feature": {
+      "group": "experiments",
+      "requires": [],
+      "summary": "从\"给我实现 X\"直接开建：先跑通脊柱再逐级加功能，全程申报假设"
+    },
+    "experiment-queue": {
+      "group": "experiments",
+      "requires": [],
+      "summary": "SSH 批量实验队列(OOM 重试)"
+    },
+    "run-experiment": {
+      "group": "experiments",
+      "requires": [],
+      "summary": "部署运行实验(本地/远程/云 GPU)"
+    },
+    "monitor-experiment": {
+      "group": "experiments",
+      "requires": [],
+      "summary": "监控实验进度收集结果"
+    },
+    "analyze-results": {
+      "group": "experiments",
+      "requires": [],
+      "summary": "结果统计分析与对比表"
+    },
+    "training-check": {
+      "group": "experiments",
+      "requires": [],
+      "summary": "训练健康度检查"
+    },
+    "system-profile": {
+      "group": "experiments",
+      "requires": [],
+      "summary": "GPU 环境画像(跨机器复用)"
+    },
+    "dse-loop": {
+      "group": "experiments",
+      "requires": [],
+      "summary": "设计空间探索自动调参循环"
+    },
+    "qzcli": {
+      "group": "experiments",
+      "requires": [],
+      "summary": "启智平台 qzcli 作业管理"
+    },
+    "vast-gpu": {
+      "group": "experiments",
+      "requires": [],
+      "summary": "Vast.ai 租卡跑实验"
+    },
+    "serverless-modal": {
+      "group": "experiments",
+      "requires": [],
+      "summary": "Modal 无服务器 GPU"
+    },
+    "experiment-audit": {
+      "group": "experiments",
+      "requires": [],
+      "summary": "实验诚实度审计(防假结果)"
+    },
+    "result-to-claim": {
+      "group": "experiments",
+      "requires": [],
+      "summary": "结果能支撑什么 claim 的裁决"
+    },
+    "ablation-planner": {
+      "group": "experiments",
+      "requires": [],
+      "summary": "消融实验规划"
+    },
+    "paper-writing": {
+      "group": "paper-core",
+      "requires": [
+        "paper-plan",
+        "paper-write",
+        "paper-compile",
+        "paper-figure",
+        "figure-spec",
+        "proof-checker",
+        "paper-claim-audit",
+        "citation-audit",
+        "auto-paper-improvement-loop",
+        "integrity-forensics",
+        "kill-argument"
+      ],
+      "summary": "W3:从报告到投稿级 PDF 全流程"
+    },
+    "paper-plan": {
+      "group": "paper-core",
+      "requires": [],
+      "summary": "论文大纲生成"
+    },
+    "paper-write": {
+      "group": "paper-core",
+      "requires": [],
+      "summary": "按大纲逐节写 LaTeX"
+    },
+    "paper-compile": {
+      "group": "paper-core",
+      "requires": [],
+      "summary": "LaTeX 编译修错出 PDF"
+    },
+    "paper-figure": {
+      "group": "paper-core",
+      "requires": [],
+      "summary": "从实验结果出论文图表"
+    },
+    "citation-audit": {
+      "group": "paper-core",
+      "requires": [
+        "render-html"
+      ],
+      "summary": "引用真实性/正确性核查"
+    },
+    "paper-claim-audit": {
+      "group": "paper-core",
+      "requires": [
+        "render-html"
+      ],
+      "summary": "论文数字与原始结果核对"
+    },
+    "integrity-forensics": {
+      "group": "paper-core",
+      "requires": [],
+      "summary": "投稿前诚信取证扫描"
+    },
+    "auto-paper-improvement-loop": {
+      "group": "paper-core",
+      "requires": [
+        "proof-checker",
+        "paper-claim-audit",
+        "kill-argument"
+      ],
+      "summary": "论文 review→润色→重编译循环"
+    },
+    "writing-systems-papers": {
+      "group": "paper-core",
+      "requires": [],
+      "summary": "系统方向论文写作要领"
+    },
+    "specification-writing": {
+      "group": "paper-core",
+      "requires": [
+        "embodiment-description",
+        "figure-description"
+      ],
+      "summary": "技术规格文档撰写"
+    },
+    "overleaf-sync": {
+      "group": "paper-core",
+      "requires": [],
+      "summary": "本地↔Overleaf 双向同步"
+    },
+    "render-html": {
+      "group": "paper-core",
+      "requires": [],
+      "summary": "MD/JSON 工件渲染成 HTML 报告"
+    },
+    "paper-illustration": {
+      "group": "paper-visuals",
+      "requires": [],
+      "summary": "AI 生成论文插图(Gemini)"
+    },
+    "paper-illustration-image2": {
+      "group": "paper-visuals",
+      "requires": [],
+      "summary": "AI 插图备选(Codex 原生画图)"
+    },
+    "figure-spec": {
+      "group": "paper-visuals",
+      "requires": [],
+      "summary": "确定性矢量架构/流程图(SVG)"
+    },
+    "mermaid-diagram": {
+      "group": "paper-visuals",
+      "requires": [],
+      "summary": "Mermaid 流程/时序/类图"
+    },
+    "pixel-art": {
+      "group": "paper-visuals",
+      "requires": [],
+      "summary": "像素画生成"
+    },
+    "paper-poster": {
+      "group": "paper-visuals",
+      "requires": [
+        "paper-poster-html"
+      ],
+      "summary": "(已弃用)重定向到 poster-html"
+    },
+    "paper-poster-html": {
+      "group": "paper-visuals",
+      "requires": [],
+      "summary": "学术海报生成(HTML 版)"
+    },
+    "paper-slides": {
+      "group": "paper-visuals",
+      "requires": [],
+      "summary": "会议幻灯(beamer→PDF+PPTX)"
+    },
+    "paper-talk": {
+      "group": "paper-visuals",
+      "requires": [
+        "paper-slides",
+        "slides-polish"
+      ],
+      "summary": "演讲稿+幻灯一体"
+    },
+    "slides-polish": {
+      "group": "paper-visuals",
+      "requires": [],
+      "summary": "幻灯片打磨"
+    },
+    "rebuttal": {
+      "group": "submission",
+      "requires": [
+        "render-html"
+      ],
+      "summary": "W4:审稿意见解析与安全回复"
+    },
+    "resubmit-pipeline": {
+      "group": "submission",
+      "requires": [
+        "auto-paper-improvement-loop",
+        "proof-checker",
+        "paper-claim-audit",
+        "citation-audit",
+        "kill-argument",
+        "paper-compile",
+        "integrity-forensics"
+      ],
+      "summary": "被拒后重投全流程"
+    },
+    "grant-proposal": {
+      "group": "submission",
+      "requires": [
+        "research-lit",
+        "novelty-check",
+        "research-review"
+      ],
+      "summary": "基金申请书(NSFC/NSF/科研費等)"
+    },
+    "patent-pipeline": {
+      "group": "patent",
+      "requires": [
+        "prior-art-search",
+        "patent-novelty-check",
+        "invention-structuring",
+        "claims-drafting",
+        "specification-writing",
+        "patent-review",
+        "jurisdiction-format"
+      ],
+      "summary": "专利撰写全流程"
+    },
+    "invention-structuring": {
+      "group": "patent",
+      "requires": [],
+      "summary": "粗 idea 结构化成发明披露"
+    },
+    "claims-drafting": {
+      "group": "patent",
+      "requires": [],
+      "summary": "撰写权利要求书"
+    },
+    "embodiment-description": {
+      "group": "patent",
+      "requires": [],
+      "summary": "实施例详细描述"
+    },
+    "figure-description": {
+      "group": "patent",
+      "requires": [],
+      "summary": "专利附图说明"
+    },
+    "jurisdiction-format": {
+      "group": "patent",
+      "requires": [],
+      "summary": "CN/US/EP 申请格式编译"
+    },
+    "patent-review": {
+      "group": "patent",
+      "requires": [],
+      "summary": "专利申请质量审查"
+    },
+    "prior-art-search": {
+      "group": "patent",
+      "requires": [],
+      "summary": "现有技术检索"
+    },
+    "patent-novelty-check": {
+      "group": "patent",
+      "requires": [],
+      "summary": "专利新颖性核查"
+    },
+    "meta-optimize": {
+      "group": "meta-utils",
+      "requires": [],
+      "summary": "skill 语料自优化提案"
+    },
+    "meta-apply": {
+      "group": "meta-utils",
+      "requires": [
+        "meta-optimize"
+      ],
+      "summary": "落地已批准的语料补丁"
+    },
+    "feishu-notify": {
+      "group": "meta-utils",
+      "requires": [],
+      "summary": "飞书通知"
+    },
+    "interview-cheatsheet": {
+      "group": "meta-utils",
+      "requires": [],
+      "summary": "ML/LLM 面试速查手册生成"
+    }
+  },
+  "limitations": [
+    "Static corpus review; external providers and full pipelines not executed.",
+    "Dependency closure uses the retained upstream catalog; optional branches may invoke additional skills.",
+    "A proposed core profile has not been installed."
+  ]
+}

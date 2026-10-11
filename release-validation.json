@@ -1,0 +1,47 @@
+{
+  "version": "1.0.0-beta.1",
+  "validated_at_utc": "2026-10-11T08:03:10.992007+00:00",
+  "upstream_commit": "3b19a22dc5a64c983d2eafd6c2c94000fadc4f8d",
+  "release_source_suite": {
+    "command": "python -m pytest tests/ -q -rs",
+    "platform": "Linux x86_64",
+    "python": "3.12.14",
+    "passed": 777,
+    "skipped": 20,
+    "seconds": 275.03,
+    "exit_code": 0,
+    "credential_environment_removed": true,
+    "skip_categories": {
+      "Windows_PowerShell": 12,
+      "live_MiniMax_requires_API_key": 4,
+      "interactive_expect_tool_missing": 4
+    }
+  },
+  "upstream_preservation": {
+    "status": "PASS",
+    "Codex_entrypoints": 83,
+    "original_frontmatter_and_workflow_bodies_preserved": 83,
+    "comparison": "Remove only the marked EvoInquiry hook before comparing Codex skill content to the pinned baseline; unrelated retained upstream files checked byte-for-byte except explicitly documented metadata/docs/test/helper adaptations."
+  },
+  "inventory_check": "PASS",
+  "public_document_local_links": {
+    "documents_checked": 8,
+    "local_links_checked": 34,
+    "errors": []
+  },
+  "development_checks": {
+    "fresh_Codex_CLI": "0.162.1",
+    "namespaced_entrypoints_discovered": 83,
+    "relocated_shared_principle_links": "PASS",
+    "behavior_exercises": "Synthetic only; no randomized outcome comparison"
+  },
+  "CI_scope": "GitHub Actions reruns Linux and macOS suites for a beta tag; actual run results are authoritative and are not pre-claimed here.",
+  "artifact_integrity": "Git-tracked source archives and their SHA256SUMS are produced separately; release-manifest.json identifies their commit and inventory.",
+  "limits": [
+    "Windows and credential-gated integration checks were not exercised by the local full suite.",
+    "Live providers, GPUs, image renderers, and complete research pipelines are not verified end to end.",
+    "Inherited workflows primarily target ML/AI and related engineering research; broad discipline coverage is untested.",
+    "No validation proves general scientific correctness or improved research outcomes.",
+    "Raw local session/validation records are excluded from public Git content."
+  ]
+}

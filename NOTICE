@@ -1,0 +1,10 @@
+EvoInquiry 1.0 beta is derived from ARIS / Auto-claude-code-research-in-sleep.
+Upstream: https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep
+Upstream snapshot: 3b19a22dc5a64c983d2eafd6c2c94000fadc4f8d
+Upstream copyright (c) 2026 wanshuiyin. See LICENSE (MIT).
+
+EvoInquiry customization copyright (c) 2026 lyd, distributed under MIT.
+The customization adds six shared research principles, Codex entrypoint hooks,
+targeted backend compatibility guidance, packaging checks, and beta release docs.
+Retained upstream client packages and reviewer overlays preserve their original
+identities; their presence does not imply they apply EvoInquiry principles.
