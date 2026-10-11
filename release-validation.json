@@ -1,6 +1,6 @@
 {
   "version": "1.0.0-beta.4",
-  "candidate_status": "behavior-assessed; final archive and installation verification pending; not published",
+  "candidate_status": "locally-validated candidate; not published; GitHub Linux/macOS CI pending",
   "upstream_commit": "3b19a22dc5a64c983d2eafd6c2c94000fadc4f8d",
   "preservation_baseline_commit": "b9c7861fd22cd2f5471765d583c593f083fa12cc",
   "upstream_preservation": {
@@ -17,7 +17,7 @@
     "baseline_characters": 23910,
     "candidate_characters": 13229,
     "candidate_entries": 84,
-    "maximum_description_characters": 174,
+    "maximum_description_characters": 172,
     "scope": "Discovery descriptions only; counts omit names, paths and other context metadata."
   },
   "publication_audit": {
@@ -46,7 +46,8 @@
         "live_MiniMax_requires_API_key": 4,
         "interactive_expect_tool_missing": 4
       }
-    }
+    },
+    "post_suite_changes": "Description-only routing refinement and report/README edits; fixed preservation, inventory, applicable real behavior cases, release formatting and local links rechecked."
   },
   "behavior_evaluation": {
     "status": "COMPLETE_WITH_LIMITS",
@@ -107,10 +108,14 @@
     "isolated_baseline_entries_discovered": 83,
     "isolated_candidate_entries_discovered": 84,
     "installed_skill_bytes_match_sources": "PASS",
-    "relocation_check": "PENDING final candidate archive",
+    "relocation_check": "PASS: committed tar.gz and zip inventories match; extracted archive with spaces passes frozen preservation and includes checkpoint fixtures",
     "rollback_check": "PASS: beta.3 install discovered 83 source-matching entries, restored beta.4 with 84 source-matching entries",
     "relocated_shared_principle_links": "PASS",
-    "installed_model_settings_preserved": true
+    "installed_model_settings_preserved": true,
+    "temporary_evaluation_plugins_removed": true,
+    "ordinary_final_discovery_without_overrides": "PASS: 84 enabled EvoInquiry entries from the sole official plugin",
+    "final_cache_skill_and_common_bytes_match": true,
+    "final_cache_raw_validation_excluded": true
   },
   "CI_scope": "Local results are Linux only. Linux and macOS full suites must pass in GitHub Actions before public release; their actual results are authoritative.",
   "artifact_integrity": "Git-tracked source archives are checked against the publication policy. SHA256SUMS and release-manifest.json identify archive digests, source commit, and skill inventory.",
@@ -121,7 +126,7 @@
     "No validation proves general scientific correctness or improved research outcomes.",
     "Raw local session/validation records are excluded from public Git content."
   ],
-  "validated_at_utc": "2026-10-11T17:16:57.864945+00:00",
+  "validated_at_utc": "2026-10-11T17:23:47.128311+00:00",
   "public_document_local_links": {
     "documents_checked": 10,
     "local_links_checked": 139,

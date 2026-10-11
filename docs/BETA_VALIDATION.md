@@ -21,14 +21,21 @@ Candidate: **1.0.0-beta.4**, not published. Preservation baseline:
 - Fresh Codex CLI 0.162.1 discovery distinguishes isolated baseline and candidate
   caches, with 83 and 84 enabled entries respectively. Installed skill bytes
   match their selected source snapshots.
-- A source copy relocated into a directory with spaces passes preservation and
-  shared-reference checks. Installing the pinned beta.3 then restoring beta.4
-  discovers 83 then 84 source-matching entries without changing model settings.
+- Committed tar.gz and zip inventories match at 677 files; a source archive
+  extracted into a directory with spaces passes frozen preservation and shared
+  references, including the three checkpoint fixtures. Private validation is
+  excluded from both archives and the installed cache.
+- Installing pinned beta.3 then restoring beta.4 discovers 83 then 84 entries.
+  Final ordinary discovery, without evaluation overrides, finds only 84 enabled
+  entries from the official plugin; skill and common-reference bytes match source.
+  Temporary evaluation plugins are removed and model settings are preserved.
 
 The 20 skips comprise 12 Windows PowerShell checks, 4 credential-gated MiniMax
 live checks, and 4 interactive installer/picker checks requiring `expect`.
 The local full suite removes API credential environment variables and permits
-only the loopback servers required by its tests.
+only the loopback servers required by its tests. Subsequent changes are limited
+to one discovery description and documentation; preservation, inventory, affected
+real behavior cases, release-note format and local links were checked again.
 
 ## Behavior comparison
 
