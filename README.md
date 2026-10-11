@@ -2,15 +2,17 @@
 
 **Research that evolves through evidence.**
 
-[中文](README_CN.md) · [Skill inventory](SKILL_AUDIT_CN.md) · [Releases](https://github.com/Soceremite/EvoInquiry/releases) · [Contributing](CONTRIBUTING.md)
+[中文](README_CN.md) · [Skill inventory](docs/SKILLS_CATALOG.md) · [Releases](https://github.com/Soceremite/EvoInquiry/releases) · [Contributing](CONTRIBUTING.md)
 
-**1.0 Beta — `v1.0.0-beta.2`**
+**1.0 Beta — `v1.0.0-beta.3`**
 
 EvoInquiry is a research workflow toolkit for Codex. Its **83 Codex skills**
 help you turn a broad research direction into a focused proposal, implement
 and evaluate experiments, assess the evidence, and prepare a paper for
 submission. Use individual skills for a specific task or connect them into
 a longer research workflow.
+
+<a id="capabilities"></a>
 
 ## What you can do
 
@@ -33,7 +35,9 @@ method as new evidence arrives.
 
 The current beta primarily targets ML, AI, and related engineering research.
 Domain-specific workflows and provider integrations are available in the
-[full inventory](SKILL_AUDIT_CN.md); choose those that fit your project.
+[full inventory](docs/SKILLS_CATALOG.md); choose those that fit your project.
+
+<a id="installation"></a>
 
 ## Install
 
@@ -41,7 +45,7 @@ Use a Codex installation that provides the `codex plugin` commands. Plugin
 installation has been checked with Codex CLI **0.162.1** on Linux.
 
 ```sh
-git clone --branch v1.0.0-beta.2 https://github.com/Soceremite/EvoInquiry.git EvoInquiry
+git clone --branch v1.0.0-beta.3 https://github.com/Soceremite/EvoInquiry.git EvoInquiry
 cd EvoInquiry
 codex plugin marketplace add "$PWD"
 codex plugin add evo-inquiry@evo-inquiry
@@ -51,6 +55,8 @@ You can also extract a [release archive](https://github.com/Soceremite/EvoInquir
 enter its root directory, and run the two `codex plugin` commands. Start a
 new Codex session after installation. Skills appear under the `evo-inquiry:`
 namespace, for example `evo-inquiry:research-refine`.
+
+<a id="usage"></a>
 
 ## Start with a task
 
@@ -78,7 +84,10 @@ Workflow checkpoint settings let you choose how closely to supervise a run.
 With `AUTO_PROCEED=true`, authorized work continues in the same turn after
 reporting the selected path. An explicitly blocking checkpoint requires a
 reply; `AUTO_PROCEED=false` enables blocking feedback checkpoints. Project
-instructions and resource limits apply throughout.
+instructions and resource limits apply throughout. See [workflow controls](docs/CUSTOMIZATION.md)
+and [session recovery](docs/SESSION_RECOVERY_GUIDE.md).
+
+<a id="setup"></a>
 
 ## Setup and beta status
 
@@ -88,14 +97,15 @@ Configure the services you intend to use; see
 [backend setup and compatibility](compatibility/codex-backends.md).
 
 The documented EvoInquiry installation route is the Codex plugin above.
-Additional client packages and setup resources are included for reference;
-they have separate compatibility requirements.
+Retained backend and client compatibility resources support existing workflow
+contracts; they are optional and have separate setup requirements.
 
-The previous beta passed **777 tests with 20 skips**, and its full Linux and
-macOS CI suites passed. Current releases run those CI suites before publishing
-archives. See [validation scope and limitations](docs/BETA_VALIDATION.md).
+This beta passed **779 local tests with 20 skips** on Linux. Release archives
+are published after the full Linux and macOS CI suites pass. See [validation scope and limitations](docs/BETA_VALIDATION.md).
 Live providers and complete research projects have not been verified end to
 end across every environment or discipline.
+
+<a id="contributing"></a>
 
 ## Contribute
 
@@ -112,6 +122,8 @@ Update from EvoInquiry releases. Keep the source checkout available: Codex
 loads an installed cache, so changes require refreshing the plugin and
 starting a new session. Re-register the local marketplace if you move the
 checkout to a different path.
+
+<a id="license"></a>
 
 ## License and acknowledgments
 

@@ -1,47 +1,45 @@
 # Beta validation scope
 
-Release: 1.0.0-beta.2. Upstream snapshot:
+Release: **1.0.0-beta.3**. Upstream snapshot:
 `3b19a22dc5a64c983d2eafd6c2c94000fadc4f8d`.
 
-## Current release
+## Checked for this release
 
-- The documentation and metadata update passed 33 focused regression checks.
-- All 83 research skill entrypoints and helper implementations are unchanged
-  from beta.1; preservation against the pinned upstream snapshot passed.
-- Public README links and namespaced usage examples resolved.
-- Full Linux and macOS suites run before the current release assets are
-  published. Actual GitHub Actions results define their validation status.
+- Local Linux regression suite: **779 passed, 20 skipped**, Python 3.12.14.
+- Focused packaging and workflow checks: 35 passed. After strengthening the
+  archive's required-reference check, all 5 publication tests passed again.
+- 83 Codex skill bodies and frontmatter match the pinned upstream snapshot
+  after removing only the marked EvoInquiry hook. Retained runtime helpers,
+  references, templates, and reviewer overlays remain unchanged.
+- All previously tracked files were reviewed; 485 text documents were read.
+  193 promotional, duplicated, or unrelated files were removed. Required
+  tutorial examples and compatibility resources were retained.
+- Local links in the revised public guides resolve. Retained Markdown has no
+  links to the deleted materials.
+- The publication policy rejects retired files and missing workflow references,
+  including an existing reference omitted from the archive's tracked-file list.
+- Linux and macOS full suites must pass in GitHub Actions before release assets
+  are published. The actual Actions results define their status.
 
-## Previous release and development evidence
+The 20 local skips consist of 12 Windows PowerShell checks, 4 credential-gated
+MiniMax live checks, and 4 installer/picker checks requiring `expect`.
 
-- Beta.1's full repository suite passed 777 tests with 20 skips
-  on Linux x86_64, Python 3.12.14 (275.03 seconds).
-- The skip inventory includes 12 Windows PowerShell tests, 4 credential-gated
-  MiniMax live tests, and 4 interactive installer/picker tests.
-- All 83 Codex entrypoints retain their upstream frontmatter and workflow
-  bodies after removing the added, explicitly marked EvoInquiry hook.
-- Other retained client/ reviewer overlay files are unchanged. The Claude
-  overlay generator strips the Codex-only hook when regenerating its overlay.
-- A fresh Codex CLI 0.162.1 session discovered the evo-inquiry namespace and
-  all 83 entrypoints, then read an installed entrypoint and its shared principles.
-- Relative principle references resolved after relocating the package to a
-  different directory with spaces.
-- Codex compatibility links resolved and the MCP TOML template parsed.
-- Synthetic research discussion and nested-review exercises were performed
-  during development. They have no randomized baseline comparison and do not
-  establish a general improvement in research outcomes.
+## Existing installation evidence
 
-Release-specific checks are summarized in
-[release-validation.json](../release-validation.json). CI reruns the repository
-tests; platform support follows observed results rather than the existence
-of a workflow file.
+A Codex CLI 0.162.1 session discovered the EvoInquiry namespace and all 83
+entrypoints during beta development, then read an installed entrypoint and
+its shared reference. Principle links also resolved after relocating the
+package into a directory with spaces. These checks establish packaging and
+discovery, not research outcomes.
+
+Release-specific evidence is summarized in
+[release-validation.json](../release-validation.json).
 
 ## Limits
 
-The inherited workflows mainly target ML/AI and related engineering research.
-The principles are general, but broad discipline support is untested.
-Live third-party providers, image renderers, GPUs, full research pipelines,
-and every operating system have not been verified end to end for this beta.
-An automated review score is not evidence that a research claim is true.
-Original local installation records and raw session logs are excluded from
-public Git content; they are not required to install the plugin.
+The workflows primarily target ML, AI, and related engineering research.
+Live providers, GPUs, image renderers, complete research projects, Windows,
+and broad discipline coverage have not been verified end to end for this beta.
+Same-family agent review remains provisional. Automated review scores and
+synthetic exercises do not establish research correctness or general quality
+improvements. Local raw session records are excluded from public Git content.

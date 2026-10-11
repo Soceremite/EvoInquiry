@@ -1,6 +1,6 @@
 # Templates
 
-Ready-to-use templates for each ARIS workflow. Copy, fill in your content, and run the corresponding skill.
+Ready-to-use templates for each research workflow. Copy, fill in your content, and run the corresponding skill.
 
 ### Workflow Input Templates
 

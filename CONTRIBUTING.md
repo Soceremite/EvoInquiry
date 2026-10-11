@@ -23,7 +23,9 @@ them. Distinguish simulated tests, local integration tests, live provider checks
 and research evidence. Document unresolved limits. Cross-platform CI results
 should accompany installation changes.
 
-Upstream ARIS documentation is retained in `README_ARIS.md`, `README_CN_ARIS.md`,
-`CONTRIBUTING_ARIS.md`, and `CONTRIBUTING_CN_ARIS.md`. Preserve its license and
-attribution when integrating a new snapshot. Contributions to EvoInquiry are
-distributed under the MIT license.
+Keep public documentation focused on installation, usage, compatibility, and
+maintenance. The explicit retirement and required-reference lists in
+`tools/publication-policy.json` protect the release from unnecessary material
+and missing workflow examples. Check callers before changing that policy.
+Preserve LICENSE and NOTICE when integrating upstream changes. Contributions
+are distributed under the MIT license.

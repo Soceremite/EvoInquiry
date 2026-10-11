@@ -12,6 +12,8 @@ import re
 import subprocess
 import tarfile
 
+from publication_policy import publication_errors
+
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -32,6 +34,9 @@ def main() -> None:
     if git('status', '--porcelain', '--untracked-files=normal').strip():
         raise SystemExit('Commit all intended release files before building; checkout is not clean')
     tracked = [Path(p) for p in git('ls-files', '-z').decode().split('\0') if p]
+    policy_errors = publication_errors(ROOT, (str(p) for p in tracked))
+    if policy_errors:
+        raise SystemExit('\n'.join(policy_errors))
     forbidden = [str(p) for p in tracked if
                  p.parts[0] in {'validation', 'dist', '.aris', '.claude', '.git'} or
                  p.name in {'auth.json', 'config.before.toml', '.env', 'id_rsa', 'id_ed25519'} or

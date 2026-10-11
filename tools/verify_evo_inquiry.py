@@ -8,11 +8,17 @@ from pathlib import Path
 import re
 import sys
 
+try:
+    from tools.publication_policy import load_policy, publication_errors
+except ModuleNotFoundError:
+    from publication_policy import load_policy, publication_errors
+
 BLOCK = re.compile(r"\n<!-- EVO-INQUIRY:BEGIN -->\n.*?<!-- EVO-INQUIRY:END -->\n\n", re.S)
 
 
 def verify(root: Path, baseline: Path | None = None) -> dict:
     errors: list[str] = []
+    errors.extend(publication_errors(root))
     skills_root = root / 'skills/skills-codex'
     skills = sorted(skills_root.glob('*/SKILL.md'))
     reference = skills_root / 'shared-references/evo-inquiry.md'
@@ -54,8 +60,10 @@ def verify(root: Path, baseline: Path | None = None) -> dict:
         if not (root / required).is_file():
             errors.append(f'Missing upstream helper {required}')
     if baseline is not None:
-        # Only Codex entry blocks, presentation, and explicit test adaptations
-        # may alter inherited files. Everything else is preserved byte-for-byte.
+        # Retire only individually audited public materials. All retained skill
+        # contracts and runtime helpers still receive byte-for-byte checks.
+        policy = load_policy(root)
+        retired = set(policy['retired_upstream_files'])
         permitted = {
             '.codex-plugin/plugin.json', 'README.md', 'README_CN.md',
             'tests/test_plugin_manifest.py', 'tests/test_codex_skill_mirror.py',
@@ -64,10 +72,15 @@ def verify(root: Path, baseline: Path | None = None) -> dict:
             'tools/generate_codex_claude_review_overrides.py',
             '.gitignore', 'CONTRIBUTING.md', 'CONTRIBUTING_CN.md',
             '.github/workflows/test-suite.yml',
-        } | {str(p.relative_to(root)) for p in skills}
+            '.github/workflows/check-skills-inventory.yml',
+        } | set(policy['adapted_upstream_documents']) | {str(p.relative_to(root)) for p in skills}
         for original in baseline.rglob('*'):
             rel = original.relative_to(baseline)
             if '.git' in rel.parts or '__pycache__' in rel.parts or '.pytest_cache' in rel.parts or original.suffix == '.pyc':
+                continue
+            if str(rel) in retired:
+                if (root / rel).exists():
+                    errors.append(f'{rel}: audited retirement was not applied')
                 continue
             if original.is_file() and str(rel) not in permitted:
                 current = root / rel

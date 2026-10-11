@@ -8,9 +8,9 @@ on:
       - 'README.md'
       - 'README_CN.md'
       - 'AGENT_GUIDE.md'
-      - 'docs/ARIS_INTRO.md'
-      - 'docs/ARIS_INTRO.html'
       - 'tools/check_skills_inventory.py'
+      - 'tools/publication_policy.py'
+      - 'tools/publication-policy.json'
       - 'tests/test_codex_skill_mirror.py'
       - '.github/workflows/check-skills-inventory.yml'
   workflow_dispatch:

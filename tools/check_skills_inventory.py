@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check ARIS skill inventory drift across mainline, Codex mirror, and docs."""
+"""Check EvoInquiry skill inventory and retained workflow contracts."""
 
 from __future__ import annotations
 
@@ -16,10 +16,6 @@ CATALOG = REPO_ROOT / "docs" / "SKILLS_CATALOG.md"
 README = REPO_ROOT / "README.md"
 README_CN = REPO_ROOT / "README_CN.md"
 AGENT_GUIDE = REPO_ROOT / "AGENT_GUIDE.md"
-ARIS_INTRO = REPO_ROOT / "docs" / "ARIS_INTRO.md"
-ARIS_INTRO_HTML = REPO_ROOT / "docs" / "ARIS_INTRO.html"
-CODEX_README = CODEX_ROOT / "README.md"
-CODEX_README_CN = CODEX_ROOT / "README_CN.md"
 BOM = b"\xef\xbb\xbf"
 
 FORBIDDEN_CODEX_REVIEWER_STRINGS = (
@@ -29,35 +25,9 @@ FORBIDDEN_CODEX_REVIEWER_STRINGS = (
     "threadId",
 )
 
-# Phase A (issue #240): cross-language anchor IDs that MUST exist as
-# explicit `<a id="..."></a>` in both README.md and README_CN.md so that
-# cross-language hyperlinks resolve identically. Adding a new numbered
-# section means adding it to both READMEs AND extending this list.
+# Stable anchors shared by the English and Chinese public guides.
 REQUIRED_README_ANCHORS = (
-    "contents",
-    "more-than-just-a-prompt",
-    "whats-new",
-    "quick-start",
-    "features",
-    "score-progression",
-    "community-showcase",
-    "awesome-community-skills",
-    "workflows",
-    "skills-catalog",
-    "setup",
-    "customization",
-    "alternative-model-combinations",
-    "community",
-    "citation",
-    "star-history",
-    "acknowledgements",
-    "license",
-    "prerequisites",
-    "install-skills",
-    "gpu-server-setup",
-    "alt-a-glm--gpt",
-    "-optional-gpt-54-pro-via-oracle",
-    "-research-wiki--persistent-research-memory",
+    "capabilities", "installation", "usage", "setup", "contributing", "license",
 )
 
 
@@ -84,10 +54,6 @@ def frontmatter_split(text: str) -> str:
 
 def readme_anchors(text: str) -> set[str]:
     return set(re.findall(r'<a id="([^"]+)"></a>', text))
-
-
-def numbered_h2_count(text: str) -> int:
-    return len(re.findall(r"^## \d+\.\s", text, flags=re.MULTILINE))
 
 
 def read(path: Path) -> str:
@@ -123,11 +89,11 @@ def check_inventory() -> list[str]:
     main_refs = {path.name for path in (SKILLS_ROOT / "shared-references").glob("*.md")}
     codex_refs = {path.name for path in (CODEX_ROOT / "shared-references").glob("*.md")}
     # This Codex edition adds exactly one shared reference; all
-    # upstream inventory and drift checks continue to apply.
+    # retained workflow inventory and contract checks continue to apply.
     manifest = json.loads(read(REPO_ROOT / ".codex-plugin" / "plugin.json"))
-    compass_refs = {"evo-inquiry.md"} if manifest.get("name") == "evo-inquiry" else set()
+    evo_refs = {"evo-inquiry.md"} if manifest.get("name") == "evo-inquiry" else set()
     require(
-        compass_refs <= codex_refs,
+        evo_refs <= codex_refs,
         "missing EvoInquiry shared reference",
         failures,
     )
@@ -145,52 +111,25 @@ def check_inventory() -> list[str]:
         failures,
     )
     require(
-        not (codex_refs - main_refs - compass_refs),
-        f"unexpected Codex-only shared references: {', '.join(sorted(codex_refs - main_refs - compass_refs))}",
+        not (codex_refs - main_refs - evo_refs),
+        f"unexpected Codex-only shared references: {', '.join(sorted(codex_refs - main_refs - evo_refs))}",
         failures,
     )
     require(not missing_catalog, f"missing catalog entries: {', '.join(missing_catalog)}", failures)
     require(not extra_catalog, f"catalog entries without mainline skills: {', '.join(extra_catalog)}", failures)
 
     catalog_text = read(CATALOG)
-    evo_edition = manifest.get("name") == "evo-inquiry"
-    archived_readme = REPO_ROOT / "README_ARIS.md"
-    archived_readme_cn = REPO_ROOT / "README_CN_ARIS.md"
-    inherited_readme = archived_readme if evo_edition and archived_readme.is_file() else README
-    inherited_readme_cn = archived_readme_cn if evo_edition and archived_readme_cn.is_file() else README_CN
-    readme = read(inherited_readme)
-    readme_cn = read(inherited_readme_cn)
-    agent_guide = read(AGENT_GUIDE)
-    aris_intro = read(ARIS_INTRO)
-    aris_intro_html = read(ARIS_INTRO_HTML)
-    codex_readme = read(CODEX_README)
-    codex_readme_cn = read(CODEX_README_CN)
-
+    readme = read(README)
+    readme_cn = read(README_CN)
     expected_count = len(main)
     count_checks = [
         (CATALOG, catalog_text, r"\*\*(?P<count>\d+) skills\*\*"),
-        (inherited_readme, readme, r"📊\s+\*\*(?P<count>\d+) composable skills\*\*"),
-        (inherited_readme, readme, r"ARIS ships \*\*(?P<count>\d+)\+ skills\*\*"),
-        (inherited_readme_cn, readme_cn, r"📊\s+\*\*(?P<count>\d+) 个可组合 skill\*\*"),
-        (inherited_readme_cn, readme_cn, r"ARIS 现有 \*\*(?P<count>\d+)\+ 个 skill\*\*"),
-        (AGENT_GUIDE, agent_guide, r"Full catalog.*?\*\*(?P<count>\d+) skills\*\*"),
-        (ARIS_INTRO, aris_intro, r"collection of \*\*(?P<count>\d+) composable Claude Code skills\*\*"),
-        (ARIS_INTRO, aris_intro, r"## The (?P<count>\d+) Skills"),
-        (ARIS_INTRO, aris_intro, r"一组 (?P<count>\d+) 个可组合的 Claude Code skills"),
-        (ARIS_INTRO_HTML, aris_intro_html, r"collection of <strong>(?P<count>\d+) composable Claude Code skills</strong>"),
-        (ARIS_INTRO_HTML, aris_intro_html, r'id="the-(?P<count>\d+)-skills"'),
-        (ARIS_INTRO_HTML, aris_intro_html, r"一组 (?P<count>\d+) 个可组合的 Claude Code skills"),
-        (CODEX_README, codex_readme, r"all `(?P<count>\d+)` mainline skills"),
-        (CODEX_README_CN, codex_readme_cn, r"`(?P<count>\d+)`[^\n]*skill"),
+        (README, readme, r"\*\*(?P<count>\d+) Codex skills\*\*"),
+        (README_CN, readme_cn, r"\*\*(?P<count>\d+) 个 Codex skill\*\*"),
+        (AGENT_GUIDE, read(AGENT_GUIDE), r"Full catalog.*?\*\*(?P<count>\d+) skills\*\*"),
     ]
     for path, text, pattern in count_checks:
         require_count(path, text, pattern, expected_count, failures)
-
-    # Preserve every inherited drift check, and independently validate the
-    # public beta's own counts rather than forcing its README into ARIS's layout.
-    if evo_edition and inherited_readme != README:
-        require_count(README, read(README), r"\*\*(?P<count>\d+) Codex skills\*\*", expected_count, failures)
-        require_count(README_CN, read(README_CN), r"\*\*(?P<count>\d+) 个 Codex skill\*\*", expected_count, failures)
 
     for skill_file in sorted(CODEX_ROOT.glob("*/SKILL.md")):
         if skill_file.read_bytes().startswith(BOM):
@@ -200,7 +139,7 @@ def check_inventory() -> list[str]:
             if forbidden in text:
                 failures.append(f"{skill_file.relative_to(REPO_ROOT)} contains forbidden reviewer string: {forbidden}")
 
-    # README parity (EN ↔ CN) — Phase A invariant from #240
+    # Public guide parity: links use the same explicit anchors in both languages.
     en_anchors = readme_anchors(readme)
     cn_anchors = readme_anchors(readme_cn)
     for required in REQUIRED_README_ANCHORS:
@@ -209,10 +148,7 @@ def check_inventory() -> list[str]:
         if required not in cn_anchors:
             failures.append(f"README_CN.md missing required anchor: <a id=\"{required}\"></a>")
 
-    en_h2 = numbered_h2_count(readme)
-    cn_h2 = numbered_h2_count(readme_cn)
-    require(en_h2 == 16, f"README.md has {en_h2} numbered H2 sections; expected 16 (Phase A)", failures)
-    require(cn_h2 == 16, f"README_CN.md has {cn_h2} numbered H2 sections; expected 16 (Phase A)", failures)
+    require(en_anchors == cn_anchors, "English/Chinese README anchors differ", failures)
 
     # Agent-grant hygiene (WB2): `Agent` in allowed-tools is the Tier-2
     # fan-out capability gate. Per shared-references/fan-out-pattern.md it is
@@ -300,7 +236,7 @@ def main() -> int:
         for failure in failures:
             print(f"- {failure}", file=sys.stderr)
         return 1
-    print("ARIS skill inventory is consistent.")
+    print("EvoInquiry skill inventory is consistent.")
     return 0
 
 

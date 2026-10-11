@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.0-beta.3 — 2026-10-11
+
+- Remove upstream promotional material, community showcases, redundant client guides, and unused generated tutorials.
+- Consolidate public documentation around installation, skill capabilities, workflow controls, recovery, compatibility, and maintenance.
+- Point all 83 catalog entries at the installed Codex implementations.
+- Preserve skill bodies, runtime helpers, reviewer resources, and required tutorial exemplars.
+- Add an explicit publication policy that rejects retired materials and detects missing workflow references.
+
 ## 1.0.0-beta.2 — 2026-10-11
 
 - Introduce the toolkit through its research capabilities and practical usage examples.
