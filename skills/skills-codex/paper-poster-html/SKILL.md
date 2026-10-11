@@ -1,17 +1,17 @@
 ---
 name: paper-poster-html
-description: "DEFAULT poster pipeline — build an academic conference poster (ICML/NeurIPS/ICLR/CVPR/...) as a single HTML/CSS file with measurement-driven hard gates, real paper figures, a two-hue design-token system, and print-ready PDF via headless Chromium. Use when the user says \"做海报\", \"poster\", \"conference poster\", \"paper poster\", or asks to design/redo a research poster."
+description: "Build an academic poster as HTML/CSS with real paper figures, measured layout checks, and print-ready PDF export. Use for conference poster creation or redesign."
 argument-hint: "[paper-dir-or-pdf] [— venue: ICLR, canvas: 185x90cm landscape, venue-colors: true]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob
 ---
 
 <!-- EVO-INQUIRY:BEGIN -->
-For research work, first read [EvoInquiry](../shared-references/evo-inquiry.md).
-Apply its relevant principles alongside this skill's methods and project rules;
-carry them into nested research tasks and reviewer briefs. Preserve this skill's
-outputs, review standards, and recovery contracts. Mechanical tasks retain their
-existing workflow. The compass neither expands authorization nor adds routine
-approval checkpoints.
+For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),
+or reuse it if already loaded and unchanged in this session. Apply relevant
+principles within the user's scope and this skill's existing outputs, review
+standards, and recovery contracts. Carry them into nested research tasks and
+reviewer briefs. Continue authorized work through its necessary steps; honor
+budgets, blocking checkpoints, and stopping conditions.
 <!-- EVO-INQUIRY:END -->
 
 

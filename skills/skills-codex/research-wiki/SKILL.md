@@ -1,17 +1,17 @@
 ---
 name: research-wiki
-description: "Persistent research knowledge base that accumulates papers, ideas, experiments, claims, and their relationships across the entire research lifecycle. Inspired by Karpathy's LLM Wiki pattern. Use when user says \"知识库\", \"research wiki\", \"add paper\", \"wiki query\", \"查知识库\", or wants to build/query a persistent field map."
+description: "Build or query a persistent research knowledge base linking papers, ideas, experiments, and claims. Use to record evidence and retrieve project relationships."
 argument-hint: "[subcommand: init|ingest|sync|query|update|lint|stats]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, WebSearch, WebFetch
 ---
 
 <!-- EVO-INQUIRY:BEGIN -->
-For research work, first read [EvoInquiry](../shared-references/evo-inquiry.md).
-Apply its relevant principles alongside this skill's methods and project rules;
-carry them into nested research tasks and reviewer briefs. Preserve this skill's
-outputs, review standards, and recovery contracts. Mechanical tasks retain their
-existing workflow. The compass neither expands authorization nor adds routine
-approval checkpoints.
+For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),
+or reuse it if already loaded and unchanged in this session. Apply relevant
+principles within the user's scope and this skill's existing outputs, review
+standards, and recovery contracts. Carry them into nested research tasks and
+reviewer briefs. Continue authorized work through its necessary steps; honor
+budgets, blocking checkpoints, and stopping conditions.
 <!-- EVO-INQUIRY:END -->
 
 

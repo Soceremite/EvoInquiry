@@ -1,15 +1,15 @@
 ---
 name: "proof-writer"
-description: "Writes rigorous mathematical proofs for ML/AI theory. Use when asked to prove a theorem, lemma, proposition, or corollary, fill in missing proof steps, formalize a proof sketch, \u8865\u5168\u8bc1\u660e, \u5199\u8bc1\u660e, \u8bc1\u660e\u67d0\u4e2a\u547d\u9898, or determine whether a claimed proof can actually be completed under the stated assumptions."
+description: "Write a rigorous proof of a specified theorem, lemma, proposition, or corollary. Use to formalize a sketch, fill proof steps, or test whether assumptions suffice."
 ---
 
 <!-- EVO-INQUIRY:BEGIN -->
-For research work, first read [EvoInquiry](../shared-references/evo-inquiry.md).
-Apply its relevant principles alongside this skill's methods and project rules;
-carry them into nested research tasks and reviewer briefs. Preserve this skill's
-outputs, review standards, and recovery contracts. Mechanical tasks retain their
-existing workflow. The compass neither expands authorization nor adds routine
-approval checkpoints.
+For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),
+or reuse it if already loaded and unchanged in this session. Apply relevant
+principles within the user's scope and this skill's existing outputs, review
+standards, and recovery contracts. Carry them into nested research tasks and
+reviewer briefs. Continue authorized work through its necessary steps; honor
+budgets, blocking checkpoints, and stopping conditions.
 <!-- EVO-INQUIRY:END -->
 
 

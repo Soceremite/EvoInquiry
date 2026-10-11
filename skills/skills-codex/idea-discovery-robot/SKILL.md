@@ -1,15 +1,15 @@
 ---
 name: "idea-discovery-robot"
-description: "Workflow 1 adaptation for robotics and embodied AI. Orchestrates robotics-aware literature survey, idea generation, novelty check, and critical review to go from a broad robotics direction to benchmark-grounded, simulation-first ideas. Use when user says \\\"robotics idea discovery\\\", \\\"\u673a\u5668\u4eba\u627eidea\\\", \\\"embodied AI idea\\\", \\\"\u673a\u5668\u4eba\u65b9\u5411\u63a2\u7d22\\\", \\\"sim2real \u9009\u9898\\\", or wants ideas for manipulation, locomotion, navigation, drones, humanoids, or general robot learning."
+description: "Run robotics or embodied-AI idea discovery with benchmark-grounded, simulation-first validation. Use for robot learning, manipulation, navigation, or locomotion."
 ---
 
 <!-- EVO-INQUIRY:BEGIN -->
-For research work, first read [EvoInquiry](../shared-references/evo-inquiry.md).
-Apply its relevant principles alongside this skill's methods and project rules;
-carry them into nested research tasks and reviewer briefs. Preserve this skill's
-outputs, review standards, and recovery contracts. Mechanical tasks retain their
-existing workflow. The compass neither expands authorization nor adds routine
-approval checkpoints.
+For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),
+or reuse it if already loaded and unchanged in this session. Apply relevant
+principles within the user's scope and this skill's existing outputs, review
+standards, and recovery contracts. Carry them into nested research tasks and
+reviewer briefs. Continue authorized work through its necessary steps; honor
+budgets, blocking checkpoints, and stopping conditions.
 <!-- EVO-INQUIRY:END -->
 
 

@@ -1,15 +1,15 @@
 ---
 name: grant-proposal
-description: "Draft a structured grant proposal from research ideas and literature. Supports KAKENHI (Japan), NSF (US), NSFC (China, including 面上/青年/优青/杰青/海外优青/重点), ERC (EU), DFG (Germany), SNSF (Switzerland), ARC (Australia), NWO (Netherlands), and generic formats. Use when user says \"write grant\", \"grant proposal\", \"申請書\", \"write KAKENHI\", \"科研費\", \"基金申请\", \"写基金\", \"NSF proposal\", or wants to turn research ideas into a funding application."
+description: "Draft research funding proposals from ideas and literature in funder-specific or generic formats, including NSFC, NSF, ERC, and KAKENHI. Use for grant applications."
 ---
 
 <!-- EVO-INQUIRY:BEGIN -->
-For research work, first read [EvoInquiry](../shared-references/evo-inquiry.md).
-Apply its relevant principles alongside this skill's methods and project rules;
-carry them into nested research tasks and reviewer briefs. Preserve this skill's
-outputs, review standards, and recovery contracts. Mechanical tasks retain their
-existing workflow. The compass neither expands authorization nor adds routine
-approval checkpoints.
+For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),
+or reuse it if already loaded and unchanged in this session. Apply relevant
+principles within the user's scope and this skill's existing outputs, review
+standards, and recovery contracts. Carry them into nested research tasks and
+reviewer briefs. Continue authorized work through its necessary steps; honor
+budgets, blocking checkpoints, and stopping conditions.
 <!-- EVO-INQUIRY:END -->
 
 

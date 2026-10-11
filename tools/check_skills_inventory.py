@@ -8,6 +8,11 @@ import re
 import sys
 from pathlib import Path
 
+try:
+    from tools.skill_contracts import contract_errors, load_contract
+except ModuleNotFoundError:
+    from skill_contracts import contract_errors, load_contract
+
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 SKILLS_ROOT = REPO_ROOT / "skills"
@@ -83,6 +88,11 @@ def require_count(path: Path, text: str, pattern: str, expected_count: int, fail
 
 def check_inventory() -> list[str]:
     failures: list[str] = []
+    failures.extend(contract_errors(REPO_ROOT))
+    try:
+        extensions = set(load_contract(REPO_ROOT)['added_skills'])
+    except (OSError, ValueError, TypeError):
+        extensions = set()
     main = skill_names(SKILLS_ROOT)
     codex = skill_names(CODEX_ROOT)
     catalog = catalog_names()
@@ -99,12 +109,14 @@ def check_inventory() -> list[str]:
     )
 
     missing_codex = sorted(main - codex)
-    extra_codex = sorted(codex - main)
-    missing_catalog = sorted(main - catalog)
-    extra_catalog = sorted(catalog - main)
+    extra_codex = sorted(codex - main - extensions)
+    missing_extensions = sorted(extensions - codex)
+    missing_catalog = sorted(codex - catalog)
+    extra_catalog = sorted(catalog - codex)
 
     require(not missing_codex, f"missing Codex mirrors: {', '.join(missing_codex)}", failures)
     require(not extra_codex, f"unexpected Codex-only skills: {', '.join(extra_codex)}", failures)
+    require(not missing_extensions, f"missing registered extensions: {', '.join(missing_extensions)}", failures)
     require(
         not (main_refs - codex_refs),
         f"missing Codex shared references: {', '.join(sorted(main_refs - codex_refs))}",
@@ -116,12 +128,12 @@ def check_inventory() -> list[str]:
         failures,
     )
     require(not missing_catalog, f"missing catalog entries: {', '.join(missing_catalog)}", failures)
-    require(not extra_catalog, f"catalog entries without mainline skills: {', '.join(extra_catalog)}", failures)
+    require(not extra_catalog, f"catalog entries without installed skills: {', '.join(extra_catalog)}", failures)
 
     catalog_text = read(CATALOG)
     readme = read(README)
     readme_cn = read(README_CN)
-    expected_count = len(main)
+    expected_count = len(codex)
     count_checks = [
         (CATALOG, catalog_text, r"\*\*(?P<count>\d+) skills\*\*"),
         (README, readme, r"\*\*(?P<count>\d+) Codex skills\*\*"),
@@ -232,7 +244,7 @@ def check_inventory() -> list[str]:
 def main() -> int:
     failures = check_inventory()
     if failures:
-        print("ARIS skill inventory drift detected:", file=sys.stderr)
+        print("EvoInquiry skill inventory drift detected:", file=sys.stderr)
         for failure in failures:
             print(f"- {failure}", file=sys.stderr)
         return 1

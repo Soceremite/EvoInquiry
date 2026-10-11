@@ -1,5 +1,5 @@
 from pathlib import Path
-from tools.verify_evo_inquiry import BLOCK
+from tools.skill_contracts import skill_parts
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -19,7 +19,8 @@ def compact(text: str) -> str:
 
 def test_web_debug_search_mirrors_are_present_and_identical() -> None:
     texts = skill_texts()
-    assert texts[0] == BLOCK.sub('', texts[1])
+    # Discovery wording may differ; tool grants and the full workflow may not.
+    assert skill_parts(texts[0])[:2] == skill_parts(texts[1])[:2]
     for text in texts:
         assert "name: web-debug-search" in text
         assert "WebSearch" in text and "WebFetch" in text

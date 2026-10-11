@@ -1,64 +1,118 @@
 {
-  "version": "1.0.0-beta.3",
+  "version": "1.0.0-beta.4",
+  "candidate_status": "behavior-assessed; final archive and installation verification pending; not published",
   "upstream_commit": "3b19a22dc5a64c983d2eafd6c2c94000fadc4f8d",
+  "preservation_baseline_commit": "b9c7861fd22cd2f5471765d583c593f083fa12cc",
   "upstream_preservation": {
     "status": "PASS",
-    "Codex_entrypoints": 83,
-    "original_frontmatter_and_workflow_bodies_preserved": 83,
-    "comparison": "Remove the marked EvoInquiry hook before comparing all Codex skill bodies to the pinned baseline. Retained runtime files remain byte-identical; audited retirements and document/check adaptations are explicit."
+    "Codex_entrypoints": 84,
+    "retained_workflow_bodies_and_non_description_frontmatter": 83,
+    "added_entrypoints": [
+      "research-guide"
+    ],
+    "protected_baseline_files": 450,
+    "comparison": "Frozen beta.3 hashes, verified against the original commit. Only descriptions and marked EvoInquiry hooks changed in retained Codex skills; runtime helpers, reviewer overlays and recovery contracts remain byte-identical. Two legacy description-equality checks now compare bodies and all non-description fields."
+  },
+  "discovery_descriptions": {
+    "baseline_characters": 23910,
+    "candidate_characters": 13229,
+    "candidate_entries": 84,
+    "maximum_description_characters": 174,
+    "scope": "Discovery descriptions only; counts omit names, paths and other context metadata."
   },
   "publication_audit": {
-    "tracked_files_reviewed": 744,
-    "text_documents_read": 485,
-    "removed_files": 193,
-    "removed_bytes": 30682495,
+    "inherited_removed_files": 193,
     "required_workflow_documents": 13,
-    "retirement_policy": "tools/publication-policy.json"
-  },
-  "public_document_local_links": {
-    "documents_checked": 22,
-    "local_links_checked": 167,
-    "errors": []
+    "retirement_policy": "tools/publication-policy.json",
+    "local_raw_evidence": "Excluded from Git and source archives."
   },
   "local_checks": {
-    "focused_regressions": {
-      "passed": 35,
-      "seconds": 0.88,
-      "command": "python -m pytest tests/test_auto_proceed_contract.py tests/test_plugin_manifest.py tests/test_codex_skill_mirror.py tests/test_evo_inquiry.py -q"
-    },
     "inventory_check": "PASS",
-    "upstream_preservation": "PASS",
+    "fixed_baseline_preservation": "PASS",
+    "new_skill_metadata_validation": "PASS",
     "full_suite": {
       "exit_code": 0,
-      "seconds": 286.04,
-      "completed_at": "2026-10-11T09:14:53.411767+00:00",
+      "seconds": 191.91,
+      "completed_at": "2026-10-11T15:45:01.453830+00:00",
       "command": "python -m pytest tests/ -q -rs",
-      "credential_environment_removed": true,
-      "passed": 779,
-      "skipped": 20,
-      "pytest_seconds": 282.69,
       "platform": "Linux x86_64",
-      "python": "3.12.14",
+      "python": "Python 3.12.14",
+      "credential_environment_removed": true,
+      "passed": 792,
+      "skipped": 20,
+      "pytest_seconds": 190.17,
       "skip_categories": {
         "Windows_PowerShell": 12,
         "live_MiniMax_requires_API_key": 4,
         "interactive_expect_tool_missing": 4
       }
-    },
-    "publication_policy_regressions": {
-      "passed": 5,
-      "seconds": 0.12,
-      "command": "python -m pytest tests/test_evo_inquiry.py -q",
-      "scope": "Retired material, missing exemplar, and exemplar absent from release tracked-file list"
     }
+  },
+  "behavior_evaluation": {
+    "status": "COMPLETE_WITH_LIMITS",
+    "cases": 24,
+    "Chinese_cases": 12,
+    "English_cases": 12,
+    "candidate_target_passes": 22,
+    "target_met": true,
+    "critical_errors": 0,
+    "source": "tests/behavior/evo-inquiry-cases.json",
+    "protocol": "docs/SKILL_BEHAVIOR_EVAL.md",
+    "scope": "Offline synthetic fixtures, isolated fresh Codex sessions, frozen rubric, actual trace and artifact assessment; same CLI/model/settings for each pair.",
+    "candidate_passes": 22,
+    "baseline_passes": 23,
+    "candidate_inconclusive": [
+      "04",
+      "13"
+    ],
+    "baseline_inconclusive": [
+      "22"
+    ],
+    "critical_error_scope": "Observed traces and artifacts; interrupted planning attempts are not certified completed workflows.",
+    "mandatory_explicit_call_cases": [
+      "18",
+      "20"
+    ],
+    "mandatory_resumption_cases": [
+      "09",
+      "11",
+      "14"
+    ],
+    "mandatory_small_task_cases": [
+      "15",
+      "16",
+      "17"
+    ],
+    "mandatory_cases_pass": true,
+    "model": "gpt-6.1-sol",
+    "reasoning_effort": "max",
+    "Codex_CLI": "0.162.1",
+    "runtime_ceiling_seconds": 600,
+    "unchanged_smoke_pair_ceiling": {
+      "05": 300
+    },
+    "tool_action_limit": 32,
+    "case_manifest_sha256": "a3967b120a2a9bfdc962ae74ae2cfbffdf6505e65a902a8d28b2b3181aeb9651",
+    "median_tool_actions": {
+      "baseline": 8.5,
+      "candidate": 9.0
+    },
+    "stable_proactivity_improvement_established": false,
+    "comparison": "21 unchanged; candidate completes case22 while baseline is inconclusive; candidate inconclusive on cases04 and13 while baseline completes. Retries retained; no stable improvement established.",
+    "corrections": "Recovery diagnosis finishes its handoff without optional claim adjudication. Narrower result-to-claim discovery retains explicit claim assessment, but case13 still chooses extra claim assessment and times out.",
+    "attempt_policy": "Retain original timeouts, affected-case retries, startup failures, stream concurrency retries and storage interruption. Reuse unaffected earlier cases only; lost temporary evidence not counted."
   },
   "development_checks": {
     "fresh_Codex_CLI": "0.162.1",
-    "namespaced_entrypoints_discovered": 83,
+    "isolated_baseline_entries_discovered": 83,
+    "isolated_candidate_entries_discovered": 84,
+    "installed_skill_bytes_match_sources": "PASS",
+    "relocation_check": "PENDING final candidate archive",
+    "rollback_check": "PASS: beta.3 install discovered 83 source-matching entries, restored beta.4 with 84 source-matching entries",
     "relocated_shared_principle_links": "PASS",
-    "behavior_exercises": "Synthetic only; no randomized outcome comparison"
+    "installed_model_settings_preserved": true
   },
-  "CI_scope": "The beta tag runs full Linux and macOS regression suites before publishing assets; actual Actions results are authoritative.",
+  "CI_scope": "Local results are Linux only. Linux and macOS full suites must pass in GitHub Actions before public release; their actual results are authoritative.",
   "artifact_integrity": "Git-tracked source archives are checked against the publication policy. SHA256SUMS and release-manifest.json identify archive digests, source commit, and skill inventory.",
   "limits": [
     "Windows and credential-gated integration checks were not exercised by the local full suite.",
@@ -67,5 +121,10 @@
     "No validation proves general scientific correctness or improved research outcomes.",
     "Raw local session/validation records are excluded from public Git content."
   ],
-  "validated_at_utc": "2026-10-11T09:14:53.411767+00:00"
+  "validated_at_utc": "2026-10-11T17:16:57.864945+00:00",
+  "public_document_local_links": {
+    "documents_checked": 10,
+    "local_links_checked": 139,
+    "errors": []
+  }
 }

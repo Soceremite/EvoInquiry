@@ -1,12 +1,21 @@
 # EvoInquiry agent guide
 
-Full catalog: [skill catalog](docs/SKILLS_CATALOG.md) — **83 skills**.
+Full catalog: [skill catalog](docs/SKILLS_CATALOG.md) — **84 skills**:
+83 retained workflow entrypoints and one research-guide coordinator.
 Install and invoke the Codex plugin using [README.md](README.md).
 
 The plugin discovers `skills/skills-codex/<name>/SKILL.md`. Read the selected
 skill and its linked references before running the task. Its frontmatter,
 workflow inputs, artifact contracts, and checkpoints define that task.
 Project instructions and the user's authorization take precedence.
+
+Route clear natural requests directly to a relevant execution skill. Use
+research-guide for resumed projects or an unclear next step across workflows.
+Check the evidence behind resumed statuses, perform the requested work, and
+continue necessary adjacent steps within the authorized goal and stopping point.
+Small edits and advice-only requests retain their scope. This file is reference
+documentation; merge the optional [project snippet](templates/EVOINQUIRY_AGENTS_SNIPPET.md)
+into a research project's AGENTS.md to provide project-level instructions.
 
 [Checkpoint controls](docs/CUSTOMIZATION.md) explain supervision and budgets;
 [session recovery](docs/SESSION_RECOVERY_GUIDE.md) explains how to resume work.

@@ -1,0 +1,27 @@
+{
+  "run_id": "calibration-resume",
+  "executor_model": "codex-gpt-6.1-sol",
+  "executor_family": "openai",
+  "policy": {
+    "provisional_advances": true
+  },
+  "created": "2026-10-01T00:00:00Z",
+  "updated": "2026-10-01T00:00:00Z",
+  "gates": {},
+  "phases": [
+    {
+      "phase": "setup",
+      "status": "accepted",
+      "artifact": "PROPOSAL.md",
+      "verdict_id": "deterministic:fixture-input-check",
+      "reviewer": "deterministic:fixture",
+      "review_independence": "deterministic",
+      "acceptance_status": "accepted"
+    },
+    {
+      "phase": "analysis",
+      "status": "pending",
+      "artifact": null
+    }
+  ]
+}

@@ -1,0 +1,805 @@
+{
+  "schema_version": 1,
+  "source_commit": "b9c7861fd22cd2f5471765d583c593f083fa12cc",
+  "upstream_commit": "3b19a22dc5a64c983d2eafd6c2c94000fadc4f8d",
+  "allowed_edits": "Retained Codex descriptions and one marked EvoInquiry hook; all other skill fields and workflow bytes are protected.",
+  "retained_skills": {
+    "ablation-planner": {
+      "frontmatter_except_description_sha256": "7cfb5e8f38cf737bd5af5ce1b6d8c274b707857e424df62d177e3f66529d856b",
+      "body_without_hook_sha256": "26d9fcad0ece9246aa20ed49add97e1a2be77575832c9fc6bc142d8f077c91ab"
+    },
+    "alphaxiv": {
+      "frontmatter_except_description_sha256": "6535832ce526c12c26d8ff6b85b1bd25dcd276a794b9074ce225d084dcc55d70",
+      "body_without_hook_sha256": "238e9f23a3904f33ab4f7870228d068427dacc91743c1df2492f8d2ec778f136"
+    },
+    "analyze-results": {
+      "frontmatter_except_description_sha256": "dff5eb7475db3e44c40a56052552774267fa91f303fa59cec3796708c3de7e72",
+      "body_without_hook_sha256": "a51bcf45953fe6b539d9c7dd7d54083b2c3916de95505b134a20e3eb2087e48d"
+    },
+    "arxiv": {
+      "frontmatter_except_description_sha256": "ccaed3ccc786dbf1093cbceb6cc5cb097eeefee1db258e9cb3030a3a5b79a185",
+      "body_without_hook_sha256": "81fe9c04d4992fa463e51d35a102370474bebeeb7c0d03dbeebb0b0d7f58315f"
+    },
+    "auto-paper-improvement-loop": {
+      "frontmatter_except_description_sha256": "909535af020f2b99603ac1929ffd4f7a4a429786b65b479e049d3bcd3963b327",
+      "body_without_hook_sha256": "d8464d7d1f31bda3ba7b96eb5624e6d5bbf30049f8e85d8a920a59b3a67e412d"
+    },
+    "auto-review-loop-llm": {
+      "frontmatter_except_description_sha256": "bedf07f53b0c2a7e566f2621d05492f4a45fd05fd29f94da0d245d0d28e59b83",
+      "body_without_hook_sha256": "c3ae350a727daf707b640808e6532ebe2f03fba897567c3ab990897d8cc473c6"
+    },
+    "auto-review-loop-minimax": {
+      "frontmatter_except_description_sha256": "99a08d58520e65a7af33f67aa135849388e6cf9888a0171583563c8aac2c61eb",
+      "body_without_hook_sha256": "5627f765f5b3c74c472fb2dee67a4bf6e02bfebedf88cc6da391c7c6848f4644"
+    },
+    "auto-review-loop": {
+      "frontmatter_except_description_sha256": "ece9df362c59b8ee4ec17d003b236c151638cd1abaef3c16f47553227612c04c",
+      "body_without_hook_sha256": "fc4f79364d869e0c8e91a35aa00d621e4e3ed9ca4a4b13ad13a25f779fb56512"
+    },
+    "citation-audit": {
+      "frontmatter_except_description_sha256": "1941749db85641ef9460ee88251a053495091f37c873eab520767eb993689432",
+      "body_without_hook_sha256": "69d870b26a3c44b07252984af52f9269632f72435715ab601856387b64f0b917"
+    },
+    "claims-drafting": {
+      "frontmatter_except_description_sha256": "d7dcb00fec3e5af200942e7d9a194580da85c436949cbd320a61f5c9894a1850",
+      "body_without_hook_sha256": "f746432dc88da39af9b7a4e86fc73dc85bf0534616c72aa7e5de82f0f668d3db"
+    },
+    "comm-lit-review": {
+      "frontmatter_except_description_sha256": "11e5c9b551c4800ac23a708b44efead0594a16ec75fdaba7b95795cc04e5d1ff",
+      "body_without_hook_sha256": "0c2ca36bbe14b53b6af9d791795d6691422065a446b3f470052b96ca5230e453"
+    },
+    "deepxiv": {
+      "frontmatter_except_description_sha256": "fad8d84b38a24fab245aeb6fe93dffe43f832a52fb5d115ea8f2e56f4f698425",
+      "body_without_hook_sha256": "da11db0d63d21061d537c7ea035592d8483e364cabe16f01fba4fdb9c3d7ac5a"
+    },
+    "dse-loop": {
+      "frontmatter_except_description_sha256": "4f275af55e719914a6aa08d67592201edab1b39634326eeb9215d7f11ffa5097",
+      "body_without_hook_sha256": "98519a749b7ea15a1548810e420be14e72c2c594e3883c3429722a8986fbc4bb"
+    },
+    "embodiment-description": {
+      "frontmatter_except_description_sha256": "4e52f65719817d71e7af620f3a9fca1eb5e1c4d7bffc7963fe38f4ccd91f896b",
+      "body_without_hook_sha256": "59ec67ce3e05e4741d405605dfe35b1d3a01ed7a58e948be2f378384e6ed195a"
+    },
+    "exa-search": {
+      "frontmatter_except_description_sha256": "b548be5f484e84952a80fe75488f0264d0169da39707feb6b4ebe0b69acd9ac6",
+      "body_without_hook_sha256": "8ac6511746bce7cb45b29e49bdfe6951a6fdc5ed7746c03e1ec8e2f565854651"
+    },
+    "experiment-audit": {
+      "frontmatter_except_description_sha256": "dc39e5ad89816dfa5269add95f00b57136aa6cbcaa7d48b9e2a5c3c7cdf23648",
+      "body_without_hook_sha256": "40952da15da09b8d1d97f01382894c3fa77f9e7aa2d5af2233b5cda5e3aed316"
+    },
+    "experiment-bridge": {
+      "frontmatter_except_description_sha256": "3ab40178cc6c82a0067c456f0359cd50b4e61f699766be62021a75ab8df68ec6",
+      "body_without_hook_sha256": "b399da10c24b39f203f5f574ecdf00b89ed64bbf1c729126efc3516c8e14ee76"
+    },
+    "experiment-plan": {
+      "frontmatter_except_description_sha256": "3688a753c641fb859c88b15ae917e66fd8d7ab174d2f2b63468de3fabc772af9",
+      "body_without_hook_sha256": "aa1c87c9c2836d7276a3e19932916f2eb6157705a45e1a16f7f3cc2b70c5687f"
+    },
+    "experiment-queue": {
+      "frontmatter_except_description_sha256": "0b46807fdd43e919fa30664612cbb664f029fc73241449fe9d1864808a595de8",
+      "body_without_hook_sha256": "0c494b930562d1d47f658e09268dd925727cef9b8559cf991f48eb4ff445c988"
+    },
+    "feishu-notify": {
+      "frontmatter_except_description_sha256": "21c3c155bc55e9ad4f7f6c954e7dd6997a0caca9788c9cdc25329ee7b22f121c",
+      "body_without_hook_sha256": "7ebcfebbddb679f0e35a76f0899beb74a70cbfd04b8019e5aff951a1eccde76c"
+    },
+    "figure-description": {
+      "frontmatter_except_description_sha256": "207e142a05e60d154063d256f70eb41d16bcefac7026c74228d6a374ad95253c",
+      "body_without_hook_sha256": "ddbce34c1cb09c0d14502a04ae420b9f7c4166af89a8f3f6b1b50823aeba6803"
+    },
+    "figure-spec": {
+      "frontmatter_except_description_sha256": "bb13e8147c1e2d450fb4b2e1399d3938fd996071769dd374f2a824f2aa7c0244",
+      "body_without_hook_sha256": "2426de32a23ba21cfbde3eb94f6ca53e2431eda73b95df267a65f7ee9a460d89"
+    },
+    "formula-derivation": {
+      "frontmatter_except_description_sha256": "7bd7c2a1bc8c51d493a4938f7f55712468b42bb2f30855e0a4f43782a7738f47",
+      "body_without_hook_sha256": "4ad775964a93be2fbcdfaed652a0fe11edf39482424acc60ae35cb4d7af6678b"
+    },
+    "gemini-search": {
+      "frontmatter_except_description_sha256": "c3900c139794ee80f615c6830b133f9cf76909224dbf12034963bba343301c67",
+      "body_without_hook_sha256": "492a947cabe446b09be1d6e8d2060066fef659aac66d9a223e918c668291fe44"
+    },
+    "grant-proposal": {
+      "frontmatter_except_description_sha256": "1639c5a830a7f673f46be074336cf8f56754879702f80c2c831394670bf7c052",
+      "body_without_hook_sha256": "d62c0a35d880d4d7f6229944f16f2c82d6cb868a9abc83c70b18d1d3711c4339"
+    },
+    "idea-creator": {
+      "frontmatter_except_description_sha256": "08a89db438a3981316a8341a48b70cb0409b9d2d75f51102b6e6c5584d89951c",
+      "body_without_hook_sha256": "1332cc28285d17e410bfa71fd6d5c3c9de246155a25c43ad215ccf64fdcdbe78"
+    },
+    "idea-discovery-robot": {
+      "frontmatter_except_description_sha256": "051f9e41f52c2caa89077ae4a8710107ef3931779f744dad209765beae680bef",
+      "body_without_hook_sha256": "0358d4367fcac479d8b78d2cd3118388af5843fc6f643087aaa1fe6d6c7272c1"
+    },
+    "idea-discovery": {
+      "frontmatter_except_description_sha256": "2f50ef5b17b4c799f49e07c63e0194155acbc2663d3b4b20ec8de4b7035ed305",
+      "body_without_hook_sha256": "ce3cf409b6b113353161d2621811c15843d549db2488ba6240f2465c5d65fb13"
+    },
+    "integrity-forensics": {
+      "frontmatter_except_description_sha256": "fb6bc1519486ba8c1a1954d60948d3d10ef3d1e5f8b5d7fa58f7232c595aa976",
+      "body_without_hook_sha256": "0c619020146cc8a715367e5225e5653157452ed04b655dc3263346fa9282db54"
+    },
+    "interview-cheatsheet": {
+      "frontmatter_except_description_sha256": "b259f69e96a6ccc92ee18e0cfb3adcd0e4bdf79a0267b587e621631ff07c7e73",
+      "body_without_hook_sha256": "dc5b742e48d81638861fc0e99602a7aba473bbbc35f7a99123f2b9049b5cec5f"
+    },
+    "invention-structuring": {
+      "frontmatter_except_description_sha256": "29e294a44ee2983434768035c7fe24d9ffe933404fa4709eefde0f3869272b7f",
+      "body_without_hook_sha256": "ecb2c57bf2622b88a6db78d8510fdbbff18a9e7d6b63c7f876689ff840208d7d"
+    },
+    "jurisdiction-format": {
+      "frontmatter_except_description_sha256": "8ff457296da812414f39c155409345b9e4da8eb55cafc1ab9ab62a3777efe942",
+      "body_without_hook_sha256": "cac141b1d691f02e8b1fd2a13a391e4a63d4a91e0f86654da6560aa0cad40795"
+    },
+    "kill-argument": {
+      "frontmatter_except_description_sha256": "a403c55ecdde29b452a0967a681933070b7f4bdeaca05d1576ac8ff3b227d279",
+      "body_without_hook_sha256": "8a7905483411a1b2638e8a4d8c52634107cb72fcab76be43629f1f6100d1b81e"
+    },
+    "mermaid-diagram": {
+      "frontmatter_except_description_sha256": "2b7da843882e0dddeedbfe9c97c63dc12e54a893fe7d51a15269baa4a53761d7",
+      "body_without_hook_sha256": "5ba9bbe1c5070f1c4b7ecbb3679ac660d2da0e014e8fffb4fd7247b9ada1b7a1"
+    },
+    "meta-apply": {
+      "frontmatter_except_description_sha256": "5028588af5096852ce2158500a0821c18e0b2f37b7e52912b4503d5628707a6b",
+      "body_without_hook_sha256": "b0d12c2f3a13cd9bbb7872124955ecad37774acb27e8aa58cc1ca7397380dde1"
+    },
+    "meta-optimize": {
+      "frontmatter_except_description_sha256": "41591fc336ce1c44bd349b950e96c850ded2d7ea2871827169617cd1882fd97d",
+      "body_without_hook_sha256": "5f0a95da7608326df7d180cd4fb188b03c2407c240a3ed1f5e53adc1872c4648"
+    },
+    "monitor-experiment": {
+      "frontmatter_except_description_sha256": "0d20ad586fc0ed921c613b24e37546f09f9fe87fc3b52af9391106a618de88e8",
+      "body_without_hook_sha256": "aebca9dd1d4780e7f08a8e703d703dd0c8ed4b72038eaa0deaa15fc2b2a0d603"
+    },
+    "novelty-check": {
+      "frontmatter_except_description_sha256": "9c026a31bbe81c7a660465d0f17f38f102beb367c98622d392cff6748105432a",
+      "body_without_hook_sha256": "f95e5d60298ceb187e4fc1108a48e0aae3f34dee2c184e0879edbd589e7d431d"
+    },
+    "openalex": {
+      "frontmatter_except_description_sha256": "3e03816b1a04580644cc6d2143983fc01233e455311628073f287ba02b29cb73",
+      "body_without_hook_sha256": "5799700cfd22fa16eb2c08cc04f68198e438ff6b09b0706c36afa41568f482f5"
+    },
+    "overleaf-sync": {
+      "frontmatter_except_description_sha256": "54095d9cfe3a060905d6c78c61b5d54ad1ef36cbfe88bd526a930236fe4d90aa",
+      "body_without_hook_sha256": "670d6e4c2db40c6bc26bb2a08aa9ec71f70fa2fde4625289982397b0e7979ef6"
+    },
+    "paper-claim-audit": {
+      "frontmatter_except_description_sha256": "1b3ae072b2a2ee21dda532e003ed28464bfb0a82f37ddc0bc6f790c754f3ae91",
+      "body_without_hook_sha256": "c69c88acd7609b3bb5c9796c32e2a56957330ffd1afc4c1a022c4463f20af3cf"
+    },
+    "paper-compile": {
+      "frontmatter_except_description_sha256": "e5f9c2fa53384698600f431f45ca13526d7230c966bdd352758d0387265b2971",
+      "body_without_hook_sha256": "b026256ab3d3ac101679b5fab5ff854359aa56e0a8c02145aa2d910fe44fa6e7"
+    },
+    "paper-figure": {
+      "frontmatter_except_description_sha256": "af94f7d20233f723a550cab8e348534c9599cba534f1e73b66fa4c06c805221c",
+      "body_without_hook_sha256": "91da2a566ef03cb68ef399ca0e101afdf55320a65da44da52f38e3e1d733fb1a"
+    },
+    "paper-illustration-image2": {
+      "frontmatter_except_description_sha256": "310984f0e9856dbd84ba09ba02eddeec14da531a22a675fea9fa968b4781f9fb",
+      "body_without_hook_sha256": "823219046bb1ab5c6426830383011b7fa754875eea393db9c1cfb5bfd7e46189"
+    },
+    "paper-illustration": {
+      "frontmatter_except_description_sha256": "7153b2ac40b993f0c5c5e42c89eb1d89f6cdd355f32b5efb603b7e0a83726946",
+      "body_without_hook_sha256": "01e43a3edb61c3ce0caad9a1b759ca6f45d932589e14d3066b5604a146cc28b2"
+    },
+    "paper-plan": {
+      "frontmatter_except_description_sha256": "bd181d5c558c627d00f88c14ad18d5a60515f2e36ac9a20d169453e0cfdfa71c",
+      "body_without_hook_sha256": "38dbe0056163ef74c16e4bfc80dcdcfe7f6e013305396e72185bf0de27db353a"
+    },
+    "paper-poster-html": {
+      "frontmatter_except_description_sha256": "71035b8715e78d2f8066b521554baeb484f2b14f02b1d12a89cfd07ab3f14342",
+      "body_without_hook_sha256": "b5b1343808d98ed60eb1a1e4fa0b77255dd5c16e44cd6ef74cf1fd2a7c709a14"
+    },
+    "paper-poster": {
+      "frontmatter_except_description_sha256": "ebd0b8258d0cf4f8a41bac4d56cf38cb8b2cfcedfa6a5735645c8f0756e0a7c1",
+      "body_without_hook_sha256": "c380aa421bb37a0f8afaaf17d8e60af76917bf5ddbafce863c69354a2a1229b4"
+    },
+    "paper-slides": {
+      "frontmatter_except_description_sha256": "047e6c70b343c81929a97272dce75a128f571d778c005d8439972b7a1029e97b",
+      "body_without_hook_sha256": "55cb36001ec094c819bfb68d781cedf7513005de674222b9e8d29c556dbf193d"
+    },
+    "paper-talk": {
+      "frontmatter_except_description_sha256": "3f184a4eb861e78f8d9d21110ee044bfdbdee8015338e26827ca44cc2d244803",
+      "body_without_hook_sha256": "605088fd0f051de60ec86a5401fdb4407f52cc04d725783420a52a9564fa2dae"
+    },
+    "paper-write": {
+      "frontmatter_except_description_sha256": "88d76e38b5e0e41227e0e7c0f9dc2cf82dc4d816df3ae12f85a3d1f5f14a9e7b",
+      "body_without_hook_sha256": "d6bfa9e0b0c2664c48d29e461384e415cf67bea4c3bf62fa895dbb5344728023"
+    },
+    "paper-writing": {
+      "frontmatter_except_description_sha256": "2d72724a18062ca0cbdfa1ecb9e9dd00cae06a96a816d957fce89eb82920a9e5",
+      "body_without_hook_sha256": "4bec73fbe664c0420f04d0c8d129358c688c1ef81d0b1323b6689facdc2f7d2e"
+    },
+    "patent-novelty-check": {
+      "frontmatter_except_description_sha256": "9b14dac58fd1faa7219c2a72bcb137eed183d6ac035b32387463be2f5e7ecd94",
+      "body_without_hook_sha256": "93d1ba31ffdb09acf2b7d8d6924d9f98a48e887f6aab9e7e80c935cbf9389967"
+    },
+    "patent-pipeline": {
+      "frontmatter_except_description_sha256": "68f9de78ba2548c33aea6c26fef92741f217f4abcd31ff0bd12d548672b6e846",
+      "body_without_hook_sha256": "cd33d71ee5a18a2f20ae9653104327b2ce1d3468dde9f7efb61d5137cd48b7ac"
+    },
+    "patent-review": {
+      "frontmatter_except_description_sha256": "b8a64e817e07446f95e589c3aa760eeb77af0f45b78fdbf89a396d90ed6e9d3f",
+      "body_without_hook_sha256": "fd739b2fb95b75119d805af8b54ebd81575d277877fd0171bbbc8492ff1a9bbe"
+    },
+    "pixel-art": {
+      "frontmatter_except_description_sha256": "8b89dcd700f3e76b363678e3c63f81e239b69121af9b2e0e4482a1a1fc23f13c",
+      "body_without_hook_sha256": "15443cdda17baf448376fdbb42f4705e50fecb2554a1623bc452ba8f0394b341"
+    },
+    "prior-art-search": {
+      "frontmatter_except_description_sha256": "b39bf9d72815a56e09249dc08437c31c2350aee56b34fd7c8b41dbd3f4d300ba",
+      "body_without_hook_sha256": "a5e0e7f99fc2c7e254dde6b669d386d76d8cbfa329c3dfcdf4b88b8ac00be672"
+    },
+    "proof-checker": {
+      "frontmatter_except_description_sha256": "2259e9716cda4b20b104faa242f35b6c4c94fa7006981ec5338103a54b50ba4f",
+      "body_without_hook_sha256": "725149afa5bad1e31103a4cd8c163aec45f210557450755a890b202c267a0006"
+    },
+    "proof-orchestrator": {
+      "frontmatter_except_description_sha256": "46579c3a5e4a24b38ba994a473091626880b81bd83ea56ef948d7eba050c99fb",
+      "body_without_hook_sha256": "2f6ddc3cf7b465f12cce3ae8725a147c47a3d2681cf49cd0d92e260b2cd0de86"
+    },
+    "proof-writer": {
+      "frontmatter_except_description_sha256": "70ca54f6b59eeef3ec98ec7d0d960eef286dc7d3dedbd51b3ecb863650a92c3e",
+      "body_without_hook_sha256": "02a8ab65da17fa9e2e112642e33ba6a6a35a3f923079c3d5ba260e372084cb9a"
+    },
+    "qzcli": {
+      "frontmatter_except_description_sha256": "7d80ce2a7b8e7ffff4e87a28b6368191a1e6b32e0f086fda6b6ba412d4e8ac5a",
+      "body_without_hook_sha256": "073bc7a08453be38ee88cdb9dcbeff3bb71f9faae5d4239bcb6066417ea94dd7"
+    },
+    "rebuttal": {
+      "frontmatter_except_description_sha256": "2ac6c80cc102dcffda57983cb11fa882e769d6ded6ef58cd8c9960532197d8bd",
+      "body_without_hook_sha256": "eecd60b04d8b02f89d3a43ae8d6be4a7ad8550acd25ebcdc05ca7d260add5751"
+    },
+    "render-html": {
+      "frontmatter_except_description_sha256": "23c6886ed567bc566527d47bcadebcc902c5ac73f0a2689fb28915904caf87df",
+      "body_without_hook_sha256": "c00a06a40b7acfa37dfaef4816ad8f78037dfa6430046a3f650f41d646e787e9"
+    },
+    "research-implement-feature": {
+      "frontmatter_except_description_sha256": "fe79cb1ab1d958bbf2048a7748d3e9a2e64d2f52e3a5ee92a4ce01df0e7fc5b8",
+      "body_without_hook_sha256": "19da3e65515962e7e472b509e46eecbdd314538745012714e5cc8cf12e34c4be"
+    },
+    "research-lit": {
+      "frontmatter_except_description_sha256": "bc3ead47d65699b4ff0bd6bb196a42321548d39b06065bba2c6ddb00b2f72f61",
+      "body_without_hook_sha256": "0a237ff7588876810c996dfe72133b3de3707906e398afd14629ae1932019b2d"
+    },
+    "research-pipeline": {
+      "frontmatter_except_description_sha256": "14e23bd50565a818c74b6631c556997f84dcd73496b13272eb60a484782d528e",
+      "body_without_hook_sha256": "fd923d4b77b6a23b5f4627a7bd0a95f7f1dca7892037298173a4d43877043485"
+    },
+    "research-refine-pipeline": {
+      "frontmatter_except_description_sha256": "de9a24ed0c872e2664628089290b7e49213068375b62a93a48a112bc1ef556ad",
+      "body_without_hook_sha256": "f663e47cfb82f051a8591253daf733cac119721e77d219c4666a5cf850526096"
+    },
+    "research-refine": {
+      "frontmatter_except_description_sha256": "114c51af879701e392e3c2ebc81bc070041b40ee769136afc5647180b16beb12",
+      "body_without_hook_sha256": "6bb37611183bf69381a98846e8db69add34300aa8e45f399a9f8c25b6b5d5e39"
+    },
+    "research-review": {
+      "frontmatter_except_description_sha256": "ca055cbd559a652b83f8c958e86608d85baf9219c008ee34d7dbe8845ccab6f9",
+      "body_without_hook_sha256": "0ccbc315d33966e1d24b39b684afbe5bad51df263d84c05ffa306922a3930195"
+    },
+    "research-wiki": {
+      "frontmatter_except_description_sha256": "730d8b43201bfee52a0b02516385e420f6357f3cd81eb0c85793f7370f901df5",
+      "body_without_hook_sha256": "042013b19823e4e9df6da9432c8b63699361eb8ced1085ecc8764eb630f847bd"
+    },
+    "resubmit-pipeline": {
+      "frontmatter_except_description_sha256": "443e8c691dfe397b3fd3247e11d23cbcf983a3012c7387b901999ddb9e12fd37",
+      "body_without_hook_sha256": "e94a9bc1433ef4cfd25b1af27676e66fccefadecfef3f611e8ec92f130b0a98d"
+    },
+    "result-to-claim": {
+      "frontmatter_except_description_sha256": "a500619fe90c8c347c7e3719f83f617b3e473c9e008e9fd9a9d99f9bd9428521",
+      "body_without_hook_sha256": "37d6ace3816c2a8b2796d9d870243b4dd31cf4417552add2efaec8b765fd2616"
+    },
+    "run-experiment": {
+      "frontmatter_except_description_sha256": "c3a149ffca8d1e35d5c925cd32bb0cf75e1ff68b679dc67662e4e66e217f62ce",
+      "body_without_hook_sha256": "5633588230e7f8e56f96a0cf5c9d35ef5c39cf6ec2bccc4cf33f27f52715077f"
+    },
+    "semantic-scholar": {
+      "frontmatter_except_description_sha256": "f533c3231cc0940c6f24006ea813383a0f4767c9fba63c97a36ae72b6944d342",
+      "body_without_hook_sha256": "70aac797f8719aab9b38bebe2271ba0f575e1469ea54e636c28d15ce6c08e0d3"
+    },
+    "serverless-modal": {
+      "frontmatter_except_description_sha256": "322d0701883557ebeee9a443363d1500d68ff9b53a8e814062561073678aeb11",
+      "body_without_hook_sha256": "9a71985e7a7f03e22e0938e18b62e2392fc9b9051e4085e6caa9eb6d4cb99dc3"
+    },
+    "slides-polish": {
+      "frontmatter_except_description_sha256": "8dacb4d233ffe97d079b3fb6224878c98dbb946634699a207fee3e41c3fafea0",
+      "body_without_hook_sha256": "2478afb3d1aa989b3c696c3187fd81a871ed765f98fc51ed5b3cb7f89d25a739"
+    },
+    "specification-writing": {
+      "frontmatter_except_description_sha256": "41fba836b23ffb70f10c998675deb6201fd7a8d9d3e68b58072d3ab8f21c357c",
+      "body_without_hook_sha256": "3d957055f05431c238bcf335fe0105e201650775ba9348a6e054da83d8b93187"
+    },
+    "system-profile": {
+      "frontmatter_except_description_sha256": "f2b4f4fa6b0947a9872b57722a1e083962048cb22340e1e10c3893c0ff71b406",
+      "body_without_hook_sha256": "77ff5ec1ce881cc93238ec91840d563780c2d204edef941ea7db42e96826c26b"
+    },
+    "training-check": {
+      "frontmatter_except_description_sha256": "f2ffd6722f46ab2719c9a246ca90009e0581c591be86a471303d3ac102b4802f",
+      "body_without_hook_sha256": "1f6399fb9233344064a2bafabb79a5a4a4de5a372db72e202efb482a1e379526"
+    },
+    "vast-gpu": {
+      "frontmatter_except_description_sha256": "7fc1bc816654eff50816e9a65b2d3e4f9b46b10c8260dc64c0e9af15011e166a",
+      "body_without_hook_sha256": "f0a10c3ec81307f856ca2125d4a7d6d33457c50c94ae539fe0713dd7f13502ea"
+    },
+    "web-debug-search": {
+      "frontmatter_except_description_sha256": "a54a12386407d7f1f5c9e62797d37edc8605647ed6e62778800bc3b040f305ff",
+      "body_without_hook_sha256": "e52e58f6d2479f27682f7b018612e816d945b14b88dd55df6ace1624ea3abad0"
+    },
+    "wiki-enrich": {
+      "frontmatter_except_description_sha256": "a2079052692dbd6cbbf6a1407e3fc00ac7c57f80fc275cfa55a6204f7a2d9eba",
+      "body_without_hook_sha256": "18b02a45b016dbe3eef4115a06258cf86f3d06032deff7af81ccc8ec9b3beec7"
+    },
+    "writing-systems-papers": {
+      "frontmatter_except_description_sha256": "d7ddebb9ebf075005018d7c794935c321cd231a21530fcc5da750c5c92163797",
+      "body_without_hook_sha256": "cdc3b76ea8ed9d571c7736e9726bb77024c79672f0f054843947533f8e363266"
+    }
+  },
+  "added_skills": [
+    "research-guide"
+  ],
+  "protected_files": {
+    ".agents/plugins/marketplace.json": "ed27a3ee7750fe22a6202db14dbea9cc946672de325259c44089834222fcbb57",
+    ".claude-plugin/marketplace.json": "d3bbfe86e970443cad53e3d4c1e0853726d3f526e54d891c73f7dcb873114e8c",
+    ".claude-plugin/plugin.json": "2105d8087918b1c143c5b971886a28842eb90c023f6e9e07fe4caeda2a07dc6e",
+    ".env.example": "0026f405d7e8e0b855b7a17a2e6d7fef79068976b075744347a4787f474ae638",
+    ".gitattributes": "e0670a4436402d4fefe33d13b7786d49a9e54f7e2f9703b4b30b24897b1f3b85",
+    ".github/agents/aris-reviewer-claude.agent.md": "cb78b6b1570d3ed3bf9e0b78a12d0b45cd201c7ca0ed0b61a22186c0d44dccc2",
+    ".github/agents/aris-reviewer-openai.agent.md": "c6d983e1e2df98e498cde979211169ac7a3640261bc61d0c64d64403df23e09c",
+    ".github/workflows/lint-skills-helpers.yml": "18bff0d74d787c3238c243ffb9893723d3cba53a4f0848f03864221e45cdbddc",
+    ".github/workflows/sync-release-notes.yml": "7838d08d20acf12fb3a90e4447fd249998fbdaa4abf53ab4340ba0e18b39350c",
+    ".github/workflows/test-install-aris-ps1.yml": "3a238488d4d51a7e76a06900509c52beb18b021df526e4623e588ee16ef12b57",
+    ".gitignore": "1284128154c23f57502d53698abfa987f7101e90c5daa5819c66b8a0f62eb1fd",
+    "CONTRIBUTING.md": "2e4e0acb2fe8163d52fc9a49d136bab042d88a80e99893044608e76ccf2d31e4",
+    "CONTRIBUTING_CN.md": "30050a36064cd720d56ad764d5a4b7bb792ed8269a79e797e9678e2b2f9aebfe",
+    "LICENSE": "e30cf5dd5f49b4f9b656590e23d782b4756c924a9f0ff0162b3e7b5d87006bf5",
+    "NOTICE": "f3f91a31eac755d4f3446c55a1f4b62d22483093767b91ad17ce6f09cb2b58f8",
+    "commands/setup.md": "933055a86fba5528ce887f2ddd8c879e57c593c702ec405e37c4da3cacfbd5e8",
+    "compatibility/codex-backends.md": "ba425c55aa83ff190d2a04c034dfad925c28dcaa5770d4dca442dde17541a017",
+    "docs/SESSION_RECOVERY_GUIDE.md": "cc9e3a0c181b9166b46bc9c7859d443f0660ab32cccc515fb25d1e209145f21f",
+    "docs/SESSION_RECOVERY_GUIDE_CN.md": "a69448c5ff55129b78b14a8c5c1b8b7d1ae0ca7e5a35a6b40a960a7635c16b43",
+    "docs/tutorials/README.md": "92405dc644039bc81f9cc4391b813161a2da2c8beebdaa593cd4db0bfca1bd3c",
+    "docs/tutorials/attention_tutorial.html": "882db6004af7754648603c68ce9716d55f5ff95dc77536aafda30a7be47a1502",
+    "docs/tutorials/attention_tutorial.md": "8d8d5146c1a9a924cd5e29973b7419d9fe14f5009c392db4b4ad6ff3a12ab1e0",
+    "docs/tutorials/attention_tutorial.review.json": "15e1d9ff9ce2e27688191b2991877799842f317b0e4605586ff19c40a679f728",
+    "docs/tutorials/flow_matching_tutorial.html": "ce6c167a4c2293ab4494b8be9ee6b72c8538b28e6aafe8574f548a6c59b57b12",
+    "docs/tutorials/flow_matching_tutorial.md": "ab4358901d204fec676df6ce3b8559be4e69fec3833f764bcfc937b113eea281",
+    "mcp-servers/antigravity-exec/README.md": "cfdf1ce35ce7fe8be1186bc571bb6c4d23cabc4571925412c048b1cc5346a7ae",
+    "mcp-servers/antigravity-exec/aris-antigravity-review.md": "620f5f2547e4bf69e764463d6d8f4500ef2720020e24835cc2df76f17a7b1c05",
+    "mcp-servers/antigravity-exec/server.py": "68d61eed22933a5751d57de803b91eabf068d8c1756727f4f535a664c43c68e6",
+    "mcp-servers/claude-review/README.md": "b500072ef1aaf43a7e47a93dff8f644dfa5d3e022fbf2fc8f21693c81c98b847",
+    "mcp-servers/claude-review/run_with_claude_aws.sh": "cbf321427afdcfa29f8d864b576494858ff3cdcfd444dd1a9a17d4ed83ab6ddc",
+    "mcp-servers/claude-review/server.py": "f5e13a5f13e360381108549a10a56b72a4f9732f0cfe5c1a09f089b5a800e76a",
+    "mcp-servers/codex-exec/README.md": "d63fb1061e110613e39a3fb12e6aae1e51801bd35237925448fbf8231177e04a",
+    "mcp-servers/codex-exec/server.py": "4de7d09e53813c4a2c1b3f301fa22979612d598eb875626483ed22918bf566f0",
+    "mcp-servers/codex-image2/README.md": "b86a3ae4e1a12fc1fa02669b35142edfaf952d1016457087aa3c2ea7e7759fea",
+    "mcp-servers/codex-image2/server.py": "c697f730950cfb50d48dbc523f0109f0f941a57a2e2106dc6641a4a58364867b",
+    "mcp-servers/feishu-bridge/requirements.txt": "2a2c17c400824a8bad12b99d25b382aa33e7f0b330c5c6a5161b88f59dbf36e4",
+    "mcp-servers/feishu-bridge/server.py": "74b25c27efc6c5b8c418e8768e6e846ae92ad477541185e4741d86b7e94fd10b",
+    "mcp-servers/gemini-review/README.md": "7b3f0e7b8e60177b8aecb463b36fbbf593a810ba2c5c8b264a14e2bb1f4e9466",
+    "mcp-servers/gemini-review/server.py": "9666c7b28971c85f88a35169a67e6c727d61e2a0a52871ce801695a1af12dda2",
+    "mcp-servers/grok-exec/README.md": "78e25ea16c061aa138860f7b72becc9ce8753e86625b6fc1e7bbcdcaf97fc32c",
+    "mcp-servers/grok-exec/server.py": "c53b39217e5b423c1b671946996be5fa3a712034e82524ca7e7a0d8e9fa95819",
+    "mcp-servers/llm-chat/requirements.txt": "1c9327746b9637a24f178ee83c5825c5a1ff49aec60d30aec5c75fd71592af3a",
+    "mcp-servers/llm-chat/server.py": "521bea03010fb4561a7b15e6dd387c30ba2e16a550778fd18906ea6d0f98ab9a",
+    "mcp-servers/manual-review/README.md": "1bbfae96e20ec13b1594e1a17c934c197241978069cbac84c1bfdfc0d7d3aa80",
+    "mcp-servers/manual-review/server.py": "51072ee853dc73748895dabf9ad77a7b5de29a79758fae502b819720cbe8cbf1",
+    "mcp-servers/manual-review/ui.html": "4c1c0dd2052cd29c1e972a541fcef20b3e1fa9b5c941c007bca17698ef14dd52",
+    "mcp-servers/minimax-chat/requirements.txt": "1c9327746b9637a24f178ee83c5825c5a1ff49aec60d30aec5c75fd71592af3a",
+    "mcp-servers/minimax-chat/server.py": "506aa8a6f0bae7d07e6fec015952ea65232388e4b9e745f7d46885e9726d1c3f",
+    "requirements-dev.txt": "e8b4192fd883ac4a8cbf3e11afa567fb76936e8a2d24288afe5f330ab778cee6",
+    "skills/ablation-planner/SKILL.md": "ce51bfff265e5f0a6e8fd03333bfa8dee679e728e0d325830988ca5bd31307da",
+    "skills/alphaxiv/SKILL.md": "f313e596afbfc7e88a10def82c9438d0715942cc4e945480a27c809b099c3585",
+    "skills/analyze-results/SKILL.md": "2b97b8ae1a279ac8a7db14e7d7bea67934c88352d55c95e20fcfb681a8640930",
+    "skills/arxiv/SKILL.md": "474be36fb19d0dd99ddc8c6fa2d684836a45dca9d02051d98b5c79ac979307ed",
+    "skills/auto-paper-improvement-loop/SKILL.md": "e0179353625706ea567a1ecc849cbc84c2f41503cf8bfb71744a7b9078e2f938",
+    "skills/auto-review-loop-llm/SKILL.md": "f46c40b1a3edcc63b07cf263253fc01e706d2335bd851d672d66099b29774cf8",
+    "skills/auto-review-loop-minimax/SKILL.md": "70f4952522747030f4ee8011c0e29c7670a289bd0bff73fffbcb9bac232a4102",
+    "skills/auto-review-loop/SKILL.md": "071a28ed4653dd20604b0933cee34eb1337e272ecbe6b93fc86ee698a327d298",
+    "skills/citation-audit/SKILL.md": "7f68355f009a93077c76ba8d999cc00df0a3a87fbe3e4cba1b5f5e0df0810c2e",
+    "skills/claims-drafting/SKILL.md": "28c5027ae12cb928df35a5e079263fd5680e1bf2816bf86c847f195ad456ac40",
+    "skills/comm-lit-review/SKILL.md": "9fefbc15dae68a19176f6d7e78c348979a23b2a2363291b7ef81081c6dfb770d",
+    "skills/deepxiv/SKILL.md": "19d6b9a334f56398be97f68727feaf7689134e5294f7d9507a2d071b1eeed148",
+    "skills/dse-loop/SKILL.md": "ae8e147011f7c1a6add208b6cecb218d03a83949fba0ef9b0b1936e4b0ee18bf",
+    "skills/embodiment-description/SKILL.md": "8833b4569435077554d51ac59f79c8b4ceca64b777f129b1e8eaa328be9bb9a2",
+    "skills/exa-search/SKILL.md": "c9ffd1e95004f591d6bc17e1a5bf16864f0c0230f446d60c6fc2b3890afb71de",
+    "skills/experiment-audit/SKILL.md": "dd5c2405aaae472cf2020f16fbd1b02b431874d8353a65a8aa4c102a65f5aef2",
+    "skills/experiment-bridge/SKILL.md": "595d41fee920c7dafb920e89d8e33c0c3967704f84457786432aaadc920767a0",
+    "skills/experiment-plan/SKILL.md": "c5b53692ff95b0b55e80702e33afc79d9fe8d4f55a69e2a39714013f97ac595e",
+    "skills/experiment-queue/SKILL.md": "6da32285f905d77664334bba7f7bbc2c069814ff5c3bc266ecc00f6c77d77208",
+    "skills/experiment-queue/scripts/build_manifest.py": "2fe0d13d2bba863e9bbde65f8a746f1c0f46b7e2c08e16107786fad6980a5820",
+    "skills/experiment-queue/scripts/queue_manager.py": "9b53e554bda3fec88d9d293e323e26f531d8c074b7544a8ca7b4c3b529ab0129",
+    "skills/feishu-notify/SKILL.md": "1a6c2e7a92b4f10c25cb7a9c647919a9dcc9b1fc9a6c99a86e73d757c8a6edbf",
+    "skills/figure-description/SKILL.md": "4c69bc650a67d1688f44c909c49be98ffe74ea427b3859edb3c3357ec5730136",
+    "skills/figure-spec/SKILL.md": "090a28a1b6464d3b88cf32b9bf59f6a1008e7e63d638801070f0b888c3ef9c5b",
+    "skills/figure-spec/scripts/figure_renderer.py": "02b4e01e46b51aeca12722ddd7b21bb7da3c3b175bba5d129c45d671fb07a0bc",
+    "skills/formula-derivation/SKILL.md": "2e5f5ce665023cdc460126c9c8403503c17961145a2b052d25200f9bbd9a9b4d",
+    "skills/gemini-search/SKILL.md": "a8778e4e1dacae68691d13342a9a33200ade427beb777a4defbbb91dfcb030e3",
+    "skills/grant-proposal/SKILL.md": "b7870c8f02db4da3be64f77b4225818306ced16c771331143768c3f9b1fc46ac",
+    "skills/idea-creator/SKILL.md": "e78e20b2eff657953ba95134e89779954c77399779eee0134459b77d84efb602",
+    "skills/idea-discovery-robot/SKILL.md": "945decb901aa5cf0780e996d1bbc6fb7aecb8c246a513b9fe6169f06196680dc",
+    "skills/idea-discovery/SKILL.md": "ac2d06bde65bf7335d9e9a290cc1c10bbc813b6256480e7d1da9cf102a76fa23",
+    "skills/integrity-forensics/SKILL.md": "33cdf3f4fd2a8dea073a73e2cba870576c576b1d201efa3d0a4bde2e7e7256ed",
+    "skills/interview-cheatsheet/SKILL.md": "37291536f9a4f70d6463df129e875eb0eb32102db6e2cfa92d3e22494f944ca2",
+    "skills/invention-structuring/SKILL.md": "ced6627e44e96f57e92098018e158d79ac01420659e98dccf5edff53f25fd087",
+    "skills/jurisdiction-format/SKILL.md": "7683f58c4ad6465b4c4dd4f360876b12b0132777ca4ba40c1e48b777f4b40bb9",
+    "skills/kill-argument/SKILL.md": "7a222081ddd9548f7ce560a202c3888783cc34ee0fe81c35ee87c5a7b652aa59",
+    "skills/mermaid-diagram/SKILL.md": "b7cb4fb550b43be0c49224b608ff2a3a4a208997b8c8ce1d6a6310d165915f50",
+    "skills/meta-apply/SKILL.md": "0760749e7a26315d836f0ce52c94b2014f09b186f5de015cb3da5ead9875e629",
+    "skills/meta-optimize/SKILL.md": "0599dcc7eec1b7204e67bb7960487c652b5034af8b2d18323f0a3ff057580fd2",
+    "skills/monitor-experiment/SKILL.md": "0527977308bb7b26139ffb56cd2d45ecc72a9dd2961073ad51fac4aac106961d",
+    "skills/novelty-check/SKILL.md": "7738e665e8a7ad358e016ea3fcfa0f994e1f064f3626fe2fa454217a2750f3a0",
+    "skills/openalex/SKILL.md": "4c853b646987c4472a8360e044ad232aa9731dcfb60c7183073e8e5f3e6ac9c1",
+    "skills/overleaf-sync/SKILL.md": "f3c1f35a77a81ebf902eb2e9434cb61e7494e0152b8d29fe337e75d2d7524557",
+    "skills/paper-claim-audit/SKILL.md": "9bc3eabfe3ec2d3125d4d94e8c6689ba4f0d6ed9021e3d86489a96086bba1a16",
+    "skills/paper-compile/SKILL.md": "ca064e9b7dffe80d9c3bcabb060f81c651e4926eb1c069a04c6416a8e58fed93",
+    "skills/paper-figure/SKILL.md": "1bcc797faf94af2bb06b1627d686c110c04fc358fed97225776a8128eb1c0ac6",
+    "skills/paper-illustration-image2/SKILL.md": "178b200cd549e53dd1b02450a8bf086cfde7dbf4042613d8d87fe555b9411842",
+    "skills/paper-illustration-image2/scripts/paper_illustration_image2.py": "bc97f5b1ae14ffaff10c24240b6e93f3c1282ffd340d4756ea80477649f32890",
+    "skills/paper-illustration/SKILL.md": "af9307d178b8242c9a8d2e94c1264add91d5aa2bbc6444556b51b501c1918e65",
+    "skills/paper-plan/SKILL.md": "3c51d646b575416f2b91da80f22ccf92e4bb08d299f1c136e74a9b9497772b46",
+    "skills/paper-poster-html/DESIGN_FINAL.md": "1e1931569efe301a05ce815c238f48b05b7f27a92a7d179f84ebe1d5e22fdf25",
+    "skills/paper-poster-html/IMPLEMENTATION_CONVENTIONS.md": "59cdf8fafb92a22efa93971b647e05386f46c473909c752674d65990b8886483",
+    "skills/paper-poster-html/LICENSES/posterly-MIT.txt": "0f097b552f2be95d202723d681c73a1dec10d64d0afea3ee0a0eaf63def9a5be",
+    "skills/paper-poster-html/NOTICE.md": "058090d55f2c7d143f70b4e3020cb7bcb8349480edd9dbf46921e05067862ab1",
+    "skills/paper-poster-html/SKILL.md": "b3c55d212f5c0cbccc94ec62813ad8df9302467edd825c62959edb4ba2778f8e",
+    "skills/paper-poster-html/scripts/_posterly/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "skills/paper-poster-html/scripts/_posterly/canvas.py": "11503d98ebc2b817c34d3d05e85c169c8b9ccee55cc0d19ff4c6d488f39c36ec",
+    "skills/paper-poster-html/scripts/_posterly/measure.py": "ffaab446329621f5621fa29fd7e0cabb38a5be1a31e92be6acd36b818de416e3",
+    "skills/paper-poster-html/scripts/_posterly/polish.py": "d401dbf27ee198a35b4d4a83aaf1df2c23e148f353557b66599f88155f9df96b",
+    "skills/paper-poster-html/scripts/_posterly/preflight.py": "ca81022db3d92b9b3f3414128378df55bc2aba6560681d4d930e1e3426e31d32",
+    "skills/paper-poster-html/scripts/_posterly/render.py": "0ba4bcb874e0648b9058a1ae0b0168dc16f4c8ee382f005f69326d45acf9034b",
+    "skills/paper-poster-html/scripts/_posterly/textutil.py": "a2b32524cf004810d46bb442b6f418ff7445b3aff4d7995a8bf6b7784de36c3e",
+    "skills/paper-poster-html/scripts/_posterly/verify_final.py": "bb2c737496d49d5028e7c8798f2aa39837c0f72677fa6b444c5710dac6e3d283",
+    "skills/paper-poster-html/scripts/asset_check.py": "84f6b34560c903ddf8d6748ad70858ec00734f03a590d5705914c6ce53c6e37c",
+    "skills/paper-poster-html/scripts/extract_pdf_figures.py": "5f2f48392c69a50d7e894ad5ac2462e4e6971e266a8ab9f760f786e00c222910",
+    "skills/paper-poster-html/scripts/poster_check.py": "a048eeba87444be279b8b0fb3796079419546315ed10b460778bc82c752e4db6",
+    "skills/paper-poster-html/scripts/preprocess_figures.py": "74d18140aab1ba5e10d0f26fb21c99cc2b7293fb4f2ab6a9d891d91d4328ad47",
+    "skills/paper-poster-html/scripts/render_preview.py": "5114c27fb2fc0703c2a3c749f2b84cfd6d6cc29051b44572e99db87b7ca8ea52",
+    "skills/paper-poster-html/scripts/run_gates.py": "807d59964259e1eff1a6bd13af2f34b3c1d1404316d1a3a32558b420308fb7e3",
+    "skills/paper-poster-html/scripts/style_check.py": "029eff049907ea1a8ca4ee65ca8d10fe26d09591d6d96684fc6cb14e90879530",
+    "skills/paper-poster-html/templates/COMPONENTS.md": "382e60604f4bbe9a8aa96272348f34314089de847760c1897a6f701b5984f8b8",
+    "skills/paper-poster-html/templates/README.md": "366923d0de663296a2e3aca8479775423ac280b126d9d9272aa0041413dca309",
+    "skills/paper-poster-html/templates/landscape_4col.html": "1e72098d28541968bcd7b3960be70d545b86680998c6976f545615d5b7b735d8",
+    "skills/paper-poster-html/templates/landscape_hero.html": "fd82519f94a25397fbb799af6b5ec887140763980f39b42598a6ad27a470ed93",
+    "skills/paper-poster-html/templates/portrait_2col.html": "c6031ab64807f04d5db19ef5aa2d57bc49db0853e1a98c18de38f81b804e1779",
+    "skills/paper-poster-html/templates/tokens/acl.json": "e9c2bcef6c7433f9ca79437bae729b513f59ff61b8b843c575a205be52f2e4e8",
+    "skills/paper-poster-html/templates/tokens/cvpr.json": "921e1c08dabf2f10531c87a4a10bd9228642afc2e089ed3d3a9fcef3ea24288c",
+    "skills/paper-poster-html/templates/tokens/generic.json": "229084d6c166d589b3c3ec2cf024c4e6341c91eea45b07fb84bd7be8c1e6bf82",
+    "skills/paper-poster-html/templates/tokens/iclr.json": "b176829c14d8fbaa7b0eb49873ce7b9cb3150aad13990b4eecaa2c825582a65b",
+    "skills/paper-poster-html/templates/tokens/icml.json": "078dbb6101e8579559ba24a41582af0b3b8dbc3f487a8fb9676ca5ba41b5e345",
+    "skills/paper-poster-html/templates/tokens/neurips.json": "f59567e68fa011eae86ec58d85abe564d6acce5174896a755e7588e3da33954c",
+    "skills/paper-poster/SKILL.md": "7dec9b7f9bc2d12df23148cd38f51ea344b0b23370051ef6e03779ed41e97260",
+    "skills/paper-slides/SKILL.md": "e887b9b393753f9e8af1aabfc1ce93e9b01a500ebf2c2ace775b45a3f93fd3fc",
+    "skills/paper-talk/SKILL.md": "0bd7722963e9dc721cff4d66fda72e5e4242a116370dfae2fc9669b408d2f199",
+    "skills/paper-write/SKILL.md": "dc4f4024d6cdcb639d8bf75b796132408f75d14a4b4b316f388c884e35a62366",
+    "skills/paper-write/templates/IEEEtran.bst": "314f0ece704568faf827011bac498650691b2b5ee06320720830e782416d5a5f",
+    "skills/paper-write/templates/IEEEtran.cls": "da751920a317ed318b7b5cd7fa585a6cc7d28502d457856382e9be24b10a3bd7",
+    "skills/paper-write/templates/iclr2026.tex": "1e4c20b3c5b7445966194151d33c3e2023e828e621be8baf7ffb234b987cfc23",
+    "skills/paper-write/templates/icml2025.tex": "d346d4b5b96276a4e04ccd7590ad158cce4aabcc090281dca7c4b0900d11530b",
+    "skills/paper-write/templates/ieee_conference.tex": "a3dc3a175a7dd1512f4a2fdb844a0a482a9e919162e37dc27373d501fbafafbc",
+    "skills/paper-write/templates/ieee_journal.tex": "bdff7ff0aa376d8a46675bdb6e96c4dd715463360735706aa5fbaa5f834b7604",
+    "skills/paper-write/templates/math_commands.tex": "3efe4556b2c33b4a93c1b6e86b99b9a3ecbd9c9565ccc06bf8a1f51293470dc6",
+    "skills/paper-write/templates/neurips2025.tex": "fef6448048e58b748d67f438dce6fcfedcc49467542a951d1986dc5b81ca256c",
+    "skills/paper-writing/SKILL.md": "310a9b29b6869eec0690f953095ffe57488e3ec60a23523fe83ea3ecff536dfd",
+    "skills/patent-novelty-check/SKILL.md": "895a084526fafaaa6d90504d0958b30a23b43ee006327af87aadceb0312268f4",
+    "skills/patent-pipeline/SKILL.md": "4c6a598de26fe5f8e4b78e16ce8d47ada9b3f63a2999c7c1ae2732f4abd11201",
+    "skills/patent-review/SKILL.md": "8c02c3040f0f9db54fd22b6ecb33937677092de7e78c54b0494c953bc14874e9",
+    "skills/pixel-art/SKILL.md": "e65d74863168eeefb0405c6da9db1858bd7940d4bda40af9d3e85acffba5dc8c",
+    "skills/prior-art-search/SKILL.md": "8793fb26c522de4c44a64b68df81e5d12718a99866c639658261cea680bd58b2",
+    "skills/proof-checker/SKILL.md": "65900678dc8d68c5157971c087497094c8cc0e05b3c6d22e6a9351b88882657e",
+    "skills/proof-orchestrator/NOTICE.md": "a496eb4ac401ae1fcfcd0958f47e585c1949e4cf43553517468fcdf73fc17124",
+    "skills/proof-orchestrator/SKILL.md": "bde239fa93e051281a529fb436c9dc277b82221cffe0941e1aab54c203fbc9f5",
+    "skills/proof-orchestrator/references/audit-output-contract.md": "cff8da1ef42794c64aba244decb19895b97ae912651e023c5c0b54a110e3eb7e",
+    "skills/proof-orchestrator/references/deepseek-routing.md": "1a3072362c8831b602b4adc4d69fba743a27584fac1c1413ca79a5831e9715eb",
+    "skills/proof-orchestrator/references/dispatch-prompts.md": "a32693defd4ec03fe7c23a813d3e7a6b5b868ce34ac3ffe34b798ad624f469b7",
+    "skills/proof-orchestrator/references/notation-audit.md": "8db3079a9209d9c71b977d448cff1abe33c5cf6414b1923735c813c9fc56e757",
+    "skills/proof-orchestrator/references/proof-audit-rubric.md": "fb962314da5291f5376da55f502f94a9337f380b481cf12208d6b586341b86bf",
+    "skills/proof-orchestrator/references/stress-tests.md": "5d865f4bc1df6d872103b6da7cfb2a24c6b8d40432c6228e94285e136fe48614",
+    "skills/proof-writer/SKILL.md": "d59b1865ba06f060b40920ace4ff8f61dc729615387bb91b1eb22a5d5442f2fe",
+    "skills/qzcli/SKILL.md": "328953e6e4a21f8a38e979f9729818721af387724b799cb7cc96e072d0012d2f",
+    "skills/rebuttal/SKILL.md": "36b9f570181c5afcf4149e4a911613f421733d4f3fcb84579709c8097d514f02",
+    "skills/render-html/SKILL.md": "2d34c2a878194209e1d4679147cfa8eef47eaa75271d4abbee6721060bead97b",
+    "skills/render-html/scripts/render_html.py": "f563872737d1fafbc38ea6a6de85451063daa196b219e163dcb32c3abeb6d58f",
+    "skills/render-html/scripts/templates/academic.html": "af3a2f998091edd2804b9e64eab21bf77b6caa57349fcfbbe767b1a8d16380cc",
+    "skills/render-html/scripts/templates/dashboard.html": "156e0825a131279debe55d1b91d7aa7c5f85e755458414932110687c9c3b3779",
+    "skills/research-implement-feature/SKILL.md": "453416dee9d15117f950244115a22dce6ebb33f5fe4792374369d799b6a1a88f",
+    "skills/research-lit/SKILL.md": "00d9f549e4db72f3b02d55b9f6dcd61b20403f5a7e25cf3396160423140b9183",
+    "skills/research-pipeline/SKILL.md": "3dd1f071770ffd700c55e607f8a6f641b7be5d4fbd3c2e0ab203bbfe22fd2d3b",
+    "skills/research-refine-pipeline/SKILL.md": "d5091663645dae48b84ce273d0f774090aeb2c553ed064d2d4cfc17fad9c52e9",
+    "skills/research-refine/SKILL.md": "2888a5d78cce27851dc029240a76dd50fb8d8114f34e2041c67fb15651017837",
+    "skills/research-review/SKILL.md": "85c75d2bef1f08e2e7d2e6a7f6bc0ae42faecf942d5314d25f17376e1292597f",
+    "skills/research-wiki/SKILL.md": "3bd314f83f2db97fcfafb74495f1ca23bebad37a69d355bc61aaea8cbb519552",
+    "skills/resubmit-pipeline/SKILL.md": "11d8c78dcb9fbdb4e9882b0d2d292f16e99b6bbd1fc2e0daee0b531e1e03251f",
+    "skills/result-to-claim/SKILL.md": "ba53865e333fb05271ad116b94879d567d1e681f592dec2a7e8ae7eac6ef13d6",
+    "skills/run-experiment/SKILL.md": "4d481ce95d8bcadb93b095c3dd9bda51d68b6edea6b710316d6c0c74bb5bcfa8",
+    "skills/semantic-scholar/SKILL.md": "41be9cd7d08d2d795d4fe0c87d23288712febd2807b8d4d38a2ea9c54ebb31e8",
+    "skills/serverless-modal/SKILL.md": "e8444d7c5e4cb53f400602a96bf9fbb8c682b85ffda8c24bcceb19cc3337e31f",
+    "skills/shared-references/acceptance-gate.md": "acfe2e790d97445396ff4eb605b91e4de756082d617b89cf9278bff76dc25623",
+    "skills/shared-references/assurance-contract.md": "01745ff874cf2e662ce1349f79fa7549db4d6f25182af86ef90b621d598b755b",
+    "skills/shared-references/capture-antipatterns.md": "419b914ade074842b815bff5133c18993a31305ca36e40b08918856777857378",
+    "skills/shared-references/citation-discipline.md": "01fc1cf751d7e0e6bef04897df6ef1bcf1e1b20e5b56d9f208e020cc48ba6725",
+    "skills/shared-references/compute-env-contract.md": "293606bcf6281712e0f5e1a05be9b67e001f2e5b567e2a956e2099de9c648974",
+    "skills/shared-references/effort-contract.md": "c1cb84a099d7d465ce71e0fc6c8fe7449c8273072b4cb977e0e58744d767f482",
+    "skills/shared-references/evidence-precheck.md": "919a437a2e4a618ff6bcac6c03b7ec12bde3fef33d1a2aea25c9d98fcbd5e2d2",
+    "skills/shared-references/experiment-integrity.md": "22150fbdc5867e7790c88f968bccb367079c2db4c190ddce980709aea7e76f60",
+    "skills/shared-references/external-cadence.md": "d0d8e92c9c8f5e60555c8ddf32cf15c78d0bdc61a367ef35d8b0fef8dab906f3",
+    "skills/shared-references/fan-out-pattern.md": "a788fd9fdc88d8b8e1331bcd9c64979914a44cf69018e1ce5be4cfd071a240cb",
+    "skills/shared-references/injection-hygiene.md": "bcab2455e4327eaa4feb3810035d1bf6e6a3e352e329badcad6ed95e5fe534de",
+    "skills/shared-references/integration-contract.md": "891b4254337b6da02b25bef55cbe750e90f36fd7c8b537218e49febf6d69ddc0",
+    "skills/shared-references/output-composition.md": "8de81708431091a21a641be5f91db7958bb9f9a4b85d4fe03f52c5b496948651",
+    "skills/shared-references/output-language.md": "7b326400dca5130ce4beedf72fc2010680afe96eb56a6ab21210d323adc9a52e",
+    "skills/shared-references/output-manifest.md": "28e29bc8e53c52afe4eeeb590df8893282a3bbced08e105e154ad228b6cd1922",
+    "skills/shared-references/output-versioning.md": "73a4269b537be728b0ecc35789f11fa6d1fafa6d0430d07ad2738f064b1e4da3",
+    "skills/shared-references/patent-format-cn.md": "e5be6c2c6fab3c84c795b53ca419198192b95f2c1ccd63833b5d0510a8f93c1f",
+    "skills/shared-references/patent-format-ep.md": "8cf58ac775fe524c230cd7f371abd0ce25eb774029129bc336f884026c58ba23",
+    "skills/shared-references/patent-format-us.md": "13f179cc70fc8664f356d5258bdaa52a4cc577496e385e5ac5cdd421a12f4f65",
+    "skills/shared-references/patent-writing-principles.md": "8c8dc8250948bd0741b792d350e3afdc686ed194a1bf02359fb0e55b81468d1d",
+    "skills/shared-references/prior-art-databases.md": "8225843987fbabb5f11788c19ed8a739f10691319865485d5cb876e7bc2a3cb7",
+    "skills/shared-references/resumable-runs.md": "bf522bfed126b0db96dfb22ab84f0011ba6f79bedc4f6a28a3a40f67500abb61",
+    "skills/shared-references/review-scope-limits.md": "e383dbaa57aed6f8fd2c2bb6bcaefc6806648126d11b21cb6c39eeeec76100f6",
+    "skills/shared-references/review-tracing.md": "b531253ccee0414bde9e3d233e743d9dba9a4283cd40ec527c5863ba0fee6d44",
+    "skills/shared-references/reviewer-independence.md": "fbbfcb6e7ff53010b596e8e01ce456d1906734f5bd198745f76ccd62787af3e3",
+    "skills/shared-references/reviewer-routing.md": "240ffd52ac95c4dce81d555435bb4c2b9b377e0eaf69ca80a0bbbd45900007eb",
+    "skills/shared-references/skill-governance.md": "2da8e745ce5dc511206ab3a6a378a26d3bc6e4ca035c1f763f7a0b1793155c73",
+    "skills/shared-references/taste-calibration.md": "245e12a52b6c013022ddbcd8c682e4e5290bda6e38ecc6f14d7b2eaeb2988af8",
+    "skills/shared-references/venue-checklists.md": "712396be66d4db85f0038c5ff5479a5fc66db03bc7175c8ed931f7284802f4e2",
+    "skills/shared-references/wiki-helper-resolution.md": "ef6af207034a2eea17d437ac2f4c620962f72960ae7a5bf0d00818e1bafc71c2",
+    "skills/shared-references/writing-principles.md": "25c71f6b76fad1a198b47b4eae9b1d101561578cc0a8767e91706957829f0abe",
+    "skills/skills-codex-claude-review/README.md": "baae0d0ec50b3e3359bde84cd73d63b2ab92271542901b1e86504cef90238c07",
+    "skills/skills-codex-claude-review/README_CN.md": "924e5c30474cc1182384a2bb73a2f7f8e3138f179f065a6fd1128eef1db1fdf4",
+    "skills/skills-codex-claude-review/auto-paper-improvement-loop/SKILL.md": "b0a8a6a64f8ac0403bc75d25aaec2d8add7dfba987a11c52de95a581e231d4bf",
+    "skills/skills-codex-claude-review/auto-review-loop/SKILL.md": "cd2e877606a8b3eb2d636edff19f8ff068a2ef021928abcd17ece0fbfff2917b",
+    "skills/skills-codex-claude-review/novelty-check/SKILL.md": "6727fe56d02e44611a0a4a8be090532c223d0f753034544cbdd2d5c5ba9ec0fd",
+    "skills/skills-codex-claude-review/paper-figure/SKILL.md": "1e2ec8dfeff340a6b42adac53a096b2f6b9ef628d579f94230e4b113cdebb1fe",
+    "skills/skills-codex-claude-review/paper-plan/SKILL.md": "273a99d453145e2da7c5361137c163c77034992d9d03d7f2499779e134a74d9e",
+    "skills/skills-codex-claude-review/paper-write/SKILL.md": "f30d2b055883fcb9b34d7904c8690d1a1c8ecd2ee444e25b9ceaaa165833478f",
+    "skills/skills-codex-claude-review/research-refine/SKILL.md": "9cb8f40b527028e4dd71321f70f4a76e5e432dd140d4c7be582cc480ae8f2579",
+    "skills/skills-codex-claude-review/research-review/SKILL.md": "250861cd3cb6b1a650cfcd1fcdac0a468582b44f9b645f24670aae5fae0729c0",
+    "skills/skills-codex-gemini-review/README.md": "397991db9dc972ba38b43a739930f02dc462bda418d7bd39815dd9443db091a5",
+    "skills/skills-codex-gemini-review/README_CN.md": "80190fa8d48c9dc450e63cec2c9b3b57be7c00f00eb6f891abe427964eefdc14",
+    "skills/skills-codex-gemini-review/auto-paper-improvement-loop/SKILL.md": "418edbee8d6c61bff9ab871fd84a06f2ae37eb129df7b815b52f9778c2ee75b2",
+    "skills/skills-codex-gemini-review/auto-review-loop/SKILL.md": "b98a321c39d4285ff8383b76881077466ca2b45d6f4cc9cf4dddd8524e7d1771",
+    "skills/skills-codex-gemini-review/grant-proposal/SKILL.md": "8e834ea2ce5fc82591140bf57d7a723a5e74b6232039fb793fe3d9f8a025a72c",
+    "skills/skills-codex-gemini-review/idea-creator/SKILL.md": "eabd84c6e6b0ad5d02cda0c24582d73417306a187530bf5c9b366019416ceeb2",
+    "skills/skills-codex-gemini-review/idea-discovery-robot/SKILL.md": "dd0e7f33bff7b7a16fd4fca3bca1b475e3acd7ce24de68af6fdd20ad778c7e29",
+    "skills/skills-codex-gemini-review/idea-discovery/SKILL.md": "618a9f8aa7ea804e162d8e1ab3b10ee1e393a966107401fcc661b2a1d8f7de78",
+    "skills/skills-codex-gemini-review/novelty-check/SKILL.md": "5ef22b3605664b41a42ecaea22175e26aba19dda59eb701dca7ba602b8181e49",
+    "skills/skills-codex-gemini-review/paper-figure/SKILL.md": "5dc702aa809cf4a53f906167f292643fb76748ee66998aa4da3e1e945ee134d2",
+    "skills/skills-codex-gemini-review/paper-plan/SKILL.md": "74cb50a2ca3f09611eb557af7d10b4511ecb6762535366178d8f925599e44a38",
+    "skills/skills-codex-gemini-review/paper-poster-html/SKILL.md": "618fa29802098c59bcb3ad449b2db00b50f7f72bf09343b443809664e527bac3",
+    "skills/skills-codex-gemini-review/paper-slides/SKILL.md": "3cca23fa611bacd9c0838de2eed702a320163a429e90079227f6387bc5c8fdd4",
+    "skills/skills-codex-gemini-review/paper-write/SKILL.md": "1b37c50aaa69fad1814e319911a7e65af3189586403e15016371a10e07a740c4",
+    "skills/skills-codex-gemini-review/paper-writing/SKILL.md": "dac8f71654be7fd575e968a701d1e6d821bfc7b0be0278becb6eb7fc63b4283f",
+    "skills/skills-codex-gemini-review/research-refine/SKILL.md": "e70c912082ebe40709b3684e254e823e61536a992d50694ae1a7c7a6e8982772",
+    "skills/skills-codex-gemini-review/research-review/SKILL.md": "098ddea8057fa492b7abcad890be4ce2d1fbd6b3d6f7c2383d1499480d88c04f",
+    "skills/skills-codex/README.md": "388dae615def84f25656a08b7b86390da4c6c1ae3aa42c6169d8cb8aaaeb1e15",
+    "skills/skills-codex/README_CN.md": "6b15a978879a04a8d19f12005732d9f9f163e2f37f673fe023b6b413ddb004d7",
+    "skills/skills-codex/comm-lit-review/references/domain-taxonomy.md": "fe60f6da0a53df9cfe24a9490967c0fe501852601c41db1e44ac3b5170a2cbc8",
+    "skills/skills-codex/comm-lit-review/references/output-template.md": "a189d60a9c5f439d995a7a6ee9a2ea9989096e98fe6cac61fc49bedcb560c864",
+    "skills/skills-codex/comm-lit-review/references/source-policy.md": "36db0b748275c7a1e1502a1de7f1ad6f4d08889891467811f63684bc92026f20",
+    "skills/skills-codex/comm-lit-review/references/venue-tiering.md": "44568b391ceb668f5eb425f6f9ee631ac6f6b99ea27c2d59e2a84a76a98e608a",
+    "skills/skills-codex/paper-illustration-image2/scripts/paper_illustration_image2.py": "bc97f5b1ae14ffaff10c24240b6e93f3c1282ffd340d4756ea80477649f32890",
+    "skills/skills-codex/paper-write/templates/IEEEtran.bst": "314f0ece704568faf827011bac498650691b2b5ee06320720830e782416d5a5f",
+    "skills/skills-codex/paper-write/templates/IEEEtran.cls": "da751920a317ed318b7b5cd7fa585a6cc7d28502d457856382e9be24b10a3bd7",
+    "skills/skills-codex/paper-write/templates/aaai2026.bst": "ac26e2c66047435c0ed25f21ae36ad42d731cf3d794c4a8b5f05a62141a27294",
+    "skills/skills-codex/paper-write/templates/aaai2026.sty": "a39f1866a04dd1e2603613c876fa446aaea2c2f3e34d02be868fd21520bfade5",
+    "skills/skills-codex/paper-write/templates/aaai2026.tex": "bed12c50b5e027fd88097d238ec4e7ebf1ae7b450cb06d6df7c8ae126a620aea",
+    "skills/skills-codex/paper-write/templates/acl.sty": "19dfeddc2c0e448f3926a0bef048a9db3f3611b46265b760caabd7ada4f361de",
+    "skills/skills-codex/paper-write/templates/acl2026.tex": "339c9ee9705c1767d44ef24b85365c0bb8619ecc3fcf66172bf1356292389614",
+    "skills/skills-codex/paper-write/templates/acl_natbib.bst": "e332fd51dcea48e2a8a89754892c3cb99674a1cd70b527b661e9aaffc235e83c",
+    "skills/skills-codex/paper-write/templates/acm.bst": "ecbc9bfbf595d820dcc271d1bada20448c6eb5a6cf4d57de8dc4ed2608d5f23f",
+    "skills/skills-codex/paper-write/templates/acm_mm2026.tex": "c350a3f470e8f356f8697040f204fb28d168b671aed67465a71a938f844d1ce0",
+    "skills/skills-codex/paper-write/templates/acmart.cls": "560afeefdb1834d8b04556ec52e3abe60e7f23eed501b5b751c7b8215b626d34",
+    "skills/skills-codex/paper-write/templates/cvpr.bst": "e38e6166bd7b1e6d23a1b79dcdb55c656e4fcdbe91bdf6b50d827e6b5d1aacfc",
+    "skills/skills-codex/paper-write/templates/cvpr.sty": "2602473285d1a7df2a445ac89b76e1afa0acab78e056f0369d19770245190153",
+    "skills/skills-codex/paper-write/templates/cvpr2026.tex": "251329b8a7ea25f1ba0f5a769f652235e13bc1f43b3e8b1d892e16a005b361f0",
+    "skills/skills-codex/paper-write/templates/iclr2026.tex": "1e4c20b3c5b7445966194151d33c3e2023e828e621be8baf7ffb234b987cfc23",
+    "skills/skills-codex/paper-write/templates/iclr2026_conference.bst": "2d67552db7ed38ccfccb5957b52f95656e25c249724761d3cf5f7922ad1844c5",
+    "skills/skills-codex/paper-write/templates/iclr2026_conference.sty": "a4852f68e080d6c5245057ca2039100b409e31727898aa93c03d78ddb84374a3",
+    "skills/skills-codex/paper-write/templates/icml2026.sty": "7cdcf90f6a59c5219e7f15c88f7ed09fcaf598dad91e6cdddc4dc3cb0e397a95",
+    "skills/skills-codex/paper-write/templates/icml2026.tex": "c2ca8140bf255d1ff77d1278eb3eefed4018b4b1e71065b8e1ccbc68b74c8acf",
+    "skills/skills-codex/paper-write/templates/ieee_conference.tex": "a3dc3a175a7dd1512f4a2fdb844a0a482a9e919162e37dc27373d501fbafafbc",
+    "skills/skills-codex/paper-write/templates/ieee_journal.tex": "bdff7ff0aa376d8a46675bdb6e96c4dd715463360735706aa5fbaa5f834b7604",
+    "skills/skills-codex/paper-write/templates/math_commands.tex": "3efe4556b2c33b4a93c1b6e86b99b9a3ecbd9c9565ccc06bf8a1f51293470dc6",
+    "skills/skills-codex/paper-write/templates/neurips2026.tex": "d436d14ee70d6a1ee821f6239d2d45a544059fbd186d2431c69d0cbddcf0790d",
+    "skills/skills-codex/paper-write/templates/neurips_2026.sty": "0c1ad36961fcd9198dcc2558cf2793e1df39973bde8264fd701f5e7970672757",
+    "skills/skills-codex/proof-orchestrator/references/audit-output-contract.md": "cff8da1ef42794c64aba244decb19895b97ae912651e023c5c0b54a110e3eb7e",
+    "skills/skills-codex/proof-orchestrator/references/deepseek-routing.md": "a1631bc28ba78adb79154c2f07b76c82c9204f8d307952b28056b0f215449753",
+    "skills/skills-codex/proof-orchestrator/references/dispatch-prompts.md": "21f0f279dd24f98cf9eaa5ce21754299f88cdc8eac77874c2bfe6b12a8f6c7eb",
+    "skills/skills-codex/proof-orchestrator/references/notation-audit.md": "8db3079a9209d9c71b977d448cff1abe33c5cf6414b1923735c813c9fc56e757",
+    "skills/skills-codex/proof-orchestrator/references/proof-audit-rubric.md": "fb962314da5291f5376da55f502f94a9337f380b481cf12208d6b586341b86bf",
+    "skills/skills-codex/proof-orchestrator/references/stress-tests.md": "93c4c054f14dfe6acce9f1d1f2d5a70a71a2b32ac96d1988f6136d557e01067a",
+    "skills/skills-codex/render-html/scripts/render_html.py": "25d04ffbb1c2d4de61c4016578390477080168275a093d3569a43e14758e5694",
+    "skills/skills-codex/render-html/scripts/templates/academic.html": "0ce224f68f320252e05696bc865050b3794d8e8c6f7163f17c663b4e6814a545",
+    "skills/skills-codex/render-html/scripts/templates/dashboard.html": "156e0825a131279debe55d1b91d7aa7c5f85e755458414932110687c9c3b3779",
+    "skills/skills-codex/shared-references/acceptance-gate.md": "462726457f58e6317abf91fe409a5acb14227881041e30709be8f7e04eeaef8e",
+    "skills/skills-codex/shared-references/assurance-contract.md": "4e7bd3c7e2101e2ef0fb5c0f28272ea4d1ab3678fe4cf5e094508bc642b36eb8",
+    "skills/skills-codex/shared-references/capture-antipatterns.md": "5cc25b4e70d6d4073fa260d70c40e3fcf7f9e0eb6f0c6fca0e4d388c399550f3",
+    "skills/skills-codex/shared-references/citation-discipline.md": "1c51dc936bbc3dbb17580148767734e0c642ad59516a861d9503b9767ca7043c",
+    "skills/skills-codex/shared-references/compute-env-contract.md": "27aee2eee75a705a7d3ed72086b05ae2aa499104489376596ecb5b683807eeb5",
+    "skills/skills-codex/shared-references/effort-contract.md": "d4a53faf13d19d5d7f844d279b46ad5528de6572b07531cee4d49f4f405873e5",
+    "skills/skills-codex/shared-references/evidence-precheck.md": "3eee097fe24fead242cf82a7393b828bf4add0fe511703a2be828edf06bb4c0b",
+    "skills/skills-codex/shared-references/experiment-integrity.md": "22150fbdc5867e7790c88f968bccb367079c2db4c190ddce980709aea7e76f60",
+    "skills/skills-codex/shared-references/external-cadence.md": "f59faf54b865b0c46779cacba081f3d5e4d68a7f748915197f8de64c67a26507",
+    "skills/skills-codex/shared-references/fan-out-pattern.md": "550eb36f8b807001fdbe4c5357ea2927b5efb88bda74223747d5c45ab28edca4",
+    "skills/skills-codex/shared-references/injection-hygiene.md": "7b9e4edaa57369e9b559ee897690282c43a9d634f31611a1f1ec79213e4bc78a",
+    "skills/skills-codex/shared-references/integration-contract.md": "5d393c31b36e98ae99c17ab9cf5879853c0cb595bbd9f4973ffe7bcd6549f4e7",
+    "skills/skills-codex/shared-references/output-composition.md": "79a72c7ea02102c460ae3ad55853c21a4054b9df93f377c29dd34555e6d3c3a7",
+    "skills/skills-codex/shared-references/output-language.md": "0f1447579bd7a2195fd4a074be70ae6345b5c368f1a70d327e89748bf5a378f9",
+    "skills/skills-codex/shared-references/output-manifest.md": "e767083e0ef97a7adf7a4e8a574090067a59c0655d5aca422a3747cd32b6afde",
+    "skills/skills-codex/shared-references/output-versioning.md": "de8e7ac23069de6c5d0c482d4cef117dd5a543e00b57e2dc6c62560a457290c5",
+    "skills/skills-codex/shared-references/patent-format-cn.md": "e5be6c2c6fab3c84c795b53ca419198192b95f2c1ccd63833b5d0510a8f93c1f",
+    "skills/skills-codex/shared-references/patent-format-ep.md": "8cf58ac775fe524c230cd7f371abd0ce25eb774029129bc336f884026c58ba23",
+    "skills/skills-codex/shared-references/patent-format-us.md": "13f179cc70fc8664f356d5258bdaa52a4cc577496e385e5ac5cdd421a12f4f65",
+    "skills/skills-codex/shared-references/patent-writing-principles.md": "8c8dc8250948bd0741b792d350e3afdc686ed194a1bf02359fb0e55b81468d1d",
+    "skills/skills-codex/shared-references/prior-art-databases.md": "8225843987fbabb5f11788c19ed8a739f10691319865485d5cb876e7bc2a3cb7",
+    "skills/skills-codex/shared-references/resumable-runs.md": "60cb895918c0ff394a46a27f69140b84578b1bc7457d8e95c2f5c20c06ca42d2",
+    "skills/skills-codex/shared-references/review-scope-limits.md": "e383dbaa57aed6f8fd2c2bb6bcaefc6806648126d11b21cb6c39eeeec76100f6",
+    "skills/skills-codex/shared-references/review-tracing.md": "d8c202147c1876a5fd014fcd9e5c73bfd398863a05ae45633e0159fa16bbc71d",
+    "skills/skills-codex/shared-references/reviewer-independence.md": "326a2ed68aa25dd5ff7fbb74b34fcce7a595eb27cd0daf565890c208076206db",
+    "skills/skills-codex/shared-references/reviewer-routing.md": "4247cd4f8c173f827184282f5c0e8471bb21d7d370ce982474cf31630b789101",
+    "skills/skills-codex/shared-references/skill-governance.md": "4accf540cbae33ea958dc01431222305cb5ccbe19d12d67aa92c4c90e3637786",
+    "skills/skills-codex/shared-references/taste-calibration.md": "ab5880c4989e2d05ab58212d46e4bd4e215b1cee87b430e7d94d31bc431b947d",
+    "skills/skills-codex/shared-references/venue-checklists.md": "aef7a0c396078747a5723b93b289c379aa1dda3f08540eca6d2d321264ed0ec8",
+    "skills/skills-codex/shared-references/wiki-helper-resolution.md": "c39a9712178b481aac6bc5d118cb9bc3dee7ea8abf4b95ae535ad28ef8cab84e",
+    "skills/skills-codex/shared-references/writing-principles.md": "25c71f6b76fad1a198b47b4eae9b1d101561578cc0a8767e91706957829f0abe",
+    "skills/slides-polish/SKILL.md": "dbb0b8b507c45aae428562ba64ccbb328589210d75fc801eb25881efae5322f9",
+    "skills/specification-writing/SKILL.md": "69fdfc8a5d46a603881d3fa301d981e113b9897189703d96a5f289e6f9c04ac4",
+    "skills/system-profile/SKILL.md": "9d31e32d2a63cf2f27a843e171c652327596c3f9e911c265660618d4ba27c48e",
+    "skills/training-check/SKILL.md": "b4f27bbc58aaae314d8c51fe309fb41e42f47dce4f69ba07fac1ce7f0080c789",
+    "skills/vast-gpu/SKILL.md": "69aabce36540fd6fce55bf47b6f043166fc118fd708d03efddb57d168a99f4e5",
+    "skills/web-debug-search/SKILL.md": "ffb5f3ccf61c45d90c41901c251263f945c67baba0f91cb300cc1d53dcd63d01",
+    "skills/wiki-enrich/SKILL.md": "9e6f00ddec22c71377cdc0cabaf3ba1ccc50632d477e3dcd9efe784207bad454",
+    "skills/writing-systems-papers/SKILL.md": "385fcf41742514b4aa9ecf93a0582a1bfd3452cacd12a54c87cf5bd82adccf7f",
+    "templates/CLAUDE_MD_TEMPLATE.md": "b0676223a52aa3c651ba31210615d9e110f4ea6670e638e27ab1c1b12c239880",
+    "templates/EXPERIMENT_LOG_TEMPLATE.md": "32126068df3cf2168d0a7d24f8658d7e97890df506155746dbe570302f12b59f",
+    "templates/EXPERIMENT_PLAN_TEMPLATE.md": "a28f0795f4c8e203216be6b5d91b4d9def60f5af7cdbfcc7ed0a2ebf205abb67",
+    "templates/EXPERIMENT_PLAN_TEMPLATE_CN.md": "bec2b65c78f95902040bc7a2f2a728be42c82a8d0242a9c265602400e29da34f",
+    "templates/FINDINGS_TEMPLATE.md": "c3d98f53f780a5c91988d785e6cbb118c9e2b6d1ac819db8943639e17d55255f",
+    "templates/IDEA_CANDIDATES_TEMPLATE.md": "832bf7ac924894982cf73fae8f2d026b76111cf952f14f6ca3e3b130ee14e984",
+    "templates/IDEA_CANDIDATES_TEMPLATE_CN.md": "b57f0086f8fcbe9159aa611ad866c39fcc5faf3149d75529e02bc7cbd06a8fbf",
+    "templates/INVENTION_BRIEF_TEMPLATE.md": "9fd8c4ca0912bfd5e449dcb6b034196dfad05c11f44abe04e5c177de5d6357f9",
+    "templates/MANIFEST_TEMPLATE.md": "513bc08b2744b20825bb00063e77e22d536293e428fb419ca0c7b0ed9f7ea6d2",
+    "templates/NARRATIVE_REPORT_TEMPLATE.md": "108481c051e96976b432f038c3903968d89d9d3556cc6bbef45c3947198713b6",
+    "templates/PAPER_PLAN_TEMPLATE.md": "0c323fa0e65c0d9e13100e7de1d6d7ea9f4857706b9e32e81afe9d632adf981d",
+    "templates/PATENT_CLAIMS_TEMPLATE.md": "cbcfcb9715e951087e6a1a5f0937db04f9f9f123048dc6d3f9edb9d87a2927b3",
+    "templates/PATENT_SPECIFICATION_TEMPLATE.md": "8a058790ac4b97ae0a9d95d2c65026eca76194be98841b1e16f8037a47849fa0",
+    "templates/README.md": "9ab6bc4146fe7ed01ccbb0d7e4b16984d9cd9d423a170860de76a84c3e020ac9",
+    "templates/RESEARCH_BRIEF_TEMPLATE.md": "f3aae6dcb26028a4115994aeb5a37b3fe408aa6cca18743bac693cfc1ad08688",
+    "templates/RESEARCH_BRIEF_TEMPLATE_CN.md": "4e341cc84147061bc67a1fa15379b54ba3ea11e1ad0917150333471686b2d4dc",
+    "templates/RESEARCH_CONTRACT_TEMPLATE.md": "e71ee594951a50aaa93b1644318c28a705d6fcf9780ca1f61030b1c1bb44696a",
+    "templates/claude-hooks/corpus_write_guard.json": "b32a2d9200be0d70a55ea3d14e199db04a42b0cc5aab243afeee354329ccc363",
+    "templates/claude-hooks/corpus_write_guard.py": "9005bc1bc94378952237439096d9c2c05f1ff6243456878da5c9fc94efdd5893",
+    "templates/claude-hooks/meta_logging.json": "4162f4d902e6ba6740a377b0a7d01d85f15f7a36bda2645b6181bb51636aa303",
+    "templates/gitignore-trace.txt": "9fbc968ad5c3f249200c96ddb115324ac95991ddaea9dbc2af493e7c2983166d",
+    "tests/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "tests/_feishu_bridge_helpers.py": "1d4fec96e1542f3b1a5a5f00f99d48c7b1ebb8ddb9d4ed608e4bb8793a7749b7",
+    "tests/_llm_chat_helpers.py": "01c6564d4e49f67960dc4aacb3f84b6425685d9cd7a32a5f5732c10a1aec80bc",
+    "tests/_minimax_helpers.py": "c9533d8c54c7103c3f143952021caf1d7e43324fb6e9689c305b613c503fb375",
+    "tests/conftest.py": "99e5946ceadde6e0e8cb1d3b2b0d7e83d5b535ac87260c146bf6e13010c9921f",
+    "tests/test_antigravity_exec_bridge.py": "f64b96436300efa413398e624eda0e4087933341b309bfb6ad6f4287ac4fcd14",
+    "tests/test_argument_hint_lint.py": "036529c7a0b1d71bf9f018a4e289520154cb2351afd90591c8d0c5650b980b40",
+    "tests/test_arxiv_fetch.py": "641c6cded1db971aea199ebff9eb32fce7cfd304f793a37c5f120906eb3e1ef0",
+    "tests/test_auto_proceed_contract.py": "e6b5877ad22963996e9c072a49f758117309f29af537e9aad94220ac1dfcf59e",
+    "tests/test_capture_filter.py": "5f97b6f9660aec2f25cd60ad3058f4e158025adfb9c2830c50a4cf2316811a2d",
+    "tests/test_claude_review_generator.py": "ba9c518d97061204cb21fb1079a35ff6e10db1613fbc48535c5c430eebfbac86",
+    "tests/test_claude_review_overlay.py": "eaaa8fa197788b28f4b5ce5366e679bb0a98d1cd12841c094ef0bf2a9553b51d",
+    "tests/test_claude_review_parse.py": "ffa630d617af32e0a340868d2037ca7527f7d00780c192ed2a5545d65125a5cd",
+    "tests/test_codex_exec_bridge.py": "9b644b2232ba2e81b461417c475bcb7c70a716804519f0b9ecc5730b570e14b3",
+    "tests/test_codex_image2_server.py": "9499ddde8399d09fc15a66b50ae154567b3fe408fca6dfaa9f022bd43db84ede",
+    "tests/test_codex_install_update.py": "9ea83746b102a9f7f4f680f88ca1f475ed211c51a466f072c159c396e73880b1",
+    "tests/test_copilot_install.py": "77d4ae91cf3e396d867b99776b95a93deb16e8f4a496aa1f06172f53178a2832",
+    "tests/test_copilot_native_evidence.py": "de510f97c73bee5144d93d1c93e38b62e511aa065940e71b69de7c7db6510c5a",
+    "tests/test_corpus_write_guard.py": "dd889d1e480dc2e0b7f06182d685cd9249ce21e075aec4bc4e2be0b51f62ec46",
+    "tests/test_deepxiv_fetch.py": "a5b177b234297cd9fb7cc7e5941c72bd40a24e2b2e68242688512595a9061066",
+    "tests/test_evidence_check.py": "cc182ce17a3b91b1a3ca6534aa05931cc4f9a14fa1eb6b6281a17b47201a832d",
+    "tests/test_exa_search.py": "601b5e2cba56fb53d32445bd31e737a484569e6955c9e2881db7213bb7738e88",
+    "tests/test_feishu_bridge_server.py": "0c1fd55d68ae99566cde4e039f34991afc19394471b44c7b2204ab5e31dabb9e",
+    "tests/test_forensics_gate.py": "fa0659ace414b2c92de6f671c2b3e4f465548fcdd88cf9c072bb66177f12c670",
+    "tests/test_grok_exec_bridge.py": "3c4884867fdb53eaf8a69e649ea67f730dbfe3bf135f807a00327ca482ea908d",
+    "tests/test_http_reviewer_fallback_contract.py": "376a73c8c232ad6076fafaa82054b2d1d1372cc0f263debf78b8bf923fa56098",
+    "tests/test_http_reviewer_provenance_alignment.py": "5e80327e33a99250326aa2fed50b9d6b37ea0ccc8577ba4818c2529f23ab5920",
+    "tests/test_http_reviewer_review_gate.py": "b41221b28ee1060cf65cada470fe665439d5cdded2029b6b5c1a9cbc72c1df59",
+    "tests/test_idea_creator_query_pack_scan.py": "7e945c66c992f9d7710eee3bfcb4a1db77f6b4b5b1424c93f2b0d1eded053f96",
+    "tests/test_idea_discovery_gate.py": "bf21b5977a4ca114f92b46487735a535a7ae0ed3a744a90bd12522f7056423a5",
+    "tests/test_install_aris_agent_profiles.py": "175ef4b772082ae1e3f935611c2ad41a98276ef269415933a42f0d46774d4c18",
+    "tests/test_install_aris_ps1.py": "1bd953a23d567f803c3f76fab56c26b630be17ceeb0ef8a6af3e1242d6151488",
+    "tests/test_install_aris_replace_link.py": "c3e5ec1ab3b8099bee70876e8ebf9933fa9ac6498c65d92c7470b68e69be4083",
+    "tests/test_install_aris_selective.py": "699d3eccec8a966c404e4dcfc829e5d05627feb63be7cc02850a4df062f499c6",
+    "tests/test_install_aris_tools_symlink.py": "42a62f33c00b9dcbc6cdb2549e4bbea3d4fa17abc5133109c3c23dfa064f4d98",
+    "tests/test_iteration_log.py": "8605261d4433a0511b9960301d70873659a13c9579dff1a4681eb4d77833c74f",
+    "tests/test_llm_chat_converter.py": "7a95ddf18d566c15f6cc089c5830b2ac82c4445b51a089366f8e77fffc969e30",
+    "tests/test_llm_chat_review_fallback.py": "80dadfa6852ad1f57635c12f5e78abe5a4dc0a7796cdd379cac8664b6b71250b",
+    "tests/test_llm_chat_server.py": "9a5b5c563eb1b5c2d3a4fe72737e466c50ec27b80c67fe29ebc38a3e78d075ba",
+    "tests/test_mainline_large_payload_prompts.py": "c177a59906b6443beaf591409de9eace68539bc598647acbe30c1993969a61eb",
+    "tests/test_manual_review.py": "eff3f0b291de97d327266942e04ae3e6bb9aa8719df76f2d67d04ff9e7feff41",
+    "tests/test_manual_review_integration.py": "14c5305a4c480ea7ec073b2094e81997a803f726a47dfce52ecc40d985bc7f8a",
+    "tests/test_minimax_chat_server.py": "9753dbf4651c6913a2a0708269460db1497fbbf766db2bd9f423f9470e6012ff",
+    "tests/test_minimax_integration.py": "c25e0fa359de04f71c4cabb8a3dd26402e17e173241e8120a2ada1eba7412ab8",
+    "tests/test_openalex_fetch.py": "ba6040f0c0a4e76bab40b57e73d14fc3032df6bcac655dbd1e5e990137a71f4b",
+    "tests/test_plugin_manifest.py": "6d5ce041953d47f82c039fce078f80b14309f8d5d630fd136a008c1bfcbb814e",
+    "tests/test_proof_suite_integration.py": "d622eb8ccf8b430755f8e8559424f37a77ffad93c9b143b68a81c60e814ffdcb",
+    "tests/test_provenance.py": "13d1fdcc576bf9fdcf0e4de5770864e31fe7b9b5d047cf683f760a85a987f292",
+    "tests/test_research_wiki_claims.py": "7ff0301af6a717223f2ed2fe0003215ff6c3338cbb12e0758364ee05d275f825",
+    "tests/test_research_wiki_encoding.py": "6353a57011964f5548dc541435be3ee50f4a178d76fda3b2bc1e5e215839de72",
+    "tests/test_research_wiki_experiments.py": "2ebd24e15085d8949dfc07bf4ad8a5119e29a896312cfc0c6a8f09bde30fe2b6",
+    "tests/test_research_wiki_fetch_arxiv_metadata.py": "e954ae41169a634f7de52d7a3cde1338ec4c89f97e37058ad3d584efe9683e47",
+    "tests/test_research_wiki_helper_resolution.py": "91fd121539954758a215dba34e772c8e2431121d9d3631090075f4d0a615b31b",
+    "tests/test_research_wiki_ideas.py": "de40712d7d2a1bbecbff37e4117329597b80187b5a081b53c92070f2799ff365",
+    "tests/test_review_gate.py": "56a5f01a71f01a18448ada4c09add47575953790916c9a164aced3f4fabd1a55",
+    "tests/test_reviewer_pins.py": "fbde1037fe4217376137b182bf3a2d96496c003225b24d108e8ba42cc60db986",
+    "tests/test_run_state.py": "13249453e06805395caff797603d531bdad93e363ac1460e815fc0ce269b755c",
+    "tests/test_skill_groups.py": "9988232082ec54099acd5b7b39edfae48506cec9fca0684d3f089123203e4cef",
+    "tests/test_skill_picker.py": "5aba46f5f34e34e694c65888c94f38667e989465f2029d1b1d862f9a32dc85ef",
+    "tests/test_threat_scan.py": "32dadeab5eaba600791851da4c53d84c267c93bfdd254946dbf2964cbf7c61a7",
+    "tests/test_trigger_eval.py": "442612a876f5378796f4f436a21487fe3ac9540ea7928e1a3459e1345640f2d7",
+    "tests/test_verify_paper_audits.py": "b2ce2ed7b8fd37ab48a189668ba61155b41c5979cdddf5689261d5ffab93bdde",
+    "tests/test_verify_papers.py": "88a7e8787f7f885bf8ee0b14a29429ad27afdd724e478472681ccdfbb0877568",
+    "tests/test_verify_papers_s2.py": "1bbd75cef79abd29b6e5981d7592b6e97e220837b7374a7664d290d3b7c103e6",
+    "tests/test_watchdog.py": "c6448f08f2edbb75e69a20d3ce0d7aba0a4e38de733646c40f662f619f30ed3e",
+    "tests/test_watchdog_loop.py": "d1230c6edcc2019b9881d9c6ef1a32deb3a8b9348560b8bd579380e3a9e3d2d0",
+    "tools/arxiv_fetch.py": "30446596ca9aeb66a0a2f20fc0919d5f473fbee34dd611fee5c3613fadf5e7fa",
+    "tools/build_beta_release.py": "22d386d66debbdc935c045d998bf868229ef5f61c715605eb429cb3a1f33db2e",
+    "tools/capture_filter.py": "04cf93f079612fa1454e424101cef3069bb29c79dad11488e659b40bb1c118d0",
+    "tools/convert_skills_to_llm_chat.py": "3e263414dc6d240096067ddb89f734d8938c66be0319a75824643187ae918a4a",
+    "tools/copilot_native_evidence.py": "f8137fccba9874b7d04e0ddbbee5755d2d036509415680da760910959d7aff02",
+    "tools/deepxiv_fetch.py": "764ef7a4bb87a25df1e92c6fc51060d4b92615df7f1306df71faf0fb6020630f",
+    "tools/evidence_check.py": "2edbd901d760d22e7e43a14e8e88ab0e089303f489055cd9b5e9d1f4dce50382",
+    "tools/exa_search.py": "f29f9950d476fdf66b1f7bf8ccdcd7a827ae069060c5980d86b3b6f580b437b1",
+    "tools/experiment_queue/README.md": "df7757d1b2cec27a52fd655a233948c5a031b846ea93e2167811a668877924b3",
+    "tools/experiment_queue/build_manifest.py": "e1daa4116e24a36f970e5fddf6d1493e6a7396933c4e21468c85593ca35d4a25",
+    "tools/experiment_queue/queue_manager.py": "eac75a1285c81eb1683906cc979486f14bbba612c7cf434c753dfacec1f79dda",
+    "tools/extract_paper_style.py": "020baeed072f7ab8ac0f4bc0b341609b2498f82121b6dd6d4e3961f0669eb1f2",
+    "tools/figure_renderer.py": "88f667eb398d491fc49f5f4d24c6ee06de27862d1e9187c2a23f8ff3079b165c",
+    "tools/forensics_gate.py": "6b702cffb656aada0290b7d06f218a96c2cc47d2cef924838b4b53f79233f80b",
+    "tools/generate_codex_claude_review_overrides.py": "5d29ef95777af0bafea264182839926b0b6d429bb5362cb4104a27cb90d45f1c",
+    "tools/idea_discovery_gate.py": "129662358d7d38bdc9cb3d20d0bb9d7e2e8bf75aad45d0228766e9637475133e",
+    "tools/install_aris.ps1": "4eebea14bb58019304bdb52e1f4073537e754e12c610971cf3038521960b93a4",
+    "tools/install_aris.sh": "c781cbf5da633f40bc9f5de40ef95569a4c818bdc09460dd899bb1e849a29db4",
+    "tools/install_aris_codex.sh": "f9df60648bf057481c9b11ce59ab0943b678d77677a145f247484c92d24fa88a",
+    "tools/install_aris_copilot.sh": "2b9ff14c6143583625d4bbf1399d8622664965ddbc885c39425975535031f229",
+    "tools/iteration_log.py": "819c22ba20bb270e0a514edb2626e7e3a1c4bade36f809e3ee9571cc076f7cb0",
+    "tools/lint_skills_helpers.sh": "8ac51929052f4a930439c4479508f01763b03cd486337c9b2ad9af18202fc82a",
+    "tools/meta_opt/check_ready.sh": "6c581e592893db7fb288c91bb8b4a7f94c34c13bb8e4d5fe11f6f5205f841fc6",
+    "tools/meta_opt/log_event.sh": "9bf323361b0f0613e70c3d88d44600b8608f647433ca288cc8eda2411cdefce1",
+    "tools/meta_opt/trigger_eval.py": "ec0dfb8b08de96c97b751968dd9b8e08bf323828cbf727e757a8bf2fc2d6ed76",
+    "tools/meta_opt/trigger_evals.sample.json": "20db057ba06ac3c7d1cd89e1297b80449c38462c1bf010531e053f368139f7f7",
+    "tools/openalex_fetch.py": "83a097cc925c321d6dbf74e72bd5c6e1fdcdb82840323d3cf246bb25c005d530",
+    "tools/overleaf_audit.sh": "2d4bcaa33d541a74166bd83bf2262f0d92ad9600c502b5f88c80190aa6ed9274",
+    "tools/overleaf_setup.sh": "f2274ad4da248d590ef9b861551886aa7175bff26a003b87362996a9e92a076f",
+    "tools/paper_illustration_image2.py": "f7c6221f70d00b113646f1c3d481a37a1b04a5bcef2f0e055b3d9b22d8b9c01f",
+    "tools/provenance.py": "355bcd4ef02903d4686460fa6142badc57bb34ea62b369e5239f673a4f615a1e",
+    "tools/publication-policy.json": "b6b65bede8a5d21a5040d9543e41b71bcf2bad71990013e5b49225151f3c7c52",
+    "tools/publication_policy.py": "0f05f0a1b88e9320341141cef4e1dd04bf24b2aecc9878bf231b888f3a6f4340",
+    "tools/research_wiki.py": "73a46cbcde03f406cba5745c28c09fca3ef8f60b7c8df18167907b311cbe014f",
+    "tools/review_gate.py": "fc0830dee82349ee92e4ab1ae7b13ed8dd584456e6e521b179ebc2cdb5390a45",
+    "tools/run_state.py": "5fc466462e2d4c26c6de078dcb04100bafa3a9c56df9a0dc4e38f316a33df5b5",
+    "tools/save_trace.sh": "052896125aa6f655ff1b6c5f8262766fa6f3c3f758cb5b0ec142f46ee38a9de0",
+    "tools/semantic_scholar_fetch.py": "2b8b2f5164b886eb0f9d73ea5495e43991e9b52fc84631de87e941bc3e3ccb7c",
+    "tools/skill-groups.tsv": "403397ba3d9c04a6c7698f40fdf130534f9eefe9c119f403ebdbe82496ae32e6",
+    "tools/skill_picker.py": "3d08bbf141abfc65e5b348735f10c9fe56fa92afc33bdd6ae7edae85a17cac14",
+    "tools/smart_update.ps1": "16ed12f54305e23268a3ced533734c78ed39cf3ba1e7125c9919b861660f4590",
+    "tools/smart_update.sh": "40ffbfba8b52ddafd87fb11642382877cbd0a4d93a3576fce7cae5fe5ab4ef87",
+    "tools/smart_update_codex.sh": "d8f659a7d453bea7816bbaa200a0bc9312853cec46551c156101730b80759d75",
+    "tools/smart_update_copilot.sh": "586d6fae1202ac180c0d6a68c13ff798302e7fcad5a91aa4b709f8f8b5c9e955",
+    "tools/sync_release_notes.py": "987a8b71b1079aad33103f0703939175610e719be03e96e1ecda8169ef56efca",
+    "tools/threat_scan.py": "fe0f6d4ec38baa09b58a9dbdb4bde3039b9863a3e52dc79ada33d79f3c84e268",
+    "tools/verify_paper_audits.sh": "7dd8c07a6e9458077a202c3075c4207985b2bba7a196b10687d286b9c9dd455d",
+    "tools/verify_papers.py": "ccf214f490d15554e17cc43856318dcee1ecd32361299c994b20983de2bc8d1e",
+    "tools/verify_wiki_coverage.sh": "cdc619caacc680fef77f25def48aa7e4ad72ca2e0cb7842da5dfdfa8cbb8a709",
+    "tools/watchdog.py": "9c6522a7676d9bfac291e74ab462bf72f53180453ba4f6fc148075d334f3ae18"
+  },
+  "adapted_checks": {
+    "tests/test_web_debug_search.py": {
+      "baseline_sha256": "a67df0e2a849684e51a21f48a1f8cc72ae5fe21cd22ca6df63f7743782924666",
+      "reason": "Compare complete workflow and all non-description frontmatter while allowing registered discovery-description edits."
+    },
+    "tests/test_claude_review_artifact_tools.py": {
+      "baseline_sha256": "17be685bf74111bd000b07368ffef333ef47208a8993dbf3b2838ee6fd75de5c",
+      "reason": "Compare complete workflow and all non-description frontmatter while allowing registered discovery-description edits."
+    }
+  }
+}

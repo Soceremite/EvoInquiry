@@ -2,7 +2,8 @@
 
 [README](../README.md) · [中文介绍](../README_CN.md)
 
-The plugin provides **83 skills**. Invoke a skill with the `evo-inquiry:`
+The plugin provides **84 skills**: 83 retained workflow entrypoints and the
+research-guide coordinator. Invoke a skill with the `evo-inquiry:`
 namespace; each link below opens the Codex implementation actually installed.
 The table describes capabilities and setup categories. Read the selected
 `SKILL.md` for exact inputs, dependencies, outputs, and checkpoints.
@@ -16,6 +17,7 @@ or dependency does not establish that an integration is configured.
 
 | Skill | Capability | Setup |
 | --- | --- | --- |
+| [`/research-guide`](../skills/skills-codex/research-guide/SKILL.md) | Resume a project or choose the next evidence-based step; reads and executes the appropriate skill within the task's scope | Dependencies of the selected step |
 | [`/research-pipeline`](../skills/skills-codex/research-pipeline/SKILL.md) | **Full chain** — Workflow 1 → 1.5 → 2 → 3, from research direction to submission-ready paper | Native Codex review, LaTeX, GPU |
 | [`/idea-discovery`](../skills/skills-codex/idea-discovery/SKILL.md) | **Workflow 1** — research-lit → idea-creator → novelty-check → research-review → research-refine-pipeline | Native Codex review |
 | [`/idea-discovery-robot`](../skills/skills-codex/idea-discovery-robot/SKILL.md) | Workflow 1 adapter for robotics / embodied AI — robotics-aware literature survey + benchmark-anchored ideation | Native Codex review |
@@ -106,7 +108,7 @@ or dependency does not establish that an integration is configured.
 | [`/mermaid-diagram`](../skills/skills-codex/mermaid-diagram/SKILL.md) | Generate Mermaid diagrams from requirements — flowcharts, sequence, class, ER, Gantt, with syntax verification | Task-dependent; see skill |
 | [`/pixel-art`](../skills/skills-codex/pixel-art/SKILL.md) | Generate pixel-art SVG illustrations for READMEs, docs, slides | Task-dependent; see skill |
 | [`/paper-compile`](../skills/skills-codex/paper-compile/SKILL.md) | Compile LaTeX paper to PDF — auto-fix errors, submission readiness checks | LaTeX (`latexmk`, `pdfinfo`) |
-| [`/auto-paper-improvement-loop`](../skills/skills-codex/auto-paper-improvement-loop/SKILL.md) | 2-round content review + format check — typical 4 / 10 → 8.5 / 10 score lift. `--edit-whitelist` mode for resubmits | Native Codex review |
+| [`/auto-paper-improvement-loop`](../skills/skills-codex/auto-paper-improvement-loop/SKILL.md) | Bounded content-review, revision, and format-check rounds. `--edit-whitelist` mode for resubmits | Native Codex review |
 | [`/proof-writer`](../skills/skills-codex/proof-writer/SKILL.md) | Draft rigorous mathematical proofs for ML / AI theory — theorems, lemmas, propositions, corollaries; fill in missing steps; formalize sketches | Task-dependent; see skill |
 | [`/writing-systems-papers`](../skills/skills-codex/writing-systems-papers/SKILL.md) | Paragraph-level structural blueprint for 10-12 page systems papers — page allocation, paragraph templates, writing patterns for OSDI / SOSP / ASPLOS / NSDI / EuroSys | Task-dependent; see skill |
 | [`/grant-proposal`](../skills/skills-codex/grant-proposal/SKILL.md) | Structured grant proposal drafting — KAKENHI (JP), NSF (US), NSFC (CN including 面上 / 青年 / 优青 / 杰青 / 海优 / 重点), ERC (EU), DFG (DE), more | Task-dependent; see skill |
@@ -154,4 +156,4 @@ or dependency does not establish that an integration is configured.
 - Claude/Gemini reviewer overlays are optional compatibility resources; the
   standard EvoInquiry plugin discovers the base Codex directory.
 - Topic and platform skills serve specialized workflows. The beta ships all
-  83 entries; select the ones appropriate to the task.
+  84 entries; select the ones appropriate to the task.

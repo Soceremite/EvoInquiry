@@ -62,6 +62,18 @@ without repeated permission requests; respect explicit project constraints,
 scope changes, and user-defined stopping boundaries. Existing project-specific
 research rules still apply. These principles authorize no extra actions.
 
+Connect each next step to an unresolved question, its existing evidence, and the
+decision the new evidence would change. Complete necessary adjacent steps within
+the same authorized goal, subject to the active workflow's checkpoints, budget,
+and stopping conditions. Advice-only requests remain advice.
+
+Reuse relevant valid artifacts and check the evidence behind resumed statuses.
+Missing artifacts, negative findings, and alternative explanations affect the
+decision: revise the plan, narrow a conclusion, prepare a discriminating test,
+or stop. Record useful evidence paths and unresolved issues in the workflow's
+existing records. Workflow completion, review acceptance, and support for a
+research claim are distinct judgments.
+
 When a helper needs ARIS_REPO and no explicit project repository is selected,
 resolve the root of the loaded EvoInquiry package from the actual SKILL.md
 location (the root containing skills/ and tools/), and use that root with the

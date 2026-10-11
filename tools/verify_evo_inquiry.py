@@ -10,15 +10,18 @@ import sys
 
 try:
     from tools.publication_policy import load_policy, publication_errors
+    from tools.skill_contracts import HOOK, contract_errors, load_contract, skill_parts
 except ModuleNotFoundError:
     from publication_policy import load_policy, publication_errors
+    from skill_contracts import HOOK, contract_errors, load_contract, skill_parts
 
-BLOCK = re.compile(r"\n<!-- EVO-INQUIRY:BEGIN -->\n.*?<!-- EVO-INQUIRY:END -->\n\n", re.S)
+BLOCK = HOOK
 
 
 def verify(root: Path, baseline: Path | None = None) -> dict:
     errors: list[str] = []
     errors.extend(publication_errors(root))
+    errors.extend(contract_errors(root))
     skills_root = root / 'skills/skills-codex'
     skills = sorted(skills_root.glob('*/SKILL.md'))
     reference = skills_root / 'shared-references/evo-inquiry.md'
@@ -28,20 +31,26 @@ def verify(root: Path, baseline: Path | None = None) -> dict:
         principles = reference.read_text()
         if len(re.findall(r'^## [1-6]\. ', principles, re.M)) != 6:
             errors.append('Expected six named principles')
-    upstream_skills = sorted((root / 'skills').glob('*/SKILL.md'))
-    if {p.parent.name for p in skills} != {p.parent.name for p in upstream_skills}:
-        errors.append('Codex skill inventory differs from retained upstream inventory')
+    try:
+        retained = set(load_contract(root)['retained_skills'])
+    except (OSError, ValueError, TypeError):
+        retained = set()
     for skill in skills:
         rel = skill.relative_to(root)
         body = skill.read_text()
         if len(BLOCK.findall(body)) != 1:
-            errors.append(f'{rel}: expected one compass entry block')
+            errors.append(f'{rel}: expected one EvoInquiry entry block')
         target = skill.parent / '../shared-references/evo-inquiry.md'
-        if not target.is_file() or target.resolve() != reference.resolve():
+        if ('[EvoInquiry](../shared-references/evo-inquiry.md)' not in body
+                or not target.is_file() or target.resolve() != reference.resolve()):
             errors.append(f'{rel}: reference does not resolve to the common principles')
-        if baseline is not None:
+        if baseline is not None and skill.parent.name in retained:
             old = baseline / rel
-            if not old.is_file() or BLOCK.sub('', body) != old.read_text():
+            try:
+                equal = old.is_file() and skill_parts(body)[:2] == skill_parts(old.read_text())[:2]
+            except (ValueError, TypeError):
+                equal = False
+            if not equal:
                 errors.append(f'{rel}: original skill body or frontmatter changed')
     manifest = json.loads((root / '.codex-plugin/plugin.json').read_text())
     if manifest.get('name') != 'evo-inquiry':
@@ -68,11 +77,18 @@ def verify(root: Path, baseline: Path | None = None) -> dict:
             '.codex-plugin/plugin.json', 'README.md', 'README_CN.md',
             'tests/test_plugin_manifest.py', 'tests/test_codex_skill_mirror.py',
             'tests/test_web_debug_search.py',
+            'tests/test_claude_review_artifact_tools.py',
+            'tests/test_evo_inquiry.py',
             'tools/check_skills_inventory.py',
             'tools/generate_codex_claude_review_overrides.py',
             '.gitignore', 'CONTRIBUTING.md', 'CONTRIBUTING_CN.md',
             '.github/workflows/test-suite.yml',
             '.github/workflows/check-skills-inventory.yml',
+            'VERSION', 'AGENT_GUIDE.md', 'CHANGELOG.md', 'RELEASE_NOTES.md',
+            'release-validation.json', 'docs/BETA_VALIDATION.md',
+            'skills/skills-codex/shared-references/evo-inquiry.md',
+            '.github/workflows/release-beta.yml',
+            'tools/verify_evo_inquiry.py',
         } | set(policy['adapted_upstream_documents']) | {str(p.relative_to(root)) for p in skills}
         for original in baseline.rglob('*'):
             rel = original.relative_to(baseline)
@@ -91,6 +107,8 @@ def verify(root: Path, baseline: Path | None = None) -> dict:
         'skill_entrypoints': len(skills),
         'shared_reference_resolves': not any('reference' in e.lower() for e in errors),
         'baseline_compared': baseline is not None,
+        'frozen_contract_checked': True,
+        'retained_skill_contracts': len(retained),
         'errors': errors,
         'status': 'PASS' if not errors else 'FAIL',
         'limitation': 'Packaging and preservation checks do not establish future model behavior.',

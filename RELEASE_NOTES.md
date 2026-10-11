@@ -1,11 +1,11 @@
-# EvoInquiry 1.0 Beta 3
+# EvoInquiry 1.0 Beta 4 — candidate
 
-This release removes 193 unnecessary files from the public package, including upstream promotional drafts, archived READMEs, community showcases, redundant client documentation, and generated tutorials unrelated to skill inputs.
+This candidate adds research-guide for continuing a project or choosing its next useful step from existing evidence. Clear tasks can select their execution skill directly; explicit skill calls remain available. All 83 retained workflow bodies, non-description metadata, runtime helpers, reviewer contracts, and recovery rules remain protected, bringing the Codex inventory to 84 entrypoints.
 
-All 83 Codex research skill entrypoints remain available. Their original workflow bodies and frontmatter are preserved, together with runtime helpers, reviewer resources, and the canonical examples explicitly used by skills. The catalog links to the installed Codex implementations; workflow controls, recovery guidance, and contribution instructions now describe EvoInquiry.
+Discovery descriptions are shorter and distinguish method refinement, experiment planning, numerical analysis, claim assessment, and full workflows. Shared guidance connects authorized continuation to evidence, budgets, review status, and stopping conditions. An optional AGENTS.md snippet helps research projects apply these rules while retaining their own instructions.
 
-Install the v1.0.0-beta.3 tag using README.md or README_CN.md. Release assets include source archives, SHA256SUMS, and a manifest identifying their commit. The publication policy checks that retired material stays excluded and that required references remain present. Linux and macOS full regression suites must pass before these assets are published.
+The local Linux suite passed 792 tests, with 20 environment-dependent skips. A frozen set of 24 bilingual offline cases compares actual skill reads, tool execution, and delivered artifacts against beta.3. The candidate passes 22 of 24 cases; two long planning tasks remain inconclusive after reaching their time limits. The baseline passes 23, so stable overall proactivity improvement is not established. Final packaging checks are pending; this candidate has not been published. See [validation status](docs/BETA_VALIDATION.md) and [release-validation.json](release-validation.json) for the assessed results and limits.
 
-Validation scope is documented in docs/BETA_VALIDATION.md and release-validation.json. Optional services require their own setup; complete research projects and live providers are not verified end to end.
+Source archives, when built from the reviewed commit, include SHA256SUMS and a manifest identifying their source and inventory. Installation uses the Codex plugin commands in README.md or README_CN.md. Public publication requires passing Linux and macOS CI suites. Live providers, GPU workloads, complete research projects, and broad discipline coverage have not been verified end to end.
 
 MIT licensed. Required upstream attribution remains in LICENSE and NOTICE.

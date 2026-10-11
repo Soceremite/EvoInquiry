@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.0.0-beta.4 — candidate
+
+- Add research-guide for project continuation and evidence-based next-step coordination; keep all 83 existing entrypoints.
+- Refine each Codex description for natural request selection, reducing the total from 23,910 to 13,229 characters across 84 entries.
+- Reuse shared guidance within a session and connect authorized continuation to evidence, resource limits, review states, and stopping conditions.
+- Add an optional research-project AGENTS.md snippet and bilingual usage examples.
+- Protect retained workflow bodies, non-description metadata, and runtime files with a frozen beta.3 contract and destructive-change regression checks.
+- Add 24 bilingual offline behavior cases, isolated Codex execution, and trace-based assessment; validation status is recorded in BETA_VALIDATION.md.
+
 ## 1.0.0-beta.3 — 2026-10-11
 
 - Remove upstream promotional material, community showcases, redundant client guides, and unused generated tutorials.
