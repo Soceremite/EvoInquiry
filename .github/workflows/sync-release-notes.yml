@@ -1,0 +1,37 @@
+name: Format release notes
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'RELEASE_NOTES.md'
+      - 'tools/sync_release_notes.py'
+      - '.github/workflows/sync-release-notes.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: format-release-notes
+  cancel-in-progress: false
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check source paragraph formatting
+        run: python tools/sync_release_notes.py --check-file RELEASE_NOTES.md
+      - name: Format existing beta release descriptions
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python tools/sync_release_notes.py --repository "$GITHUB_REPOSITORY"

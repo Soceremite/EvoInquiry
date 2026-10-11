@@ -32,6 +32,7 @@ jobs:
           python -c 'import os; from pathlib import Path; assert os.environ["RELEASE_TAG"] == "v" + Path("VERSION").read_text().strip()'
           python tools/verify_evo_inquiry.py
           python tools/check_skills_inventory.py
+          python tools/sync_release_notes.py --check-file RELEASE_NOTES.md
       - name: Run regression suite
         run: python -m pytest tests/ -q -rs
 
