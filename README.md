@@ -56,8 +56,10 @@ Domain-specific workflows and provider integrations are available in the
 Use a Codex installation that provides the `codex plugin` commands. Plugin
 installation has been checked with Codex CLI **0.162.1** on Linux.
 
-For this candidate, enter its local checkout or extracted candidate archive and
-run the two plugin commands below:
+For this candidate, enter a clean extracted source archive and run the two
+plugin commands below. Codex CLI 0.162.1 copies the installation directory into
+its cache, including local untracked files. Use an archive containing the public
+files to keep local validation records, build outputs and Git history out of it.
 
 ```sh
 cd /path/to/EvoInquiry

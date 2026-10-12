@@ -1,135 +1,189 @@
 {
-  "version": "1.0.0-beta.4",
-  "candidate_status": "locally-validated candidate; not published; GitHub Linux/macOS CI pending",
+  "version": "1.0.0-beta.5",
+  "candidate_status": "locally validated candidate with stated limits; not published",
+  "implementation_commit": "ab30307a9c0b34aa191cdc5af0e8925321561f63",
   "upstream_commit": "3b19a22dc5a64c983d2eafd6c2c94000fadc4f8d",
   "preservation_baseline_commit": "b9c7861fd22cd2f5471765d583c593f083fa12cc",
+  "behavior_comparison_baseline_commit": "a807775afdc26666c82d67c43d43f75e95daa7c4",
   "upstream_preservation": {
     "status": "PASS",
     "Codex_entrypoints": 84,
     "retained_workflow_bodies_and_non_description_frontmatter": 83,
-    "added_entrypoints": [
-      "research-guide"
-    ],
     "protected_baseline_files": 450,
-    "comparison": "Frozen beta.3 hashes, verified against the original commit. Only descriptions and marked EvoInquiry hooks changed in retained Codex skills; runtime helpers, reviewer overlays and recovery contracts remain byte-identical. Two legacy description-equality checks now compare bodies and all non-description fields."
-  },
-  "discovery_descriptions": {
-    "baseline_characters": 23910,
-    "candidate_characters": 13229,
-    "candidate_entries": 84,
-    "maximum_description_characters": 172,
-    "scope": "Discovery descriptions only; counts omit names, paths and other context metadata."
-  },
-  "publication_audit": {
-    "inherited_removed_files": 193,
-    "required_workflow_documents": 13,
-    "retirement_policy": "tools/publication-policy.json",
-    "local_raw_evidence": "Excluded from Git and source archives."
+    "changed_Codex_extension_hooks": 15,
+    "comparison": "Original workflow bodies, non-description metadata, and fixed protected runtime/reference files remain byte-identical outside the registered hooks."
   },
   "local_checks": {
     "inventory_check": "PASS",
     "fixed_baseline_preservation": "PASS",
-    "new_skill_metadata_validation": "PASS",
     "full_suite": {
+      "command": [
+        "/lyd/miniconda/envs/sspwm-portable/bin/python",
+        "-m",
+        "pytest",
+        "tests/",
+        "-q",
+        "-rs"
+      ],
       "exit_code": 0,
-      "seconds": 191.91,
-      "completed_at": "2026-10-11T15:45:01.453830+00:00",
-      "command": "python -m pytest tests/ -q -rs",
-      "platform": "Linux x86_64",
-      "python": "Python 3.12.14",
+      "seconds": 226.26,
+      "python": "3.12.14",
       "credential_environment_removed": true,
-      "passed": 792,
-      "skipped": 20,
-      "pytest_seconds": 190.17,
-      "skip_categories": {
-        "Windows_PowerShell": 12,
-        "live_MiniMax_requires_API_key": 4,
-        "interactive_expect_tool_missing": 4
-      }
+      "removed_credential_variable_count": 0,
+      "GPU_visibility_disabled": true,
+      "completed_at_utc": "2026-10-12T05:03:52.968011+00:00",
+      "passed": 848,
+      "skipped": 20
     },
-    "post_suite_changes": "Description-only routing refinement and report/README edits; fixed preservation, inventory, applicable real behavior cases, release formatting and local links rechecked."
+    "checkpoint_tests": 54,
+    "post_suite_changes": "Public validation and release documents only.",
+    "lifecycle_independent_forward": {
+      "status": "PASS",
+      "helper_sha256": "0ae5d3bcfb25dd6299e12fae6ca44907c30fe66081621ddd703cac1fb263e254",
+      "CPU_SGD_runs": 4,
+      "updates_per_run": 60,
+      "results_files_unchanged": 16,
+      "artifact_and_metadata_bytes_before": 65785,
+      "artifact_and_metadata_bytes_after": 5179,
+      "checks": [
+        "validation-selected winner and explicit teacher dependency",
+        "actual process kill and journal recovery",
+        "ENOSPC and failed-export preservation",
+        "corrupt archived survivor refuses finish and prune retry; restored survivor allows completion"
+      ],
+      "limit": "Local cooperating processes; no actual power-loss or GPU certification."
+    }
   },
   "behavior_evaluation": {
     "status": "COMPLETE_WITH_LIMITS",
-    "cases": 24,
-    "Chinese_cases": 12,
-    "English_cases": 12,
-    "candidate_target_passes": 22,
-    "target_met": true,
-    "critical_errors": 0,
-    "source": "tests/behavior/evo-inquiry-cases.json",
-    "protocol": "docs/SKILL_BEHAVIOR_EVAL.md",
-    "scope": "Offline synthetic fixtures, isolated fresh Codex sessions, frozen rubric, actual trace and artifact assessment; same CLI/model/settings for each pair.",
-    "candidate_passes": 22,
-    "baseline_passes": 23,
-    "candidate_inconclusive": [
+    "original_manifest_sha256": "a3967b120a2a9bfdc962ae74ae2cfbffdf6505e65a902a8d28b2b3181aeb9651",
+    "original_subset": [
       "04",
-      "13"
-    ],
-    "baseline_inconclusive": [
-      "22"
-    ],
-    "critical_error_scope": "Observed traces and artifacts; interrupted planning attempts are not certified completed workflows.",
-    "mandatory_explicit_call_cases": [
-      "18",
-      "20"
-    ],
-    "mandatory_resumption_cases": [
+      "05",
+      "06",
       "09",
+      "10",
       "11",
-      "14"
-    ],
-    "mandatory_small_task_cases": [
+      "13",
+      "14",
       "15",
       "16",
-      "17"
+      "17",
+      "18",
+      "24"
     ],
-    "mandatory_cases_pass": true,
+    "storage_manifest_sha256": "e72474cbcf4f15a58b1b37729e2f597ec78076e0d0db41a10ef5daec380aaf07",
+    "storage_cases": 4,
+    "protocol": "docs/SKILL_BEHAVIOR_EVAL.md",
+    "historical_beta4_full_matrix": {
+      "passed": 22,
+      "cases": 24,
+      "inconclusive": [
+        "04",
+        "13"
+      ],
+      "scope": "Historical result; not a fresh beta.5 full-matrix run."
+    },
     "model": "gpt-6.1-sol",
     "reasoning_effort": "max",
     "Codex_CLI": "0.162.1",
     "runtime_ceiling_seconds": 600,
-    "unchanged_smoke_pair_ceiling": {
-      "05": 300
-    },
     "tool_action_limit": 32,
-    "case_manifest_sha256": "a3967b120a2a9bfdc962ae74ae2cfbffdf6505e65a902a8d28b2b3181aeb9651",
-    "median_tool_actions": {
-      "baseline": 8.5,
-      "candidate": 9.0
-    },
     "stable_proactivity_improvement_established": false,
-    "comparison": "21 unchanged; candidate completes case22 while baseline is inconclusive; candidate inconclusive on cases04 and13 while baseline completes. Retries retained; no stable improvement established.",
-    "corrections": "Recovery diagnosis finishes its handoff without optional claim adjudication. Narrower result-to-claim discovery retains explicit claim assessment, but case13 still chooses extra claim assessment and times out.",
-    "attempt_policy": "Retain original timeouts, affected-case retries, startup failures, stream concurrency retries and storage interruption. Reuse unaffected earlier cases only; lost temporary evidence not counted."
+    "original_subset_passed": 13,
+    "original_subset_outcomes": {
+      "04": "PASS",
+      "05": "PASS",
+      "06": "PASS",
+      "09": "PASS",
+      "10": "PASS",
+      "11": "PASS",
+      "13": "PASS",
+      "14": "PASS",
+      "15": "PASS",
+      "16": "PASS",
+      "17": "PASS",
+      "18": "PASS",
+      "24": "PASS"
+    },
+    "core_source_scope": "Core changes through ab30307; earlier unaffected successful cases reused under the published protocol. Not a fresh full24-case matrix or new executions against all later archive instruction bytes.",
+    "storage_outcomes": {
+      "S01": "INCONCLUSIVE",
+      "S02": "PASS",
+      "S03": "PASS",
+      "S04": "PASS"
+    },
+    "lifecycle_extension": {
+      "source_commit": "ab6ed6d285054ed0026fba678d794d71535d6725",
+      "manifest_sha256": "765639412dc08b7bfa1cf6db629aeebca980ec917bb593e3fec34eb1ff3196c3",
+      "cases": 2,
+      "outcomes": {
+        "L01": "PASS",
+        "L02": "PASS"
+      },
+      "seconds": {
+        "L01": 481.38,
+        "L02": 405.1
+      },
+      "actual_file_removal_and_evidence_preservation": true
+    },
+    "retained_failed_and_incomplete_attempts": "Initial two-sided case04 timeouts, earlier missing standalone trackers, three zero-action CLI startup failures with completed retries, parent-runner interruptions with unknown exit/timing, and both inconclusive S01 attempts retained."
   },
   "development_checks": {
-    "fresh_Codex_CLI": "0.162.1",
-    "isolated_baseline_entries_discovered": 83,
-    "isolated_candidate_entries_discovered": 84,
-    "installed_skill_bytes_match_sources": "PASS",
-    "relocation_check": "PASS: committed tar.gz and zip inventories match; extracted archive with spaces passes frozen preservation and includes checkpoint fixtures",
-    "rollback_check": "PASS: beta.3 install discovered 83 source-matching entries, restored beta.4 with 84 source-matching entries",
-    "relocated_shared_principle_links": "PASS",
-    "installed_model_settings_preserved": true,
+    "implementation_archive": {
+      "source_commit": "ab30307a9c0b34aa191cdc5af0e8925321561f63",
+      "file_count": 699,
+      "tar_zip_bytes_match": true,
+      "relocated_package_status": "PASS",
+      "skill_entrypoints": 84,
+      "helper_policy_and_fixture_files_present": true,
+      "private_records_excluded": true,
+      "scope": "Implementation archive; final public validation documents are updated after behavior checks."
+    },
+    "final_installation": {
+      "status": "PASS",
+      "ordinary_discovery_without_variant_overrides": true,
+      "entrypoints": 84,
+      "selector": "evo-inquiry@evo-inquiry",
+      "version": "1.0.0-beta.5",
+      "public_source_files_matching": 730,
+      "all_entrypoints_shared_references_and_helper_match": true,
+      "private_validation_and_dist_excluded": true,
+      "model_settings_preserved": true,
+      "helper_sha256": "0ae5d3bcfb25dd6299e12fae6ca44907c30fe66081621ddd703cac1fb263e254",
+      "source_directory": "dist/installed-source/evo-inquiry-1.0.0-beta.5",
+      "reason_for_clean_source": "Codex CLI0.162.1 copies local untracked files into caches; clean public source excludes validation, dist and Git history."
+    },
     "temporary_evaluation_plugins_removed": true,
-    "ordinary_final_discovery_without_overrides": "PASS: 84 enabled EvoInquiry entries from the sole official plugin",
-    "final_cache_skill_and_common_bytes_match": true,
-    "final_cache_raw_validation_excluded": true
+    "final_source_archive": {
+      "method": "Build from final committed public source with tools/build_beta_release.py; asset release-manifest.json separately records exact commit and checksums.",
+      "implementation_archive_validation": "PASS",
+      "file_count": 730,
+      "private_records_excluded": true
+    },
+    "lifecycle_implementation_archive": {
+      "status": "PASS",
+      "source_commit": "ab6ed6d285054ed0026fba678d794d71535d6725",
+      "file_count": 730,
+      "tar_zip_bytes_match": true,
+      "all_source_bytes_match": true,
+      "relocated_preservation_and_references": "PASS",
+      "relocated_terminal_fixture_status": "PASS",
+      "private_records_excluded": true
+    },
+    "public_document_links": {
+      "status": "PASS",
+      "documents": 10,
+      "local_targets": 59,
+      "scope": "Local file targets outside code examples; external links and anchors not fetched."
+    }
   },
-  "CI_scope": "Local results are Linux only. Linux and macOS full suites must pass in GitHub Actions before public release; their actual results are authoritative.",
-  "artifact_integrity": "Git-tracked source archives are checked against the publication policy. SHA256SUMS and release-manifest.json identify archive digests, source commit, and skill inventory.",
+  "CI_scope": "Local Linux only; Linux/macOS GitHub Actions must pass before publication.",
   "limits": [
-    "Windows and credential-gated integration checks were not exercised by the local full suite.",
-    "Live providers, GPUs, image renderers, and complete research pipelines are not verified end to end.",
-    "Inherited workflows primarily target ML/AI and related engineering research; broad discipline coverage is untested.",
-    "No validation proves general scientific correctness or improved research outcomes.",
-    "Raw local session/validation records are excluded from public Git content."
+    "Fresh CLI storage-implementation case S01 is inconclusive at 600 seconds; deterministic checkpoint tests and CPU framework continuation passed independently.",
+    "No GPU, distributed/object-store recovery, actual power-loss certification, live providers, or complete research pipeline was verified.",
+    "New skill instructions do not automatically reconfigure existing training programs or delete existing checkpoints.",
+    "Synthetic cases do not establish general research correctness or improved research outcomes."
   ],
-  "validated_at_utc": "2026-10-11T17:23:47.128311+00:00",
-  "public_document_local_links": {
-    "documents_checked": 10,
-    "local_links_checked": 139,
-    "errors": []
-  }
+  "lifecycle_extension_commit": "ab6ed6d285054ed0026fba678d794d71535d6725"
 }
