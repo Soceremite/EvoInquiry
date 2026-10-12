@@ -79,19 +79,23 @@ time.sleep(20)
     assert (output / '01/events.jsonl').is_file()
 
 
-@pytest.mark.parametrize('drift', ['skill', 'guidance'])
+@pytest.mark.parametrize('drift', ['skill', 'guidance', 'storage', 'helper'])
 def test_discovery_rejects_stale_cache_with_the_correct_name_and_version(tmp_path, drift):
     toolkit = tmp_path / 'source'
     cache = tmp_path / 'cache/market/evo-inquiry/1.0.0-beta.4'
     skill_rel = Path('skills/skills-codex/example/SKILL.md')
     common_rel = Path('skills/skills-codex/shared-references/evo-inquiry.md')
+    storage_rel = Path('skills/skills-codex/shared-references/experiment-storage.md')
+    helper_rel = Path('tools/checkpoint_retention.py')
     for root in (toolkit, cache):
-        for rel, text in ((skill_rel, 'Current skill bytes'), (common_rel, 'Current guidance')):
+        for rel, text in ((skill_rel, 'Current skill bytes'), (common_rel, 'Current guidance'),
+                          (storage_rel, 'Current storage guidance'), (helper_rel, 'Current helper')):
             (root / rel).parent.mkdir(parents=True, exist_ok=True)
             (root / rel).write_text(text)
     (toolkit / '.codex-plugin').mkdir()
     (toolkit / '.codex-plugin/plugin.json').write_text('{"version":"1.0.0-beta.4"}')
-    (cache / (skill_rel if drift == 'skill' else common_rel)).write_text('Stale installed bytes')
+    (cache / {'skill': skill_rel, 'guidance': common_rel, 'storage': storage_rel,
+              'helper': helper_rel}[drift]).write_text('Stale installed bytes')
     selector = 'evo-inquiry@evo-inquiry-eval-beta4'
     response = {'data': [{'skills': [{'name': 'evo-inquiry:example', 'enabled': True,
                                       'pluginId': selector, 'path': str(cache / skill_rel)}]}]}
@@ -102,6 +106,7 @@ for line in sys.stdin:
     if 'id' in request:
         print(json.dumps({'id':request['id'],'result':response if request['method']=='skills/list' else {}}),flush=True)
 ''')
-    message = 'skill bytes' if drift == 'skill' else 'shared guidance'
+    message = {'skill': 'skill bytes', 'guidance': 'shared guidance',
+               'storage': 'support resource', 'helper': 'support resource'}[drift]
     with pytest.raises(RuntimeError, match=message):
         discover_variant(toolkit, selector, cli)

@@ -12,6 +12,8 @@ principles within the user's scope and this skill's existing outputs, review
 standards, and recovery contracts. Carry them into nested research tasks and
 reviewer briefs. Continue authorized work through its necessary steps; honor
 budgets, blocking checkpoints, and stopping conditions.
+
+For persistent training outputs, read [experiment storage](../shared-references/experiment-storage.md). Verify volume commit/completion semantics, capacity and retention; persist a complete recovery point before an ephemeral worker ends.
 <!-- EVO-INQUIRY:END -->
 
 

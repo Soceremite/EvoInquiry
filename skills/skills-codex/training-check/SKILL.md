@@ -12,6 +12,8 @@ principles within the user's scope and this skill's existing outputs, review
 standards, and recovery contracts. Carry them into nested research tasks and
 reviewer briefs. Continue authorized work through its necessary steps; honor
 budgets, blocking checkpoints, and stopping conditions.
+
+For runs saving large artifacts, include the [storage checks](../shared-references/experiment-storage.md): capacity, artifact growth, and valid-save age/failures. Apply established run policies to storage incidents and preserve valid recovery state when stopping.
 <!-- EVO-INQUIRY:END -->
 
 

@@ -10,6 +10,8 @@ principles within the user's scope and this skill's existing outputs, review
 standards, and recovery contracts. Carry them into nested research tasks and
 reviewer briefs. Continue authorized work through its necessary steps; honor
 budgets, blocking checkpoints, and stopping conditions.
+
+If iterations produce large artifacts, apply [experiment storage](../shared-references/experiment-storage.md) across the whole exploration: budget cumulative outputs, retain decision evidence, and protect dependencies and valid recovery state.
 <!-- EVO-INQUIRY:END -->
 
 

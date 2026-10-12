@@ -1,0 +1,70 @@
+{
+  "entries": [
+    {
+      "files": {
+        "state.json": {
+          "bytes": 7477,
+          "sha256": "68aa5d56c52ac9039c8bf5430f240f1acf2618861767ea5b78dca88c3111a807"
+        }
+      },
+      "id": "ckpt-cb912645df864d9c9bd1612ab50e914e",
+      "kind": "resume",
+      "pins": [],
+      "sequence": 1,
+      "step": 1000,
+      "validation": {
+        "label": "CPU toy full-state loader",
+        "passed": true,
+        "receipt": {
+          "loaded_toy_state": [
+            "data_cursor",
+            "lr",
+            "momentum",
+            "rng",
+            "step",
+            "weight"
+          ],
+          "rng_restored": true
+        }
+      }
+    },
+    {
+      "files": {
+        "state.json": {
+          "bytes": 7451,
+          "sha256": "b5e71b27c8e2f1eb1588ecb9bbeffe8838a7e53bc2b2ea9492937109f93f3760"
+        }
+      },
+      "id": "ckpt-de7d650e3b5e4b75ac9db24a5d608c56",
+      "kind": "resume",
+      "pins": [],
+      "sequence": 2,
+      "step": 2000,
+      "validation": {
+        "label": "CPU toy full-state loader",
+        "passed": true,
+        "receipt": {
+          "loaded_toy_state": [
+            "data_cursor",
+            "lr",
+            "momentum",
+            "rng",
+            "step",
+            "weight"
+          ],
+          "rng_restored": true
+        }
+      }
+    }
+  ],
+  "garbage": [],
+  "generation": 2,
+  "policy": {
+    "budget_bytes": 65536,
+    "keep_last": 2,
+    "reserve_bytes": 0
+  },
+  "roles": {},
+  "run_id": "monitor-cpu",
+  "schema_version": 1
+}

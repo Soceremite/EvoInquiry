@@ -72,7 +72,13 @@ Missing artifacts, negative findings, and alternative explanations affect the
 decision: revise the plan, narrow a conclusion, prepare a discriminating test,
 or stop. Record useful evidence paths and unresolved issues in the workflow's
 existing records. Workflow completion, review acceptance, and support for a
-research claim are distinct judgments.
+research claim are distinct judgments. Ordinary numerical interpretation can
+record its limitations without initiating a formal claim-review workflow.
+
+For experiments producing large artifacts, treat storage and recoverability as
+resources alongside compute. Use a bounded retention policy appropriate to the
+research, preserve necessary evidence, and budget a complete new save before
+rotating older recovery points.
 
 When a helper needs ARIS_REPO and no explicit project repository is selected,
 resolve the root of the loaded EvoInquiry package from the actual SKILL.md

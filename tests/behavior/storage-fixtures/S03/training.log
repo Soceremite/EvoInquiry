@@ -1,0 +1,4 @@
+step=2100 loss=0.040
+step=2200 loss=0.035
+step=2300 loss=0.032
+WARNING interrupted save at step=2000; investigate before assuming recovery works

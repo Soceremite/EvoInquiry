@@ -1,0 +1,7 @@
+{
+  "checkpoint_artifact_budget_bytes": 65536,
+  "latest_full_resume_count": 2,
+  "best_model_count": 1,
+  "total_steps": 300000,
+  "sanity_steps": 40
+}

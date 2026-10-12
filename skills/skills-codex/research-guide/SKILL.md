@@ -10,6 +10,8 @@ principles within the user's scope and this skill's existing outputs, review
 standards, and recovery contracts. Carry them into nested research tasks and
 reviewer briefs. Continue authorized work through its necessary steps; honor
 budgets, blocking checkpoints, and stopping conditions.
+
+For analysis-to-plan requests, use the scope boundaries in [task-scope](../shared-references/task-scope.md). For artifact-producing experiments, carry the established [storage policy](../shared-references/experiment-storage.md) to the execution skill.
 <!-- EVO-INQUIRY:END -->
 
 

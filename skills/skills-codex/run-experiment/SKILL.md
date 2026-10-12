@@ -10,6 +10,8 @@ principles within the user's scope and this skill's existing outputs, review
 standards, and recovery contracts. Carry them into nested research tasks and
 reviewer briefs. Continue authorized work through its necessary steps; honor
 budgets, blocking checkpoints, and stopping conditions.
+
+Before launching an artifact-producing run, apply [experiment storage](../shared-references/experiment-storage.md): check the actual output filesystem and effective checkpoint policy, reserve full-save staging space, and record the valid recovery path.
 <!-- EVO-INQUIRY:END -->
 
 

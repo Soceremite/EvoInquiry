@@ -4,7 +4,7 @@
 
 [English](README.md) · [完整 skill 清单](docs/SKILLS_CATALOG.md) · [版本下载](https://github.com/Soceremite/EvoInquiry/releases) · [参与贡献](CONTRIBUTING_CN.md)
 
-**1.0 Beta — `v1.0.0-beta.4` 候选版**
+**1.0 Beta — `v1.0.0-beta.5` 候选版**
 
 EvoInquiry 是面向 Codex 的科研工作流工具集，提供 **84 个 Codex skill**，
 帮助你从宽泛的研究方向出发，形成具体方案，实施和评估实验，审查证据，
@@ -30,6 +30,11 @@ EvoInquiry 是面向 Codex 的科研工作流工具集，提供 **84 个 Codex s
 各阶段产出的方案、结果、评审报告和研究笔记可供你检查，并作为后续工作的输入。
 随着新证据出现，可以通过迭代评审继续修正研究方案与方法。
 
+长时间实验会考虑存储预算与有界的断点保留。默认保留最近两个有效的训练恢复点、
+按验证指标选出的最佳模型，以及需要交付的最终模型。计划同时考虑并发保存峰值
+和已完成实验的累计占用；实现与监控检查实际保存行为和恢复能力。
+框架集成与可选的本地断点工具见[存储策略](skills/skills-codex/shared-references/experiment-storage.md)。
+
 当前 beta 主要面向 ML、AI 与相关工程科研。
 领域专用流程和后端集成见[完整清单](docs/SKILLS_CATALOG.md)，请按项目需要选择。
 
@@ -49,7 +54,7 @@ codex plugin add evo-inquiry@evo-inquiry
 ```
 
 该版本发布后，可以使用
-`git clone --branch v1.0.0-beta.4 https://github.com/Soceremite/EvoInquiry.git EvoInquiry`
+`git clone --branch v1.0.0-beta.5 https://github.com/Soceremite/EvoInquiry.git EvoInquiry`
 获取带版本标签的源码。
 
 也可以解压 [Release 下载包](https://github.com/Soceremite/EvoInquiry/releases)，
@@ -130,7 +135,7 @@ python -m pytest tests/ -q
 请重新注册该目录的本地 marketplace。
 
 需要回退时，进入 beta.3 源码或解压后的版本目录，重复上面的两条安装命令，
-然后启动新会话。从候选版本目录重复这些步骤即可恢复 beta.4。
+然后启动新会话。从候选版本目录重复这些步骤即可恢复 beta.5。
 请保留当前使用的版本目录，供本地 marketplace 读取。
 
 <a id="license"></a>

@@ -12,6 +12,8 @@ principles within the user's scope and this skill's existing outputs, review
 standards, and recovery contracts. Carry them into nested research tasks and
 reviewer briefs. Continue authorized work through its necessary steps; honor
 budgets, blocking checkpoints, and stopping conditions.
+
+Apply [experiment storage](../shared-references/experiment-storage.md) before submitting a batch: budget cumulative and concurrent artifacts, cap parallelism accordingly, and pin teacher/phase inputs. A GPU-ready slot alone does not establish storage readiness.
 <!-- EVO-INQUIRY:END -->
 
 

@@ -34,7 +34,7 @@ def cli_command(codex: str) -> list[str]:
 
 def selection_config(selector: str) -> list[str]:
     settings = []
-    for name in ("evo-inquiry@evo-inquiry", "evo-inquiry@evo-inquiry-eval-beta3", "evo-inquiry@evo-inquiry-eval-beta4"):
+    for name in ("evo-inquiry@evo-inquiry", "evo-inquiry@evo-inquiry-eval-beta3", "evo-inquiry@evo-inquiry-eval-beta4", "evo-inquiry@evo-inquiry-eval-beta5"):
         settings += ["-c", 'plugins.' + json.dumps(name) + '.enabled=false']
     # skills/list includes skills from installed but disabled plugins in this
     # CLI version. Disable other variants by their exact skill paths as well,
@@ -106,9 +106,23 @@ def discover_variant(toolkit: Path, selector: str, codex: str) -> dict:
                             for s in skills}
     if cached_common_hashes != {common_hash}:
         raise RuntimeError("Installed shared guidance differs from the evaluation source; refresh the selected plugin cache")
+    resources = sorted((toolkit / 'skills/skills-codex/shared-references').glob('*.md'))
+    helper = toolkit / 'tools/checkpoint_retention.py'
+    if helper.is_file():
+        resources.append(helper)
+    resource_hashes = {}
+    for resource in resources:
+        relative = resource.relative_to(toolkit)
+        expected_hash = hashlib.sha256(resource.read_bytes()).hexdigest()
+        for skill in skills:
+            installed = Path(skill['path']).parents[3] / relative
+            if not installed.is_file() or hashlib.sha256(installed.read_bytes()).hexdigest() != expected_hash:
+                raise RuntimeError(f'Installed support resource differs from the evaluation source: {relative}')
+        resource_hashes[str(relative)] = expected_hash
     return {"entrypoints": len(skills), "selector": selector, "version": version,
             "skill_paths": [s["path"] for s in skills],
-            "skill_sha256": hashes, "common_reference_sha256": common_hash}
+            "skill_sha256": hashes, "common_reference_sha256": common_hash,
+            "support_resource_sha256": resource_hashes}
 
 
 def run_case(case: dict, fixture_root: Path, output: Path, toolkit: Path, codex: str, selector: str) -> dict:
@@ -197,10 +211,12 @@ def main() -> None:
     parser.add_argument("--codex", default="codex")
     parser.add_argument("--selector", default="evo-inquiry@evo-inquiry", help="Installed plugin ID; use separate marketplace IDs for paired runs")
     parser.add_argument("--cases", default="smoke", help="smoke, all, or comma-separated IDs")
+    parser.add_argument("--manifest", type=Path, default=ROOT / 'tests/behavior/evo-inquiry-cases.json',
+                        help="Separate frozen case manifest; the original 24-case rubric stays unchanged")
     parser.add_argument("--jobs", type=int, default=2, choices=range(1, 5))
     parser.add_argument("--timeout-seconds", type=int, help="Explicit equal runtime ceiling for both variants; retain earlier attempts")
     args = parser.parse_args()
-    manifest_path = ROOT / "tests/behavior/evo-inquiry-cases.json"
+    manifest_path = args.manifest.resolve()
     manifest = json.loads(manifest_path.read_text())
     selected = set(manifest["smoke_cases"] if args.cases == "smoke" else
                    [c["id"] for c in manifest["cases"]] if args.cases == "all" else args.cases.split(","))

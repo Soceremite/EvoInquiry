@@ -10,6 +10,8 @@ principles within the user's scope and this skill's existing outputs, review
 standards, and recovery contracts. Carry them into nested research tasks and
 reviewer briefs. Continue authorized work through its necessary steps; honor
 budgets, blocking checkpoints, and stopping conditions.
+
+For planning, read [task-scope](../shared-references/task-scope.md): write common settings once and reserve time for artifact verification and delivery. Include the relevant [storage and recovery budget](../shared-references/experiment-storage.md); estimates may remain labeled execution prerequisites.
 <!-- EVO-INQUIRY:END -->
 
 

@@ -1,6 +1,6 @@
 ---
 name: result-to-claim
-description: "Judge whether completed experiments support stated research claims; check confounds and missing evidence. Use for claim-support decisions before writing or ablations."
+description: "Assess whether completed experiments support a specified research claim, with evidence checks and fresh review. Use for requested claim verdicts or required workflow gates."
 argument-hint: "[experiment-description-or-wandb-run]"
 allowed-tools: Bash(*), Read, Grep, Glob, Write, Edit
 ---
@@ -12,6 +12,8 @@ principles within the user's scope and this skill's existing outputs, review
 standards, and recovery contracts. Carry them into nested research tasks and
 reviewer briefs. Continue authorized work through its necessary steps; honor
 budgets, blocking checkpoints, and stopping conditions.
+
+Apply this formal gate when a claim-support verdict is requested or the active workflow requires it; ordinary analysis caveats alone do not trigger it. See [task-scope](../shared-references/task-scope.md). When required, all existing evidence, review, and routing rules below still apply.
 <!-- EVO-INQUIRY:END -->
 
 

@@ -35,3 +35,29 @@ it does not authorize unrelated actions or additional spending.
 
 Set project-specific constraints in the project's instructions. Save completed
 artifacts and pending work using [session recovery](SESSION_RECOVERY_GUIDE.md).
+
+## Experiment storage
+
+Specify a storage budget together with compute resources, for example:
+
+> Use the existing trainer. Budget 80 GiB for experiment artifacts, keep the
+> latest two full recovery points and one validation-selected best model, and
+> allow at most 15 minutes of training progress to be lost on interruption.
+> Check concurrent saving and completed runs before launching.
+
+These are project requirements to translate into the actual trainer's supported
+options and callbacks, rather than universal command-line flags. See the
+[storage policy](../skills/skills-codex/shared-references/experiment-storage.md).
+Existing running code keeps its saving behavior until that code/configuration
+is changed and, when required, restarted from a valid checkpoint.
+
+Framework counts may include the best checkpoint: for example, Trainer retention
+must leave room for both recent recovery generations when the best is older.
+Weights-only exports omit training state. Verify the installed version's options.
+
+Custom local loops can use [checkpoint_retention.py](../tools/checkpoint_retention.py)
+with their own writer and loader validator. Its byte limit counts artifacts and
+unregistered files in a dedicated run directory, excluding current manifest/lock
+metadata; allow additional filesystem headroom for metadata and its atomic writes.
+Inspection hashes files, so measure its I/O cost on large checkpoints. A policy
+cannot remove the need for adequate capacity for a complete new save.

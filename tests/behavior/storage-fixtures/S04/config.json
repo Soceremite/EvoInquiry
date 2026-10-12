@@ -1,0 +1,9 @@
+{
+  "backend": "local_cpu",
+  "steps": 300000,
+  "save_steps": 500,
+  "checkpoint_artifact_budget_bytes": 16384,
+  "full_resume_checkpoint_bytes_measured": 8192,
+  "latest_full_resume_count": 2,
+  "output": "checkpoints"
+}

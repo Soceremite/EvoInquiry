@@ -12,6 +12,8 @@ principles within the user's scope and this skill's existing outputs, review
 standards, and recovery contracts. Carry them into nested research tasks and
 reviewer briefs. Continue authorized work through its necessary steps; honor
 budgets, blocking checkpoints, and stopping conditions.
+
+For training instances, apply [experiment storage](../shared-references/experiment-storage.md) to target volumes and actual trainer settings. Verify necessary results and recoverable checkpoints are durably persisted before instance destruction.
 <!-- EVO-INQUIRY:END -->
 
 

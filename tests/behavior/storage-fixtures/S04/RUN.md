@@ -1,0 +1,1 @@
+Ready CPU launch command: python train.py. The measured checkpoint size and required retention are in config.json. A complete new save must fit before rotating old recovery points. Do not alter the stated minimum retention or rent storage.

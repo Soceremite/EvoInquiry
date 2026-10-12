@@ -1,0 +1,1 @@
+A fixed method comparison needs 12 independent seeded training runs. Every completed and active run must retain its two latest full resume generations. Shared input data/cache occupies 10 GiB. Do not silently change these requirements or obtain new storage.

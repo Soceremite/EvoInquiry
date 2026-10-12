@@ -4,7 +4,7 @@
 
 [中文](README_CN.md) · [Skill inventory](docs/SKILLS_CATALOG.md) · [Releases](https://github.com/Soceremite/EvoInquiry/releases) · [Contributing](CONTRIBUTING.md)
 
-**1.0 Beta — `v1.0.0-beta.4` candidate**
+**1.0 Beta — `v1.0.0-beta.5` candidate**
 
 EvoInquiry is a research workflow toolkit for Codex. Its **84 Codex skills**
 help you turn a broad research direction into a focused proposal, implement
@@ -34,6 +34,13 @@ review reports, and research notes give you concrete artifacts to inspect
 and carry into the next stage. Review cycles let you revise a proposal or
 method as new evidence arrives.
 
+Long-running experiments include a storage budget and bounded checkpoint
+retention. The default keeps two valid training recovery points, a
+validation-selected best model, and a final model when required. Plans account
+for concurrent save peaks and completed runs; implementation and monitoring
+check actual saving and recovery. See the [storage policy](skills/skills-codex/shared-references/experiment-storage.md)
+for native framework integration and the optional local checkpoint helper.
+
 The current beta primarily targets ML, AI, and related engineering research.
 Domain-specific workflows and provider integrations are available in the
 [full inventory](docs/SKILLS_CATALOG.md); choose those that fit your project.
@@ -55,7 +62,7 @@ codex plugin add evo-inquiry@evo-inquiry
 ```
 
 After publication, obtain this version with
-`git clone --branch v1.0.0-beta.4 https://github.com/Soceremite/EvoInquiry.git EvoInquiry`.
+`git clone --branch v1.0.0-beta.5 https://github.com/Soceremite/EvoInquiry.git EvoInquiry`.
 
 You can also extract a [release archive](https://github.com/Soceremite/EvoInquiry/releases),
 enter its root directory, and run the two `codex plugin` commands. Start a
@@ -147,7 +154,7 @@ checkout to a different path.
 
 To roll back, enter a beta.3 checkout or extracted release and repeat the two
 installation commands, then start a new session. Repeat them from the candidate
-directory to restore beta.4. Keep the selected source directory available.
+directory to restore beta.5. Keep the selected source directory available.
 
 <a id="license"></a>
 

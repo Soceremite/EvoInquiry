@@ -1,0 +1,9 @@
+{
+  "project_storage_budget_GiB": 120,
+  "shared_data_cache_GiB": 10,
+  "full_resume_checkpoint_GiB": 6,
+  "weights_only_GiB": 2,
+  "runs": 12,
+  "requested_parallelism": 8,
+  "all_completed_runs_must_remain_resumable": true
+}

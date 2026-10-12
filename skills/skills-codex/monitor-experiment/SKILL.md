@@ -10,6 +10,8 @@ principles within the user's scope and this skill's existing outputs, review
 standards, and recovery contracts. Carry them into nested research tasks and
 reviewer briefs. Continue authorized work through its necessary steps; honor
 budgets, blocking checkpoints, and stopping conditions.
+
+For runs saving large artifacts, use [experiment storage](../shared-references/experiment-storage.md) to report disk usage, save growth/failures, and the latest valid recovery point. A status query does not independently authorize cleanup.
 <!-- EVO-INQUIRY:END -->
 
 

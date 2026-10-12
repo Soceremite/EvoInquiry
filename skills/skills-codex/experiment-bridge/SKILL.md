@@ -10,6 +10,8 @@ principles within the user's scope and this skill's existing outputs, review
 standards, and recovery contracts. Carry them into nested research tasks and
 reviewer briefs. Continue authorized work through its necessary steps; honor
 budgets, blocking checkpoints, and stopping conditions.
+
+For artifact-producing runs, read [experiment storage](../shared-references/experiment-storage.md). Carry the plan's storage policy into actual trainer configuration, verify save/resume in sanity checks, and budget aggregate concurrent output before deployment.
 <!-- EVO-INQUIRY:END -->
 
 

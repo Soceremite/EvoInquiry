@@ -10,6 +10,8 @@ principles within the user's scope and this skill's existing outputs, review
 standards, and recovery contracts. Carry them into nested research tasks and
 reviewer briefs. Continue authorized work through its necessary steps; honor
 budgets, blocking checkpoints, and stopping conditions.
+
+Ordinary interpretation, confounds, and missing-metric caveats belong in the analysis. For authorized analysis followed by planning, apply [task-scope](../shared-references/task-scope.md) and complete those outputs without an incidental formal claim workflow.
 <!-- EVO-INQUIRY:END -->
 
 

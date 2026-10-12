@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.0.0-beta.5 — candidate
+
+- Bound experiment artifacts with a storage peak budget, latest/fallback recovery points, validation-selected best models, and explicit dependency protection.
+- Add a local checkpoint publication/retention helper with caller-supplied writer and loader validation, atomic manifests, cooperative locking, hash-based inspection, and preview-first cleanup.
+- Connect storage planning, actual trainer configuration, launch checks, batch budgets, monitoring, and persistent backend outputs through 15 scoped Codex extension hooks.
+- Separate ordinary result interpretation and follow-up planning from formal claim adjudication, while retaining required review gates.
+- Write shared experiment settings once and reserve time for final verification and delivery of planning artifacts.
+- Add independent storage/recovery behavior cases and deterministic capacity, interruption, ownership, and CPU training-continuation tests; preserve the original 24-case evaluation manifest and all 83 retained workflow bodies.
+
 ## 1.0.0-beta.4 — candidate
 
 - Add research-guide for project continuation and evidence-based next-step coordination; keep all 83 existing entrypoints.

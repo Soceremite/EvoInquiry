@@ -10,6 +10,8 @@ principles within the user's scope and this skill's existing outputs, review
 standards, and recovery contracts. Carry them into nested research tasks and
 reviewer briefs. Continue authorized work through its necessary steps; honor
 budgets, blocking checkpoints, and stopping conditions.
+
+Carry the relevant [experiment storage policy](../shared-references/experiment-storage.md) into planning, implementation, and launch phases. Reuse its budget and retention decisions rather than introducing another storage report or checkpoint state system.
 <!-- EVO-INQUIRY:END -->
 
 

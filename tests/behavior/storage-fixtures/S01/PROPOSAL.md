@@ -1,0 +1,1 @@
+This CPU toy trainer fits y=2x with SGD momentum. Keep the method, seed and data generation unchanged. Fixed validation loss is the mean squared error on x=[-1,-0.5,0.5,1]. No test-set model selection. Existing saves grow without a limit and cannot be resumed from the CLI.

@@ -10,9 +10,11 @@ quality. Case 20 stops at initial scoping rather than completing the lifecycle.
 ## Run a comparison
 
 Use the same Codex CLI version, model, reasoning settings, and execution policy
-for both variants. The baseline is beta.3 commit
-`b9c7861fd22cd2f5471765d583c593f083fa12cc`; the candidate adds research-guide and
-changes only registered descriptions and hooks in the retained skill corpus.
+for both variants. The original full comparison used beta.3 commit
+`b9c7861fd22cd2f5471765d583c593f083fa12cc` and beta.4. Later candidates may use
+a documented prior release as baseline and rerun only cases affected by a
+demonstrated change. Record exact commits, immutable source hashes, and the
+selected subset; reused historical results are not fresh full-matrix runs.
 Preserve separate version caches and confirm the actual skill paths in traces.
 
 For paired runs, copy each source to a temporary directory and give its
@@ -27,6 +29,8 @@ installed version. Its skills/list response can include disabled entries, so
 count only enabled skills and check their plugin identities and cache versions.
 The harness rejects empty or mixed discovery and installed skill or shared-guide
 bytes that differ from the selected source before starting evaluated requests.
+All shared Markdown references and the checkpoint helper, when present, must
+also match the immutable source bytes.
 
 Keep the frozen fixture and rubric identical between runs. Start with the eight
 smoke cases, then run the remaining cases:
@@ -91,3 +95,26 @@ Use [BETA_VALIDATION.md](BETA_VALIDATION.md) and
 [release-validation.json](../release-validation.json) for this candidate's actual
 status. A process exiting successfully is not a passed case. A small paired
 evaluation cannot establish general proactivity or better research outcomes.
+
+## Separate storage and recovery cases
+
+[Four additional cases](../tests/behavior/evo-inquiry-storage-cases.json) use
+independent CPU fixtures without changing the original 24-case requests or
+rubric. They cover implementing bounded saving and actual continuation,
+cumulative multi-run capacity, read-only inspection of a corrupt latest save,
+and refusing a launch whose complete-save peak exceeds its budget.
+
+```sh
+python tools/evaluate_skill_behavior.py \
+  --toolkit /absolute/path/to/candidate \
+  --selector evo-inquiry@evo-inquiry-eval-beta5 \
+  --manifest tests/behavior/evo-inquiry-storage-cases.json \
+  --output validation/behavior/storage --cases all --jobs 2 \
+  --timeout-seconds 600
+```
+
+Freeze the case manifest and fixture hashes before execution. Assess the
+resulting code, calculations, actual recovery checks, original-file preservation,
+and absence of forbidden launches against each required outcome. Keep storage
+case outcomes separate from the original 24-case target. These fixtures do not
+establish distributed, GPU, or object-store correctness.

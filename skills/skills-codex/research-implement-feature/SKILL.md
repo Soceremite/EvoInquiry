@@ -12,6 +12,8 @@ principles within the user's scope and this skill's existing outputs, review
 standards, and recovery contracts. Carry them into nested research tasks and
 reviewer briefs. Continue authorized work through its necessary steps; honor
 budgets, blocking checkpoints, and stopping conditions.
+
+When implementing training or large-artifact outputs, read [experiment storage](../shared-references/experiment-storage.md). Make retention and cadence configurable, preserve full resume state, and test interrupted continuation before long runs.
 <!-- EVO-INQUIRY:END -->
 
 

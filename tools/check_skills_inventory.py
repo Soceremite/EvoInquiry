@@ -98,10 +98,10 @@ def check_inventory() -> list[str]:
     catalog = catalog_names()
     main_refs = {path.name for path in (SKILLS_ROOT / "shared-references").glob("*.md")}
     codex_refs = {path.name for path in (CODEX_ROOT / "shared-references").glob("*.md")}
-    # This Codex edition adds exactly one shared reference; all
+    # Register the Codex extension references explicitly; all
     # retained workflow inventory and contract checks continue to apply.
     manifest = json.loads(read(REPO_ROOT / ".codex-plugin" / "plugin.json"))
-    evo_refs = {"evo-inquiry.md"} if manifest.get("name") == "evo-inquiry" else set()
+    evo_refs = {"evo-inquiry.md", "task-scope.md", "experiment-storage.md"} if manifest.get("name") == "evo-inquiry" else set()
     require(
         evo_refs <= codex_refs,
         "missing EvoInquiry shared reference",
