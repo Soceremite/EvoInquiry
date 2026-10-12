@@ -1,9 +1,9 @@
-name: Publish beta release
+name: Publish release
 
 on:
   push:
     tags:
-      - 'v*.*.*-beta.*'
+      - 'v*.*.*'
 
 permissions:
   contents: read
@@ -51,9 +51,21 @@ jobs:
           python-version: '3.12'
       - name: Build committed source assets
         run: python tools/build_beta_release.py
-      - name: Publish prerelease
+      - name: Publish GitHub release
         env:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ github.ref_name }}
         run: |
-          gh release create "$RELEASE_TAG" dist/*.tar.gz dist/*.zip dist/SHA256SUMS dist/release-manifest.json --repo "$GITHUB_REPOSITORY" --verify-tag --prerelease --title "EvoInquiry 1.0 Beta" --notes-file RELEASE_NOTES.md
+          version="${RELEASE_TAG#v}"
+          if [[ "$version" == *-* ]]; then
+            release_flags=(--prerelease --latest=false)
+          else
+            release_flags=(--latest)
+          fi
+          gh release create "$RELEASE_TAG" \
+            "dist/evo-inquiry-${version}.tar.gz" \
+            "dist/evo-inquiry-${version}.zip" \
+            dist/SHA256SUMS dist/release-manifest.json \
+            --repo "$GITHUB_REPOSITORY" --verify-tag \
+            --title "EvoInquiry ${version}" --notes-file RELEASE_NOTES.md \
+            "${release_flags[@]}"

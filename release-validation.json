@@ -1,6 +1,5 @@
 {
-  "version": "1.0.0-beta.5",
-  "candidate_status": "locally validated candidate with stated limits; not published",
+  "version": "1.0.0",
   "implementation_commit": "ab30307a9c0b34aa191cdc5af0e8925321561f63",
   "upstream_commit": "3b19a22dc5a64c983d2eafd6c2c94000fadc4f8d",
   "preservation_baseline_commit": "b9c7861fd22cd2f5471765d583c593f083fa12cc",
@@ -33,10 +32,11 @@
       "GPU_visibility_disabled": true,
       "completed_at_utc": "2026-10-12T05:03:52.968011+00:00",
       "passed": 848,
-      "skipped": 20
+      "skipped": 20,
+      "scope": "Historical beta.5 core implementation check; stable-release checks are recorded separately."
     },
     "checkpoint_tests": 54,
-    "post_suite_changes": "Public validation and release documents only.",
+    "post_suite_changes": "Beta.5 public validation documents followed the implementation suite. Stable promotion adds version metadata, release documents, a publication workflow update and offline publication tests; skill instructions and runtime helpers stay unchanged.",
     "lifecycle_independent_forward": {
       "status": "PASS",
       "helper_sha256": "0ae5d3bcfb25dd6299e12fae6ca44907c30fe66081621ddd703cac1fb263e254",
@@ -152,14 +152,16 @@
       "model_settings_preserved": true,
       "helper_sha256": "0ae5d3bcfb25dd6299e12fae6ca44907c30fe66081621ddd703cac1fb263e254",
       "source_directory": "dist/installed-source/evo-inquiry-1.0.0-beta.5",
-      "reason_for_clean_source": "Codex CLI0.162.1 copies local untracked files into caches; clean public source excludes validation, dist and Git history."
+      "reason_for_clean_source": "Codex CLI0.162.1 copies local untracked files into caches; clean public source excludes validation, dist and Git history.",
+      "scope": "Historical beta.5 local Codex installation; stable promotion does not change skill/helper instruction bytes or re-register this local installation."
     },
     "temporary_evaluation_plugins_removed": true,
     "final_source_archive": {
       "method": "Build from final committed public source with tools/build_beta_release.py; asset release-manifest.json separately records exact commit and checksums.",
       "implementation_archive_validation": "PASS",
       "file_count": 730,
-      "private_records_excluded": true
+      "private_records_excluded": true,
+      "scope": "Historical beta.5 package checks. Stable assets are built from their exact committed source and record inventory and checksums in their own release-manifest.json."
     },
     "lifecycle_implementation_archive": {
       "status": "PASS",
@@ -178,12 +180,65 @@
       "scope": "Local file targets outside code examples; external links and anchors not fetched."
     }
   },
-  "CI_scope": "Local Linux only; Linux/macOS GitHub Actions must pass before publication.",
+  "CI_scope": "Implementation evidence includes local Linux checks. Stable publication requires exact-release full Linux/macOS GitHub Actions; per-version results are recorded by the Publish release workflow.",
   "limits": [
     "Fresh CLI storage-implementation case S01 is inconclusive at 600 seconds; deterministic checkpoint tests and CPU framework continuation passed independently.",
     "No GPU, distributed/object-store recovery, actual power-loss certification, live providers, or complete research pipeline was verified.",
     "New skill instructions do not automatically reconfigure existing training programs or delete existing checkpoints.",
     "Synthetic cases do not establish general research correctness or improved research outcomes."
   ],
-  "lifecycle_extension_commit": "ab6ed6d285054ed0026fba678d794d71535d6725"
+  "lifecycle_extension_commit": "ab6ed6d285054ed0026fba678d794d71535d6725",
+  "release_status": "1.0.0 release source; publication is gated by the full Linux/macOS suites",
+  "stable_release": {
+    "version": "1.0.0",
+    "promoted_from": "1.0.0-beta.5",
+    "skill_and_runtime_changes": "None during stable promotion; only version metadata, public documents, publication workflow and its offline tests change.",
+    "publication_workflow": ".github/workflows/release-beta.yml",
+    "publication_gate": [
+      "tag matches VERSION and plugin version",
+      "preservation, inventory and paragraph-format checks",
+      "full Linux and macOS regression suites"
+    ],
+    "release_url": "https://github.com/Soceremite/EvoInquiry/releases/tag/v1.0.0",
+    "source_assets": [
+      "evo-inquiry-1.0.0.tar.gz",
+      "evo-inquiry-1.0.0.zip",
+      "SHA256SUMS",
+      "release-manifest.json"
+    ],
+    "local_checks": {
+      "version_consistency": "PASS",
+      "fixed_baseline_preservation": "PASS",
+      "inventory": "PASS",
+      "release_note_paragraph_formatting": "PASS",
+      "document_link_targets": 47,
+      "publication_argument_cases": {
+        "passed": 2,
+        "scope": "Offline execution of actual publisher with a local gh stub: stable/latest vs prerelease, exact current-version assets, complete notes body."
+      },
+      "full_linux_sandbox_run": {
+        "status": "FAIL",
+        "passed": 841,
+        "skipped": 20,
+        "failed": 9,
+        "seconds": 429.6,
+        "completed_at_utc": "2026-10-12T07:40:58.653087+00:00",
+        "credential_environment_removed": true,
+        "GPU_visibility_disabled": true
+      },
+      "sandbox_failure_followup": {
+        "status": "PASS",
+        "passed": 9,
+        "skipped": 0,
+        "failed": 0,
+        "seconds": 48.23,
+        "completed_at_utc": "2026-10-12T07:45:47.673175+00:00",
+        "credential_environment_removed": true,
+        "GPU_visibility_disabled": true
+      },
+      "environment_failure_diagnosis": "Three overlay/installer tests were blocked by file ownership preservation; six browser/manual-review tests were blocked by loopback socket permissions. All nine passed with those permissions and unchanged code.",
+      "full_suite_scope": "The failed sandbox attempt and successful targeted follow-up are separate executions. Exact-release full Linux/macOS suites remain required by the publication workflow.",
+      "temporary_test_files_removed": true
+    }
+  }
 }

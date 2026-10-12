@@ -92,7 +92,7 @@ startup failures, unstable cases, or cases affected by a demonstrated correction
 retain original records and identify the retries.
 
 Use [BETA_VALIDATION.md](BETA_VALIDATION.md) and
-[release-validation.json](../release-validation.json) for this candidate's actual
+[release-validation.json](../release-validation.json) for the release's actual
 status. A process exiting successfully is not a passed case. A small paired
 evaluation cannot establish general proactivity or better research outcomes.
 

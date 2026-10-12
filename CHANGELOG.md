@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.0.0 — 2026-10-12
+
+- Publish the first stable Codex research toolkit with 84 skill entrypoints spanning literature, research design, theory, experiments, evidence review, papers, presentations, proposals, and patents.
+- Include research-guide for project continuation, natural-request routing, and coordination within the user's authorized scope.
+- Integrate storage budgets, bounded training recovery, validated weight exports, and validation-winner archiving while preserving results and planned model dependencies.
+- Preserve all 83 existing workflow bodies and the frozen runtime/reference contract; expose focused steps and complete pipelines through the same plugin.
+- Replace the incremental beta release description with bilingual capability, benefit, installation, and validation guidance.
+- Support stable and prerelease publication through the Linux/macOS regression gate, with version-specific source assets, checksums, and a committed-source manifest.
+
 ## 1.0.0-beta.5 — candidate
 
 - Bound experiment artifacts with a storage peak budget, latest/fallback recovery points, validation-selected best models, and explicit dependency protection.

@@ -4,7 +4,7 @@
 
 [中文](README_CN.md) · [Skill inventory](docs/SKILLS_CATALOG.md) · [Releases](https://github.com/Soceremite/EvoInquiry/releases) · [Contributing](CONTRIBUTING.md)
 
-**1.0 Beta — `v1.0.0-beta.5` candidate**
+**1.0.0 — first stable release**
 
 EvoInquiry is a research workflow toolkit for Codex. Its **84 Codex skills**
 help you turn a broad research direction into a focused proposal, implement
@@ -45,7 +45,7 @@ with planned model dependencies and every run's evidence preserved.
 See the [storage policy](skills/skills-codex/shared-references/experiment-storage.md)
 for native framework integration and the optional local checkpoint helper.
 
-The current beta primarily targets ML, AI, and related engineering research.
+Version 1.0 primarily targets ML, AI, and related engineering research.
 Domain-specific workflows and provider integrations are available in the
 [full inventory](docs/SKILLS_CATALOG.md); choose those that fit your project.
 
@@ -56,23 +56,23 @@ Domain-specific workflows and provider integrations are available in the
 Use a Codex installation that provides the `codex plugin` commands. Plugin
 installation has been checked with Codex CLI **0.162.1** on Linux.
 
-For this candidate, enter a clean extracted source archive and run the two
-plugin commands below. Codex CLI 0.162.1 copies the installation directory into
+Download and extract `evo-inquiry-1.0.0.tar.gz` or `.zip` from the
+[1.0.0 release](https://github.com/Soceremite/EvoInquiry/releases/tag/v1.0.0),
+then enter its root directory and run the two plugin commands below.
+Codex CLI 0.162.1 copies the installation directory into
 its cache, including local untracked files. Use an archive containing the public
 files to keep local validation records, build outputs and Git history out of it.
 
 ```sh
-cd /path/to/EvoInquiry
+cd /path/to/evo-inquiry-1.0.0
 codex plugin marketplace add "$PWD"
 codex plugin add evo-inquiry@evo-inquiry
 ```
 
-After publication, obtain this version with
-`git clone --branch v1.0.0-beta.5 https://github.com/Soceremite/EvoInquiry.git EvoInquiry`.
-
-You can also extract a [release archive](https://github.com/Soceremite/EvoInquiry/releases),
-enter its root directory, and run the two `codex plugin` commands. Start a
-new Codex session after installation. Skills appear under the `evo-inquiry:`
+For source development, use
+`git clone --branch v1.0.0 https://github.com/Soceremite/EvoInquiry.git EvoInquiry`.
+Use a clean release archive for plugin installation. Start a new Codex session
+after installation. Skills appear under the `evo-inquiry:`
 namespace, for example `evo-inquiry:research-refine`.
 
 <a id="usage"></a>
@@ -105,8 +105,8 @@ requests retain their scope. You can still name any skill explicitly, for exampl
 
 For an end-to-end task, ask for `evo-inquiry:research-pipeline` and provide your
 research direction, existing work, target output, and available resources.
-The beta installs 83 retained workflow entrypoints plus `research-guide`,
-including individual steps, pipeline orchestrators, and optional backends.
+The toolkit provides 84 skill entrypoints, including individual steps,
+project coordination, pipeline orchestrators, and optional backends.
 
 For project-wide research guidance, merge the optional
 [AGENTS.md snippet](templates/EVOINQUIRY_AGENTS_SNIPPET.md) into your research
@@ -122,7 +122,7 @@ and [session recovery](docs/SESSION_RECOVERY_GUIDE.md).
 
 <a id="setup"></a>
 
-## Setup and beta status
+## Setup and validation
 
 Search services, external reviewers, GPU platforms, image renderers, and LaTeX
 tooling need their own dependencies and, where applicable, credentials.
@@ -133,7 +133,7 @@ The documented EvoInquiry installation route is the Codex plugin above.
 Retained backend and client compatibility resources support existing workflow
 contracts; they are optional and have separate setup requirements.
 
-Candidate checks and their status are recorded in [validation scope and limitations](docs/BETA_VALIDATION.md).
+Completed checks and their scope are recorded in [validation scope and limitations](docs/BETA_VALIDATION.md).
 The [offline behavior evaluation](docs/SKILL_BEHAVIOR_EVAL.md) compares natural
 requests using frozen fixtures and actual execution traces. Release archives
 require passing Linux and macOS CI suites.
@@ -158,9 +158,9 @@ loads an installed cache, so changes require refreshing the plugin and
 starting a new session. Re-register the local marketplace if you move the
 checkout to a different path.
 
-To roll back, enter a beta.3 checkout or extracted release and repeat the two
-installation commands, then start a new session. Repeat them from the candidate
-directory to restore beta.5. Keep the selected source directory available.
+To switch versions, enter a clean extracted archive of the desired release,
+repeat the two installation commands, and start a new session. Keep the selected
+source directory available for the local marketplace.
 
 <a id="license"></a>
 

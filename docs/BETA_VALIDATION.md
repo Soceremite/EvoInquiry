@@ -1,12 +1,36 @@
-# Beta validation scope
+# Release validation scope
 
-Candidate: **1.0.0-beta.5**, not published. Implementation commit:
+Release source: **1.0.0**, promoted from the locally validated beta.5 source.
+The skill instructions and runtime helpers are unchanged by this promotion;
+version metadata, public release documents, and the publication workflow are
+updated. The release workflow publishes stable assets only after the complete
+Linux and macOS suites pass. The implementation and behavior evidence below
+records the beta.5 checks, including their incomplete cases; it is not relabeled
+as a new 1.0.0 behavior campaign.
+
+Implementation commit:
 `ab30307a9c0b34aa191cdc5af0e8925321561f63`. Preservation remains fixed to
 `b9c7861fd22cd2f5471765d583c593f083fa12cc` (beta.3); original upstream:
 `3b19a22dc5a64c983d2eafd6c2c94000fadc4f8d`. The current two-case comparison
 uses beta.4 commit `a807775afdc26666c82d67c43d43f75e95daa7c4`.
 The later end-of-training and comparison-archiving implementation is pinned to
 `ab6ed6d285054ed0026fba678d794d71535d6725`.
+
+## Stable-release checks
+
+Version consistency, preservation, inventory, release paragraph formatting, and
+47 documentation link targets pass. Two offline tests execute the actual
+publication command with a local stub: stable versions select Latest,
+prereleases keep their prerelease flag, and neither uploads stale archives.
+
+The 1.0.0 Linux sandbox run records **841 passed, 20 skipped, 9 failed**.
+Three existing installer checks cannot preserve file ownership in that sandbox;
+six browser/manual-review checks cannot open loopback sockets. All nine pass
+when those required permissions are available, in 48.23 seconds, with unchanged
+code, API credentials removed, and GPU visibility disabled. Both the failed
+attempt and follow-up are retained. These separate local executions are not
+described as a single successful full-suite run. The exact release still must
+pass the full Linux and macOS suites in the publication workflow.
 
 ## Code and preservation
 
@@ -41,7 +65,8 @@ The 20 skips are 12 Windows PowerShell checks, 4 credential-gated MiniMax live
 checks, and 4 interactive checks requiring expect. The full suite removes API
 credential environment variables and disables GPU visibility. It includes the
 stronger Adam-state comparison and the final lifecycle code. Preservation and
-inventory checks pass again; subsequent changes update public validation documents.
+inventory checks pass again. These are implementation-era results; stable-release
+checks are recorded separately in [release-validation.json](../release-validation.json).
 
 The [storage policy](../skills/skills-codex/shared-references/experiment-storage.md)
 defaults to two valid full recovery generations during active/paused training,
@@ -165,12 +190,12 @@ Original attempts, fixture/source hashes, raw traces and judgments stay private.
 
 ## Packaging, installation and limits
 
-The lifecycle implementation archives contain 730 committed files, with matching
+The historical beta.5 lifecycle implementation archives contain 730 committed files, with matching
 tar.gz/zip inventories and bytes. Extraction into a directory with spaces passes
 preservation/shared-link checks and a terminal-fixture helper query. The helper,
 policies and all synthetic fixtures are present; private validation is excluded.
-Public validation reports record these completed results. Candidate archives are
-built from the final committed reports and source; their separate release
+Public validation reports record these completed results. Release archives are
+built from committed reports and source; their separate release
 manifest records the exact source commit and checksums.
 
 The official beta.5 Codex installation passes ordinary skill discovery without
@@ -183,7 +208,11 @@ untracked files. Installation therefore uses a clean public source directory at
 build archives and Git history; keep this marketplace source available.
 
 [release-validation.json](../release-validation.json) records actual status.
-Linux/macOS GitHub Actions must pass before publication. Local Linux checks
+The stable publication workflow checks the exact tag/version, preservation,
+inventory and release-note formatting, then runs the full Linux/macOS suites.
+Only successful suites allow publication, and only that version's archives,
+checksums and manifest are uploaded. Stable versions become the latest release;
+version suffixes retain prerelease status. Local Linux checks
 do not establish macOS or Windows support. GPU/distributed training, object-store
 recovery, live providers, complete research pipelines and broad discipline
 coverage are unverified. This inherited toolkit primarily targets ML/AI and
