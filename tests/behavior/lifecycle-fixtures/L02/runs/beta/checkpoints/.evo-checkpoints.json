@@ -1,0 +1,64 @@
+{
+  "entries": [
+    {
+      "files": {
+        "state.json": {
+          "bytes": 64,
+          "sha256": "1dc0ce707fd80c8aefdcb666b30009a2b21751b727d787f1ccb8b69ac42fe98b"
+        }
+      },
+      "id": "ckpt-b98fcb12646d45209952a7d436226766",
+      "kind": "weights",
+      "pins": [],
+      "sequence": 1,
+      "step": 100,
+      "validation": {
+        "label": "synthetic JSON load",
+        "passed": true,
+        "receipt": {
+          "loader": "synthetic JSON model/state",
+          "step": 100
+        }
+      }
+    }
+  ],
+  "garbage": [],
+  "generation": 2,
+  "lifecycle": {
+    "archive": {
+      "files": {
+        "state.json": {
+          "bytes": 64,
+          "sha256": "1dc0ce707fd80c8aefdcb666b30009a2b21751b727d787f1ccb8b69ac42fe98b"
+        }
+      },
+      "id": "ckpt-b98fcb12646d45209952a7d436226766",
+      "root": ".",
+      "run_id": "beta",
+      "scope": "local",
+      "step": 100,
+      "validation": {
+        "label": "synthetic JSON load",
+        "passed": true,
+        "receipt": {
+          "loader": "synthetic JSON model/state",
+          "step": 100
+        }
+      }
+    },
+    "reason": "synthetic training already completed",
+    "state": "completed",
+    "step": 100
+  },
+  "policy": {
+    "budget_bytes": 65536,
+    "keep_last": 2,
+    "reserve_bytes": 0
+  },
+  "roles": {
+    "best": "ckpt-b98fcb12646d45209952a7d436226766",
+    "final": "ckpt-b98fcb12646d45209952a7d436226766"
+  },
+  "run_id": "beta",
+  "schema_version": 1
+}

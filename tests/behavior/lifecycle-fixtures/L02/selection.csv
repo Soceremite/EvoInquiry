@@ -1,0 +1,10 @@
+run,seed,validation_accuracy,test_accuracy
+alpha,1,0.80,0.90
+alpha,2,0.81,0.91
+alpha,3,0.82,0.92
+beta,1,0.85,0.80
+beta,2,0.86,0.81
+beta,3,0.87,0.82
+gamma,1,0.82,0.94
+gamma,2,0.83,0.95
+gamma,3,0.84,0.96

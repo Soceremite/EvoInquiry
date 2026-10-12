@@ -1,0 +1,83 @@
+{
+  "entries": [
+    {
+      "files": {
+        "state.json": {
+          "bytes": 7517,
+          "sha256": "f8b03ad0b12de285096e1232fdb9158ac581b91e7bfc3283f257bdb34b0eff8a"
+        }
+      },
+      "id": "ckpt-ba892f55c8e64f7885b1ecc129160ce0",
+      "kind": "resume",
+      "pins": [],
+      "sequence": 1,
+      "step": 299500,
+      "validation": {
+        "label": "synthetic JSON load",
+        "passed": true,
+        "receipt": {
+          "loader": "synthetic JSON model/state",
+          "step": 299500
+        }
+      }
+    },
+    {
+      "files": {
+        "state.json": {
+          "bytes": 7518,
+          "sha256": "ee32a4245ccd57518191c47b9f7293bd6bb4a3ada7fb86d971e48b976ac41555"
+        }
+      },
+      "id": "ckpt-816b6af42d104a3dba1bd5cbfb684d16",
+      "kind": "resume",
+      "pins": [],
+      "sequence": 2,
+      "step": 300000,
+      "validation": {
+        "label": "synthetic JSON load",
+        "passed": true,
+        "receipt": {
+          "loader": "synthetic JSON model/state",
+          "step": 300000
+        }
+      }
+    },
+    {
+      "files": {
+        "state.json": {
+          "bytes": 68,
+          "sha256": "09b4b9a087962b94496b5a56b9874570c679e1b97a14dfafdb7af4eda28e86b3"
+        }
+      },
+      "id": "ckpt-228ac7b11f3f492f9056c54d30ffcd43",
+      "kind": "weights",
+      "pins": [],
+      "sequence": 3,
+      "step": 300000,
+      "validation": {
+        "label": "synthetic JSON load",
+        "passed": true,
+        "receipt": {
+          "loader": "synthetic JSON model/state",
+          "step": 300000
+        }
+      }
+    }
+  ],
+  "garbage": [],
+  "generation": 3,
+  "lifecycle": {
+    "state": "active"
+  },
+  "policy": {
+    "budget_bytes": 65536,
+    "keep_last": 2,
+    "reserve_bytes": 0
+  },
+  "roles": {
+    "best": "ckpt-228ac7b11f3f492f9056c54d30ffcd43",
+    "final": "ckpt-228ac7b11f3f492f9056c54d30ffcd43"
+  },
+  "run_id": "finished-300k",
+  "schema_version": 1
+}

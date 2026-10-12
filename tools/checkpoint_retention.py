@@ -9,7 +9,7 @@ security boundary, distributed writer, or object-store transaction protocol.
 from __future__ import annotations
 
 import argparse
-from contextlib import contextmanager
+from contextlib import contextmanager, ExitStack
 import hashlib
 import json
 import os
@@ -159,7 +159,8 @@ class CheckpointStore:
                 'schema_version': 1, 'run_id': run_id,
                 'policy': {'budget_bytes': budget_bytes, 'keep_last': keep_last,
                            'reserve_bytes': reserve_bytes},
-                'generation': 0, 'entries': [], 'garbage': [], 'roles': {}})
+                'generation': 0, 'entries': [], 'garbage': [], 'roles': {},
+                'lifecycle': {'state': 'active'}})
         return cls(path)
 
     def _read(self) -> dict:
@@ -206,6 +207,23 @@ class CheckpointStore:
                     name not in ('best', 'final') or identifier not in active
                     for name, identifier in data['roles'].items()):
                 raise ValueError('roles')
+            lifecycle = data.setdefault('lifecycle', {'state': 'active'})
+            if not isinstance(lifecycle, dict) or lifecycle.get('state') not in ('active', 'completed', 'stopped'):
+                raise ValueError('lifecycle')
+            if lifecycle['state'] != 'active':
+                _integer(lifecycle['step'], 'terminal step')
+                if not isinstance(lifecycle['reason'], str) or not lifecycle['reason'].strip():
+                    raise ValueError('terminal reason')
+                archive = lifecycle['archive']
+                if not isinstance(archive, dict) or not isinstance(archive['root'], str) or not archive['root']:
+                    raise ValueError('archive receipt')
+                if not isinstance(archive['id'], str) or not ID.fullmatch(archive['id']):
+                    raise ValueError('archive artifact id')
+                if archive.get('scope', 'local') not in ('local', 'comparison'):
+                    raise ValueError('archive scope')
+                if (not isinstance(archive['run_id'], str) or not archive['run_id']
+                        or not isinstance(archive['files'], dict) or not archive['files']):
+                    raise ValueError('archive identity/files')
             return data
         except (OSError, ValueError, TypeError, KeyError) as error:
             raise RetentionError(f'Invalid checkpoint manifest: {error}') from error
@@ -248,7 +266,8 @@ class CheckpointStore:
         valid = {entry['id'] for entry in data['entries'] if self._valid(entry)}
         resumes = sorted((e for e in data['entries'] if e['kind'] == 'resume' and e['id'] in valid),
                          key=lambda e: (e['step'], e['sequence']), reverse=True)
-        keep = {e['id'] for e in resumes[:data['policy']['keep_last']]}
+        keep = ({e['id'] for e in resumes[:data['policy']['keep_last']]}
+                if data['lifecycle']['state'] == 'active' else set())
         keep.update(data['roles'].values())
         keep.update(e['id'] for e in data['entries'] if e['pins'])
         corrupt = sorted(e['id'] for e in data['entries'] if e['id'] not in valid)
@@ -261,6 +280,7 @@ class CheckpointStore:
         unregistered = sorted(p.name for p in self.root.iterdir() if p.name not in known)
         return {'run_id': data['run_id'], 'generation': data['generation'],
                 'policy': data['policy'], 'bytes_used': self._bytes(),
+                'lifecycle': data['lifecycle'],
                 'filesystem_free_bytes': shutil.disk_usage(self.root).free,
                 'latest': resumes[0]['id'] if resumes else None,
                 'latest_step': resumes[0]['step'] if resumes else None,
@@ -296,7 +316,29 @@ class CheckpointStore:
             removed.append(entry['id'])
         return removed
 
+    def _archive_store(self, data: dict) -> 'CheckpointStore':
+        if (data['lifecycle']['state'] == 'active'
+                or data['lifecycle']['archive'].get('scope', 'local') == 'local'):
+            return self
+        return CheckpointStore(data['lifecycle']['archive']['root'])
+
+    def _verify_archive(self, data: dict) -> None:
+        if data['lifecycle']['state'] == 'active':
+            return
+        receipt = data['lifecycle']['archive']
+        store = self._archive_store(data)
+        archived_data = data if store.root == self.root else store._read()
+        archived = next((e for e in archived_data['entries'] if e['id'] == receipt['id']), None)
+        if (archived is None or archived['kind'] != 'weights'
+                or archived_data['run_id'] != receipt['run_id']
+                or archived['files'] != receipt['files'] or not store._valid(archived)):
+            raise RetentionError('Archived inference weights are unavailable or changed; cleanup retained')
+
     def _prune(self, data: dict) -> dict:
+        # A prior finish may have committed before deletion was interrupted.
+        # Never continue that deletion journal using a now-damaged survivor.
+        # Callers hold the local and (when applicable) archive store locks.
+        self._verify_archive(data)
         plan = self._plan(data)
         candidates = [e for e in data['entries'] if e['id'] in plan['remove']]
         if candidates:
@@ -311,9 +353,84 @@ class CheckpointStore:
     def prune(self, *, apply: bool = False) -> dict:
         if not apply:
             return {'applied': False, 'status': self.status()}
-        with _lock(self.root):
-            result = self._prune(self._read())
+        initial = self._read()
+        archive_store = self._archive_store(initial)
+        with ExitStack() as locks:
+            for root in sorted({self.root, archive_store.root}, key=str):
+                locks.enter_context(_lock(root))
+            data = self._read()
+            if data['lifecycle'] != initial['lifecycle']:
+                raise RetentionError('Training lifecycle changed during cleanup; retry the preview')
+            result = self._prune(data)
         return {'applied': True, **result}
+
+    def finish(self, *, outcome: str, step: int, reason: str,
+               archive_to: str | Path | None = None, apply: bool = False) -> dict:
+        """End training after verified weight export; preview unless applied.
+
+        Call only after the trainer has stopped and results are persisted.
+        Completed/stopped runs no longer retain resume generations by default.
+        Pins, unchanged best/final roles, and changed files remain protected.
+        To archive a losing comparison run, explicitly choose a finished winner
+        store with validated best weights. Its model is pinned before any local
+        roles are released; this helper does not rank models or assess research
+        dependencies. Both stores are locked in canonical order.
+        """
+        if outcome not in ('completed', 'stopped'):
+            raise RetentionError('Training outcome must be completed or stopped')
+        _integer(step, 'terminal step')
+        if not isinstance(reason, str) or not reason.strip():
+            raise RetentionError('A training completion or explicit stop reason is required')
+        archive_store = CheckpointStore(archive_to) if archive_to is not None else self
+        external = archive_store.root != self.root
+        with ExitStack() as locks:
+            if apply:
+                for root in sorted({self.root, archive_store.root}, key=str):
+                    locks.enter_context(_lock(root))
+            data = self._read()
+            archive_data = archive_store._read() if external else data
+            if external and archive_data['lifecycle']['state'] == 'active':
+                raise RetentionError('The comparison winner must finish training before archiving other runs')
+            role = 'best' if external else 'final'
+            identifier = archive_data['roles'].get(role)
+            archived = next((e for e in archive_data['entries'] if e['id'] == identifier), None)
+            if archived is None or archived['kind'] != 'weights' or not archive_store._valid(archived):
+                raise RetentionError(f'Validated {role} inference weights are required before ending recovery retention')
+            if step < max((e['step'] for e in data['entries']), default=0):
+                raise RetentionError('Terminal step precedes registered run progress')
+            proposed = {'state': outcome, 'step': step, 'reason': reason,
+                        'archive': {'root': str(archive_store.root) if external else '.',
+                                    'scope': 'comparison' if external else 'local',
+                                    'run_id': archive_data['run_id'],
+                                    'id': archived['id'], 'step': archived['step'],
+                                    'files': archived['files'], 'validation': archived['validation']}}
+            previous = data['lifecycle']
+            if previous['state'] != 'active' and previous != proposed:
+                # A completed run may later consolidate its models into the
+                # explicitly selected winner. Its training outcome cannot change.
+                if (not external or previous['state'] != outcome or previous['step'] != step):
+                    raise RetentionError('This run is already finished; its training outcome cannot change')
+                if previous['archive'].get('scope', 'local') != 'local':
+                    raise RetentionError('This run is already archived; keep its recorded winner and dependency pin')
+            released_roles = dict(data['roles']) if external else {}
+            data['lifecycle'] = proposed
+            if external:
+                data['roles'] = {}
+            plan = self._plan(data)
+            if not apply:
+                return {'applied': False, 'current_lifecycle': previous,
+                        'proposed_lifecycle': proposed, 'released_roles': released_roles, 'status': plan}
+            if external:
+                # Persist the survivor's dependency before committing any local
+                # deletion. A failed later write may leave an extra pin, never a
+                # deleted survivor. Repeated finalization reuses the same pin.
+                pin = 'archive for ' + data['run_id'] + ':' + hashlib.sha256(str(self.root).encode()).hexdigest()[:16]
+                if pin not in archived['pins']:
+                    archived['pins'].append(pin)
+                    archive_store._write(archive_data)
+            self._write(data)
+            result = self._prune(data)
+            return {'applied': True, 'released_roles': released_roles, **result}
 
     def publish(self, *, step: int, kind: str, expected_bytes: int,
                 writer: Callable[[Path], object], validator: Callable[[Path], dict | None],
@@ -337,6 +454,8 @@ class CheckpointStore:
             raise RetentionError('Pins require a nonempty dependency reason')
         with _lock(self.root):
             data = self._read()
+            if data['lifecycle']['state'] != 'active':
+                raise RetentionError('Training has finished; publish exports before finish or use a new run')
             self._clean_garbage(data)
             policy = data['policy']
             current = self._bytes()
@@ -415,11 +534,16 @@ def main() -> int:
     initialize.add_argument('--budget-bytes', type=int, required=True)
     initialize.add_argument('--keep-last', type=int, default=2)
     initialize.add_argument('--reserve-bytes', type=int, default=0)
-    for name in ('status', 'latest', 'prune', 'pin', 'unpin'):
+    for name in ('status', 'latest', 'prune', 'finish', 'pin', 'unpin'):
         command = commands.add_parser(name)
         command.add_argument('root', type=Path)
-        if name == 'prune':
+        if name in ('prune', 'finish'):
             command.add_argument('--apply', action='store_true')
+        if name == 'finish':
+            command.add_argument('--outcome', required=True, choices=('completed', 'stopped'))
+            command.add_argument('--step', type=int, required=True)
+            command.add_argument('--reason', required=True)
+            command.add_argument('--archive-to', type=Path)
         if name in ('pin', 'unpin'):
             command.add_argument('identifier')
             command.add_argument('--reason', required=True)
@@ -434,6 +558,9 @@ def main() -> int:
             store = CheckpointStore(args.root)
             if args.command == 'prune':
                 result = store.prune(apply=args.apply)
+            elif args.command == 'finish':
+                result = store.finish(outcome=args.outcome, step=args.step, reason=args.reason,
+                                      archive_to=args.archive_to, apply=args.apply)
             elif args.command in ('pin', 'unpin'):
                 store.pin(args.identifier, args.reason, remove=args.command == 'unpin')
                 result = store.status()

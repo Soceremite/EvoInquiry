@@ -1,0 +1,10 @@
+{
+  "run": "gamma",
+  "steps": 100,
+  "validation_split": "v1",
+  "seed_ids": [
+    1,
+    2,
+    3
+  ]
+}

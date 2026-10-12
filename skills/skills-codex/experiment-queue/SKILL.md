@@ -14,6 +14,7 @@ reviewer briefs. Continue authorized work through its necessary steps; honor
 budgets, blocking checkpoints, and stopping conditions.
 
 Apply [experiment storage](../shared-references/experiment-storage.md) before submitting a batch: budget cumulative and concurrent artifacts, cap parallelism accordingly, and pin teacher/phase inputs. A GPU-ready slot alone does not establish storage readiness.
+After training ends, retire unused recovery states only after validated exports; consolidate comparable finished runs to the selected winner when the established policy permits, preserving downstream inputs and every run's evidence.
 <!-- EVO-INQUIRY:END -->
 
 

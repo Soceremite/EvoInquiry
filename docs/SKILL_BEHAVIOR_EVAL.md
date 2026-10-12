@@ -118,3 +118,12 @@ resulting code, calculations, actual recovery checks, original-file preservation
 and absence of forbidden launches against each required outcome. Keep storage
 case outcomes separate from the original 24-case target. These fixtures do not
 establish distributed, GPU, or object-store correctness.
+
+Two further [lifecycle cases](../tests/behavior/evo-inquiry-lifecycle-cases.json)
+cover actual recovery cleanup after all steps complete and finished comparison
+archiving using a predeclared validation metric. The latter includes a required
+nonwinning model dependency and test scores that favor another model. Run the
+same command with this separate manifest, a new output directory and `--jobs 1`.
+Check actual file removal, surviving model hashes, all evidence preservation,
+dependency pins, and a final handoff. Freeze this manifest and fixtures before
+execution; keep their results separate from the original and initial storage cases.

@@ -4,6 +4,7 @@
 
 - Bound experiment artifacts with a storage peak budget, latest/fallback recovery points, validation-selected best models, and explicit dependency protection.
 - Add a local checkpoint publication/retention helper with caller-supplied writer and loader validation, atomic manifests, cooperative locking, hash-based inspection, and preview-first cleanup.
+- Release unused recovery states after completed or explicitly ended training and verified weight exports; consolidate finished comparison groups to their validation-selected winner while preserving planned dependencies and all results.
 - Connect storage planning, actual trainer configuration, launch checks, batch budgets, monitoring, and persistent backend outputs through 15 scoped Codex extension hooks.
 - Separate ordinary result interpretation and follow-up planning from formal claim adjudication, while retaining required review gates.
 - Write shared experiment settings once and reserve time for final verification and delivery of planning artifacts.

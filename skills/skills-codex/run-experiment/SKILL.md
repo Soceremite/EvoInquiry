@@ -12,6 +12,7 @@ reviewer briefs. Continue authorized work through its necessary steps; honor
 budgets, blocking checkpoints, and stopping conditions.
 
 Before launching an artifact-producing run, apply [experiment storage](../shared-references/experiment-storage.md): check the actual output filesystem and effective checkpoint policy, reserve full-save staging space, and record the valid recovery path.
+On completed or explicitly ended training, validate required weights and persist evidence before releasing unused recovery state. For completed comparison groups, apply the shared winner-only policy after checking planned model dependencies.
 <!-- EVO-INQUIRY:END -->
 
 

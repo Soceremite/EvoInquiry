@@ -38,7 +38,11 @@ Long-running experiments include a storage budget and bounded checkpoint
 retention. The default keeps two valid training recovery points, a
 validation-selected best model, and a final model when required. Plans account
 for concurrent save peaks and completed runs; implementation and monitoring
-check actual saving and recovery. See the [storage policy](skills/skills-codex/shared-references/experiment-storage.md)
+check actual saving and recovery. When training finishes or is explicitly ended,
+unused recovery states can be released after validated weights are saved.
+Completed comparison groups prefer the validation-selected winner's weights,
+with planned model dependencies and every run's evidence preserved.
+See the [storage policy](skills/skills-codex/shared-references/experiment-storage.md)
 for native framework integration and the optional local checkpoint helper.
 
 The current beta primarily targets ML, AI, and related engineering research.

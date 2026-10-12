@@ -406,6 +406,293 @@ def test_cli_defaults_to_preview_and_reports_invalid_policy(tmp_path):
     assert not (tmp_path / 'bad').exists()
 
 
+@pytest.mark.parametrize('outcome', ['completed', 'stopped'])
+def test_finished_training_removes_recovery_state_after_verified_final_export(store, outcome):
+    first = save(store, 10)
+    second = save(store, 20)
+    final = save(store, 20, kind='weights', roles=('best', 'final'))
+    original = (store.root / final['id'] / 'state.json').read_bytes()
+    result = store.finish(outcome=outcome, step=20, reason='all steps complete or explicit permanent stop', apply=True)
+    assert set(result['deleted']) == {first['id'], second['id']}
+    assert [e['id'] for e in active(store)] == [final['id']]
+    assert (store.root / final['id'] / 'state.json').read_bytes() == original
+    reopened = CheckpointStore(store.root)
+    assert reopened.status()['lifecycle']['state'] == outcome
+    assert reopened.latest() is None
+    assert not reopened.finish(outcome=outcome, step=20, reason='all steps complete or explicit permanent stop', apply=True)['deleted']
+
+
+@pytest.mark.parametrize('problem', ['missing', 'resume_only', 'corrupt'])
+def test_finish_requires_loaded_and_intact_inference_export_before_deletion(store, problem):
+    save(store, 10)
+    save(store, 20)
+    if problem == 'resume_only':
+        save(store, 20, roles=('final',))
+    elif problem == 'corrupt':
+        exported = save(store, 20, kind='weights', roles=('final',))
+        (store.root / exported['id'] / 'state.json').write_text('changed')
+    before = {p.relative_to(store.root): p.read_bytes() for p in store.root.rglob('*') if p.is_file()}
+    with pytest.raises(RetentionError, match='inference weights'):
+        store.finish(outcome='completed', step=20, reason='training complete', apply=True)
+    after = {p.relative_to(store.root): p.read_bytes() for p in store.root.rglob('*') if p.is_file()}
+    assert after == before
+    assert store.status()['lifecycle']['state'] == 'active'
+
+
+def test_finish_preview_preserves_all_artifacts_and_resume_policy(store):
+    saved = save(store, 10)
+    save(store, 20)
+    save(store, 20, kind='weights', roles=('final',))
+    before = (store.root / MANIFEST).read_bytes()
+    result = store.finish(outcome='stopped', step=20, reason='user ends training')
+    assert result['applied'] is False
+    assert saved['id'] in result['status']['remove']
+    assert result['proposed_lifecycle']['state'] == 'stopped'
+    assert (store.root / MANIFEST).read_bytes() == before
+    assert len(active(store)) == 3
+    assert store.status()['lifecycle']['state'] == 'active'
+
+
+def test_finish_preserves_dependencies_changed_files_and_unregistered_evidence(store):
+    teacher = save(store, 1, pins=('needed by the student experiment',))
+    changed = save(store, 2)
+    (store.root / changed['id'] / 'state.json').write_text('failed-save diagnostic')
+    save(store, 3)
+    final = save(store, 3, kind='weights', roles=('best', 'final'))
+    evidence = store.root / 'metrics.csv'
+    evidence.write_text('seed,accuracy\n42,0.81\n')
+    store.finish(outcome='completed', step=3, reason='completed with a teacher dependency', apply=True)
+    assert {e['id'] for e in active(store)} == {teacher['id'], changed['id'], final['id']}
+    assert evidence.read_text() == 'seed,accuracy\n42,0.81\n'
+    store.pin(teacher['id'], 'needed by the student experiment', remove=True)
+    store.prune(apply=True)
+    assert {e['id'] for e in active(store)} == {changed['id'], final['id']}
+
+
+def test_finished_run_rejects_new_publication_before_invoking_writer(store):
+    save(store, 20, kind='weights', roles=('final',))
+    store.finish(outcome='stopped', step=20, reason='user ends training', apply=True)
+    calls = []
+    with pytest.raises(RetentionError, match='Training has finished'):
+        store.publish(step=21, kind='resume', expected_bytes=100, writer=lambda p: calls.append(p),
+                      validator=lambda p: None, validation_label='loader')
+    assert calls == []
+    with pytest.raises(RetentionError, match='outcome cannot change'):
+        store.finish(outcome='completed', step=20, reason='another outcome', apply=True)
+
+
+def test_finish_refuses_claimed_terminal_progress_before_saved_steps(store):
+    save(store, 20)
+    save(store, 20, kind='weights', roles=('final',))
+    with pytest.raises(RetentionError, match='precedes registered'):
+        store.finish(outcome='completed', step=10, reason='incorrect progress', apply=True)
+    assert store.status()['lifecycle']['state'] == 'active'
+    assert len(active(store)) == 2
+
+
+def test_comparison_archives_nonwinner_weights_only_after_preserving_finished_winner(store, tmp_path):
+    winner = CheckpointStore.create(tmp_path / 'winner', run_id='best-by-validation', budget_bytes=10_000)
+    best = save(winner, 15, kind='weights', roles=('best', 'final'))
+    winner.finish(outcome='completed', step=20, reason='all training steps completed', apply=True)
+    save(store, 10)
+    loser_best = save(store, 20, kind='weights', roles=('best', 'final'))
+    evidence = store.root / 'results.csv'
+    evidence.write_text('model,validation_score\nloser,0.76\n')
+    survivor = (winner.root / best['id'] / 'state.json').read_bytes()
+    before = {root: (root / MANIFEST).read_bytes() for root in (store.root, winner.root)}
+    preview = store.finish(outcome='completed', step=20, reason='shared validation metric selects the winner', archive_to=winner.root)
+    assert preview['status']['remove'] and preview['released_roles']
+    assert all((root / MANIFEST).read_bytes() == raw for root, raw in before.items())
+    result = store.finish(outcome='completed', step=20, reason='shared validation metric selects the winner', archive_to=winner.root, apply=True)
+    assert loser_best['id'] in result['deleted']
+    assert not active(store) and store.latest() is None
+    assert evidence.read_text() == 'model,validation_score\nloser,0.76\n'
+    assert (winner.root / best['id'] / 'state.json').read_bytes() == survivor
+    assert len(active(winner)[0]['pins']) == 1
+    assert store.status()['lifecycle']['archive']['root'] == str(winner.root)
+    assert store.status()['lifecycle']['archive']['files'] == best['files']
+    store.finish(outcome='completed', step=20, reason='shared validation metric selects the winner', archive_to=winner.root, apply=True)
+    assert len(active(winner)[0]['pins']) == 1
+
+
+@pytest.mark.parametrize('problem', ['active', 'missing_best', 'corrupt_best'])
+def test_comparison_cannot_delete_loser_with_an_unavailable_survivor(store, tmp_path, problem):
+    winner = CheckpointStore.create(tmp_path / 'winner', run_id='winner', budget_bytes=10_000)
+    best = save(winner, 20, kind='weights', roles=('best', 'final'))
+    if problem != 'active':
+        winner.finish(outcome='completed', step=20, reason='done', apply=True)
+    if problem == 'missing_best':
+        data = json.loads((winner.root / MANIFEST).read_text())
+        del data['roles']['best']
+        (winner.root / MANIFEST).write_text(json.dumps(data))
+    if problem == 'corrupt_best':
+        (winner.root / best['id'] / 'state.json').write_text('corrupt')
+    save(store, 20)
+    save(store, 20, kind='weights', roles=('final',))
+    before = (store.root / MANIFEST).read_bytes()
+    with pytest.raises(RetentionError):
+        store.finish(outcome='completed', step=20, reason='winner selected', archive_to=winner.root, apply=True)
+    assert (store.root / MANIFEST).read_bytes() == before
+    assert len(active(store)) == 2
+
+
+def test_completed_runs_can_later_consolidate_without_releasing_dependency_models(store, tmp_path):
+    winner = CheckpointStore.create(tmp_path / 'winner', run_id='winner', budget_bytes=10_000)
+    save(winner, 20, kind='weights', roles=('best', 'final'))
+    winner.finish(outcome='completed', step=20, reason='done', apply=True)
+    dependent = save(store, 10, kind='weights', pins=('required by an approved ablation',))
+    final = save(store, 20, kind='weights', roles=('best', 'final'))
+    store.finish(outcome='completed', step=20, reason='done', apply=True)
+    store.finish(outcome='completed', step=20, reason='campaign keeps validation winner', archive_to=winner.root, apply=True)
+    assert [e['id'] for e in active(store)] == [dependent['id']]
+    assert not (store.root / final['id']).exists()
+
+
+def test_finish_pins_survivor_before_any_local_deletion_even_if_local_commit_fails(store, tmp_path, monkeypatch):
+    winner = CheckpointStore.create(tmp_path / 'winner', run_id='winner', budget_bytes=10_000)
+    save(winner, 20, kind='weights', roles=('best', 'final'))
+    winner.finish(outcome='completed', step=20, reason='done', apply=True)
+    saved = save(store, 20)
+    before = (store.root / MANIFEST).read_bytes()
+    monkeypatch.setattr(store, '_write', lambda data: (_ for _ in ()).throw(OSError('local manifest failed')))
+    with pytest.raises(OSError, match='manifest failed'):
+        store.finish(outcome='completed', step=20, reason='winner selected', archive_to=winner.root, apply=True)
+    assert (store.root / MANIFEST).read_bytes() == before
+    assert (store.root / saved['id']).exists()
+    assert len(active(winner)[0]['pins']) == 1
+
+
+def test_finish_interrupted_deletion_is_recoverable_and_preserves_archived_weights(store, monkeypatch):
+    import tools.checkpoint_retention as module
+    saved = save(store, 10)
+    final = save(store, 20, kind='weights', roles=('final',))
+    real_rmtree = module.shutil.rmtree
+
+    def interrupted(path):
+        (path / 'state.json').unlink()
+        raise OSError('interrupted retirement')
+
+    monkeypatch.setattr(module.shutil, 'rmtree', interrupted)
+    with pytest.raises(OSError, match='interrupted retirement'):
+        store.finish(outcome='completed', step=20, reason='done', apply=True)
+    assert store.status()['lifecycle']['state'] == 'completed'
+    assert saved['id'] in store.status()['garbage_remove']
+    monkeypatch.setattr(module.shutil, 'rmtree', real_rmtree)
+    reopened = CheckpointStore(store.root)
+    reopened.prune(apply=True)
+    assert [e['id'] for e in active(reopened)] == [final['id']]
+    assert not reopened.status()['garbage_remove']
+
+
+@pytest.mark.parametrize('external', [False, True])
+def test_prune_retry_refuses_further_deletion_if_archived_survivor_is_damaged(store, tmp_path, monkeypatch, external):
+    survivor_store = (CheckpointStore.create(tmp_path / 'winner', run_id='winner', budget_bytes=10_000)
+                      if external else store)
+    survivor = save(survivor_store, 20, kind='weights', roles=('best', 'final'))
+    if external:
+        survivor_store.finish(outcome='completed', step=20, reason='done', apply=True)
+    recoverable = save(store, 20)
+    if external:
+        save(store, 20, kind='weights', roles=('final',))
+    original_prune = store._prune
+    monkeypatch.setattr(store, '_prune', lambda data: (_ for _ in ()).throw(OSError('interrupted before cleanup')))
+    with pytest.raises(OSError, match='interrupted before cleanup'):
+        store.finish(outcome='completed', step=20, reason='done',
+                     archive_to=survivor_store.root if external else None, apply=True)
+    monkeypatch.setattr(store, '_prune', original_prune)
+    path = survivor_store.root / survivor['id'] / 'state.json'
+    original_bytes = path.read_bytes()
+    path.write_text('now corrupt')
+    before = (store.root / MANIFEST).read_bytes()
+    reopened = CheckpointStore(store.root)
+    with pytest.raises(RetentionError, match='Archived inference weights'):
+        reopened.prune(apply=True)
+    assert (store.root / MANIFEST).read_bytes() == before
+    assert (store.root / recoverable['id']).exists()
+    path.write_bytes(original_bytes)
+    reopened.prune(apply=True)
+    assert not (store.root / recoverable['id']).exists()
+    assert path.read_bytes() == original_bytes
+
+
+def test_journaled_retirement_requires_surviving_archive_on_retry(store, tmp_path, monkeypatch):
+    import tools.checkpoint_retention as module
+    winner = CheckpointStore.create(tmp_path / 'winner', run_id='winner', budget_bytes=10_000)
+    best = save(winner, 20, kind='weights', roles=('best', 'final'))
+    winner.finish(outcome='completed', step=20, reason='done', apply=True)
+    source = save(store, 20)
+    real_rmtree = module.shutil.rmtree
+    monkeypatch.setattr(module.shutil, 'rmtree', lambda p: (_ for _ in ()).throw(OSError('before deletion')))
+    with pytest.raises(OSError, match='before deletion'):
+        store.finish(outcome='completed', step=20, reason='winner chosen', archive_to=winner.root, apply=True)
+    monkeypatch.setattr(module.shutil, 'rmtree', real_rmtree)
+    assert source['id'] in store.status()['garbage_remove']
+    (winner.root / best['id'] / 'state.json').write_text('corrupt winner')
+    with pytest.raises(RetentionError, match='Archived inference weights'):
+        store.prune(apply=True)
+    assert (store.root / source['id'] / 'state.json').is_file()
+
+
+def test_finish_cannot_race_another_cooperating_publisher(store):
+    save(store, 10, kind='weights', roles=('final',))
+    other = CheckpointStore(store.root)
+
+    def writer(path):
+        (path / 'state.json').write_text('{}')
+        with pytest.raises(RetentionError, match='Another writer'):
+            other.finish(outcome='completed', step=20, reason='done', apply=True)
+
+    store.publish(step=20, kind='resume', expected_bytes=100, writer=writer,
+                  validator=lambda p: None, validation_label='loader')
+    assert store.status()['lifecycle']['state'] == 'active'
+
+
+def test_finished_store_can_be_relocated_before_comparison_archiving(store, tmp_path):
+    saved = save(store, 20, kind='weights', roles=('best', 'final'))
+    store.finish(outcome='completed', step=20, reason='done', apply=True)
+    moved = tmp_path / 'relocated run'
+    store.root.rename(moved)
+    winner = CheckpointStore.create(tmp_path / 'winner', run_id='winner', budget_bytes=10_000)
+    save(winner, 20, kind='weights', roles=('best', 'final'))
+    winner.finish(outcome='completed', step=20, reason='done', apply=True)
+    reopened = CheckpointStore(moved)
+    reopened.finish(outcome='completed', step=20, reason='validation winner', archive_to=winner.root, apply=True)
+    assert not (moved / saved['id']).exists()
+    assert reopened.status()['lifecycle']['archive']['scope'] == 'comparison'
+
+
+def test_comparison_lock_failure_releases_other_store_lock_without_mutation(store, tmp_path):
+    from tools.checkpoint_retention import _lock
+    winner = CheckpointStore.create(tmp_path / 'winner', run_id='winner', budget_bytes=10_000)
+    save(winner, 20, kind='weights', roles=('best', 'final'))
+    winner.finish(outcome='completed', step=20, reason='done', apply=True)
+    save(store, 20, kind='weights', roles=('final',))
+    before = (store.root / MANIFEST).read_bytes()
+    with _lock(winner.root):
+        with pytest.raises(RetentionError, match='Another writer'):
+            store.finish(outcome='completed', step=20, reason='validation winner', archive_to=winner.root, apply=True)
+    assert (store.root / MANIFEST).read_bytes() == before
+    # If the second ordered lock failed, the first lock must not leak.
+    save(store, 21)
+    assert store.status()['latest_step'] == 21
+
+
+def test_cli_finish_is_preview_until_explicit_application(store):
+    save(store, 10)
+    final = save(store, 20, kind='weights', roles=('final',))
+    script = Path(__file__).resolve().parents[1] / 'tools/checkpoint_retention.py'
+    command = [sys.executable, str(script), 'finish', str(store.root),
+               '--outcome', 'stopped', '--step', '20', '--reason', 'user ends training']
+    preview = subprocess.run(command, capture_output=True, text=True)
+    assert preview.returncode == 0, preview.stdout
+    assert json.loads(preview.stdout)['applied'] is False
+    assert len(active(store)) == 2
+    applied = subprocess.run(command + ['--apply'], capture_output=True, text=True)
+    assert applied.returncode == 0, applied.stdout
+    assert json.loads(applied.stdout)['applied'] is True
+    assert [e['id'] for e in active(store)] == [final['id']]
+
+
 def test_optional_pytorch_cpu_resume_matches_continuous_training(store):
     """Exercise real model/Adam/scheduler/global and data RNG state on CPU only."""
     torch = pytest.importorskip('torch')

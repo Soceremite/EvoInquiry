@@ -14,6 +14,7 @@ reviewer briefs. Continue authorized work through its necessary steps; honor
 budgets, blocking checkpoints, and stopping conditions.
 
 When implementing training or large-artifact outputs, read [experiment storage](../shared-references/experiment-storage.md). Make retention and cadence configurable, preserve full resume state, and test interrupted continuation before long runs.
+Implement end-of-training export and recovery cleanup, and explicit winner-only comparison archiving; protect planned model dependencies and verify cleanup failures as well as resume.
 <!-- EVO-INQUIRY:END -->
 
 

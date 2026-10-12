@@ -12,6 +12,7 @@ reviewer briefs. Continue authorized work through its necessary steps; honor
 budgets, blocking checkpoints, and stopping conditions.
 
 For planning, read [task-scope](../shared-references/task-scope.md): write common settings once and reserve time for artifact verification and delivery. Include the relevant [storage and recovery budget](../shared-references/experiment-storage.md); estimates may remain labeled execution prerequisites.
+Plan active recovery and end-of-training cleanup separately. Prefer the completed comparison group's validation-selected winner weights, identifying future model dependencies and when the user must choose retention scope.
 <!-- EVO-INQUIRY:END -->
 
 
