@@ -44,7 +44,7 @@
       "failed": 0,
       "warnings": 3,
       "seconds": 506.46,
-      "scope": "Complete suite on the actual host runtime with throwaway test HOME; final UTF-8 probe stream clarification and Chinese-log assertions checked separately afterward. Platform CI executes the final committed source.",
+      "scope": "Complete suite on the actual host runtime with throwaway test HOME. Final UTF-8 probe streams, pinned validation-receipt entries and Unicode CI diagnostics have separate follow-ups; platform CI executes the final committed source.",
       "skipped_scopes": {
         "Windows_native": 25,
         "expect_interactive": 4,
@@ -67,6 +67,21 @@
       "failed": 0,
       "seconds": 13.76,
       "scope": "Final child stream encoding and Chinese stdout/stderr/CLI diagnostics, plus framed failures/timeouts, legacy/relative entries and namespace checks. One Windows suffix-omission case requires native CI."
+    },
+    "pinned_receipt_followup": {
+      "status": "PASS",
+      "passed": 47,
+      "skipped": 12,
+      "failed": 0,
+      "seconds": 70.62,
+      "scope": "All portability and existing environment-governance checks after binding four-layer processes to the probed interpreter. Metadata commands assert the actual executable and all receipts record its absolute entry; final newline-neutral diagnostics assertions have a separate follow-up."
+    },
+    "Unicode_CI_diagnostics": {
+      "status": "PASS",
+      "passed": 2,
+      "failed": 0,
+      "seconds": 1.1,
+      "scope": "Actual Unicode failure annotation under PYTHONIOENCODING=ascii and the newline-neutral Chinese stdout/stderr import check. The earlier reporter UnicodeEncodeError reproduction is retained privately."
     }
   },
   "fingerprint_compatibility": {

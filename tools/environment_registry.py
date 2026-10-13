@@ -205,6 +205,10 @@ def run_environment_check(root, interpreter, check_id, stage, arguments, observe
     """Run one authorized interpreter check and preserve command, actual exit and output."""
     if stage not in ('metadata', 'imports', 'numerical', 'consumers'):
         raise RegistryError('Unknown environment validation layer')
+    # Windows CreateProcess can find the parent Python before PATH. Execute the
+    # entry bound to the probe, rather than resolving a bare name a second time.
+    interpreter = bound_interpreter({'interpreter': str(interpreter),
+                                     'observed_fingerprint': observed_fingerprint}, root)
     try:
         completed = subprocess.run([str(interpreter), *map(str, arguments)],
                                    capture_output=True, timeout=60)

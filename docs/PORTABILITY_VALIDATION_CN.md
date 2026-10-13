@@ -9,7 +9,7 @@
 | 问题 | 修复后的行为 | 实际回归 |
 | --- | --- | --- |
 | 消费者 ID 跨层合并 | 只有成功的 consumers 层回执计入要求的覆盖 | metadata/imports/numerical 的 ID、部分覆盖、消费者失败均拒绝；旧冻结记录及绑定字节保留 |
-| 解释器随 cwd/PATH 改变 | 固定已验证的绝对入口，保留 venv 最后一级入口 | 中文/空格 venv、相对入口、PATH 名称、不同 cwd 的快照启动；真实 prefix 与依赖一致 |
+| 解释器随 cwd/PATH 改变 | 探测、四层回执和启动都固定同一绝对入口，保留 venv 最后一级入口 | 中文/空格 venv、相对入口、PATH 名称、不同 cwd 的快照启动；真实 prefix 与依赖一致 |
 | 导入输出污染 JSON | 指纹使用唯一绑定帧，日志独立捕获 | 中文 stdout/stderr、普通通知、日志中的 JSON、重复帧、非法 JSON/指纹、非零退出、超时；只读探测不初始化状态 |
 | namespace 来源缺失 | 新指纹记录模块类型、origin、搜索位置及 prefix | 真实 `.pth` 改变 namespace 来源后停止启动；内建、文件与扩展模块可记录 |
 | 源码被默认编码解码 | 按 Python 编码声明或 BOM 读取 | UTF-8 中文、UTF-8 BOM、Latin-1 合法声明；非法编码与语法仍拒绝；原字节摘要一致 |
@@ -37,6 +37,8 @@ version 1 的原字段，与固定记录逐项比较，不通过补字段或重�
 
 ## 平台验收
 
+CI 失败回执按 UTF-8 输出，包含中文路径的断言仍可生成公开 annotation；专用回归在 ASCII 输出环境中验证原始失败文本及换行转义。
+
 主分支和发布流程都执行 Linux/macOS 完整 pytest。原生 Windows 的 powershell.exe
 与 pwsh 两组还执行全部兼容性用例、安装器、文件系统 doctor 及项目到报告闭环。
 NTFS 用例也验证 Python 3.10/3.11 所需的 reparse-tag 回退识别；不依赖仅 Python
@@ -47,3 +49,5 @@ NTFS 用例也验证 Python 3.10/3.11 所需的 reparse-tag 回退识别；不�
 beta.1 的 GPU、离线安装及自然语言验收属于此前来源，详见
 [固定历史记录](https://github.com/Soceremite/EvoInquiry/blob/v1.1.0-beta.1/release-validation.json)。
 本次不将此前试点重新记为新的 GPU 或行为评测。
+
+解释器路径绑定参考 [Python 3.12 subprocess 文档](https://docs.python.org/3.12/library/subprocess.html#subprocess.Popen)；Windows 未限定名称的查找次序见 [CreateProcessW 文档](https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createprocessw)。

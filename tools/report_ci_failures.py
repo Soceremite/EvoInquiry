@@ -14,6 +14,8 @@ def escape(value):
 
 
 def main():
+    # GitHub consumes UTF-8 annotations, including Unicode paths and assertions.
+    sys.stdout.reconfigure(encoding='utf-8', errors='backslashreplace')
     path = Path(sys.argv[1])
     if not path.is_file():
         print('::warning::No pytest JUnit receipt was produced; inspect the failed test step.')

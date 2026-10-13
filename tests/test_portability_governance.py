@@ -40,7 +40,9 @@ def candidate(root, interpreter, *, env_id='portability', profile=2, imports=('m
         atomic_write(inputs / name, {'python': observed['python'], 'name': name})
     declarations = declarations if declarations is not None else {'consumers': ['method-a', 'method-b']}
     checks = {
-        'metadata': 'import sys; assert sys.version_info >= (3,10); print(sys.version)',
+        'metadata': 'import os,sys; assert sys.version_info >= (3,10); print(sys.version)\n'
+                    + f'assert os.path.normcase(sys.executable) == os.path.normcase({observed["interpreter"]!r})\n'
+                    + 'import json; print(json.dumps(sys.prefix))',
         'imports': 'import math; assert math.isfinite(math.pi); print(math.__spec__.origin)',
         'numerical': 'import math; assert math.fsum([.1]*10) == 1.; print("numeric-ok")',
         'consumers': 'methods = {"method-a": lambda: sum([1,2,3]), "method-b": lambda: len({1,2,3})}\n'
@@ -143,6 +145,8 @@ def test_path_alias_is_pinned_before_path_changes(tmp_path, isolated_python, mon
     monkeypatch.setenv('PATH', str(interpreter.parent))
     registry, reference = candidate(tmp_path, interpreter.stem if omit_suffix else interpreter.name)
     frozen = promote(registry, reference)
+    for check in read_record(verify_ref(tmp_path, frozen))['test_receipts']:
+        assert read_record(verify_ref(tmp_path, check))['command'][0] == str(interpreter.absolute())
     monkeypatch.setenv('PATH', '')
     assert Path(verify_environment(tmp_path, frozen)['interpreter']).samefile(interpreter)
     assert read_record(verify_ref(tmp_path, frozen))['interpreter'] == str(interpreter.absolute())
@@ -166,7 +170,7 @@ __version__ = '1.0'
     assert 'package initialization notice' in diagnostics['stdout']
     assert '中文日志' in diagnostics['stdout']
     assert 'unrelated log JSON' in diagnostics['stdout']
-    assert diagnostics['stderr'] == 'package stderr notice: 中文错误日志\n'
+    assert diagnostics['stderr'].splitlines() == ['package stderr notice: 中文错误日志']
     assert not (tmp_path / '.ei').exists()
 
 
