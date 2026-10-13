@@ -81,8 +81,8 @@ Resolve `$DEEPXIV_FETCHER` via the canonical strict-safe Codex chain
 (see [`shared-references/integration-contract.md`](../shared-references/integration-contract.md) §2):
 
 ```bash
-if [ -z "${ARIS_REPO:-}" ] && [ -f .aris/installed-skills-codex.txt ]; then
-    ARIS_REPO=$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .aris/installed-skills-codex.txt 2>/dev/null) || true
+if [ -z "${ARIS_REPO:-}" ] && [ -f .ei/installed-skills-codex.txt ]; then
+    ARIS_REPO=$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .ei/installed-skills-codex.txt 2>/dev/null) || true
 fi
 DEEPXIV_FETCHER=""
 [ -n "${ARIS_REPO:-}" ] && [ -f "$ARIS_REPO/tools/deepxiv_fetch.py" ] && DEEPXIV_FETCHER="$ARIS_REPO/tools/deepxiv_fetch.py"

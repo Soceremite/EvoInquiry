@@ -43,7 +43,7 @@ nothing. Optional negative queries (expect: none) measure false-triggering.
 Usage:
   python3 tools/meta_opt/trigger_eval.py --eval-file tools/meta_opt/trigger_evals.sample.json \\
       [--skills check-gpu,research-lit] [--samples 2] [--model haiku] \\
-      [--out .aris/meta/trigger_report.json] [--timeout 120]
+      [--out .ei/meta/trigger_report.json] [--timeout 120]
 
 Exit code: 0 on completed run (regardless of rates), 2 on setup error.
 """
@@ -227,8 +227,12 @@ def main(argv=None) -> int:
                     help="model override for probes (default: claude CLI default). "
                          "NB: trigger behavior is model-dependent — compare like with like.")
     ap.add_argument("--timeout", type=int, default=120)
-    ap.add_argument("--out", default=".aris/meta/trigger_report.json")
+    ap.add_argument("--out", default=None)
     args = ap.parse_args(argv)
+    if args.out is None:
+        sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+        from state_paths import resolve_state_root
+        args.out = str(resolve_state_root(Path.cwd(), 'write') / 'meta/trigger_report.json')
 
     try:
         evals = json.loads(Path(args.eval_file).read_text(encoding="utf-8"))

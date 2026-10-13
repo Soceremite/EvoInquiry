@@ -14,8 +14,8 @@ This is a **Type-A signal**: it COUNTS entries and changes *direction*; it does 
 quality — quality/correctness stays with the cross-model jury (shared-references/
 acceptance-gate.md). It only ever says "keep going / change direction," never "good enough".
 
-The ledger is a sidecar at `.aris/runs/<run_id>.iterations.jsonl`; it deliberately does
-NOT import or touch run_state.py's done/accepted state machine (only shares the `.aris/runs/`
+The ledger is a sidecar at `.ei/runs/<run_id>.iterations.jsonl`; it deliberately does
+NOT import or touch run_state.py's done/accepted state machine (only shares the `.ei/runs/`
 dir, with a distinct `.iterations.jsonl` suffix). An optional `direction` per record lets
 the loop's re-generation step reject candidates too close to a tried direction. See
 shared-references/external-cadence.md → "Stall detection & forced structural pivot".
@@ -35,6 +35,11 @@ from pathlib import Path
 from typing import Iterator, Optional
 
 try:
+    from .state_paths import resolve_state_root, state_writer
+except ImportError:
+    from state_paths import resolve_state_root, state_writer
+
+try:
     import fcntl
 except ImportError:  # pragma: no cover - non-POSIX
     fcntl = None  # type: ignore
@@ -52,12 +57,19 @@ def _log_path(root: str, run_id: str) -> Path:
     safe = "".join(c for c in run_id if c.isalnum() or c in "-_.")
     if not safe or safe != run_id or run_id in (".", ".."):
         raise ValueError(f"invalid run_id {run_id!r} (use [A-Za-z0-9-_.])")
-    return Path(root) / ".aris" / "runs" / f"{run_id}.iterations.jsonl"
+    return resolve_state_root(root, 'read') / "runs" / f"{run_id}.iterations.jsonl"
 
 
 @contextmanager
 def _lock(path: Path) -> Iterator[None]:
     """Best-effort advisory lock (single-orchestrator contract; guards a stray resumer)."""
+    with state_writer(path.parents[2]):
+        with _iteration_file_lock(path):
+            yield
+
+
+@contextmanager
+def _iteration_file_lock(path: Path) -> Iterator[None]:
     path.parent.mkdir(parents=True, exist_ok=True)
     if fcntl is None:
         yield

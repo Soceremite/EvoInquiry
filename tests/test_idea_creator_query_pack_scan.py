@@ -114,8 +114,8 @@ def test_full_resolver_is_set_eu_safe_across_fallbacks(tmp_path: Path) -> None:
             assert result.stdout.strip() == f"scanner={expected}"
 
     pointer_home = tmp_path / "pointer-home"
-    (pointer_home / ".aris").mkdir(parents=True)
-    (pointer_home / ".aris" / "repo").write_text(
+    (pointer_home / ".ei").mkdir(parents=True)
+    (pointer_home / ".ei" / "repo").write_text(
         f"{REPO_ROOT}\n", encoding="utf-8"
     )
     assert_resolves(pointer_home, str(SCANNER))
@@ -208,8 +208,8 @@ def test_skill_wiring_keeps_immediate_scan_on_read_contract() -> None:
         assert 'ARIS_REPO="${ARIS_REPO:-}"' in text
         assert 'ARIS_HOME="${HOME:-}"' in phase_zero
         assert '"$HOME' not in phase_zero, "Phase-0 resolver must tolerate HOME unset"
-        assert f"[ -f .aris/{manifest} ]" in text
-        assert f".aris/{manifest} 2>/dev/null) || true" in text
+        assert f"[ -f .ei/{manifest} ]" in text
+        assert f".ei/{manifest} 2>/dev/null) || true" in text
         assert '"$query_pack_raw" --scope strict >/dev/null' in text
         assert "cached pack younger than 7 days" in text
         assert "Read tool on the raw pack **immediately**" in text

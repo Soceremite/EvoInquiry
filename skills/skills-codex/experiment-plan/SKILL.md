@@ -13,6 +13,8 @@ budgets, blocking checkpoints, and stopping conditions.
 
 For planning, read [task-scope](../shared-references/task-scope.md): write common settings once and reserve time for artifact verification and delivery. Include the relevant [storage and recovery budget](../shared-references/experiment-storage.md); estimates may remain labeled execution prerequisites.
 Plan active recovery and end-of-training cleanup separately. Prefer the completed comparison group's validation-selected winner weights, identifying future model dependencies and when the user must choose retention scope.
+
+For this stage, read [project-governance](../shared-references/project-governance.md). Freeze a versioned experiment spec with declared variant/seed slots, protocol/data/split/evaluator refs, storage/compute budget and failure aggregation. A new spec revision does not grant execution resources.
 <!-- EVO-INQUIRY:END -->
 
 

@@ -5,6 +5,15 @@ argument-hint: "[experiment-description]"
 allowed-tools: Bash(*), Read, Grep, Glob, Edit, Write, Skill(serverless-modal)
 ---
 
+<!-- EI-GOVERNANCE:BEGIN -->
+Resolve runtime state through tools/state_paths.py before .ei operations. Use
+[project-governance](../shared-references/project-governance.md) for fixed evidence,
+profiles and controlled migration; missing profiles retain compat-v1.
+Before formal launch bind a frozen source/config snapshot, environment revision and distinct execution ID. Preserve actual imports/exit codes, failed attempts and retry/resume parents; outputs belong to that execution.
+For code/dependency changes, read [code-reuse-and-docs](../shared-references/code-reuse-and-docs.md) and [environment-stewardship](../shared-references/environment-stewardship.md).
+<!-- EI-GOVERNANCE:END -->
+
+
 # Run Experiment
 
 Deploy and run ML experiment: $ARGUMENTS
@@ -24,7 +33,7 @@ Read the project's `CLAUDE.md` to determine the experiment environment:
 
 **Environment contract** (`../shared-references/compute-env-contract.md`): before
 building or trusting any environment, read the provider's env ledger
-(`.aris/compute/<provider>.md`) — an unchanged spec hash means warm-reuse, a
+(`.ei/compute/<provider>.md`) — an unchanged spec hash means warm-reuse, a
 changed one means rebuild. New env → write the declarative spec first, render it
 for this provider's shape, and never declare it ready on import-success alone:
 run the seeded kernel witness, and after any rebuild/doc edit run the

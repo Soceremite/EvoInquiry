@@ -5,6 +5,14 @@ argument-hint: "[results-path-or-description]"
 allowed-tools: Bash(*), Read, Grep, Glob, Write, Edit
 ---
 
+<!-- EI-GOVERNANCE:BEGIN -->
+Resolve runtime state through tools/state_paths.py before .ei operations. Use
+[project-governance](../shared-references/project-governance.md) for fixed evidence,
+profiles and controlled migration; missing profiles retain compat-v1.
+Resolve fixed execution/spec/environment/evaluator refs once. List included and excluded attempts and apply the predeclared slot aggregation; show failed/missing seeds and protocol/environment differences. current is navigation only.
+<!-- EI-GOVERNANCE:END -->
+
+
 # Analyze Experiment Results
 
 Analyze: $ARGUMENTS

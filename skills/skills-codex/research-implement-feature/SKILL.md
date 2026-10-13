@@ -15,6 +15,9 @@ budgets, blocking checkpoints, and stopping conditions.
 
 When implementing training or large-artifact outputs, read [experiment storage](../shared-references/experiment-storage.md). Make retention and cadence configurable, preserve full resume state, and test interrupted continuation before long runs.
 Implement end-of-training export and recovery cleanup, and explicit winner-only comparison archiving; protect planned model dependencies and verify cleanup failures as well as resume.
+
+For this stage, read [project-governance](../shared-references/project-governance.md). Reuse stable shared interfaces after inspecting callers and tests. Document public shape/dtype/label/split/statistics, RNG and I/O contracts, and update representative consumers in the same change.
+Use [code-reuse-and-docs](../shared-references/code-reuse-and-docs.md) for code changes and [environment-stewardship](../shared-references/environment-stewardship.md) for dependency changes.
 <!-- EVO-INQUIRY:END -->
 
 

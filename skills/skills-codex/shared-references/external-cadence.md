@@ -232,12 +232,12 @@ tuning of the same frame.
 - **Count, don't vibe.** Each iteration, record the number of NEW findings (concrete
   added entries — new evidence, a falsified hypothesis, a candidate direction — *not* a
   subjective "valuable result"). Resolve the helper via the canonical chain
-  (integration-contract §2): `.aris/tools/iteration_log.py` → `tools/iteration_log.py` →
+  (integration-contract §2): `.ei/tools/iteration_log.py` → `tools/iteration_log.py` →
   `$ARIS_REPO/tools/iteration_log.py` → `$ARIS_REPO/tools/iteration_log.py` via
-  `~/.aris/repo` (warn-and-skip if unresolved), then
+  `~/.ei/repo` (warn-and-skip if unresolved), then
   `python3 "$ITER_LOG" note <root> <run_id> <phase> <new_findings> [--direction "..."]`.
   Consecutive zero-finding iterations accumulate a `stale_count` in
-  `.aris/runs/<run_id>.iterations.jsonl` — a sidecar that does **not** touch run_state's
+  `.ei/runs/<run_id>.iterations.jsonl` — a sidecar that does **not** touch run_state's
   done/accepted state.
 - **Forced pivot ladder** (the heartbeat reads the returned `pivot`):
   - `stale_count >= 2` → **pivot structure, not tactics**: change a structural constraint
@@ -274,7 +274,7 @@ squarely the executor's job, and the missing move is the RESTART.
   code/scaffolding (scripts it wrote, configs it generated, its build artifacts). NEVER
   deletable in a restart: the contract/plan (`research_contract.md`,
   `EXPERIMENT_PLAN.md`, `PAPER_PLAN.md`), progress ledgers (`EXPERIMENT_TRACKER.md`,
-  iteration/bottleneck ledgers, `*_STATE.json`, `.aris/traces/`), collected data, and
+  iteration/bottleneck ledgers, `*_STATE.json`, `.ei/traces/`), collected data, and
   completed results. The restart rebuilds the code FROM those files; deleting them
   defeats the restart. When in doubt whether a path is "attempt" or "state," it is state
   — keep it.

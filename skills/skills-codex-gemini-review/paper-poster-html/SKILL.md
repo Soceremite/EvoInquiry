@@ -99,4 +99,4 @@ never straight to re-review.
 ## Review tracing
 
 Save both review jobs' raw responses per `../../shared-references/review-tracing.md` to
-`.aris/traces/paper-poster-html/<date>_run<NN>/`.
+`.ei/traces/paper-poster-html/<date>_run<NN>/`.

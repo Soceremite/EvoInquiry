@@ -5,6 +5,13 @@ argument-hint: "[research-direction]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, WebSearch, WebFetch, Skill, mcp__codex__codex, mcp__codex__codex-reply
 ---
 
+<!-- EI-GOVERNANCE:BEGIN -->
+Resolve runtime state through tools/state_paths.py before .ei operations. Use
+[project-governance](../shared-references/project-governance.md) for fixed evidence,
+profiles and controlled migration; missing profiles retain compat-v1.
+<!-- EI-GOVERNANCE:END -->
+
+
 # Workflow 1: Idea Discovery Pipeline
 
 Orchestrate a complete idea discovery workflow for: **$ARGUMENTS**
@@ -33,7 +40,7 @@ Each phase builds on the previous one's output. The final deliverables are a val
 - **COMPACT = false** — When `true`, generate compact summary files for short-context models and session recovery. Writes `idea-stage/IDEA_CANDIDATES.md` (top 3-5 ideas only) at the end of this workflow. Downstream skills read this instead of the full `idea-stage/IDEA_REPORT.md`.
 - **RENDER_HTML = true** — When `true` (default), auto-render `idea-stage/IDEA_REPORT.md` to HTML at workflow end via `/render-html`. Uses `--no-review` (the source MD already went through novelty + cross-model review during Phase 3). Set `false` to skip, or pass `— render html: false`.
 - **REF_PAPER = false** — Reference paper to base ideas on. Accepts: local PDF path, arXiv URL, or any paper URL. When set, the paper is summarized first (`idea-stage/REF_PAPER_SUMMARY.md`), then idea generation uses it as context. Combine with `base repo` for "improve this paper with this codebase" workflows.
-- **RESUMABLE = true** — Record stage evidence under `.aris/runs/<run_id>.json` and require a deterministic evidence gate before declaring the final report complete.
+- **RESUMABLE = true** — Record stage evidence under `.ei/runs/<run_id>.json` and require a deterministic evidence gate before declaring the final report complete.
 
 > 💡 These are defaults. Override by telling the skill, e.g., `/idea-discovery "topic" — ref paper: https://arxiv.org/abs/2406.04329` or `/idea-discovery "topic" — compact: true`.
 
@@ -62,8 +69,8 @@ remain non-blocking under `AUTO_PROCEED=true`.
 ## Per-stage evidence gate (`RESUMABLE = true`)
 
 Resolve `run_state.py` and `idea_discovery_gate.py` through the same canonical
-helper chain used by `/research-pipeline`: `.aris/tools/` → `tools/` →
-`$ARIS_REPO/tools/` → `~/.aris/repo/tools/`. If either helper is unavailable,
+helper chain used by `/research-pipeline`: `.ei/tools/` → `tools/` →
+`$ARIS_REPO/tools/` → `~/.ei/repo/tools/`. If either helper is unavailable,
 the final report is `BLOCKED`; do not silently continue without a state record.
 
 For a new run, derive `<run_id>` from the direction slug and date, then start
@@ -283,7 +290,7 @@ then end the turn.
 - **User picks ideas** → proceed to Phase 3 with the selected ideas.
 - **User unhappy with all ideas** → collect feedback ("what's missing?", "what direction do you prefer?"), update the prompt with user's constraints, and re-run Phase 2 (idea generation). Before
   regenerating, read the already-tried directions (research-wiki Failed Ideas + any
-  `.aris/runs/<run_id>.iterations.jsonl`) and forbid a candidate too close to one already
+  `.ei/runs/<run_id>.iterations.jsonl`) and forbid a candidate too close to one already
   tried — enforced direction diversity; when an overnight heartbeat drives the run,
   record each chosen direction via `iteration_log.py note ... --direction "<frame>"`
   so later ticks can reject near-duplicates (see
@@ -316,7 +323,7 @@ For the surviving top idea(s), get a sharp outside read — strongest case, name
 /research-review "[top idea with hypothesis + pilot results]" — composed: idea-stage/IDEA_REPORT.md
 ```
 
-In composed mode `/research-review` folds its conclusions into `idea-stage/IDEA_REPORT.md` and cites the `.aris/traces/…` path instead of writing a standalone review `.md` in the project root.
+In composed mode `/research-review` folds its conclusions into `idea-stage/IDEA_REPORT.md` and cites the `.ei/traces/…` path instead of writing a standalone review `.md` in the project root.
 
 **What this does:**
 - GPT-6-Astra xhigh acts as a senior reviewer (NeurIPS/ICML level)
@@ -482,7 +489,7 @@ each emit its own overlapping file. Concretely, for this workflow:
 5. **Pilot scratch is disposable:** keep the pilot script (reusable) + one results file
    (`pilot_results.jsonl` or a small summary). Delete launcher logs, smoke files, and
    redundant `*_summary.json` once the numbers are in the report.
-6. **Cross-model review traces belong in `.aris/traces/…`** (the audit trail); do not
+6. **Cross-model review traces belong in `.ei/traces/…`** (the audit trail); do not
    ALSO keep a human-facing copy under `idea-stage/` — cite the trace path from the report.
 7. **Before finishing,** the `idea-stage/` top level should be roughly: `IDEA_REPORT.md`
    (+ `.html`), the pilot script + results, and the `refine-logs/` dir. Nothing else

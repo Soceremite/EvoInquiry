@@ -65,7 +65,7 @@ smoke:                                    # probes that run INSIDE the env on ev
 
 ## 3. The environment ledger (content-hash = mechanical staleness)
 
-Per provider, keep an append-friendly `.aris/compute/<provider>.md` (or the
+Per provider, keep an append-friendly `.ei/compute/<provider>.md` (or the
 project's existing server-notes file). One block per env, keyed by a content
 hash of the spec, computed over an EXACT canonical form so two agents can
 never hash the same spec differently: parse the spec file, re-serialize as
@@ -94,9 +94,9 @@ gotcha: <any diagnosis-table row hit on THIS provider>
 Spec changed → hash changes → **cache miss**: the ledger entry no longer
 matches and the env must be rebuilt (or a new block added). Spec unchanged →
 warm-reuse without rebuilding or re-validating tier 1–2. This turns "I think
-the env is the same as last week" into a string comparison. Note `.aris/` is
+the env is the same as last week" into a string comparison. Note `.ei/` is
 gitignored by convention — the ledger is **project-local and uncommitted** by
-default (like `.aris/traces/`). If you want committed, git-blameable history,
+default (like `.ei/traces/`). If you want committed, git-blameable history,
 keep the ledger blocks in the project's tracked server-notes file instead;
 the block format is the contract, not the path.
 

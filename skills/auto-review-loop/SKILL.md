@@ -5,6 +5,13 @@ argument-hint: "[topic-or-scope]"
 allowed-tools: Bash(*), Read, Grep, Glob, Write, Edit, Skill, Task, mcp__codex__codex, mcp__codex__codex-reply, mcp__manual_review__review, mcp__manual_review__review_reply
 ---
 
+<!-- EI-GOVERNANCE:BEGIN -->
+Resolve runtime state through tools/state_paths.py before .ei operations. Use
+[project-governance](../shared-references/project-governance.md) for fixed evidence,
+profiles and controlled migration; missing profiles retain compat-v1.
+<!-- EI-GOVERNANCE:END -->
+
+
 # Auto Review Loop: Autonomous Research Improvement
 
 > 🔒 **Do not wrap this skill in `/loop`, `/schedule`, or `CronCreate`.** It
@@ -206,7 +213,7 @@ historical filename is retained for compatibility:
 | **Who writes** | Only a `codex` or `manual` round at `xhigh` effort when `round_requires_external_acquittal` was `true`. A Copilot review/dispatch never writes a finalizer line itself. |
 | **When to write** | At the end of Phase E, after the policy-approved finalizer returns score >= 6 AND verdict ∈ {"ready", "almost"}. A normal default-Codex run does not need this sidecar. |
 | **`run_id` binding** | Every line carries the current `run_id` and round so the Copilot → finalizer transition is auditable. |
-| **Trace linkage** | `trace_id` MUST reference the real trace artifact in `.aris/traces/`; source and family fields in the receipt must exactly match that trace. |
+| **Trace linkage** | `trace_id` MUST reference the real trace artifact in `.ei/traces/`; source and family fields in the receipt must exactly match that trace. |
 | **Identity honesty** | Re-derive `family_relation` from the model strings, but preserve their sources. With the current caller-declared executor identity, write `identity_assurance: "caller_declared"` and `independence_verified: "unverified"`; never promote different strings to independent attestation. |
 | **No overwrite** | `REVIEW_STATE.json` is overwritten each round (only latest state). `ACQUITTAL_LOG.jsonl` is NEVER overwritten — it is the permanent, cumulative record. |
 
@@ -589,7 +596,7 @@ After parsing the assessment, append to the canonical memory artifact at `review
 - This file is passed back to the reviewer in the next round's Phase A — it is the reviewer's persistent memory.
 - **Record the file's SHA-256 hash before each reviewer call** and pass it to `save_trace.sh` via `--memory-hash`. Hash the memory as supplied to the call (pre-call artifact), not the post-append version, so the trace proves which memory was in play for that invocation.
 - **If the score REGRESSES round-to-round**, don't just write a new memory line:
-  diff the two rounds' raw `.response.md` files in `.aris/traces/` first and find
+  diff the two rounds' raw `.response.md` files in `.ei/traces/` first and find
   the exact criterion that flipped (see `shared-references/review-tracing.md`
   § *Debugging With Traces*). The memory file is a summary; the trace is evidence.
 
@@ -604,13 +611,13 @@ tool configuration; both finalizers default to unavailable:
 
 ```bash
 cd "$(git rev-parse --show-toplevel 2>/dev/null || pwd)" || exit 1
-if [ -z "${ARIS_REPO:-}" ] && [ -f .aris/installed-skills.txt ]; then
-    ARIS_REPO=$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .aris/installed-skills.txt 2>/dev/null) || true
+if [ -z "${ARIS_REPO:-}" ] && [ -f .ei/installed-skills.txt ]; then
+    ARIS_REPO=$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .ei/installed-skills.txt 2>/dev/null) || true
 fi
-if [ -z "${ARIS_REPO:-}" ] && [ -f "$HOME/.aris/repo" ]; then
-    ARIS_REPO=$(cat "$HOME/.aris/repo" 2>/dev/null) || true
+if [ -z "${ARIS_REPO:-}" ] && [ -f "$HOME/.ei/repo" ]; then
+    ARIS_REPO=$(cat "$HOME/.ei/repo" 2>/dev/null) || true
 fi
-REVIEW_GATE=".aris/tools/review_gate.py"
+REVIEW_GATE=".ei/tools/review_gate.py"
 [ -f "$REVIEW_GATE" ] || REVIEW_GATE="tools/review_gate.py"
 [ -f "$REVIEW_GATE" ] || { [ -n "${ARIS_REPO:-}" ] && REVIEW_GATE="$ARIS_REPO/tools/review_gate.py"; }
 [ -f "$REVIEW_GATE" ] || REVIEW_GATE=""
@@ -927,7 +934,7 @@ This is the authoritative record. Do NOT truncate or paraphrase.]
 ```
 {"run_id":"<current-run_id>","round":<N>,"backend":"<codex|manual>","effort":"xhigh","verdict":"<ready|almost>","score":<score>,"executor_model":"<from-trace>","executor_model_source":"caller-declared","executor_family":"<derived-from-executor_model>","reviewer_model":"<from-trace-or-manual-Reviewer-Model>","reviewer_model_source":"<requested|backend-reported>","reviewer_family":"<derived-from-reviewer_model>","family_relation":"different","identity_assurance":"caller_declared","independence_verified":"unverified","trace_id":"<skill>/<YYYY-MM-DD>_run<NN>","timestamp":"<ISO8601>"}
 ```
-Use `>>` (append), never `>`. Re-derive both families from model strings and reject unknown/same-family pairs, but copy the model-source and assurance fields without upgrading them. The `trace_id` MUST be the actual trace directory path relative to `.aris/traces/` (e.g., `auto-review-loop/2026-07-13_run01`), matching the RUN_ID format from `save_trace.sh`: `<YYYY-MM-DD>_run<NN>` with the skill-name subdirectory prefix. Do NOT fabricate a synthetic `trace_...` identifier.
+Use `>>` (append), never `>`. Re-derive both families from model strings and reject unknown/same-family pairs, but copy the model-source and assurance fields without upgrading them. The `trace_id` MUST be the actual trace directory path relative to `.ei/traces/` (e.g., `auto-review-loop/2026-07-13_run01`), matching the RUN_ID format from `save_trace.sh`: `<YYYY-MM-DD>_run<NN>` with the skill-name subdirectory prefix. Do NOT fabricate a synthetic `trace_...` identifier.
 
 **Append to `findings.md`** (when `COMPACT = true`): one-line entry per key finding this round:
 

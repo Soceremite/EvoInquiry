@@ -35,7 +35,7 @@ the resolver returns the empty string, write the four files inline
 ## Trace Directory
 
 ```text
-.aris/traces/<skill-name>/<YYYY-MM-DD>_run<NN>/
+.ei/traces/<skill-name>/<YYYY-MM-DD>_run<NN>/
   run.meta.json
   001-<purpose>.request.json
   001-<purpose>.response.md
@@ -111,10 +111,10 @@ Respect inline parameter `--- trace: off | meta | full`:
 
 ## Events
 
-After writing a trace, append a compact event to `.aris/meta/events.jsonl`:
+After writing a trace, append a compact event to `.ei/meta/events.jsonl`:
 
 ```json
-{"event":"review_trace","skill":"auto-review-loop","purpose":"round-1-review","agent_id":"...","trace_path":".aris/traces/auto-review-loop/2026-04-15_run01/","status":"ok"}
+{"event":"review_trace","skill":"auto-review-loop","purpose":"round-1-review","agent_id":"...","trace_path":".ei/traces/auto-review-loop/2026-04-15_run01/","status":"ok"}
 ```
 
 ## Debugging With Traces
@@ -127,10 +127,10 @@ judgment actually changed:
 
 ```bash
 skill=auto-review-loop run=2026-04-15_run01
-diff ".aris/traces/$skill/$run/002-round-2.response.md" \
-     ".aris/traces/$skill/$run/003-round-3.response.md"
+diff ".ei/traces/$skill/$run/002-round-2.response.md" \
+     ".ei/traces/$skill/$run/003-round-3.response.md"
 grep -En 'however|but|concern|missing|cannot' \
-     ".aris/traces/$skill/$run/003-round-3.response.md"
+     ".ei/traces/$skill/$run/003-round-3.response.md"
 ```
 
 The paragraph where the assessment changed **is** the causal explanation for the
@@ -141,4 +141,4 @@ written in English, and most of it is the reviewer talking to itself.
 
 ## Privacy
 
-`.aris/traces/` is project-local and should not be committed. Use `--- trace: off` for strict confidentiality projects.
+`.ei/traces/` is project-local and should not be committed. Use `--- trace: off` for strict confidentiality projects.

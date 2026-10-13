@@ -95,8 +95,8 @@ and a **local Codex app-server MCP bridge** as the raster renderer.
   ```bash
   IMAGE2_HELPER=""
   cd "$(git rev-parse --show-toplevel 2>/dev/null || pwd)" || exit 1
-  if [ -z "${ARIS_REPO:-}" ] && [ -f .aris/installed-skills-codex.txt ]; then
-      ARIS_REPO=$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .aris/installed-skills-codex.txt 2>/dev/null) || true
+  if [ -z "${ARIS_REPO:-}" ] && [ -f .ei/installed-skills-codex.txt ]; then
+      ARIS_REPO=$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .ei/installed-skills-codex.txt 2>/dev/null) || true
   fi
   [ -f ".agents/skills/paper-illustration-image2/scripts/paper_illustration_image2.py" ] && IMAGE2_HELPER=".agents/skills/paper-illustration-image2/scripts/paper_illustration_image2.py"
   [ -z "$IMAGE2_HELPER" ] && [ -n "${ARIS_REPO:-}" ] && [ -f "$ARIS_REPO/skills/paper-illustration-image2/scripts/paper_illustration_image2.py" ] && IMAGE2_HELPER="$ARIS_REPO/skills/paper-illustration-image2/scripts/paper_illustration_image2.py"

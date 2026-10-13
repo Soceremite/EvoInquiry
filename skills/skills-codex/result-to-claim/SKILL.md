@@ -14,6 +14,8 @@ reviewer briefs. Continue authorized work through its necessary steps; honor
 budgets, blocking checkpoints, and stopping conditions.
 
 Apply this formal gate when a claim-support verdict is requested or the active workflow requires it; ordinary analysis caveats alone do not trigger it. See [task-scope](../shared-references/task-scope.md). When required, all existing evidence, review, and routing rules below still apply.
+
+For this stage, read [project-governance](../shared-references/project-governance.md). Use fixed raw result/spec/execution/report refs and the actual digest-bound review receipt. Preserve independent/provisional judgments; file/registry/schema success does not establish claim support.
 <!-- EVO-INQUIRY:END -->
 
 
@@ -58,16 +60,16 @@ Before the reviewer call, resolve and run `evidence_check.py` per
 [`evidence-precheck.md`](../shared-references/evidence-precheck.md):
 
 ```bash
-if [ -z "${ARIS_REPO:-}" ] && [ -f .aris/installed-skills-codex.txt ]; then
-  ARIS_REPO=$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .aris/installed-skills-codex.txt 2>/dev/null) || true
+if [ -z "${ARIS_REPO:-}" ] && [ -f .ei/installed-skills-codex.txt ]; then
+  ARIS_REPO=$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .ei/installed-skills-codex.txt 2>/dev/null) || true
 fi
 EVIDENCE_CHECK=""
 [ -n "${ARIS_REPO:-}" ] && [ -f "$ARIS_REPO/tools/evidence_check.py" ] && EVIDENCE_CHECK="$ARIS_REPO/tools/evidence_check.py"
 [ -z "$EVIDENCE_CHECK" ] && [ -f tools/evidence_check.py ] && EVIDENCE_CHECK="tools/evidence_check.py"
-mkdir -p .aris
+mkdir -p .ei
 if [ -n "$EVIDENCE_CHECK" ]; then
-  python3 "$EVIDENCE_CHECK" . --batch .aris/claims.json \
-    > .aris/evidence_precheck.json 2>.aris/evidence_precheck.err || true
+  python3 "$EVIDENCE_CHECK" . --batch .ei/claims.json \
+    > .ei/evidence_precheck.json 2>.ei/evidence_precheck.err || true
 else
   echo "WARN: evidence_check.py unresolved; semantic review will still run" >&2
 fi
@@ -189,7 +191,7 @@ See `shared-references/experiment-integrity.md` for the full integrity protocol.
 ```
 if research-wiki/ exists:
     # Resolve the helper (Codex chain). If unavailable, skip wiki writes; still report verdict.
-    ARIS_REPO="${ARIS_REPO:-$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .aris/installed-skills-codex.txt 2>/dev/null)}"
+    ARIS_REPO="${ARIS_REPO:-$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .ei/installed-skills-codex.txt 2>/dev/null)}"
     WIKI_SCRIPT=""
     [ -n "$ARIS_REPO" ] && [ -f "$ARIS_REPO/tools/research_wiki.py" ] && WIKI_SCRIPT="$ARIS_REPO/tools/research_wiki.py"
     [ -z "$WIKI_SCRIPT" ] && [ -f tools/research_wiki.py ] && WIKI_SCRIPT="tools/research_wiki.py"
@@ -255,4 +257,4 @@ if research-wiki/ exists:
 
 ## Review Tracing
 
-After the secondary Codex judgment, save a trace following `../shared-references/review-tracing.md`. Write files directly to `.aris/traces/result-to-claim/<date>_run<NN>/` and include the prompt, raw reviewer response, parsed verdict, routing action, and whether the result is `[pending external review]`. Respect the `--- trace:` parameter when present (default: `full`).
+After the secondary Codex judgment, save a trace following `../shared-references/review-tracing.md`. Write files directly to `.ei/traces/result-to-claim/<date>_run<NN>/` and include the prompt, raw reviewer response, parsed verdict, routing action, and whether the result is `[pending external review]`. Respect the `--- trace:` parameter when present (default: `full`).

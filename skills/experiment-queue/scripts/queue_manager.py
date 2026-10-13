@@ -43,6 +43,7 @@ import argparse
 import glob
 import json
 import os
+import platform
 import re
 import shlex
 import subprocess
@@ -232,6 +233,7 @@ def assign_jobs_to_phases(manifest, state):
                     "started": None,
                     "completed": None,
                     "error": None,
+                    **({'execution': json.loads(json.dumps(job['execution'])), 'execution_attempts': []} if 'execution' in job else {}),
                 })
 
 
@@ -239,17 +241,22 @@ def launch_job(job, gpu, conda_env, cwd, log_dir, conda_hook):
     """Launch job in a detached screen, return (screen_name, pid)."""
     screen_name = f"EQ_{job['id']}"
     if screen_exists(screen_name):
+        if job.get('execution'):
+            raise ValueError('Existing governed screen must be reconciled before another launch')
         # Shouldn't happen; clean up
         kill_screen(screen_name)
         time.sleep(2)
     log_file = os.path.join(log_dir, f"{job['id']}.log")
-    cmd = job["cmd"]
+    if job.get('execution'):
+        cmd = governed_launch_command(job)
+    else:
+        cmd = job["cmd"]
     # Substitute GPU placeholder if present
     cmd_with_gpu = cmd.replace("${GPU}", str(gpu))
+    activation = '' if job.get('execution') else f'{conda_hook} && conda activate {shlex.quote(conda_env)} && '
     full = (
         f'cd {shlex.quote(cwd)} && '
-        f'{conda_hook} && '
-        f'conda activate {conda_env} && '
+        f'{activation}'
         f'CUDA_VISIBLE_DEVICES={gpu} {cmd_with_gpu} 2>&1 | tee {shlex.quote(log_file)}'
     )
     screen_cmd = f'screen -dmS {screen_name} bash -c {shlex.quote(full)}'
@@ -267,6 +274,30 @@ def job_status_check(job, log_dir, cwd):
     """Return new status for a running job."""
     screen_name = job["screen_name"]
     log_file = os.path.join(log_dir, f"{job['id']}.log")
+
+    if job.get('execution'):
+        binding = job['execution']
+        final = Path(binding['project_root']) / 'runs' / binding['execution_run_id'] / 'execution.final.json'
+        if final.is_file():
+            tools_dir = Path(binding['registry_tools_dir']).resolve()
+            if str(tools_dir) not in sys.path:
+                sys.path.insert(0, str(tools_dir))
+            from execution_registry import inspect_terminal
+            from state_paths import resolve_state_root
+            resolve_state_root(binding['project_root'], 'read')
+            record, _ = inspect_terminal(binding['project_root'], binding['execution_run_id'])
+            if any(record[key] != binding[key] for key in ('snapshot_ref', 'env_revision')):
+                raise ValueError('Terminal execution differs from its queue binding')
+            if record['status'] == 'completed' and record['exit_code'] == 0:
+                if job.get('expected_output') and not output_exists(job['expected_output'], cwd):
+                    return 'failed_other', 'Terminal execution has no expected output'
+                return 'completed', None
+            own_log = final.parent / 'process.log'
+            return ('failed_oom', 'CUDA OOM in terminal execution') if detect_oom_in_log(str(own_log)) else (
+                'failed_other', f"Recorded execution exit {record['exit_code']}")
+        if screen_name and screen_exists(screen_name):
+            return 'running', None
+        return 'failed_other', 'No verified terminal execution; inspect before retry or lease release'
 
     # 1. Output exists → completed
     if job.get("expected_output") and output_exists(job["expected_output"], cwd):
@@ -302,6 +333,108 @@ def pending_jobs_in_active_phases(state, manifest):
         j for j in state["jobs"]
         if j["status"] == "pending" and j["phase"] in active_phases
     ]
+
+
+def governed_launch_command(job):
+    """Keep the queue as coordinator while each actual launch gets frozen evidence."""
+    binding = job['execution']
+    tools_dir = Path(binding['registry_tools_dir']).resolve()
+    if not (tools_dir / 'execution_registry.py').is_file():
+        raise ValueError('Governed queue needs the complete registry tools and schemas on this host')
+    if str(tools_dir) not in sys.path:
+        sys.path.insert(0, str(tools_dir))
+    from execution_registry import clone_attempt, verify_queue_binding, verify_snapshot
+    from environment_registry import EnvironmentRegistry
+    from registry_common import read_record
+    from state_paths import resolve_state_root
+    root = Path(binding['project_root']).resolve()
+    current = read_record(root / 'runs' / binding['execution_run_id'] / 'execution.json')
+    if current['status'] in ('failed', 'stopped'):
+        previous = binding['execution_run_id']
+        attempts = job.setdefault('execution_attempts', [])
+        if previous not in attempts:
+            attempts.append(previous)
+        new_id = attempts[0] + '-retry-' + str(max(1, job['attempts']))
+        current = clone_attempt(root, previous, new_id)
+        binding.update(execution_run_id=new_id, snapshot_ref=current['snapshot_ref'])
+        consumer_path = resolve_state_root(root, 'read') / 'consumers' / (binding['consumer_id'] + '.json')
+        consumer = read_record(consumer_path)
+        consumer['execution_run_id'] = new_id
+        EnvironmentRegistry(root).bind_consumer(consumer)
+        # Execution-specific output arguments are explicit, never a global
+        # replacement in code or historical evidence.
+        binding['arguments'] = verify_snapshot(root, current['snapshot_ref'])['arguments']
+        if job.get('expected_output'):
+            job['expected_output'] = job['expected_output'].replace('runs/' + previous + '/', 'runs/' + new_id + '/')
+    verify_queue_binding(root, binding)
+    if current['execution_run_id'] not in job.setdefault('execution_attempts', []):
+        job['execution_attempts'].append(current['execution_run_id'])
+    return shlex.join([binding.get('registry_python', sys.executable), str(tools_dir / 'execution_registry.py'),
+                       '--root', str(root), 'launch', '--execution-id', current['execution_run_id'],
+                       *binding.get('arguments', [])])
+
+
+def release_governed_lease(job):
+    """Release a final queue binding only after its recorded process and screen ended.
+
+    Pending OOM retries retain the same lease. Missing process metadata or an
+    inaccessible/reused PID is protected until an external observer reconciles
+    it; a screen timeout never constitutes termination evidence.
+    """
+    if not job.get('execution') or job['status'] not in ('completed', 'stuck'):
+        return
+    binding = job['execution']
+    tools_dir = Path(binding['registry_tools_dir']).resolve()
+    if str(tools_dir) not in sys.path:
+        sys.path.insert(0, str(tools_dir))
+    from execution_registry import inspect_terminal
+    from environment_registry import EnvironmentRegistry
+    from registry_common import atomic_write, fixed_ref, identifier, read_record
+    from state_paths import resolve_state_root, state_writer
+    root = Path(binding['project_root']).resolve()
+    state = resolve_state_root(root, 'read')
+    lease = read_record(state / 'leases' / (identifier(binding['lease_id']) + '.json'))
+    if lease['status'] == 'released':
+        return
+    final = root / 'runs' / binding['execution_run_id'] / 'execution.final.json'
+    process_path = final.parent / 'process.json'
+    if not final.is_file() or not process_path.is_file() or (job.get('screen_name') and screen_exists(job['screen_name'])):
+        job['lease_release'] = 'protected-needs-process-reconciliation'
+        return
+    record, reference = inspect_terminal(root, binding['execution_run_id'])
+    process = read_record(process_path)
+    if (process.get('host') != platform.node() or process.get('execution_run_id') != record['execution_run_id']
+            or not isinstance(process.get('pid'), int)):
+        job['lease_release'] = 'protected-needs-process-reconciliation'
+        return
+    try:
+        os.kill(process['pid'], 0)
+    except ProcessLookupError:
+        pass
+    except (OSError, PermissionError):
+        job['lease_release'] = 'protected-needs-process-reconciliation'
+        return
+    else:
+        job['lease_release'] = 'protected-process-present'
+        return
+    receipt = {'job_ref': record['job_ref'], 'execution_run_id': record['execution_run_id'],
+               'lease_id': binding['lease_id'], 'consumer_id': binding['consumer_id'],
+               'execution_ref': reference, 'pid': process['pid'], 'host': process['host'],
+               'status': 'completed' if job['status'] == 'completed' else 'failed',
+               'queued': False, 'process_alive': False, 'source': 'queue-manager-and-local-process-observer',
+               'confirmed_at': now()}
+    with state_writer(root) as state:
+        path = state / 'queue/termination-receipts' / (identifier(record['execution_run_id']) + '.json')
+        if not path.exists():
+            atomic_write(path, receipt)
+        receipt_ref = fixed_ref(root, path.relative_to(root))
+    registry = EnvironmentRegistry(root)
+    result = registry.reconcile_leases({record['job_ref']: receipt_ref})
+    consumer = read_record(state / 'consumers' / (identifier(binding['consumer_id']) + '.json'))
+    consumer.update(lifecycle='completed', confirmed_at=now(), confirmed_by='queue-manager',
+                    source='queue-manager-and-local-process-observer')
+    registry.bind_consumer(consumer)
+    job['lease_release'] = next((item['status'] for item in result if item['lease_id'] == binding['lease_id']), 'released')
 
 
 def step(manifest, state, state_file, log_dir):
@@ -370,16 +503,28 @@ def step(manifest, state, state_file, log_dir):
     for i in range(slots):
         job = pending[i]
         gpu = free[i]
+        governed = bool(job.get('execution'))
+        if governed:
+            governed_launch_command(job)
+            # Persist the selected attempt before screen can start. Recovery
+            # sees this same binding and never relaunches a running identity.
+            job.update(status='running', gpu=gpu, screen_name=f"EQ_{job['id']}",
+                       pid=None, started=now(), error=None)
+            job['attempts'] += 1
+            save_state(state, state_file)
         screen_name, pid = launch_job(job, gpu, conda_env, cwd, log_dir, conda_hook)
         job["status"] = "running"
         job["gpu"] = gpu
         job["screen_name"] = screen_name
         job["pid"] = pid
-        job["attempts"] += 1
+        if not governed:
+            job["attempts"] += 1
         job["started"] = now()
         job["error"] = None
 
     # 4. Update phase status
+    for job in state['jobs']:
+        release_governed_lease(job)
     for phase in state["phases"]:
         if phase_complete(phase["name"], state):
             phase["status"] = "completed"

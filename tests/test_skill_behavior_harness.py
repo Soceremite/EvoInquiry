@@ -64,6 +64,21 @@ print(json.dumps({'type':'turn.completed'}))
 
 
 @pytest.mark.skipif(os.name != 'posix', reason='CLI process-group harness uses POSIX signals')
+def test_startup_failure_is_separate_from_behavior_and_keeps_evidence(setup_case, tmp_path):
+    case, fixtures, output, toolkit = setup_case
+    cli = fake_cli(tmp_path, '''import sys
+sys.stdin.read()
+sys.stderr.write('Error: failed to initialize in-process app-server client: Resource temporarily unavailable\\n')
+raise SystemExit(1)
+''')
+    result = run_case(case, fixtures, output, toolkit, cli, 'evo-inquiry@evo-inquiry-eval-beta4')
+    assert result['failure_kind'] == 'runtime_startup'
+    assert result['tool_actions'] == 0 and not result['session_completed']
+    assert result['assessment'] == 'UNASSESSED'
+    assert 'Resource temporarily unavailable' in (output / '01/stderr.txt').read_text()
+
+
+@pytest.mark.skipif(os.name != 'posix', reason='CLI process-group harness uses POSIX signals')
 def test_time_limit_stops_a_session_and_preserves_raw_trace(setup_case, tmp_path):
     case, fixtures, output, toolkit = setup_case
     case['timeout_seconds'] = 0.2
@@ -79,7 +94,7 @@ time.sleep(20)
     assert (output / '01/events.jsonl').is_file()
 
 
-@pytest.mark.parametrize('drift', ['skill', 'guidance', 'storage', 'helper'])
+@pytest.mark.parametrize('drift', ['skill', 'guidance', 'storage', 'helper', 'governance', 'schema'])
 def test_discovery_rejects_stale_cache_with_the_correct_name_and_version(tmp_path, drift):
     toolkit = tmp_path / 'source'
     cache = tmp_path / 'cache/market/evo-inquiry/1.0.0-beta.4'
@@ -87,15 +102,19 @@ def test_discovery_rejects_stale_cache_with_the_correct_name_and_version(tmp_pat
     common_rel = Path('skills/skills-codex/shared-references/evo-inquiry.md')
     storage_rel = Path('skills/skills-codex/shared-references/experiment-storage.md')
     helper_rel = Path('tools/checkpoint_retention.py')
+    governance_rel = Path('tools/execution_registry.py')
+    schema_rel = Path('tools/schemas/execution.schema.json')
     for root in (toolkit, cache):
         for rel, text in ((skill_rel, 'Current skill bytes'), (common_rel, 'Current guidance'),
-                          (storage_rel, 'Current storage guidance'), (helper_rel, 'Current helper')):
+                          (storage_rel, 'Current storage guidance'), (helper_rel, 'Current helper'),
+                          (governance_rel, 'Current governed launcher'), (schema_rel, '{}')):
             (root / rel).parent.mkdir(parents=True, exist_ok=True)
             (root / rel).write_text(text)
     (toolkit / '.codex-plugin').mkdir()
     (toolkit / '.codex-plugin/plugin.json').write_text('{"version":"1.0.0-beta.4"}')
     (cache / {'skill': skill_rel, 'guidance': common_rel, 'storage': storage_rel,
-              'helper': helper_rel}[drift]).write_text('Stale installed bytes')
+              'helper': helper_rel, 'governance': governance_rel,
+              'schema': schema_rel}[drift]).write_text('Stale installed bytes')
     selector = 'evo-inquiry@evo-inquiry-eval-beta4'
     response = {'data': [{'skills': [{'name': 'evo-inquiry:example', 'enabled': True,
                                       'pluginId': selector, 'path': str(cache / skill_rel)}]}]}
@@ -104,9 +123,10 @@ response = ''' + repr(response) + '''
 for line in sys.stdin:
     request = json.loads(line)
     if 'id' in request:
-        print(json.dumps({'id':request['id'],'result':response if request['method']=='skills/list' else {}}),flush=True)
+        print(json.dumps({'method':'notification'})+'\\n'+json.dumps({'id':request['id'],'result':response if request['method']=='skills/list' else {}}),flush=True)
 ''')
     message = {'skill': 'skill bytes', 'guidance': 'shared guidance',
-               'storage': 'support resource', 'helper': 'support resource'}[drift]
+               'storage': 'support resource', 'helper': 'support resource',
+               'governance': 'support resource', 'schema': 'support resource'}[drift]
     with pytest.raises(RuntimeError, match=message):
         discover_variant(toolkit, selector, cli)

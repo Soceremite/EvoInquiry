@@ -5,6 +5,13 @@ argument-hint: "[paper-path-or-review-bundle]"
 allowed-tools: Bash(*), Read, Grep, Glob, Write, Edit, Skill, mcp__codex__codex, mcp__codex__codex-reply, mcp__manual_review__review, mcp__manual_review__review_reply
 ---
 
+<!-- EI-GOVERNANCE:BEGIN -->
+Resolve runtime state through tools/state_paths.py before .ei operations. Use
+[project-governance](../shared-references/project-governance.md) for fixed evidence,
+profiles and controlled migration; missing profiles retain compat-v1.
+<!-- EI-GOVERNANCE:END -->
+
+
 # Workflow 4: Rebuttal
 
 Prepare and maintain a grounded, venue-compliant rebuttal for: **$ARGUMENTS**
@@ -373,4 +380,4 @@ Skip if `RENDER_HTML = false`.
 
 ## Review Tracing
 
-After each reviewer call (`mcp__codex__codex`, `mcp__codex__codex-reply`, `mcp__manual_review__review`, or `mcp__manual_review__review_reply`), save the trace following `shared-references/review-tracing.md` (Policy C — forensic; never silently skip). Use `save_trace.sh` (resolved per the chain in `shared-references/integration-contract.md` §2) or write files directly to `.aris/traces/<skill>/<date>_run<NN>/`. Respect the `--- trace:` parameter (default: `full`).
+After each reviewer call (`mcp__codex__codex`, `mcp__codex__codex-reply`, `mcp__manual_review__review`, or `mcp__manual_review__review_reply`), save the trace following `shared-references/review-tracing.md` (Policy C — forensic; never silently skip). Use `save_trace.sh` (resolved per the chain in `shared-references/integration-contract.md` §2) or write files directly to `.ei/traces/<skill>/<date>_run<NN>/`. Respect the `--- trace:` parameter (default: `full`).

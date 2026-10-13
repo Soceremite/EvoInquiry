@@ -12,6 +12,9 @@ reviewer briefs. Continue authorized work through its necessary steps; honor
 budgets, blocking checkpoints, and stopping conditions.
 
 For artifact-producing runs, read [experiment storage](../shared-references/experiment-storage.md). Carry the plan's storage policy into actual trainer configuration, verify save/resume in sanity checks, and budget aggregate concurrent output before deployment.
+
+For this stage, read [project-governance](../shared-references/project-governance.md). Before implementation, inspect reusable interfaces and their real callers/tests; update public docs/examples and contract tests together. Bind a recipe revision and record smoke, recovery and scientific reviews separately.
+Use [code-reuse-and-docs](../shared-references/code-reuse-and-docs.md) for code changes and [environment-stewardship](../shared-references/environment-stewardship.md) for dependency changes.
 <!-- EVO-INQUIRY:END -->
 
 

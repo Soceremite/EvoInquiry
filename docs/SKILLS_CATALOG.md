@@ -2,8 +2,8 @@
 
 [README](../README.md) · [中文介绍](../README_CN.md)
 
-The plugin provides **84 skills**: 83 retained workflow entrypoints and the
-research-guide coordinator. Invoke a skill with the `evo-inquiry:`
+The development tree provides **86 skills**: 83 retained workflow entrypoints,
+research-guide, project-governance and environment-maintenance. Invoke a skill with the `evo-inquiry:`
 namespace; each link below opens the Codex implementation actually installed.
 The table describes capabilities and setup categories. Read the selected
 `SKILL.md` for exact inputs, dependencies, outputs, and checkpoints.
@@ -18,6 +18,8 @@ or dependency does not establish that an integration is configured.
 | Skill | Capability | Setup |
 | --- | --- | --- |
 | [`/research-guide`](../skills/skills-codex/research-guide/SKILL.md) | Resume a project or choose the next evidence-based step; reads and executes the appropriate skill within the task's scope | Dependencies of the selected step |
+| [`/project-governance`](../skills/skills-codex/project-governance/SKILL.md) | Project identities, fixed artifact references, read-only audits and controlled .ei migration/recovery | Python, jsonschema; local filesystem |
+| [`/environment-maintenance`](../skills/skills-codex/environment-maintenance/SKILL.md) | Frozen environment reuse, independent candidate validation, consumer leases/pins and retirement planning | Python, jsonschema; existing conda/uv as needed |
 | [`/research-pipeline`](../skills/skills-codex/research-pipeline/SKILL.md) | **Full chain** — Workflow 1 → 1.5 → 2 → 3, from research direction to submission-ready paper | Native Codex review, LaTeX, GPU |
 | [`/idea-discovery`](../skills/skills-codex/idea-discovery/SKILL.md) | **Workflow 1** — research-lit → idea-creator → novelty-check → research-review → research-refine-pipeline | Native Codex review |
 | [`/idea-discovery-robot`](../skills/skills-codex/idea-discovery-robot/SKILL.md) | Workflow 1 adapter for robotics / embodied AI — robotics-aware literature survey + benchmark-anchored ideation | Native Codex review |

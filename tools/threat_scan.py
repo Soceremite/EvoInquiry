@@ -97,7 +97,7 @@ _PATTERNS: List[Tuple[str, str, str]] = [
     # "update CLAUDE.md", so this is tuned for wiki/web content; scanning SKILL.md
     # itself needs an ARIS-content allowlist first (see injection-hygiene.md).
     (r'(?:update|modify|edit|append\s+to|overwrite)\s+[^\n]{0,40}(?:AGENTS\.md|CLAUDE\.md|(?<![A-Za-z_])MEMORY\.md|\.cursorrules|\.clinerules)', "agent_config_mod", "strict"),
-    (r'(update|modify|edit|write|change|append|add\s+to)\s+.*\.aris/(installed-skills\.txt|skill-source\.txt)', "aris_config_mod", "strict"),
+    (r'(update|modify|edit|write|change|append|add\s+to)\s+.*\.(?:ei|aris)/(installed-skills\.txt|skill-source\.txt)', "aris_config_mod", "strict"),
 
     # ── Hardcoded secrets (strict) ───────────────────────────────────
     (r'(?:api[_-]?key|token|secret|password)\s*[=:]\s*["\'][A-Za-z0-9+/=_-]{20,}', "hardcoded_secret", "strict"),

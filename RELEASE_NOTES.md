@@ -1,62 +1,57 @@
-# EvoInquiry 1.0.0
+# EvoInquiry 1.1.0-beta.1
 
 **Research that evolves through evidence. / 让科研在证据中持续进化。**
 
-EvoInquiry 1.0.0 is the first stable release of a research workflow toolkit for Codex. It provides **84 skill entrypoints** to help researchers explore a direction, develop a method, run and interpret experiments, examine the evidence, and prepare research outputs. Start with a focused task or connect the steps into a longer workflow; existing project materials, resource limits, and the requested stopping point guide what happens next.
+EvoInquiry provides **86 Codex skill entrypoints** for literature discovery, research design, theory, experiments, evidence review, papers, presentations, proposals and patents. This prerelease adds project and environment governance for research that needs to continue across many experiments, failures, revisions and collaborators. You can still start with a focused request; the workflow follows the project's evidence, constraints and authorized stopping point.
 
-## Research capabilities
+## New capabilities
 
-| Area | What EvoInquiry helps you do |
+| Capability | What it helps you do |
 | --- | --- |
-| Literature and knowledge | Search and understand papers, organize related work, check novelty, and maintain a persistent research knowledge base. |
-| Ideas and method design | Generate research directions, refine a proposal, and design baselines, controls, ablations, metrics, and an experiment roadmap. |
-| Theory and proofs | Organize assumptions and derivations, draft mathematical proofs, and review gaps in an argument. |
-| Experiments and analysis | Build research prototypes, execute and queue experiments, monitor training, analyze multiple seeds, and compare results. |
-| Evidence and review | Audit experiment integrity, assess which claims the results support, check citations, and revise work through bounded review cycles. |
-| Papers and figures | Plan and draft a manuscript, produce plots and editable diagrams, compile LaTeX, and improve an existing paper. |
-| Talks and submissions | Prepare slides and posters, write a rebuttal, and adapt an existing paper for a new venue. |
-| Proposals and patents | Structure funding proposals and invention disclosures, then draft and review patent application materials. |
-| Project continuation | Use `research-guide` to inspect existing work and coordinate the next authorized step; use `research-pipeline` for a requested full research workflow. |
+| Project and evidence governance | Give projects, experiment designs, real executions, reports and environments distinct identities. Use fixed paths and SHA-256 references for evidence; recover interrupted publication and explicitly planned state migrations. |
+| Reproducible execution | Freeze the source, expanded configuration, data protocol, evaluator, environment and launch arguments. Preserve failed attempts, record retry or checkpoint-restoration parents, and aggregate according to a rule declared before results exist. |
+| Environment maintenance | Inspect the real interpreter and imports, build an independent candidate, and preserve actual metadata/import/numerical/consumer checks. Keep queued tasks bound to their environment and protect active leases or reproduction pins. |
+| Code reuse and documentation | Find existing interfaces and method extensions, preserve shared sample/label/split meaning, and identify source/documentation changes that require another review. |
+| Storage and deployment | Probe local cross-process locks and atomic publication requirements before governance writes; distinguish temporary test storage from a durable project deployment. Verify plugin source switching and rollback. |
 
-The [skill catalog](https://github.com/Soceremite/EvoInquiry/blob/v1.0.0/docs/SKILLS_CATALOG.md) lists the actual entrypoints and their setup requirements. The inventory includes focused tasks, orchestrators, optional provider adapters, and a retained compatibility redirect.
+Two new focused skills, `project-governance` and `environment-maintenance`, join the existing research workflows. `research-guide` continues to coordinate unclear or multi-stage requests; a clear analysis, implementation or writing task goes directly to its relevant skill. Ordinary reading and small edits do not require project initialization. Schema validity and file identity do not replace independent scientific review or turn a claim into an accepted result.
 
-## Why use EvoInquiry
+## Why this matters
 
-- **Choose the right amount of workflow.** Natural requests can select the relevant skill directly. Project continuation coordinates several steps when needed, and explicit skill names remain available for precise control.
-- **Keep conclusions connected to evidence.** Plans connect research questions with tests; analysis preserves numerical caveats; formal claim checks, experiment audits, and citation checks help expose unsupported conclusions and missing evidence.
-- **Continue from concrete project artifacts.** Proposals, experiment trackers, results, review reports, knowledge pages, and workflow state provide inputs for the next stage and support resuming an interrupted project.
-- **Plan for limited resources.** Experiment guidance accounts for compute, time, storage, concurrent saves, and completed runs. Active training defaults to the latest two valid full recovery points and a validation-selected best model, with required final outputs and dependencies protected.
-- **Archive completed experiments deliberately.** After training completes or is explicitly ended, validate retained weights before releasing unused recovery states. Finished comparison groups prefer the validation-selected winner while preserving all runs' evidence and models needed by future work; unresolved retention choices are presented to the user.
-- **Keep supervision configurable.** Workflow checkpoints, review limits, budgets, and stopping conditions let researchers control how work proceeds. Optional search, reviewer, compute, and rendering integrations can be configured for the project's needs.
+Long-running projects can answer which code, configuration, environment and actual attempt produced a number. Failed attempts remain visible, report revisions retain their inputs, and a moving `current` pointer cannot silently change historical evidence. Environment changes can be tested before selected future tasks adopt them, while existing queued work and reproduction dependencies remain protected.
 
-Version 1.0.0 brings together project coordination, clearer natural-request routing, bounded checkpoint retention, and completed-run archiving. Existing workflow bodies and the protected runtime/reference contract remain preserved.
+The existing storage policy remains available: retain two valid full recovery points during training, a validation-selected best model and required final outputs; account for the complete-save peak before launching. When training ends, validate retained weights before releasing unused recovery states. Finished comparisons prefer the validation-selected winner while preserving every run's evidence and models needed by future work.
 
-## Install and start
+## Installation, upgrades and rollback
 
-Download and extract `evo-inquiry-1.0.0.tar.gz` or `evo-inquiry-1.0.0.zip`, then run these commands from the extracted root directory:
+Download and extract `evo-inquiry-1.1.0-beta.1.tar.gz` or `.zip`. Use the clean extracted directory as the plugin source, keeping local validation folders and Git history outside it:
 
 ```sh
-cd /path/to/evo-inquiry-1.0.0
+cd /path/to/evo-inquiry-1.1.0-beta.1
+# For an upgrade, remove the previously registered source first:
+codex plugin marketplace remove evo-inquiry
 codex plugin marketplace add "$PWD"
 codex plugin add evo-inquiry@evo-inquiry
 ```
 
-Start a new Codex session. Describe your research goal and constraints, or name a skill such as `evo-inquiry:research-refine`, `evo-inquiry:experiment-plan`, or `evo-inquiry:analyze-results`. Keep the extracted source directory available for the local marketplace. The [English guide](https://github.com/Soceremite/EvoInquiry/blob/v1.0.0/README.md) and [中文说明](https://github.com/Soceremite/EvoInquiry/blob/v1.0.0/README_CN.md) include usage examples, setup, and update instructions.
+For a first installation, omit the remove command. Start a new Codex session and keep the selected source directory available. Rollback uses the same commands from a preserved prior release directory. Plugin switching does not migrate research project state. See the [skill catalog](https://github.com/Soceremite/EvoInquiry/blob/v1.1.0-beta.1/docs/SKILLS_CATALOG.md), [usage guide](https://github.com/Soceremite/EvoInquiry/blob/v1.1.0-beta.1/docs/GOVERNANCE_USAGE_CN.md), [deployment guide](https://github.com/Soceremite/EvoInquiry/blob/v1.1.0-beta.1/docs/DEPLOYMENT_GUIDE.md), [English README](https://github.com/Soceremite/EvoInquiry/blob/v1.1.0-beta.1/README.md) and [中文说明](https://github.com/Soceremite/EvoInquiry/blob/v1.1.0-beta.1/README_CN.md).
 
 ## Validation and scope
 
-Release publication is gated by the complete Linux and macOS regression suites. Checkpoint validation includes capacity limits, failed saves, corruption fallback, dependency protection, interrupted cleanup, concurrent access, and real CPU training continuation with optimizer, scheduler, and random state. Source archives include `SHA256SUMS` and `release-manifest.json`, which identifies the source commit and skill inventory. Private test records, local build outputs, credentials, and Git history are excluded from these archives.
+Local acceptance includes a real H100 training pilot: two methods and three seeds, one preserved interruption and an independent restored execution, plus a separately declared continuous-training control. Model, optimizer, scheduler and Python/CPU/device random states matched exactly between restoration and continuous training. The pilot used 24 optimizer steps, a 512 KB checkpoint budget and approximately 63 KB measured save peak. Both available GPUs also passed small numerical probes; this does not establish distributed-training correctness or large-run performance.
 
-The toolkit primarily targets ML, AI, and related engineering research. External services, GPU platforms, image tools, and LaTeX require their own setup. Storage guidance must be implemented and verified in the actual trainer; the optional local checkpoint helper requires a project-specific writer and loader validator. GPU/distributed recovery, live providers, complete research projects, and broad discipline coverage have not been verified end to end. Scoped behavior checks include an inconclusive storage-implementation case and do not establish general research correctness or improved research outcomes. See [validation scope](https://github.com/Soceremite/EvoInquiry/blob/v1.0.0/docs/BETA_VALIDATION.md) and the [machine-readable record](https://github.com/Soceremite/EvoInquiry/blob/v1.0.0/release-validation.json) for the evidence and limits.
+An offline pip pilot created two independent virtual environments, recorded an actual dependency-resolution conflict and a consumer interface failure, and verified that the frozen old environment and queued binding stayed unchanged. Native Codex discovery, complete installed-source bytes, version-source alignment and rollback were checked. Original research workflow bodies and checkpoint policy remain protected by the preservation contract. Natural-request checks are scoped behavior evidence, not proof of general autonomy or improved research outcomes.
+
+Publication requires the Linux and macOS full regression suites plus native Windows installer/local-governance checks. Linux also installs the interactive-test dependency so those cases execute on its runner. Source archives include `SHA256SUMS` and a committed-source `release-manifest.json`; private plans, test logs, credentials, build folders and Git history are excluded.
+
+Governance writes require verified local locking and rename/fsync behavior on an operator-confirmed persistent project volume. The acceptance host's QuarkFS mount failed lock exclusion, and its passing overlay/emptyDir test storage was not confirmed durable; the toolkit rejects unsupported writes. Multi-host/network-filesystem operation, power-loss recovery, SSH/screen queues, live optional reviewer APIs and large-scale or distributed GPU training still need deployment-specific validation. This is a **beta release**; version 1.0.0 remains the stable option.
 
 ## 中文介绍
 
-EvoInquiry 1.0.0 是首个正式版，提供 **84 个 Codex skill 入口**，覆盖文献检索与知识积累、选题与方法设计、理论推导、实验实施与分析、证据审查、论文写作、展示与投稿，以及基金申请和专利材料。可以直接完成一个具体任务，也可以按目标衔接多个科研阶段。
+1.1.0-beta.1 提供 **86 个 Codex skill 入口**，新增项目与环境治理，帮助长周期科研保留“哪个实验设计、哪次实际执行、哪份代码配置和环境产生了这个结果”的完整联系。报告使用固定版本与摘要引用，中断发布、失败重试和断点恢复保留独立身份；环境变更先在独立候选中验证，排队任务和论文复现依赖继续受到保护。
 
-它的主要优势是：按任务调用相关能力，利用已有材料继续课题，把结论与实验和引用证据关联起来，并在计算、时间和存储预算内推进工作。计划、结果、评审报告和工作流状态会成为后续工作的输入；用户可以通过检查点、预算和停止条件控制执行范围。
+使用时仍从具体任务开始：文献、方案、实验、分析、审查、论文和展示按需衔接。明确任务直接使用相关 skill，普通阅读和小型修改无需先初始化项目。原有科研审查门禁及有界断点策略保留，文件登记完整不等于科研结论已经被接受。
 
-长时间训练默认保留最近两个有效的完整恢复点和按验证指标选出的最佳模型，同时保护必要的最终输出与后续模型依赖。训练完成或用户明确结束训练后，验证保留权重，再清理不再需要的恢复状态。已完成的对比实验优先仅保留验证集最优模型，保护后续实验需要的其他模型，并保留所有实验的指标、配置和记录；存在未解决的保留选择时，由用户决定。
+本次实际完成 H100 短训练与全状态断点恢复、两张 GPU 的小型数值探测、独立环境的 pip 依赖冲突和接口失败、插件安装来源核对及回滚。发布流程增加 Windows 原生安装与本地治理验收，Linux 执行交互终端用例。临时容器目录不能当作长期科研存储，不支持可靠文件锁的挂载会被拒绝写入；多机、网络文件系统、大规模训练与可选外部评审仍需单独验收。具体证据和范围见[升级验收记录](https://github.com/Soceremite/EvoInquiry/blob/v1.1.0-beta.1/docs/UPGRADE_VALIDATION_CN.md)及[机器可读记录](https://github.com/Soceremite/EvoInquiry/blob/v1.1.0-beta.1/release-validation.json)。
 
-正式版发布经过 Linux 和 macOS 完整回归门槛，下载包附有校验和及源码提交记录。84 个入口包含单步任务、流程协调和可选后端；外部服务与实验平台按需配置。当前验证主要覆盖 ML、AI 与相关工程科研，具体测试范围和未覆盖场景见上面的验证说明。
-
-MIT licensed. See [LICENSE](https://github.com/Soceremite/EvoInquiry/blob/v1.0.0/LICENSE) and [NOTICE](https://github.com/Soceremite/EvoInquiry/blob/v1.0.0/NOTICE) for license and attribution.
+MIT licensed. See [LICENSE](https://github.com/Soceremite/EvoInquiry/blob/v1.1.0-beta.1/LICENSE) and [NOTICE](https://github.com/Soceremite/EvoInquiry/blob/v1.1.0-beta.1/NOTICE).

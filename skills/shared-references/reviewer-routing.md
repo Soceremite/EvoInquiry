@@ -366,7 +366,7 @@ claude mcp add manual-review -s user -- python3 /path/to/mcp-servers/manual-revi
 ### Modes
 
 - **Browser mode** (default): opens a local web page on Windows/macOS/Linux desktop
-- **File mode** (`MANUAL_REVIEW_MODE=file`): writes prompt to a per-thread subdirectory. Read `.aris/pending_review/pending_review.json` for the `prompt_file` and `response_file` paths — for headless/SSH environments
+- **File mode** (`MANUAL_REVIEW_MODE=file`): writes prompt to a per-thread subdirectory. Read `.ei/pending_review/pending_review.json` for the `prompt_file` and `response_file` paths — for headless/SSH environments
 
 ### Skills That Support `— reviewer: manual`
 
@@ -814,7 +814,7 @@ copilot --agent "$REVIEWER_PROFILE" --model "$REVIEWER_MODEL" \
 | Thread continuity | `codex-reply` (threadId) | New `copilot --agent` call + `review-stage/REVIEWER_MEMORY.md` artifact | **Verified** — memory-artifact pattern |
 | Reasoning effort control | `xhigh` / `ultra` tiers | Subprocess `--effort xhigh` | **Verified** — capability-gated before review |
 | File reading | Reads listed files | Can read files via restricted custom-agent tools | **Verified** — profile + `--allow-tool=read` |
-| Review tracing | `.aris/traces/` schema | Same schema + model sources/family relation | **Verified with explicit identity limit** |
+| Review tracing | `.ei/traces/` schema | Same schema + model sources/family relation | **Verified with explicit identity limit** |
 
 **What is verified vs assumed:**
 

@@ -104,7 +104,7 @@ def test_install_aris_ps1_codex_dry_run_has_no_project_writes(tmp_path: Path) ->
     result = run_ps([str(project), "-Platform", "codex", "-ArisRepo", str(repo), "-DryRun"])
 
     assert "DRY-RUN" in result.stdout
-    assert not (project / ".aris").exists()
+    assert not (project / ".ei").exists()
     assert not (project / ".agents").exists()
     assert not (project / "AGENTS.md").exists()
 
@@ -116,7 +116,7 @@ def test_install_aris_ps1_codex_apply_reconcile_and_uninstall(tmp_path: Path) ->
 
     run_ps([str(project), "-Platform", "codex", "-ArisRepo", str(repo)])
 
-    manifest = project / ".aris" / "installed-skills-codex.txt"
+    manifest = project / ".ei" / "installed-skills-codex.txt"
     assert manifest.exists()
     manifest_text = manifest.read_text(encoding="utf-8")
     assert f"repo_root\t{repo}" in manifest_text
@@ -126,8 +126,8 @@ def test_install_aris_ps1_codex_apply_reconcile_and_uninstall(tmp_path: Path) ->
     assert junction_target(project / ".agents" / "skills" / "shared-references") == (
         repo / "skills" / "skills-codex" / "shared-references"
     )
-    assert junction_type(project / ".aris" / "tools") == "Junction"
-    assert junction_target(project / ".aris" / "tools") == repo / "tools"
+    assert junction_type(project / ".ei" / "tools") == "Junction"
+    assert junction_target(project / ".ei" / "tools") == repo / "tools"
     agents_text = (project / "AGENTS.md").read_text(encoding="utf-8")
     assert "ARIS Codex Skill Scope" in agents_text
     assert ".agents/skills/<skill-name>" in agents_text
@@ -148,16 +148,16 @@ def test_install_aris_ps1_codex_apply_reconcile_and_uninstall(tmp_path: Path) ->
     assert (project / ".agents" / "skills" / "local-only").exists()
 
     run_ps([str(project), "-Platform", "codex", "-ArisRepo", str(repo), "-Uninstall", "-DryRun"])
-    assert (project / ".aris" / "installed-skills-codex.txt").exists()
+    assert (project / ".ei" / "installed-skills-codex.txt").exists()
     assert "ARIS Codex Skill Scope" in (project / "AGENTS.md").read_text(encoding="utf-8")
 
     run_ps([str(project), "-Platform", "codex", "-ArisRepo", str(repo), "-Uninstall"])
 
     assert (project / ".agents" / "skills" / "local-only").exists()
     assert not (project / ".agents" / "skills" / "beta").exists()
-    assert not (project / ".aris" / "tools").exists()
-    assert not (project / ".aris" / "installed-skills-codex.txt").exists()
-    assert (project / ".aris" / "installed-skills-codex.txt.prev").exists()
+    assert not (project / ".ei" / "tools").exists()
+    assert not (project / ".ei" / "installed-skills-codex.txt").exists()
+    assert (project / ".ei" / "installed-skills-codex.txt.prev").exists()
     assert "ARIS Codex Skill Scope" not in (project / "AGENTS.md").read_text(encoding="utf-8")
 
 
@@ -168,7 +168,7 @@ def test_install_aris_ps1_claude_uses_mainline_flat_junctions(tmp_path: Path) ->
 
     run_ps([str(project), "-Platform", "claude", "-ArisRepo", str(repo)])
 
-    assert (project / ".aris" / "installed-skills.txt").exists()
+    assert (project / ".ei" / "installed-skills.txt").exists()
     assert junction_target(project / ".claude" / "skills" / "alpha") == repo / "skills" / "alpha"
     assert junction_target(project / ".claude" / "skills" / "shared-references") == repo / "skills" / "shared-references"
     assert not (project / ".claude" / "skills" / "skills-codex").exists()
@@ -190,7 +190,7 @@ def test_install_aris_ps1_skips_upstream_junctions_outside_repo(tmp_path: Path) 
 
     assert "skipping upstream link leading outside ARIS repo" in result.stderr + result.stdout
     assert not path_item_exists(project / ".agents" / "skills" / "escape")
-    assert "escape" not in (project / ".aris" / "installed-skills-codex.txt").read_text(encoding="utf-8")
+    assert "escape" not in (project / ".ei" / "installed-skills-codex.txt").read_text(encoding="utf-8")
 
 
 def test_install_aris_ps1_skips_upstream_source_root_junction_outside_repo(tmp_path: Path) -> None:
@@ -263,13 +263,13 @@ def test_install_aris_ps1_uninstall_keeps_tools_for_other_platform_manifest(tmp_
 
     run_ps([str(project), "-Platform", "codex", "-ArisRepo", str(repo), "-Uninstall"])
 
-    assert junction_target(project / ".aris" / "tools") == repo / "tools"
-    assert (project / ".aris" / "installed-skills.txt").exists()
-    assert not (project / ".aris" / "installed-skills-codex.txt").exists()
+    assert junction_target(project / ".ei" / "tools") == repo / "tools"
+    assert (project / ".ei" / "installed-skills.txt").exists()
+    assert not (project / ".ei" / "installed-skills-codex.txt").exists()
 
     run_ps([str(project), "-Platform", "claude", "-ArisRepo", str(repo), "-Uninstall"])
 
-    assert not path_item_exists(project / ".aris" / "tools")
+    assert not path_item_exists(project / ".ei" / "tools")
 
 
 def test_install_aris_ps1_conflicts_stop_and_replace_link_relinks_junction(tmp_path: Path) -> None:
@@ -345,7 +345,7 @@ def test_install_aris_ps1_clear_stale_lock(tmp_path: Path) -> None:
     repo = make_minimal_repo(tmp_path)
     project = tmp_path / "project"
     project.mkdir()
-    lock_dir = project / ".aris" / ".install-codex.lock.d"
+    lock_dir = project / ".ei" / ".install-codex.lock.d"
     lock_dir.mkdir(parents=True)
     (lock_dir / "owner.pid").write_text("999999\n", encoding="utf-8")
     (lock_dir / "owner.host").write_text("stale-host\n", encoding="utf-8")

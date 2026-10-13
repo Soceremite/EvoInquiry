@@ -5,6 +5,14 @@ argument-hint: "[path-to-tex-file or proof-description] [--deep-fix] [--restatem
 allowed-tools: Bash(*), Read, Grep, Glob, Write, Edit, Agent, mcp__codex__codex, mcp__codex__codex-reply, mcp__manual_review__review, mcp__manual_review__review_reply
 ---
 
+<!-- EI-GOVERNANCE:BEGIN -->
+Resolve runtime state through tools/state_paths.py before .ei operations. Use
+[project-governance](../shared-references/project-governance.md) for fixed evidence,
+profiles and controlled migration; missing profiles retain compat-v1.
+Pin the proof and executable evidence revisions examined; preserve actual review status and test limitations. Do not replace proof reasoning with schema checks.
+<!-- EI-GOVERNANCE:END -->
+
+
 # Proof Checker: Rigorous Mathematical Verification & Fixing
 
 > 🔒 **Do not wrap this skill in `/loop`, `/schedule`, or `CronCreate`.** It is
@@ -587,13 +595,13 @@ grep -q '"verdict"[[:space:]]*:[[:space:]]*"NOT_APPLICABLE"' PROOF_AUDIT.json 2>
   && { echo "verdict NOT_APPLICABLE (no theorems); skipping claim ledger" >&2; exit 0; }
 cd "$(git rev-parse --show-toplevel 2>/dev/null || pwd)" || exit 0
 [ -d research-wiki ] || { echo "no research-wiki/ at project root; skipping claim ledger (audit complete)" >&2; exit 0; }
-if [ -z "${ARIS_REPO:-}" ] && [ -f .aris/installed-skills.txt ]; then
-    ARIS_REPO=$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .aris/installed-skills.txt 2>/dev/null) || true
+if [ -z "${ARIS_REPO:-}" ] && [ -f .ei/installed-skills.txt ]; then
+    ARIS_REPO=$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .ei/installed-skills.txt 2>/dev/null) || true
 fi
-if [ -z "${ARIS_REPO:-}" ] && [ -f "$HOME/.aris/repo" ]; then
-    ARIS_REPO=$(cat "$HOME/.aris/repo" 2>/dev/null) || true
+if [ -z "${ARIS_REPO:-}" ] && [ -f "$HOME/.ei/repo" ]; then
+    ARIS_REPO=$(cat "$HOME/.ei/repo" 2>/dev/null) || true
 fi
-WIKI_SCRIPT=".aris/tools/research_wiki.py"
+WIKI_SCRIPT=".ei/tools/research_wiki.py"
 [ -f "$WIKI_SCRIPT" ] || WIKI_SCRIPT="tools/research_wiki.py"
 [ -f "$WIKI_SCRIPT" ] || { [ -n "${ARIS_REPO:-}" ] && WIKI_SCRIPT="$ARIS_REPO/tools/research_wiki.py"; }
 [ -f "$WIKI_SCRIPT" ] || { echo "WARN: research_wiki.py not resolved; skipping claim ledger (audit unaffected)" >&2; exit 0; }
@@ -732,7 +740,7 @@ The artifact conforms to the schema in `shared-references/assurance-contract.md`
     "main.tex":                 "sha256:...",
     "sections/4.theory.tex":    "sha256:..."
   },
-  "trace_path":       ".aris/traces/proof-checker/<date>_run<NN>/",
+  "trace_path":       ".ei/traces/proof-checker/<date>_run<NN>/",
   "thread_id":        "<codex mcp thread id>",
   "reviewer_model":   "<resolved — the model that actually ran (target: gpt-6-astra)>",
   "reviewer_reasoning": "<resolved — the effort that actually ran (target: ultra)>",

@@ -40,18 +40,18 @@ Inspired by Meta-Harness (Lee et al., 2026): the key insight is that harness des
 
 ## Prerequisites
 
-1. **Logging must be active.** Codex mirror installs do not create Claude Code hooks. Provide `.aris/meta/events.jsonl` from a Codex-compatible event logger, an external wrapper, or a manually exported trace log before running this skill.
-2. **Sufficient data.** At least 5 complete workflow runs logged in `.aris/meta/events.jsonl`. The skill will check and warn if insufficient.
+1. **Logging must be active.** Codex mirror installs do not create Claude Code hooks. Provide `.ei/meta/events.jsonl` from a Codex-compatible event logger, an external wrapper, or a manually exported trace log before running this skill.
+2. **Sufficient data.** At least 5 complete workflow runs logged in `.ei/meta/events.jsonl`. The skill will check and warn if insufficient.
 
 ## Workflow
 
 ### Step 0: Check Data Availability
 
 ```bash
-EVENTS_FILE=".aris/meta/events.jsonl"
+EVENTS_FILE=".ei/meta/events.jsonl"
 if [ ! -f "$EVENTS_FILE" ]; then
     echo "ERROR: No event log found at $EVENTS_FILE"
-    echo "Enable Codex-compatible logging first: create .aris/meta/events.jsonl from your Codex wrapper, external event logger, or exported trace log."
+    echo "Enable Codex-compatible logging first: create .ei/meta/events.jsonl from your Codex wrapper, external event logger, or exported trace log."
     exit 1
 fi
 
@@ -69,7 +69,7 @@ fi
 
 ### Step 1: Analyze Usage Patterns
 
-Read `.aris/meta/events.jsonl` and compute:
+Read `.ei/meta/events.jsonl` and compute:
 
 **Frequency analysis:**
 - Which skills are invoked most often?
@@ -122,11 +122,11 @@ quality", "experiment execution reliability", "writing polish" — with evidence
 The bottleneck always moves: coding → planning → verification → taste. Step 2's
 ranked table should read as sub-fixes for this one named constraint.
 
-Append the verdict to the append-only ledger `.aris/meta/bottleneck_log.jsonl`
+Append the verdict to the append-only ledger `.ei/meta/bottleneck_log.jsonl`
 (never edit or delete prior lines — succession history is the point):
 
 ```bash
-mkdir -p .aris/meta
+mkdir -p .ei/meta
 # json.dumps, NOT hand-interpolated shell strings: bottleneck/evidence are
 # natural language — a stray quote must not break the JSONL (or the shell).
 python3 - <<'PY'
@@ -138,7 +138,7 @@ entry = {
     "evidence": "review rounds plateau at 6/10 while tool failures are rare",
     "top_patch_ids": ["P1", "P2"],
 }
-with open(".aris/meta/bottleneck_log.jsonl", "a", encoding="utf-8") as fh:
+with open(".ei/meta/bottleneck_log.jsonl", "a", encoding="utf-8") as fh:
     fh.write(json.dumps(entry, ensure_ascii=False) + "\n")
 PY
 ```
@@ -188,7 +188,7 @@ For each optimization target, generate a concrete diff:
 - Never change artifact schemas or MCP bridge config in v1
 - Never change behavior that would break existing user workflows
 - **Anti-self-poisoning screen:** resolve `$ARIS_REPO` from
-  `.aris/installed-skills-codex.txt`, then run
+  `.ei/installed-skills-codex.txt`, then run
   `$ARIS_REPO/tools/capture_filter.py` (or project-local
   `tools/capture_filter.py`) against each proposed patch rationale. If it flags
   an environment failure, transient error, negative tool-capability claim, or
@@ -264,7 +264,7 @@ Output a structured report:
 
 **[one-phrase name]** — [one-line evidence]. Prior cycle's bottleneck: [name —
 resolved by <patch ids> / unresolved / first recorded cycle]. (Ledger:
-`.aris/meta/bottleneck_log.jsonl`)
+`.ei/meta/bottleneck_log.jsonl`)
 
 ## Proposed Changes
 
@@ -294,9 +294,9 @@ Run `/meta-optimize apply 1` to apply a specific change, or
 ### Step 6: Apply Changes (if user approves)
 
 If user runs `/meta-optimize apply [N]`:
-1. Back up original SKILL.md to `.aris/meta/backups/`
+1. Back up original SKILL.md to `.ei/meta/backups/`
 2. Apply the patch
-3. Log the change to `.aris/meta/optimizations.jsonl`
+3. Log the change to `.ei/meta/optimizations.jsonl`
 4. Remind user to test the changed skill on their next run
 
 **Never auto-apply without user approval.**
@@ -313,7 +313,7 @@ If user runs `/meta-optimize apply [N]`:
 
 ## Event Schema Reference
 
-The log at `.aris/meta/events.jsonl` contains JSONL records with these shapes:
+The log at `.ei/meta/events.jsonl` contains JSONL records with these shapes:
 
 ```jsonl
 {"ts":"...","session":"...","event":"skill_invoke","skill":"auto-review-loop","args":"difficulty: hard"}
@@ -330,7 +330,7 @@ The log at `.aris/meta/events.jsonl` contains JSONL records with these shapes:
 
 This skill is NOT part of the standard W1→W1.5→W2→W3→W4 pipeline. It is a **maintenance workflow** with three trigger mechanisms:
 
-1. **Passive logging** (always on): Claude Code hooks record events to `.aris/meta/events.jsonl` automatically during normal usage. Zero user effort.
+1. **Passive logging** (always on): Claude Code hooks record events to `.ei/meta/events.jsonl` automatically during normal usage. Zero user effort.
 
 2. **Automatic readiness check** (SessionEnd hook): When a Claude Code session ends, `check_ready.sh` counts skill invocations since the last `/meta-optimize` run. If ≥5 new invocations have accumulated, it prints a reminder:
    ```
@@ -340,7 +340,7 @@ This skill is NOT part of the standard W1→W1.5→W2→W3→W4 pipeline. It is 
 
 3. **Manual trigger**: User runs `/meta-optimize` when they see the reminder or whenever they want.
 
-**After each `/meta-optimize` run**, the skill writes the current timestamp to `.aris/meta/.last_optimize` so the readiness check only counts new invocations.
+**After each `/meta-optimize` run**, the skill writes the current timestamp to `.ei/meta/.last_optimize` so the readiness check only counts new invocations.
 
 ## Acknowledgements
 
@@ -355,4 +355,4 @@ Inspired by [Meta-Harness](https://arxiv.org/abs/2603.28052) (Lee et al., 2026) 
 
 ## Review Tracing
 
-After each reviewer agent call, save the trace following `shared-references/review-tracing.md` (Policy C — forensic; never silently skip). Use `save_trace.sh` (resolved per the chain in `shared-references/integration-contract.md` §2) or write files directly to `.aris/traces/<skill>/<date>_run<NN>/`. Respect the `--- trace:` parameter (default: `full`).
+After each reviewer agent call, save the trace following `shared-references/review-tracing.md` (Policy C — forensic; never silently skip). Use `save_trace.sh` (resolved per the chain in `shared-references/integration-contract.md` §2) or write files directly to `.ei/traces/<skill>/<date>_run<NN>/`. Respect the `--- trace:` parameter (default: `full`).

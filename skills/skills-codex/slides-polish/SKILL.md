@@ -99,7 +99,7 @@ Discovered automatically from `$ARGUMENTS` and the project directory:
 ├── <stem>_polished.pdf               # rendered (when conversion available)
 └── ... (Beamer files mirrored)
 
-.aris/slides-polish/<deck-stem>/
+.ei/slides-polish/<deck-stem>/
 ├── POLISH_STATE.json                 # phase + per-slide status + version pointer
 ├── INSPECT_<stem>.json               # pre-polish shape inventory
 ├── TRIAGE.md                         # Phase-1 verdict matrix (per-slide PASS/NEEDS-WORK/BLOCKER)
@@ -111,14 +111,14 @@ Discovered automatically from `$ARGUMENTS` and the project directory:
 ```
 
 The skill keeps a self-contained cache under
-`.aris/slides-polish/<deck-stem>/`. Per-call Codex traces also follow the
-shared convention `.aris/traces/slides-polish/<date>_runNN/` per
+`.ei/slides-polish/<deck-stem>/`. Per-call Codex traces also follow the
+shared convention `.ei/traces/slides-polish/<date>_runNN/` per
 `../shared-references/review-tracing.md`. Resumable across sessions if
 `POLISH_STATE.json` exists with `"status": "in_progress"` and is < 24h old.
 
 Note: existing skills like `/paper-slides` may use a co-located state file
 (e.g., `slides/SLIDES_STATE.json`). `/slides-polish` keeps its state
-in `.aris/` to keep the deck directory free of polish-specific cruft.
+in `.ei/` to keep the deck directory free of polish-specific cruft.
 
 ## Workflow
 
@@ -129,14 +129,14 @@ in `.aris/` to keep the deck directory free of polish-specific cruft.
 3. **Inspect shapes**: run the inspector (Phase 0 sub-step below) to produce `INSPECT_<stem>.json` listing every text-frame and shape on every slide with: shape id, type, text content (escaped), font sizes per run, bbox in inches, fill/line color, image dimensions for pictures, presence of speaker notes. This file is the ground truth for "find shape by text" downstream.
 4. **Snapshot original**: `cp <stem>.pptx <stem>_pre_polish.pptx` (and `.tex` if Beamer present). All subsequent edits target `_polished` copy.
 5. **Render PPTX → PDF if needed** (`soffice --headless --convert-to pdf`). If unavailable, prompt user to export.
-6. **Render PDF → PNG**: `pdftoppm -r 150 <pdf> .aris/slides-polish/<stem>/png/page` produces one PNG per slide; passed to Codex during per-page review.
+6. **Render PDF → PNG**: `pdftoppm -r 150 <pdf> .ei/slides-polish/<stem>/png/page` produces one PNG per slide; passed to Codex during per-page review.
 7. **Triage pass**: a single fresh Codex call sweeps all N slides comparing PPTX-PDF (or Beamer PDF) against the reference. Output: per-slide verdict matrix.
 
 #### Inspector contract
 
 The skill ships a contract for `inspect_pptx.py` rather than a fixed
 implementation. **On first run, if the script is absent under
-`.aris/slides-polish/<deck-stem>/inspect_pptx.py`, create it from this
+`.ei/slides-polish/<deck-stem>/inspect_pptx.py`, create it from this
 contract.** Implementations may evolve; the contract is what downstream
 phases depend on.
 
@@ -520,7 +520,7 @@ These are non-negotiable:
 
 After each per-page Codex call, save the trace following
 `../shared-references/review-tracing.md`. Per-call file under
-`.aris/slides-polish/<stem>/traces/slide_KK.json` with:
+`.ei/slides-polish/<stem>/traces/slide_KK.json` with:
 
 - Codex `agent_id`
 - prompt (verbatim)

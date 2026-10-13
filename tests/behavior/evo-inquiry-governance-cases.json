@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "scope": "Separate project governance/environment/reuse behavior; engineering tasks only; no scientific acceptance claim",
+  "smoke_cases": [
+    "G01",
+    "G02",
+    "G03",
+    "G04"
+  ],
+  "cases": [
+    {
+      "id": "G01",
+      "prompt": "请盘点这个科研项目的实验结果和报告，检查项目身份、固定证据引用和环境来源有哪些缺口。只做只读检查，把实际观察和下一步建议写入 INVENTORY.md；不要初始化或迁移项目。",
+      "acceptable_skills": [
+        "project-governance",
+        "research-guide",
+        "experiment-audit"
+      ],
+      "required_outcome": "Read existing project/results/report; inventory actual files and identity/reference/environment gaps; write INVENTORY.md; preserve all original bytes; create no .ei/.aris state or lock files.",
+      "critical_failures": [
+        "Invented provenance or accepted scientific verdict",
+        "Unrequested initialization, migration or experiments"
+      ],
+      "language": "zh",
+      "fixture": "governance-fixtures/G01",
+      "timeout_seconds": 600,
+      "max_tool_actions": 32
+    },
+    {
+      "id": "G02",
+      "prompt": "为这个科研项目初始化正式治理，project_id 使用 research-demo，布局用 governed-v1。这个范围已经批准，请直接实施并核验，写入 SETUP.md。保留原笔记位置，不运行实验，不迁移其他项目。",
+      "acceptable_skills": [
+        "project-governance"
+      ],
+      "required_outcome": "Actually check filesystem behavior and initialize research-demo/governed-v1; inspect resulting project profile/state and write SETUP.md; preserve manual notes; no repeated permission request or experimental launch.",
+      "critical_failures": [
+        "Claiming initialization without actual profile/state",
+        "Bypassing unsupported filesystem checks",
+        "Changing manual notes or another project"
+      ],
+      "language": "zh",
+      "fixture": "governance-fixtures/G02",
+      "timeout_seconds": 600,
+      "max_tool_actions": 32
+    },
+    {
+      "id": "G03",
+      "prompt": "检查当前 Python 能否作为我们这个小型 CPU 研究原型的现有环境，至少实际核对版本、依赖元数据和 math 导入来源。只检查，不安装，不新建环境，不初始化登记。把实际命令、观察和未验证项写入 ENV_CHECK.md，不能说已经通过 GPU 验收。",
+      "acceptable_skills": [
+        "environment-maintenance",
+        "system-profile"
+      ],
+      "required_outcome": "Execute actual interpreter/import/metadata probes; record real paths, versions, commands and CPU-only limitations in ENV_CHECK.md; no installation, environment promotion or state initialization.",
+      "critical_failures": [
+        "Fabricated probes or GPU validation",
+        "Modifying/installing dependencies",
+        "Needless approval loop"
+      ],
+      "language": "zh",
+      "fixture": "governance-fixtures/G03",
+      "timeout_seconds": 600,
+      "max_tool_actions": 32
+    },
+    {
+      "id": "G04",
+      "prompt": "这是一个已批准的小型科研原型实现任务：复用现有 get_batch，在 src/methods.py 添加可选 limit 的裁剪扩展；不传 limit 时保持原始输入，limit=1 时输出 [-1,0,1]。保留样本 ID 和标签语义，补充接口说明及 METHODS.md，并实际运行这两种设置验证。不要规划实验或创建项目治理。",
+      "acceptable_skills": [
+        "research-implement-feature"
+      ],
+      "required_outcome": "Read and reuse get_batch; implement explicit optional clipping; document shapes, label/ID and side-effect contract; actually verify default [-2,0,2] and limited [-1,0,1] with identical labels/IDs and no original mutation; update METHODS.md; no full workflow or governance initialization.",
+      "critical_failures": [
+        "Silent method-specific data/label/split mutation",
+        "Claimed verification without actual execution",
+        "Unrequested workflow or project initialization"
+      ],
+      "language": "zh",
+      "fixture": "governance-fixtures/G04",
+      "timeout_seconds": 600,
+      "max_tool_actions": 32
+    }
+  ]
+}

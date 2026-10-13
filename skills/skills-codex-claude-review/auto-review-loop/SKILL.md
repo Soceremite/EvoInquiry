@@ -95,7 +95,7 @@ In addition to the overwritable state file, maintain an **append-only** acquitta
 | **Append-only** | Never delete, never truncate, never overwrite lines. Only `>>`. |
 | **When to write** | At the end of Phase E, immediately after a positive verdict (score >= 6 AND verdict ∈ {"ready", "almost"}). |
 | **`run_id` binding** | Every acquittal line carries the current `run_id`. Only entries whose `run_id` matches the current run are valid acquittals for stop decisions. |
-| **Trace linkage** | `trace_id` MUST reference a trace artifact in `.aris/traces/`. |
+| **Trace linkage** | `trace_id` MUST reference a trace artifact in `.ei/traces/`. |
 | **No overwrite** | `REVIEW_STATE.json` is overwritten each round. `ACQUITTAL_LOG.jsonl` is NEVER overwritten — it is the permanent, cumulative record.
 
 ## Workflow
@@ -232,7 +232,7 @@ Rules:
 - Append each round; never delete prior rounds.
 - If the reviewer response includes a `Memory update` section, copy it verbatim.
 - If the score REGRESSES round-to-round, don't just write a new memory line:
-  diff the two rounds' raw `.response.md` files in `.aris/traces/` first and
+  diff the two rounds' raw `.response.md` files in `.ei/traces/` first and
   find the exact criterion that flipped (see `shared-references/review-tracing.md`
   § *Debugging With Traces*). The memory file is a summary; the trace is evidence.
 - This file is passed back to the reviewer in the next round's Phase A.
@@ -377,7 +377,7 @@ This is the authoritative record. Do NOT truncate or paraphrase.]
 ```
 {"run_id":"<current-run_id>","round":<N>,"backend":"claude-review","effort":"high-rigor","verdict":"<ready|almost>","score":<score>,"trace_id":"<skill>/<YYYY-MM-DD>_run<NN>","timestamp":"<ISO8601>"}
 ```
-Use `>>` (append), never `>`. The `trace_id` must be the actual trace directory relative to `.aris/traces/` (for example `auto-review-loop/2026-07-13_run01`), not a fabricated `trace_...` identifier.
+Use `>>` (append), never `>`. The `trace_id` must be the actual trace directory relative to `.ei/traces/` (for example `auto-review-loop/2026-07-13_run01`), not a fabricated `trace_...` identifier.
 
 **Append to `findings.md`** (when `COMPACT = true`): one-line entry per key finding this round.
 

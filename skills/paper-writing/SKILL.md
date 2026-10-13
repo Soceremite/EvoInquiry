@@ -5,6 +5,14 @@ argument-hint: "[narrative-report-path-or-topic] [— style-ref: <source>]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, Skill, mcp__codex__codex, mcp__codex__codex-reply
 ---
 
+<!-- EI-GOVERNANCE:BEGIN -->
+Resolve runtime state through tools/state_paths.py before .ei operations. Use
+[project-governance](../shared-references/project-governance.md) for fixed evidence,
+profiles and controlled migration; missing profiles retain compat-v1.
+Pin report revision, exact evidence/spec/evaluator/execution inputs and verdict receipt. Add reproduction consumer pins when needed; a current alias change cannot revise historical paper evidence.
+<!-- EI-GOVERNANCE:END -->
+
+
 # Workflow 3: Paper Writing Pipeline
 
 Orchestrate a complete paper writing workflow for: **$ARGUMENTS**
@@ -55,18 +63,18 @@ When `— style-ref: <source>` is in `$ARGUMENTS`, run the helper FIRST, before 
 # shared-references/integration-contract.md §2). Policy A — gate:
 # unresolved helper means --style-ref cannot be satisfied, so abort.
 cd "$(git rev-parse --show-toplevel 2>/dev/null || pwd)" || exit 1
-if [ -z "${ARIS_REPO:-}" ] && [ -f .aris/installed-skills.txt ]; then
-    ARIS_REPO=$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .aris/installed-skills.txt 2>/dev/null) || true
+if [ -z "${ARIS_REPO:-}" ] && [ -f .ei/installed-skills.txt ]; then
+    ARIS_REPO=$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .ei/installed-skills.txt 2>/dev/null) || true
 fi
-if [ -z "${ARIS_REPO:-}" ] && [ -f "$HOME/.aris/repo" ]; then
-    ARIS_REPO=$(cat "$HOME/.aris/repo" 2>/dev/null) || true
+if [ -z "${ARIS_REPO:-}" ] && [ -f "$HOME/.ei/repo" ]; then
+    ARIS_REPO=$(cat "$HOME/.ei/repo" 2>/dev/null) || true
 fi
-STYLE_HELPER=".aris/tools/extract_paper_style.py"
+STYLE_HELPER=".ei/tools/extract_paper_style.py"
 [ -f "$STYLE_HELPER" ] || STYLE_HELPER="tools/extract_paper_style.py"
 [ -f "$STYLE_HELPER" ] || { [ -n "${ARIS_REPO:-}" ] && STYLE_HELPER="$ARIS_REPO/tools/extract_paper_style.py"; }
 [ -f "$STYLE_HELPER" ] || {
-  echo "ERROR: extract_paper_style.py not resolved at .aris/tools/, tools/, \$ARIS_REPO/tools/, or via ~/.aris/repo." >&2
-  echo "       Fix: rerun bash tools/install_aris.sh or smart_update.sh (refreshes ~/.aris/repo), export ARIS_REPO, or copy the helper to tools/." >&2
+  echo "ERROR: extract_paper_style.py not resolved at .ei/tools/, tools/, \$ARIS_REPO/tools/, or via ~/.ei/repo." >&2
+  echo "       Fix: rerun bash tools/install_aris.sh or smart_update.sh (refreshes ~/.ei/repo), export ARIS_REPO, or copy the helper to tools/." >&2
   echo "       --style-ref cannot be satisfied; aborting." >&2
   exit 1
 }
@@ -111,8 +119,8 @@ verifier reads the same value. **Run once at pipeline start, before Phase 1.**
 **Action:**
 
 ```bash
-mkdir -p paper/.aris
-echo "<resolved-level>" > paper/.aris/assurance.txt   # draft or submission
+mkdir -p paper/.ei
+echo "<resolved-level>" > paper/.ei/assurance.txt   # draft or submission
 ```
 
 **What each level does downstream:**
@@ -602,7 +610,7 @@ typed policy gate and the append-only obligations ledger. Self-auditing runs
 at whatever observability the artifacts allow (with `code/` + `results/`
 present that is L2 — stricter than anything an external reviewer can run).
 
-**When it runs** (re-derive here — do NOT trust `.aris/assurance.txt` alone;
+**When it runs** (re-derive here — do NOT trust `.ei/assurance.txt` alone;
 a resumed run whose Phase 0 never executed, or whose file went stale, must
 not silently skip the default-ON gate):
 
@@ -613,7 +621,7 @@ not silently skip the default-ON gate):
 3. Then:
    - `submission` → **ON by default**. Opt out only with an explicit
      `— self_forensics: false` — persist the receipt as a record:
-     `mkdir -p paper/.aris/forensics && echo "opted-out: — self_forensics: false in \$ARGUMENTS" > paper/.aris/forensics/opt_out.txt`
+     `mkdir -p paper/.ei/forensics && echo "opted-out: — self_forensics: false in \$ARGUMENTS" > paper/.ei/forensics/opt_out.txt`
      (recorded in the Final Report as `Forensics: skipped (opted out)`).
      The receipt documents THIS run's decision; it does not authorize any
      later run to skip — Phase 6.0 re-parses `$ARGUMENTS` itself.
@@ -652,7 +660,7 @@ uses the **same derivation rule as Phase 0** so a run where Phase 0 was
 skipped or its write failed cannot silently downgrade a `beast` / `max` /
 `— assurance: submission` invocation back to draft.
 
-**Resolution at the gate** (re-derive; do not trust `.aris/assurance.txt`
+**Resolution at the gate** (re-derive; do not trust `.ei/assurance.txt`
 alone):
 
 1. Parse `$ARGUMENTS` for an explicit `— assurance: draft | submission` or
@@ -661,19 +669,19 @@ alone):
    - explicit `assurance:` wins
    - else `lite` / `balanced` → `draft`, `max` / `beast` → `submission`
    - else `draft`
-3. Read `paper/.aris/assurance.txt`. If the file is missing, write it now
+3. Read `paper/.ei/assurance.txt`. If the file is missing, write it now
    with the derived level.
 4. If the file's value **disagrees** with the derived level (e.g. file
    says `draft` but `$ARGUMENTS` says `beast`), **overwrite** the file
    with the derived level and surface a one-line warning in-chat:
-   `⚠️ .aris/assurance.txt was draft but $ARGUMENTS says submission; overriding.`
+   `⚠️ .ei/assurance.txt was draft but $ARGUMENTS says submission; overriding.`
 5. Use the re-derived level as authoritative for the rest of Phase 6.
 
 ```bash
 # Final authoritative value, written and read from the same source
 ASSURANCE=<derived-from-$ARGUMENTS>        # draft | submission
-mkdir -p paper/.aris
-echo "$ASSURANCE" > paper/.aris/assurance.txt
+mkdir -p paper/.ei
+echo "$ASSURANCE" > paper/.ei/assurance.txt
 ```
 
 If `ASSURANCE=draft`, skip directly to the Final Report template below —
@@ -707,7 +715,7 @@ skipping audits while claiming to have run them.
           PREVIOUS run never carries over; it is a record for the report line,
           not an authorization.
           - current $ARGUMENTS has `— self_forensics: false` → skipping is
-            legal; write/refresh paper/.aris/forensics/opt_out.txt.
+            legal; write/refresh paper/.ei/forensics/opt_out.txt.
           - otherwise the whole check is ONE command:
             `python3 "$GATE_HELPER" fresh --paper-dir paper/ --anti-ar-commit
             "$ANTI_AR_COMMIT"` (the pin constant from /integrity-forensics;
@@ -726,11 +734,11 @@ skipping audits while claiming to have run them.
 ```
 
 > The resolver in "Running the verifier" below tries
-> `.aris/tools/verify_paper_audits.sh` (created by `install_aris.sh`),
+> `.ei/tools/verify_paper_audits.sh` (created by `install_aris.sh`),
 > then `tools/verify_paper_audits.sh` (in-repo run), then
 > `$ARIS_REPO/tools/verify_paper_audits.sh` (env-var-set or manifest-derived
 > path), then the same `$ARIS_REPO/tools/verify_paper_audits.sh` resolved via
-> the global pointer file `~/.aris/repo` (#366). The chain always tries
+> the global pointer file `~/.ei/repo` (#366). The chain always tries
 > layers 1 → 2 → 3 → 4 in order; setting `export ARIS_REPO=~/…` only ensures
 > layer 3 has a valid target if layers 1 and 2 are absent, and layer 4 only
 > fires when neither the env var nor the project manifest set `ARIS_REPO`.
@@ -769,19 +777,19 @@ Report rather than producing an unverified `submission-ready` claim.
 ```bash
 # Resolve the audit verifier (Policy A — gate).
 cd "$(git rev-parse --show-toplevel 2>/dev/null || pwd)" || exit 1
-if [ -z "${ARIS_REPO:-}" ] && [ -f .aris/installed-skills.txt ]; then
-    ARIS_REPO=$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .aris/installed-skills.txt 2>/dev/null) || true
+if [ -z "${ARIS_REPO:-}" ] && [ -f .ei/installed-skills.txt ]; then
+    ARIS_REPO=$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .ei/installed-skills.txt 2>/dev/null) || true
 fi
-if [ -z "${ARIS_REPO:-}" ] && [ -f "$HOME/.aris/repo" ]; then
-    ARIS_REPO=$(cat "$HOME/.aris/repo" 2>/dev/null) || true
+if [ -z "${ARIS_REPO:-}" ] && [ -f "$HOME/.ei/repo" ]; then
+    ARIS_REPO=$(cat "$HOME/.ei/repo" 2>/dev/null) || true
 fi
-AUDIT_VERIFIER=".aris/tools/verify_paper_audits.sh"
+AUDIT_VERIFIER=".ei/tools/verify_paper_audits.sh"
 [ -f "$AUDIT_VERIFIER" ] || AUDIT_VERIFIER="tools/verify_paper_audits.sh"
 [ -f "$AUDIT_VERIFIER" ] || { [ -n "${ARIS_REPO:-}" ] && AUDIT_VERIFIER="$ARIS_REPO/tools/verify_paper_audits.sh"; }
 [ -f "$AUDIT_VERIFIER" ] || {
-  echo "ERROR: verify_paper_audits.sh not resolved at .aris/tools/, tools/, \$ARIS_REPO/tools/, or via ~/.aris/repo." >&2
+  echo "ERROR: verify_paper_audits.sh not resolved at .ei/tools/, tools/, \$ARIS_REPO/tools/, or via ~/.ei/repo." >&2
   echo "       assurance=submission requires the verifier; aborting Final Report." >&2
-  echo "       Fix: rerun bash tools/install_aris.sh or smart_update.sh (refreshes ~/.aris/repo), export ARIS_REPO, or copy the helper to tools/." >&2
+  echo "       Fix: rerun bash tools/install_aris.sh or smart_update.sh (refreshes ~/.ei/repo), export ARIS_REPO, or copy the helper to tools/." >&2
   exit 1
 }
 
@@ -790,12 +798,12 @@ bash "$AUDIT_VERIFIER" paper/ --assurance submission
 
 - **Exit 0** — All mandatory audits present, JSON schema-valid, hashes fresh,
   no blocking verdicts. **Before writing the Final Report, read
-  `overall_assurance` from `paper/.aris/audit-verifier-report.json`** — exit 0
+  `overall_assurance` from `paper/.ei/audit-verifier-report.json`** — exit 0
   covers BOTH `accepted` (cross-family/independent review) and `provisional`
   (same-family or legacy review that may proceed but must not claim
   independent acceptance). The Final Report's Submission-ready line comes from
   that field, never from the exit code alone.
-- **Exit 1** — Surface `paper/.aris/audit-verifier-report.json` to the user
+- **Exit 1** — Surface `paper/.ei/audit-verifier-report.json` to the user
   verbatim, **refuse to generate the Final Report**, and list the specific
   remediation for each failing row:
   - `MISSING` → rerun that audit
@@ -838,14 +846,14 @@ or directly if `assurance=draft`)
 **Venue**: [ICLR/NeurIPS/ICML/CVPR/ACL/AAAI/ACM/IEEE_JOURNAL/IEEE_CONF]
 **Assurance**: [draft | submission]
 **Submission-ready**: [yes | provisional | no]   <!-- yes iff assurance=submission AND verifier exit 0 AND overall_assurance=accepted; provisional iff exit 0 with overall_assurance=provisional (same-family/legacy review — do NOT present as independently accepted); no otherwise -->
-**Forensics**: [NO_NEW_BLOCKER | WARN: <n> open obligations | BLOCK | skipped (opted out) | skipped (draft)]   <!-- from .aris/forensics/gate.json — upstream verdict verbatim in parentheses; NO_NEW_BLOCKER means "no flag found", never an acquittal -->
+**Forensics**: [NO_NEW_BLOCKER | WARN: <n> open obligations | BLOCK | skipped (opted out) | skipped (draft)]   <!-- from .ei/forensics/gate.json — upstream verdict verbatim in parentheses; NO_NEW_BLOCKER means "no flag found", never an acquittal -->
 **Date**: [today]
 
 ## Pipeline Summary
 
 | Phase | Status | Output |
 |-------|--------|--------|
-| 0. Assurance Setup | ✅ | paper/.aris/assurance.txt = [draft\|submission] |
+| 0. Assurance Setup | ✅ | paper/.ei/assurance.txt = [draft\|submission] |
 | 1. Paper Plan | ✅ | PAPER_PLAN.md |
 | 1.5 Acceptance Contract | [accepted\|contested\|no contract] ([N] rounds) | PAPER_ACCEPTANCE_CONTRACT.md |
 | 2. Figures | ✅ | figures/ ([N] auto + [M] manual) |
@@ -855,7 +863,7 @@ or directly if `assurance=draft`)
 | 4.5 Proof Audit | [PASS\|WARN\|FAIL\|NOT_APPLICABLE\|BLOCKED\|ERROR] | PROOF_AUDIT.{md,json} |
 | 5.5 Paper Claim Audit | [PASS\|WARN\|FAIL\|NOT_APPLICABLE\|BLOCKED\|ERROR] | PAPER_CLAIM_AUDIT.{md,json} |
 | 5.8 Citation Audit | [PASS\|WARN\|FAIL\|NOT_APPLICABLE\|BLOCKED\|ERROR] | CITATION_AUDIT.{md,json} |
-| 6.0 Assurance Verifier | [OK\|STALE\|BLOCKING_VERDICT\|HAS_ISSUES\|SCHEMA_INVALID\|MISSING] per audit; exit [0\|1] overall (N/A if draft) | .aris/audit-verifier-report.json |
+| 6.0 Assurance Verifier | [OK\|STALE\|BLOCKING_VERDICT\|HAS_ISSUES\|SCHEMA_INVALID\|MISSING] per audit; exit [0\|1] overall (N/A if draft) | .ei/audit-verifier-report.json |
 
 ## Improvement Scores
 | Round | Score | Key Changes |
@@ -873,7 +881,7 @@ or directly if `assurance=draft`)
 - paper/PROOF_AUDIT.{md,json} — Proof-obligation verification (always emitted at `assurance=submission`; `NOT_APPLICABLE` when no theorems)
 - paper/PAPER_CLAIM_AUDIT.{md,json} — Numerical claim verification (always emitted at `assurance=submission`; `NOT_APPLICABLE` when no numeric claims; omitted in `draft` mode if Phase 5.5 detector was negative)
 - paper/CITATION_AUDIT.{md,json} — Bibliography verification (always emitted at `assurance=submission`; `NOT_APPLICABLE` when no `.bib` or no `\cite{...}`; omitted in `draft` mode if Phase 5.8 detector was negative)
-- paper/.aris/audit-verifier-report.json — External verifier report (submission only)
+- paper/.ei/audit-verifier-report.json — External verifier report (submission only)
 
 ## Remaining Issues (if any)
 - [items from final review that weren't addressed]

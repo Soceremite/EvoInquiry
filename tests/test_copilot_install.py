@@ -67,7 +67,7 @@ def test_install_copilot_dry_run_has_no_project_writes(tmp_path: Path) -> None:
     )
 
     assert "(dry-run) no changes made" in dry_run.stdout
-    assert not (project / ".aris").exists()
+    assert not (project / ".ei").exists()
     assert not (project / ".github").exists()
     assert not (project / "AGENTS.md").exists()
 
@@ -95,7 +95,7 @@ def test_install_copilot_creates_github_skills_symlinks(tmp_path: Path) -> None:
     )
 
     # Verify manifest
-    manifest = project / ".aris" / "installed-skills-copilot.txt"
+    manifest = project / ".ei" / "installed-skills-copilot.txt"
     assert manifest.exists()
     manifest_text = manifest.read_text()
     assert "repo_root" in manifest_text
@@ -233,8 +233,8 @@ def test_install_copilot_uninstall_removes_managed_only(tmp_path: Path) -> None:
     assert not (project / ".github" / "skills" / "alpha").exists()
     assert not (project / ".github" / "skills" / "beta").exists()
     # Manifest archived
-    assert (project / ".aris" / "installed-skills-copilot.txt.prev").exists()
-    assert not (project / ".aris" / "installed-skills-copilot.txt").exists()
+    assert (project / ".ei" / "installed-skills-copilot.txt.prev").exists()
+    assert not (project / ".ei" / "installed-skills-copilot.txt").exists()
     # AGENTS.md block removed
     assert "ARIS Copilot CLI Skill Scope" not in (project / "AGENTS.md").read_text()
 
@@ -368,7 +368,7 @@ def test_install_copilot_reconcile_already_deleted_stale_link(tmp_path: Path) ->
         ]
     )
 
-    manifest = (project / ".aris" / "installed-skills-copilot.txt").read_text()
+    manifest = (project / ".ei" / "installed-skills-copilot.txt").read_text()
     assert "\talpha\t" not in manifest
 
 
@@ -421,7 +421,7 @@ def test_smart_update_copilot_copy_install(tmp_path: Path) -> None:
     # Local-only skill preserved
     assert (local / "local-only" / "SKILL.md").exists()
     # Baseline file created with hashes for newly installed skills
-    baseline_file = local / ".aris-copilot-baselines.sha256"
+    baseline_file = local / ".ei-copilot-baselines.sha256"
     assert baseline_file.exists()
     baseline_text = baseline_file.read_text()
     assert "alpha" in baseline_text
@@ -487,8 +487,8 @@ def test_smart_update_copilot_refuses_symlink_managed(tmp_path: Path) -> None:
     managed_project.mkdir()
     (managed_project / ".github" / "skills").mkdir(parents=True)
     # Create manifest to signal managed install
-    (managed_project / ".aris").mkdir(parents=True)
-    (managed_project / ".aris" / "installed-skills-copilot.txt").write_text(
+    (managed_project / ".ei").mkdir(parents=True)
+    (managed_project / ".ei" / "installed-skills-copilot.txt").write_text(
         "version\t1\nrepo_root\t/tmp/aris\n"
     )
 
@@ -1000,7 +1000,7 @@ def _save_trace_request(tmp_path: Path, *extra: str) -> tuple[dict, dict, dict]:
         check=False,
     )
     assert result.returncode == 0, result.stderr
-    run_dir = next((tmp_path / ".aris" / "traces" / "auto-review-loop").iterdir())
+    run_dir = next((tmp_path / ".ei" / "traces" / "auto-review-loop").iterdir())
     request_path = next(run_dir.glob("*.request.json"))
     request = json.loads(request_path.read_text())
     # The call meta, not run.meta.json — "*.meta.json" matches both, and which one

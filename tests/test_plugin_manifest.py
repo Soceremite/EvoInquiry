@@ -27,7 +27,7 @@ def test_plugin_manifest_has_no_pinned_version():
 def test_setup_registers_the_bridge_under_the_hardcoded_server_name():
     text = (REPO / "commands" / "setup.md").read_text()
     assert 'claude mcp add codex -s user -- python3 "${CLAUDE_PLUGIN_ROOT}/mcp-servers/codex-exec/server.py"' in text
-    assert "~/.aris/repo" in text
+    assert "~/.ei/repo" in text
     assert (REPO / "mcp-servers" / "codex-exec" / "server.py").is_file()
 
 

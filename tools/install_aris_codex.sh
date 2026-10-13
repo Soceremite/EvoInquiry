@@ -5,7 +5,7 @@
 #   <project>/.agents/skills/<skill-name> -> <aris-repo>/skills/<package>/<skill-name>
 #
 # Managed entries are tracked in:
-#   <project>/.aris/installed-skills-codex.txt
+#   <project>/.ei/installed-skills-codex.txt
 #
 # Default package set:
 #   - skills/skills-codex
@@ -36,7 +36,7 @@
 #   Y/n/e prompts); fresh install with --quiet/no TTY installs everything (old behavior).
 #   Reconcile keeps exactly what the manifest says is installed; NEW upstream
 #   skills need per-skill confirmation (declined ones are remembered in
-#   .aris/skills-declined-codex.txt and never re-asked).
+#   .ei/skills-declined-codex.txt and never re-asked).
 #
 # Options:
 #   --aris-repo PATH                 override repo discovery
@@ -49,14 +49,15 @@
 #   --clear-stale-lock               clear a stale installer lock
 
 set -euo pipefail
+EI_ORIGINAL_ARGUMENTS=("$@")
 
 MANIFEST_VERSION="1"
 MANIFEST_NAME="installed-skills-codex.txt"
 MANIFEST_PREV_NAME="installed-skills-codex.txt.prev"
 DECLINED_NAME="skills-declined-codex.txt"
 CATALOG_REL="tools/skill-groups.tsv"
-GLOBAL_POINTER="$HOME/.aris/repo"
-ARIS_DIR_NAME=".aris"
+GLOBAL_POINTER="$HOME/.ei/repo"
+ARIS_DIR_NAME=".ei"
 LOCK_DIR_NAME=".install-codex.lock.d"
 SKILLS_REL=".agents/skills"
 DOC_FILE_NAME="AGENTS.md"
@@ -88,7 +89,7 @@ while [[ $# -gt 0 ]]; do
     case "$1" in
         --reconcile) ACTION="reconcile"; shift ;;
         --uninstall) ACTION="uninstall"; shift ;;
-        --aris-repo) ARIS_REPO_OVERRIDE="${2:?--aris-repo requires path}"; shift 2 ;;
+        --aris-repo|--ei-repo) ARIS_REPO_OVERRIDE="${2:?--aris-repo requires path}"; shift 2 ;;
         --with-claude-review-overlay) WITH_CLAUDE_OVERLAY=true; shift ;;
         --with-gemini-review-overlay) WITH_GEMINI_OVERLAY=true; shift ;;
         --dry-run) DRY_RUN=true; shift ;;
@@ -169,6 +170,8 @@ resolve_aris_repo() {
         parent="$(cd "$script_dir/.." && pwd)"
         if [[ -d "$parent/skills/$BASE_PACKAGE" ]]; then
             p="$parent"
+        elif [[ -n "${EI_REPO:-}" && -d "$EI_REPO/skills" ]]; then
+            p="$(abs_path "$EI_REPO")"
         elif [[ -n "${ARIS_REPO:-}" && -d "$ARIS_REPO/skills/$BASE_PACKAGE" ]]; then
             p="$(abs_path "$ARIS_REPO")"
         else
@@ -493,12 +496,11 @@ filter_upstream_by_selection() {  # $1 = upstream file, $2 = selected file, $3 =
 # installed skills find $ARIS_REPO/tools without a per-project install.
 ensure_global_pointer() {
     $DRY_RUN && return 0
-    mkdir -p "$(dirname "$GLOBAL_POINTER")" 2>/dev/null || { warn "cannot create $(dirname "$GLOBAL_POINTER") — skipping global pointer"; return 0; }
-    local cur=""
-    [[ -f "$GLOBAL_POINTER" ]] && cur="$(cat "$GLOBAL_POINTER" 2>/dev/null || true)"
-    [[ "$cur" == "$ARIS_REPO" ]] && return 0
-    printf '%s\n' "$ARIS_REPO" > "$GLOBAL_POINTER.tmp.$$" && mv -f "$GLOBAL_POINTER.tmp.$$" "$GLOBAL_POINTER"
-    log "  + global pointer $GLOBAL_POINTER -> $ARIS_REPO"
+    python3 "$(cd "$(dirname "$0")" && pwd)/state_paths.py" --root "$HOME" --set-repo-pointer "$ARIS_REPO" || {
+        warn "optional global pointer was not updated; resolve its namespace conflict first"
+        return 0
+    }
+    log "  + global repository pointer -> $ARIS_REPO"
 }
 
 load_manifest() {
@@ -526,7 +528,13 @@ PROJECT_PATH="${PROJECT_PATH:-$(pwd)}"
 PROJECT_PATH="$(abs_path "$PROJECT_PATH")"
 ARIS_REPO="$(resolve_aris_repo)"
 PROJECT_SKILLS_DIR="$PROJECT_PATH/$SKILLS_REL"
-PROJECT_ARIS_DIR="$PROJECT_PATH/$ARIS_DIR_NAME"
+PROJECT_ARIS_DIR="$(python3 "$(cd "$(dirname "$0")" && pwd)/state_paths.py" --root "$PROJECT_PATH" --mode write)" || die "state namespace conflict; use project-governance migration"
+# Keep the namespace lock across the complete mutation, including installer locks.
+# A dry-run resolves state but creates no guard lock or directory.
+if ! $DRY_RUN && ! $LIST_GROUPS && [[ "${EI_NAMESPACE_GUARD:-}" != "$PROJECT_PATH" ]]; then
+    EI_NAMESPACE_GUARD="$PROJECT_PATH" python3 "$(cd "$(dirname "$0")" && pwd)/state_paths.py" --root "$PROJECT_PATH" --guard-command -- bash "$0" "${EI_ORIGINAL_ARGUMENTS[@]}"
+    exit $?
+fi
 MANIFEST_PATH="$PROJECT_ARIS_DIR/$MANIFEST_NAME"
 MANIFEST_PREV="$PROJECT_ARIS_DIR/$MANIFEST_PREV_NAME"
 LOCK_DIR="$PROJECT_ARIS_DIR/$LOCK_DIR_NAME"
@@ -811,7 +819,7 @@ PYEOF
         return 0
     fi
 
-    tmp="$DOC_FILE.aris-codex-tmp.$$"
+    tmp="$DOC_FILE.ei-codex-tmp.$$"
     printf '%s' "$new_content" > "$tmp"
     current=""
     [[ -f "$DOC_FILE" ]] && current="$(cat "$DOC_FILE")"
@@ -857,7 +865,7 @@ PYEOF
         return 0
     fi
 
-    tmp="$DOC_FILE.aris-codex-tmp.$$"
+    tmp="$DOC_FILE.ei-codex-tmp.$$"
     printf '%s' "$new_content" > "$tmp"
     current="$(cat "$DOC_FILE")"
     if [[ "$current" != "$original" ]]; then

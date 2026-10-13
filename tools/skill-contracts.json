@@ -1,8 +1,8 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "source_commit": "b9c7861fd22cd2f5471765d583c593f083fa12cc",
   "upstream_commit": "3b19a22dc5a64c983d2eafd6c2c94000fadc4f8d",
-  "allowed_edits": "Retained Codex descriptions and one marked EvoInquiry hook; all other skill fields and workflow bytes are protected.",
+  "allowed_edits": "Retained Codex descriptions and marked EvoInquiry hooks; .aris-to-.ei namespace-only normalization; individually SHA-pinned governance adaptations of runtime/docs. Other fields and workflows remain protected.",
   "retained_skills": {
     "ablation-planner": {
       "frontmatter_except_description_sha256": "7cfb5e8f38cf737bd5af5ce1b6d8c274b707857e424df62d177e3f66529d856b",
@@ -338,7 +338,9 @@
     }
   },
   "added_skills": [
-    "research-guide"
+    "research-guide",
+    "project-governance",
+    "environment-maintenance"
   ],
   "protected_files": {
     ".agents/plugins/marketplace.json": "ed27a3ee7750fe22a6202db14dbea9cc946672de325259c44089834222fcbb57",
@@ -800,6 +802,199 @@
     "tests/test_claude_review_artifact_tools.py": {
       "baseline_sha256": "17be685bf74111bd000b07368ffef333ef47208a8993dbf3b2838ee6fd75de5c",
       "reason": "Compare complete workflow and all non-description frontmatter while allowing registered discovery-description edits."
+    }
+  },
+  "mainline_added_skills": [
+    "project-governance",
+    "environment-maintenance"
+  ],
+  "upgrade_source_commit": "69cfbc5dc5fc34c4d7e6146fe66f5520866f7dfe",
+  "approved_upgrade_files": {
+    ".gitignore": {
+      "sha256": "127abd5f6907575808507b1bf87e679fb12616095214d51d7424004f7b73d472",
+      "baseline_sha256": "1284128154c23f57502d53698abfa987f7101e90c5daa5819c66b8a0f62eb1fd",
+      "reason": "Governance upgrade: reviewed resolver, publication, execution/queue integration, catalog or current-inventory regression adaptation",
+      "upgrade_baseline_sha256": "1284128154c23f57502d53698abfa987f7101e90c5daa5819c66b8a0f62eb1fd"
+    },
+    "mcp-servers/manual-review/server.py": {
+      "sha256": "958ce1134f328258791f9d2ae900a3781672a4885bdf48a2fbf0f9bea7210731",
+      "baseline_sha256": "51072ee853dc73748895dabf9ad77a7b5de29a79758fae502b819720cbe8cbf1",
+      "reason": "Canonical pending paths and active review namespace lock; custom paths and reviewer family gates preserved.",
+      "upgrade_baseline_sha256": "51072ee853dc73748895dabf9ad77a7b5de29a79758fae502b819720cbe8cbf1"
+    },
+    "requirements-dev.txt": {
+      "sha256": "d850a7d7aad4c42fd1ebbcb39ed198eb22b3e892a14e6826494285bde08308b6",
+      "baseline_sha256": "e8b4192fd883ac4a8cbf3e11afa567fb76936e8a2d24288afe5f330ab778cee6",
+      "reason": "Governance upgrade: reviewed resolver, publication, execution/queue integration, catalog or current-inventory regression adaptation",
+      "upgrade_baseline_sha256": "e8b4192fd883ac4a8cbf3e11afa567fb76936e8a2d24288afe5f330ab778cee6"
+    },
+    "skills/experiment-queue/scripts/build_manifest.py": {
+      "sha256": "7d08ae9bf3cbf2948a17cb0ec8e891fc9119aa404bbbd868b3f70053e480f0f2",
+      "baseline_sha256": "2fe0d13d2bba863e9bbde65f8a746f1c0f46b7e2c08e16107786fad6980a5820",
+      "reason": "Carry explicit frozen execution bindings into single/grid jobs.",
+      "upgrade_baseline_sha256": "2fe0d13d2bba863e9bbde65f8a746f1c0f46b7e2c08e16107786fad6980a5820"
+    },
+    "skills/experiment-queue/scripts/queue_manager.py": {
+      "sha256": "67dc8fa1e5f5f4c879c1d9b72eacda55fb71e514d0ee5241dd27f6e7e31d73f9",
+      "baseline_sha256": "9b53e554bda3fec88d9d293e323e26f531d8c074b7544a8ca7b4c3b529ab0129",
+      "reason": "Frozen bindings, recoverable retries and actual terminal lease receipts; unbound scheduling preserved.",
+      "upgrade_baseline_sha256": "9b53e554bda3fec88d9d293e323e26f531d8c074b7544a8ca7b4c3b529ab0129"
+    },
+    "skills/shared-references/output-versioning.md": {
+      "sha256": "420caadf96438fbe987cdd8b4ee9b7b3f0d59f71f47522ac1f5697020e60b53d",
+      "baseline_sha256": "73a4269b537be728b0ecc35789f11fa6d1fafa6d0430d07ad2738f064b1e4da3",
+      "reason": "Governance upgrade: reviewed resolver, publication, execution/queue integration, catalog or current-inventory regression adaptation",
+      "upgrade_baseline_sha256": "73a4269b537be728b0ecc35789f11fa6d1fafa6d0430d07ad2738f064b1e4da3"
+    },
+    "skills/skills-codex/shared-references/output-versioning.md": {
+      "sha256": "420caadf96438fbe987cdd8b4ee9b7b3f0d59f71f47522ac1f5697020e60b53d",
+      "baseline_sha256": "de8e7ac23069de6c5d0c482d4cef117dd5a543e00b57e2dc6c62560a457290c5",
+      "reason": "Governance upgrade: reviewed resolver, publication, execution/queue integration, catalog or current-inventory regression adaptation",
+      "upgrade_baseline_sha256": "de8e7ac23069de6c5d0c482d4cef117dd5a543e00b57e2dc6c62560a457290c5"
+    },
+    "tools/build_beta_release.py": {
+      "sha256": "d0b42cd834e48efa119aed72fe0920e80306fb741a88953a97111a9742f42bc2",
+      "baseline_sha256": "22d386d66debbdc935c045d998bf868229ef5f61c715605eb429cb3a1f33db2e",
+      "reason": "Governance upgrade: reviewed resolver, publication, execution/queue integration, catalog or current-inventory regression adaptation",
+      "upgrade_baseline_sha256": "22d386d66debbdc935c045d998bf868229ef5f61c715605eb429cb3a1f33db2e"
+    },
+    "tools/forensics_gate.py": {
+      "sha256": "1efd1f08fb3fdf12bcf4a8747116ac319770b10c10d29071edf18387639b08d1",
+      "baseline_sha256": "6b702cffb656aada0290b7d06f218a96c2cc47d2cef924838b4b53f79233f80b",
+      "reason": "Governance upgrade: reviewed resolver, publication, execution/queue integration, catalog or current-inventory regression adaptation",
+      "upgrade_baseline_sha256": "6b702cffb656aada0290b7d06f218a96c2cc47d2cef924838b4b53f79233f80b"
+    },
+    "tools/install_aris.ps1": {
+      "sha256": "1bc98a404293b2dc8996a6a190c5ed8fa419d4f2dd7b8a054d901ac1f46c7278",
+      "baseline_sha256": "4eebea14bb58019304bdb52e1f4073537e754e12c610971cf3038521960b93a4",
+      "reason": "Resolver from own script root, complete mutation guard, central optional pointer and guarded-parent return semantics.",
+      "upgrade_baseline_sha256": "4eebea14bb58019304bdb52e1f4073537e754e12c610971cf3038521960b93a4"
+    },
+    "tools/install_aris.sh": {
+      "sha256": "0fc32118337e0a703aa2a48a6126e7ba57e7a0d972a07ba5b38d4bb8c88c944a",
+      "baseline_sha256": "c781cbf5da633f40bc9f5de40ef95569a4c818bdc09460dd899bb1e849a29db4",
+      "reason": "Own-script resolver, whole-operation guard and atomic central pointer; install selections preserved.",
+      "upgrade_baseline_sha256": "c781cbf5da633f40bc9f5de40ef95569a4c818bdc09460dd899bb1e849a29db4"
+    },
+    "tools/install_aris_codex.sh": {
+      "sha256": "33fe10ef8cb790ab9479257a36d31ce2a69ab8ac8515e037d0c5da2b8eecdbf5",
+      "baseline_sha256": "f9df60648bf057481c9b11ce59ab0943b678d77677a145f247484c92d24fa88a",
+      "reason": "Own-script resolver, whole native install guard and optional central pointer.",
+      "upgrade_baseline_sha256": "f9df60648bf057481c9b11ce59ab0943b678d77677a145f247484c92d24fa88a"
+    },
+    "tools/install_aris_copilot.sh": {
+      "sha256": "2ec11e2be2cf3bd8ca52216b09973bdbbece9cbf7f385ac403b37dc7ce8707d1",
+      "baseline_sha256": "2b9ff14c6143583625d4bbf1399d8622664965ddbc885c39425975535031f229",
+      "reason": "Own-script resolver and whole installation guard; agent-profile protections preserved.",
+      "upgrade_baseline_sha256": "2b9ff14c6143583625d4bbf1399d8622664965ddbc885c39425975535031f229"
+    },
+    "tools/iteration_log.py": {
+      "sha256": "c9809132c352d10b5c9291a9ed17c2478c3a03efa704284fd10e66e946f0a6de",
+      "baseline_sha256": "819c22ba20bb270e0a514edb2626e7e3a1c4bade36f809e3ee9571cc076f7cb0",
+      "reason": "Governance upgrade: reviewed resolver, publication, execution/queue integration, catalog or current-inventory regression adaptation",
+      "upgrade_baseline_sha256": "819c22ba20bb270e0a514edb2626e7e3a1c4bade36f809e3ee9571cc076f7cb0"
+    },
+    "tools/meta_opt/check_ready.sh": {
+      "sha256": "ffd8976707c77e312d9458b91110a90f7496fff05db9efd7fc89d0db3498cd2a",
+      "baseline_sha256": "6c581e592893db7fb288c91bb8b4a7f94c34c13bb8e4d5fe11f6f5205f841fc6",
+      "reason": "Governance upgrade: reviewed resolver, publication, execution/queue integration, catalog or current-inventory regression adaptation",
+      "upgrade_baseline_sha256": "6c581e592893db7fb288c91bb8b4a7f94c34c13bb8e4d5fe11f6f5205f841fc6"
+    },
+    "tools/meta_opt/log_event.sh": {
+      "sha256": "0c4f84fef5d965ef988f546f260794f3026f617d5ebe16e09ebfb4c5231e0676",
+      "baseline_sha256": "9bf323361b0f0613e70c3d88d44600b8608f647433ca288cc8eda2411cdefce1",
+      "reason": "Governance upgrade: reviewed resolver, publication, execution/queue integration, catalog or current-inventory regression adaptation",
+      "upgrade_baseline_sha256": "9bf323361b0f0613e70c3d88d44600b8608f647433ca288cc8eda2411cdefce1"
+    },
+    "tools/meta_opt/trigger_eval.py": {
+      "sha256": "162c10ff23502aeb2f9970fac74841c891024a7a535101c6dfa4a644b045158f",
+      "baseline_sha256": "ec0dfb8b08de96c97b751968dd9b8e08bf323828cbf727e757a8bf2fc2d6ed76",
+      "reason": "Governance upgrade: reviewed resolver, publication, execution/queue integration, catalog or current-inventory regression adaptation",
+      "upgrade_baseline_sha256": "ec0dfb8b08de96c97b751968dd9b8e08bf323828cbf727e757a8bf2fc2d6ed76"
+    },
+    "tools/run_state.py": {
+      "sha256": "b3bfc9645764601df77369bd92f382deb3ea0ece1af3eaf46d965d4bf1583515",
+      "baseline_sha256": "5fc466462e2d4c26c6de078dcb04100bafa3a9c56df9a0dc4e38f316a33df5b5",
+      "reason": "Governance upgrade: reviewed resolver, publication, execution/queue integration, catalog or current-inventory regression adaptation",
+      "upgrade_baseline_sha256": "5fc466462e2d4c26c6de078dcb04100bafa3a9c56df9a0dc4e38f316a33df5b5"
+    },
+    "tools/save_trace.sh": {
+      "sha256": "f6222ec6df378707905c9824478040e92bf6f7c182ccea440481a89d22bdc752",
+      "baseline_sha256": "052896125aa6f655ff1b6c5f8262766fa6f3c3f758cb5b0ec142f46ee38a9de0",
+      "reason": "Governance upgrade: reviewed resolver, publication, execution/queue integration, catalog or current-inventory regression adaptation",
+      "upgrade_baseline_sha256": "052896125aa6f655ff1b6c5f8262766fa6f3c3f758cb5b0ec142f46ee38a9de0"
+    },
+    "tools/skill-groups.tsv": {
+      "sha256": "e08822158015cb45f5df32e1956343a5a8f2555e7e4711fca87d338fc4ad0263",
+      "baseline_sha256": "403397ba3d9c04a6c7698f40fdf130534f9eefe9c119f403ebdbe82496ae32e6",
+      "reason": "Governance upgrade: reviewed resolver, publication, execution/queue integration, catalog or current-inventory regression adaptation",
+      "upgrade_baseline_sha256": "403397ba3d9c04a6c7698f40fdf130534f9eefe9c119f403ebdbe82496ae32e6"
+    },
+    "tools/verify_paper_audits.sh": {
+      "sha256": "bf37d78d065bfc1f3e08bcd18997088c5297301d0aa87e27ab4e4189d7397065",
+      "baseline_sha256": "7dd8c07a6e9458077a202c3075c4207985b2bba7a196b10687d286b9c9dd455d",
+      "reason": "Governance upgrade: reviewed resolver, publication, execution/queue integration, catalog or current-inventory regression adaptation",
+      "upgrade_baseline_sha256": "7dd8c07a6e9458077a202c3075c4207985b2bba7a196b10687d286b9c9dd455d"
+    },
+    "tools/verify_papers.py": {
+      "sha256": "7ad0a65ba6f036ec6725d0590b3aea001a2a2f9dd9d29a893f86df79f7fbb32c",
+      "baseline_sha256": "ccf214f490d15554e17cc43856318dcee1ecd32361299c994b20983de2bc8d1e",
+      "reason": "Governance upgrade: reviewed resolver, publication, execution/queue integration, catalog or current-inventory regression adaptation",
+      "upgrade_baseline_sha256": "ccf214f490d15554e17cc43856318dcee1ecd32361299c994b20983de2bc8d1e"
+    },
+    ".env.example": {
+      "sha256": "c6875dd70c421b55b832a1121a29c3330131f3a98e64fb7f593c9ebe0eadca9c",
+      "baseline_sha256": "0026f405d7e8e0b855b7a17a2e6d7fef79068976b075744347a4787f474ae638",
+      "reason": "Manual-review default storage uses the resolver; document EI_REPO and EI_STATE_ROOT.",
+      "upgrade_baseline_sha256": "0026f405d7e8e0b855b7a17a2e6d7fef79068976b075744347a4787f474ae638"
+    },
+    "tools/experiment_queue/README.md": {
+      "sha256": "d7ed6e626ba397fd844ce940fb75ff6997767030fc709c217b87a542c9e4f19b",
+      "baseline_sha256": "df7757d1b2cec27a52fd655a233948c5a031b846ea93e2167811a668877924b3",
+      "reason": "Document governed bindings, frozen arguments and actual CPU validation limits.",
+      "upgrade_baseline_sha256": "df7757d1b2cec27a52fd655a233948c5a031b846ea93e2167811a668877924b3"
+    },
+    "tools/smart_update.ps1": {
+      "sha256": "6c6da286ad1fb403658d4e8d40c475cdded36f9fe9e2e9f6a944d3e36396c67f",
+      "baseline_sha256": "16ed12f54305e23268a3ced533734c78ed39cf3ba1e7125c9919b861660f4590",
+      "reason": "Guard apply, central optional pointer and correct child return; preserve preview and customization decisions.",
+      "upgrade_baseline_sha256": "16ed12f54305e23268a3ced533734c78ed39cf3ba1e7125c9919b861660f4590"
+    },
+    "tools/smart_update.sh": {
+      "sha256": "fe5626a79df0d4862479376eac60e8809d8942f017c32198cf0093e1e9fb8b4c",
+      "baseline_sha256": "40ffbfba8b52ddafd87fb11642382877cbd0a4d93a3576fce7cae5fe5ab4ef87",
+      "reason": "Guard apply and optional repository pointer; retain copied-install customization protection.",
+      "upgrade_baseline_sha256": "40ffbfba8b52ddafd87fb11642382877cbd0a4d93a3576fce7cae5fe5ab4ef87"
+    },
+    "tools/smart_update_codex.sh": {
+      "sha256": "14759f9326e15032a66932aca52a61af98238e8d9cbcd7361a28cf24494bdc4d",
+      "baseline_sha256": "d8f659a7d453bea7816bbaa200a0bc9312853cec46551c156101730b80759d75",
+      "reason": "Guard Codex apply and pointer; preview stays read-only.",
+      "upgrade_baseline_sha256": "d8f659a7d453bea7816bbaa200a0bc9312853cec46551c156101730b80759d75"
+    },
+    "tools/smart_update_copilot.sh": {
+      "sha256": "16b63f4ae0139f4febfae8354570fe3466df3e13fa7cf4def90dc23298e78b7b",
+      "baseline_sha256": "586d6fae1202ac180c0d6a68c13ff798302e7fcad5a91aa4b709f8f8b5c9e955",
+      "reason": "Guard Copilot apply and pointer; preserve custom files, agents and new-skill decisions.",
+      "upgrade_baseline_sha256": "586d6fae1202ac180c0d6a68c13ff798302e7fcad5a91aa4b709f8f8b5c9e955"
+    },
+    "tools/threat_scan.py": {
+      "sha256": "fe5619d17c7c215677fec9162311d0e169a9a6333b79562d53db435ab366d235",
+      "baseline_sha256": "fe0f6d4ec38baa09b58a9dbdb4bde3039b9863a3e52dc79ada33d79f3c84e268",
+      "reason": "Extend configuration tampering signature to .ei while retaining legacy .aris recognition.",
+      "upgrade_baseline_sha256": "fe0f6d4ec38baa09b58a9dbdb4bde3039b9863a3e52dc79ada33d79f3c84e268"
+    },
+    "tools/verify_wiki_coverage.sh": {
+      "sha256": "a44f4e1d13475e8a2ba8b2d4d9d92163b860c591cbe78e6df76693f011f910e5",
+      "baseline_sha256": "cdc619caacc680fef77f25def48aa7e4ad72ca2e0cb7842da5dfdfa8cbb8a709",
+      "reason": "Central trace/pointer default reads and EI_REPO preference; preserve diagnostic-only behavior.",
+      "upgrade_baseline_sha256": "cdc619caacc680fef77f25def48aa7e4ad72ca2e0cb7842da5dfdfa8cbb8a709"
+    },
+    ".github/workflows/test-install-aris-ps1.yml": {
+      "sha256": "0bc729cc8b285a7bcefebb4b94205d2bdaf9692f73b16b70d0389f7b0f01655e",
+      "baseline_sha256": "3a238488d4d51a7e76a06900509c52beb18b021df526e4623e588ee16ef12b57",
+      "upgrade_baseline_sha256": "3a238488d4d51a7e76a06900509c52beb18b021df526e4623e588ee16ef12b57",
+      "reason": "Extend native Windows acceptance with local governance and filesystem tests, dependency setup and relevant triggers; retain every original installer test for both PowerShell runtimes."
     }
   }
 }

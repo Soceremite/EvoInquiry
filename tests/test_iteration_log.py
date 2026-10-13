@@ -17,7 +17,7 @@ class TestIterationLog(unittest.TestCase):
         self.run = "demo-run"
 
     def _path(self):
-        return Path(self.root) / ".aris" / "runs" / f"{self.run}.iterations.jsonl"
+        return Path(self.root) / ".ei" / "runs" / f"{self.run}.iterations.jsonl"
 
     def test_findings_reset_stale(self):
         r = il.note(self.root, self.run, "lit", 3)
@@ -51,7 +51,7 @@ class TestIterationLog(unittest.TestCase):
     def test_does_not_touch_run_state(self):
         # B must not write run_state.py's <run_id>.json — only the .iterations.jsonl sidecar
         il.note(self.root, self.run, "p", 0)
-        self.assertFalse((Path(self.root) / ".aris" / "runs" / f"{self.run}.json").exists())
+        self.assertFalse((Path(self.root) / ".ei" / "runs" / f"{self.run}.json").exists())
 
     def test_tolerates_garbled_line(self):
         p = self._path()

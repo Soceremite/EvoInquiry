@@ -66,7 +66,7 @@ When in composed mode, a sub-skill:
 2. If it must use a scratch file mid-phase, deletes that scratch once its content is
    inlined and the phase closes.
 3. Keeps **audit-trail** outputs where they belong — cross-model review traces always
-   go to `.aris/traces/…` per [`review-tracing.md`](review-tracing.md); the canonical
+   go to `.ei/traces/…` per [`review-tracing.md`](review-tracing.md); the canonical
    report cites the trace path instead of carrying a duplicate human-facing copy.
 4. Keeps **reusable** artifacts (a pilot script, a small results file) but discards
    disposable scratch (launcher logs, smoke files, redundant `*_summary.json`) once

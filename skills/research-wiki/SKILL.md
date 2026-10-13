@@ -5,6 +5,13 @@ argument-hint: "[subcommand: init|ingest|sync|query|update|lint|stats]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, WebSearch, WebFetch, mcp__codex__codex, mcp__codex__codex-reply
 ---
 
+<!-- EI-GOVERNANCE:BEGIN -->
+Resolve runtime state through tools/state_paths.py before .ei operations. Use
+[project-governance](../shared-references/project-governance.md) for fixed evidence,
+profiles and controlled migration; missing profiles retain compat-v1.
+<!-- EI-GOVERNANCE:END -->
+
+
 # Research Wiki: Persistent Research Knowledge Base
 
 Subcommand: **$ARGUMENTS**
@@ -47,7 +54,7 @@ Before persisting an **idea / claim / experiment** note, screen it for
 operational noise that would harden into a self-cited falsehood (see
 [`shared-references/capture-antipatterns.md`](../shared-references/capture-antipatterns.md)).
 Resolve the helper via the canonical chain (integration-contract §2):
-`.aris/tools/capture_filter.py` → `tools/capture_filter.py` →
+`.ei/tools/capture_filter.py` → `tools/capture_filter.py` →
 `$ARIS_REPO/tools/capture_filter.py` (warn-and-skip if unresolved). Run
 `python3 <capture_filter> -` on the note text; if it flags **env-failure /
 transient-error / negative-tool-claim**, do NOT store it as a durable node —
@@ -91,18 +98,18 @@ default), which is exactly the failure mode that left a real user's
 
 ```bash
 cd "$(git rev-parse --show-toplevel 2>/dev/null || pwd)" || exit 1
-ARIS_REPO="${ARIS_REPO:-$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .aris/installed-skills.txt 2>/dev/null)}"
-if [ -z "${ARIS_REPO:-}" ] && [ -f "$HOME/.aris/repo" ]; then
-  ARIS_REPO=$(cat "$HOME/.aris/repo" 2>/dev/null) || true
+ARIS_REPO="${ARIS_REPO:-$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .ei/installed-skills.txt 2>/dev/null)}"
+if [ -z "${ARIS_REPO:-}" ] && [ -f "$HOME/.ei/repo" ]; then
+  ARIS_REPO=$(cat "$HOME/.ei/repo" 2>/dev/null) || true
 fi
-WIKI_SCRIPT=".aris/tools/research_wiki.py"
+WIKI_SCRIPT=".ei/tools/research_wiki.py"
 [ -f "$WIKI_SCRIPT" ] || WIKI_SCRIPT="tools/research_wiki.py"
 [ -f "$WIKI_SCRIPT" ] || { [ -n "${ARIS_REPO:-}" ] && WIKI_SCRIPT="$ARIS_REPO/tools/research_wiki.py"; }
 [ -f "$WIKI_SCRIPT" ] || {
-  echo "ERROR: research_wiki.py not found at .aris/tools/, tools/, \$ARIS_REPO/tools/, or via ~/.aris/repo." >&2
+  echo "ERROR: research_wiki.py not found at .ei/tools/, tools/, \$ARIS_REPO/tools/, or via ~/.ei/repo." >&2
   echo "       Fix one of:" >&2
-  echo "         1. rerun 'bash tools/install_aris.sh' from the ARIS repo (creates .aris/tools symlink, refreshes ~/.aris/repo)" >&2
-  echo "         2. rerun 'bash tools/smart_update.sh' (refreshes ~/.aris/repo)" >&2
+  echo "         1. rerun 'bash tools/install_aris.sh' from the ARIS repo (creates .ei/tools symlink, refreshes ~/.ei/repo)" >&2
+  echo "         2. rerun 'bash tools/smart_update.sh' (refreshes ~/.ei/repo)" >&2
   echo "         3. export ARIS_REPO=<path-to-ARIS-repo>" >&2
   echo "         4. cp <ARIS-repo>/tools/research_wiki.py tools/" >&2
   exit 1
@@ -428,7 +435,7 @@ skill creates a claim node: `/result-to-claim` (Hook 3) only adds empirical
 # (run by /proof-checker; shown here for the wiki's record)
 python3 "$WIKI_SCRIPT" add_claim research-wiki/ --slug thm-main-ub \
   --name "Main upper bound" --status verified \
-  --provenance ".aris/traces/proof-checker/<run>/" --statement "..." --update-on-exist
+  --provenance ".ei/traces/proof-checker/<run>/" --statement "..." --update-on-exist
 ```
 
 Claim `status` ∈ {`drafted`, `unproven`, `sound-modulo-imports`, `verified`,

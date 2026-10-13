@@ -44,7 +44,7 @@ For SSH/headless environments without a browser:
 export MANUAL_REVIEW_MODE=file
 ```
 
-The server writes the prompt to a per-thread directory with a **cross-model warning** at the top of `prompt.md`. Read `.aris/pending_review/pending_review.json` — the `prompt_file` field tells you where to read the prompt, the `response_file` field tells you where to write the model's response. The file must be non-empty and stable (unchanged across two reads) before it's accepted.
+The server writes the prompt to a per-thread directory with a **cross-model warning** at the top of `prompt.md`. Read `.ei/pending_review/pending_review.json` — the `prompt_file` field tells you where to read the prompt, the `response_file` field tells you where to write the model's response. The file must be non-empty and stable (unchanged across two reads) before it's accepted.
 
 ## Environment Variables
 
@@ -55,12 +55,12 @@ The server writes the prompt to a per-thread directory with a **cross-model warn
 | `MANUAL_REVIEW_MODE` | `browser` | `browser` or `file` |
 | `MANUAL_REVIEW_AUTO_OPEN` | `true` | Auto-open browser on review |
 | `MANUAL_REVIEW_PORT` | `17900` | Fixed HTTP port (increments if occupied) |
-| `MANUAL_REVIEW_PENDING_DIR` | `.aris/pending_review` | Directory for state/prompt/response files |
+| `MANUAL_REVIEW_PENDING_DIR` | `.ei/pending_review` | Directory for state/prompt/response files |
 | `MANUAL_REVIEW_DEBUG_LOG` | (empty) | Debug log file path |
 
 ## Recovery
 
-If you accidentally close the browser tab, open `.aris/pending_review/pending_review.json` and reopen the exact `url` value. It includes a one-session token — copy it in full (e.g., `http://127.0.0.1:17900?token=abc123`). Do not type the bare `http://127.0.0.1:17900` as it will return 403.
+If you accidentally close the browser tab, open `.ei/pending_review/pending_review.json` and reopen the exact `url` value. It includes a one-session token — copy it in full (e.g., `http://127.0.0.1:17900?token=abc123`). Do not type the bare `http://127.0.0.1:17900` as it will return 403.
 
 ## Future Work
 
@@ -109,7 +109,7 @@ claude mcp add manual-review -s user -- python3 /path/to/mcp-servers/manual-revi
 export MANUAL_REVIEW_MODE=file
 ```
 
-服务器将提示词写入按线程隔离的子目录，`prompt.md` 顶部包含**跨模型警告**。读取 `.aris/pending_review/pending_review.json` — `prompt_file` 字段指向提示词文件，`response_file` 字段指向你应写入回复的位置。文件必须非空且稳定（两次读取内容不变）才会被接受。
+服务器将提示词写入按线程隔离的子目录，`prompt.md` 顶部包含**跨模型警告**。读取 `.ei/pending_review/pending_review.json` — `prompt_file` 字段指向提示词文件，`response_file` 字段指向你应写入回复的位置。文件必须非空且稳定（两次读取内容不变）才会被接受。
 
 ## 环境变量
 
@@ -120,12 +120,12 @@ export MANUAL_REVIEW_MODE=file
 | `MANUAL_REVIEW_MODE` | `browser` | `browser` 或 `file` |
 | `MANUAL_REVIEW_AUTO_OPEN` | `true` | 是否自动打开浏览器 |
 | `MANUAL_REVIEW_PORT` | `17900` | 固定 HTTP 端口（被占用时递增） |
-| `MANUAL_REVIEW_PENDING_DIR` | `.aris/pending_review` | 状态/提示词/回复文件目录 |
+| `MANUAL_REVIEW_PENDING_DIR` | `.ei/pending_review` | 状态/提示词/回复文件目录 |
 | `MANUAL_REVIEW_DEBUG_LOG` | （空） | 调试日志文件路径 |
 
 ## 恢复
 
-如果不小心关闭了浏览器标签，打开 `.aris/pending_review/pending_review.json`，复制完整的 `url` 值（包含一次性 token，如 `http://127.0.0.1:17900?token=abc123`）重新打开。不要手动输入裸地址 `http://127.0.0.1:17900`，会返回 403。
+如果不小心关闭了浏览器标签，打开 `.ei/pending_review/pending_review.json`，复制完整的 `url` 值（包含一次性 token，如 `http://127.0.0.1:17900?token=abc123`）重新打开。不要手动输入裸地址 `http://127.0.0.1:17900`，会返回 403。
 
 ## 后续计划
 

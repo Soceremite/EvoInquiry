@@ -1,111 +1,68 @@
 # Output Versioning Protocol
 
-When writing any output file that would overwrite an existing file, use timestamped filename + fixed-name latest copy:
+Research evidence uses fixed artifact identity and immutable content. Layout
+profiles select locations; they do not change publication or review semantics.
+Read [project-governance](project-governance.md) for identity and migration.
 
-1. Write output to timestamped file: `{FILENAME}_{YYYYMMDD_HHmmss}.md` (or `.json`, `.tex` as appropriate)
-   - Timestamp precision to seconds to reduce collisions. In the rare case of sub-second conflicts, append `_2`, `_3` etc.
-   - Place the timestamped file in the same directory as the fixed-name file
-2. Copy the same content to the fixed-name file: `{FILENAME}.md` (overwrites the previous latest copy)
-3. Downstream skills always read the fixed-name file — they do not need to know about timestamps
+## Layouts and compatibility
 
-## Directory Structure
+Without project.yaml, keep compat-v1: idea-stage/, refine-logs/, review-stage/,
+paper/ and existing timestamped histories. Read old root-level inputs when their
+stage path is absent. Do not relocate manual files merely to introduce governance.
+A named latest copy is navigation; resolve and retain its backing fixed revision
+once before a formal analysis, review or paper.
 
-All ARIS output files are organized by workflow stage:
+governed-v1 is explicitly selected. Its authority path is
+reports/history/<artifact_id>/<revision>/<filename>; reports/current/<artifact_id>.json
+holds a replaceable pointer. Current never becomes historical evidence identity.
+Existing workflow state remains .ei/runs/<workflow_run_id>.json, with the original
+coordinator, IDs and accepted/provisional/done policy.
 
-```
-project/
-├── CLAUDE.md                              # Dashboard (root — read by all stages)
-├── findings.md                            # Cross-stage discovery log (root — append-only)
-├── MANIFEST.md                            # Output tracking manifest (root)
-│
-├── idea-stage/                            # W1: Idea Discovery
-│   ├── IDEA_REPORT.md                     # Latest copy
-│   ├── IDEA_REPORT_20250615_143022.md     # Timestamped version
-│   ├── IDEA_CANDIDATES.md
-│   ├── REF_PAPER_SUMMARY.md
-│   └── docs/
-│       └── research_contract.md
-│
-├── refine-logs/                           # W1.5: Experiment Planning & Refinement
-│   ├── EXPERIMENT_PLAN.md
-│   ├── EXPERIMENT_TRACKER.md
-│   ├── EXPERIMENT_RESULTS.md
-│   ├── FINAL_PROPOSAL.md
-│   ├── PIPELINE_SUMMARY.md
-│   ├── REFINE_STATE.json
-│   ├── REVIEW_SUMMARY.md
-│   ├── REFINEMENT_REPORT.md
-│   └── round_N_*.md
-│
-├── review-stage/                          # W2: Auto Review
-│   ├── AUTO_REVIEW.md
-│   └── REVIEW_STATE.json
-│
-├── paper/                                 # W3: Paper Writing
-│   ├── main.tex
-│   └── roundN/
-│
-└── research-wiki/                         # Persistent knowledge base
-```
+Namespace conversion and artifact-layout choice are independent. Legacy state
+is read only through explicit compatibility or a verified migration receipt.
+A layout rollback does not remove immutable revisions already produced.
 
-## What to Timestamp
+## Publishing an evidence artifact
 
-Files that get overwritten on re-runs:
-- `IDEA_REPORT.md`, `IDEA_CANDIDATES.md`, `REF_PAPER_SUMMARY.md`
-- `EXPERIMENT_PLAN.md`, `EXPERIMENT_TRACKER.md`, `EXPERIMENT_RESULTS.md`
-- `FINAL_PROPOSAL.md`, `PIPELINE_SUMMARY.md`
-- `AUTO_REVIEW.md` (when starting a new review loop, not within a loop)
-- `paper/main.tex`
-- State files: `REFINE_STATE.json`, `REVIEW_STATE.json`
+Use tools/artifact_registry.py and its shared schema/digest/lock implementation:
 
-## What NOT to Timestamp
+1. Freeze and verify input refs, producer, authority path and content hash.
+   Preserve actual review provenance; never infer acceptance from a file.
+2. Stage unique bytes and a transaction journal; verify staged content.
+3. Publish the unused fixed body path. Historical bytes cannot be overwritten.
+4. Append the digest-bound metadata event.
+5. Under the publication lock, compare expected_current and update the pointer.
+   A conflict retains both revisions and reports the failed pointer update.
+6. Rebuild index.json and append MANIFEST once per transaction.
 
-- **Append-only files**: `findings.md`, `research-wiki/log.md` — these accumulate entries, not overwrite
-- **Per-round files**: `refine-logs/round_N_*.md` — already versioned by round number
-- **Dashboard**: `CLAUDE.md` — single source of truth, always latest
-- **MANIFEST.md** — append-only tracking file
+Retries reuse the same transaction, record and bytes. Do not double-write
+metadata authority or authoritative text. Compat fixed-name copies, when a
+project needs them, are replaceable navigation; the timestamped/registered
+revision is evidence. An existing manual fixed-name file needs applicable
+authorization before replacement. The registry never overwrites unregistered text.
 
-Never delete timestamped files. They are the permanent history.
+A multi-file publish is not atomic. Local locks and verified atomic rename are
+the MVP boundary. Unfinished journals, orphan content, partial events, missing or
+wrong hashes and stale aliases stop new publication and require explicit
+reconcile/repair. Never silently truncate damage or select newer inputs to repair
+historical evidence.
 
-## Path Fallback Rule (Backward Compatibility)
+## Files outside the evidence publication protocol
 
-Skills that **read** stage-scoped files must fall back to the old root-level location for projects created before this layout was introduced:
+Append-only findings/wiki logs and MANIFEST retain their existing roles.
+Per-round outputs already have distinct round identities. Dashboards and workflow
+state are mutable operational records, not scientific verdicts. Ordinary notes,
+small edits or advice do not require a governance profile or registry workflow.
 
-```
-# For idea-stage files:
-Read from idea-stage/IDEA_REPORT.md
-If not found → fall back to ./IDEA_REPORT.md
+When retaining the legacy timestamp mechanism, use second precision plus a
+collision suffix, keep prior timestamped files, and fix references at evidence
+handoff. Register unverifiable legacy artifacts as legacy-unverified; do not
+create fictional historical review receipts.
 
-Read from idea-stage/IDEA_CANDIDATES.md
-If not found → fall back to ./IDEA_CANDIDATES.md
+## Resume and stale operational state
 
-# For review-stage files:
-Read from review-stage/AUTO_REVIEW.md
-If not found → fall back to ./AUTO_REVIEW.md
-
-Read from review-stage/REVIEW_STATE.json
-If not found → fall back to ./REVIEW_STATE.json
-```
-
-Skills that **write** always use the stage-scoped path (never write to root). This ensures new runs migrate output forward while old projects continue to work.
-
-## Migration for Existing Projects
-
-If you find root-level files (`IDEA_REPORT.md`, `AUTO_REVIEW.md`, etc.) and the stage directories do not yet exist, you may optionally offer to migrate:
-
-```
-📁 Found legacy root-level files. Migrate to stage directories?
-  mv IDEA_REPORT.md idea-stage/IDEA_REPORT.md
-  mv AUTO_REVIEW.md review-stage/AUTO_REVIEW.md
-  (etc.)
-Only do this if the user confirms — do not auto-migrate silently.
-```
-
-## Stale State Detection
-
-Before reading a state file (`REFINE_STATE.json`, `REVIEW_STATE.json`, `DSE_STATE.json`):
-1. Check the file's last modified time via `ls -la` or `stat`
-2. Default staleness threshold: **24 hours** (individual skills may override — e.g., `auto-review-loop` uses 24h, `research-refine` uses 24h). If a skill defines its own threshold, that takes precedence.
-3. If older than the threshold, warn the user:
-   "⚠️ State file {filename} is {N} hours/days old. It may be from a previous research direction. Continue with this state, or start fresh?"
-4. If the user chooses to start fresh, write a timestamped archive copy and proceed without the old state
+Inspect task/project identity and evidence behind resumed statuses. Time alone
+cannot determine whether a long research run remains valid. Existing workflow
+staleness policies may request a decision; reuse an already supplied choice and
+authorization. Archive replaced operational records instead of deleting history.
+Execution completion, review acceptance and claim support remain separate.

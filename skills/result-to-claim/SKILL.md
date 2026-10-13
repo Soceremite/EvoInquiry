@@ -5,6 +5,14 @@ argument-hint: "[experiment-description-or-wandb-run]"
 allowed-tools: Bash(*), Read, Grep, Glob, Write, Edit, mcp__codex__codex, mcp__codex__codex-reply
 ---
 
+<!-- EI-GOVERNANCE:BEGIN -->
+Resolve runtime state through tools/state_paths.py before .ei operations. Use
+[project-governance](../shared-references/project-governance.md) for fixed evidence,
+profiles and controlled migration; missing profiles retain compat-v1.
+Use fixed raw result/spec/execution/report refs and the actual digest-bound review receipt. Preserve independent/provisional judgments; file/registry/schema success does not establish claim support.
+<!-- EI-GOVERNANCE:END -->
+
+
 # Result-to-Claim Gate
 
 > 🔒 **Do not wrap this skill in `/loop`, `/schedule`, or `CronCreate`.** It is
@@ -50,7 +58,7 @@ For every claim that cites a specific number + a source file, verify the evidenc
 the jury runs (see [`shared-references/evidence-precheck.md`](../shared-references/evidence-precheck.md)).
 
 **1. Build the claims list.** From the cited numbers and their result files, write
-`[{"id", "value", "source"}, ...]` to `.aris/claims.json` (`source` is the result
+`[{"id", "value", "source"}, ...]` to `.ei/claims.json` (`source` is the result
 file/glob relative to the project root; `value` is the cited number or string).
 
 **2. Run the pre-check — this is a real step, not a suggestion.** Execute the block
@@ -61,31 +69,31 @@ is unresolved — never block the audit):
 # Policy B = warn-and-skip: nothing here may abort the audit. cd is non-fatal, the
 # helper run is explicitly non-blocking, no pipefail-fragile pipe.
 cd "$(git rev-parse --show-toplevel 2>/dev/null || pwd)" 2>/dev/null || true
-if [ -z "${ARIS_REPO:-}" ] && [ -f .aris/installed-skills.txt ]; then
-    ARIS_REPO=$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .aris/installed-skills.txt 2>/dev/null) || true
+if [ -z "${ARIS_REPO:-}" ] && [ -f .ei/installed-skills.txt ]; then
+    ARIS_REPO=$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .ei/installed-skills.txt 2>/dev/null) || true
 fi
-if [ -z "${ARIS_REPO:-}" ] && [ -f "$HOME/.aris/repo" ]; then
-    ARIS_REPO=$(cat "$HOME/.aris/repo" 2>/dev/null) || true
+if [ -z "${ARIS_REPO:-}" ] && [ -f "$HOME/.ei/repo" ]; then
+    ARIS_REPO=$(cat "$HOME/.ei/repo" 2>/dev/null) || true
 fi
-EVIDENCE_CHECK=".aris/tools/evidence_check.py"
+EVIDENCE_CHECK=".ei/tools/evidence_check.py"
 [ -f "$EVIDENCE_CHECK" ] || EVIDENCE_CHECK="tools/evidence_check.py"
 [ -f "$EVIDENCE_CHECK" ] || { [ -n "${ARIS_REPO:-}" ] && EVIDENCE_CHECK="$ARIS_REPO/tools/evidence_check.py"; }
 [ -f "$EVIDENCE_CHECK" ] || EVIDENCE_CHECK=""
 
-mkdir -p .aris
+mkdir -p .ei
 if [ -n "$EVIDENCE_CHECK" ]; then
     # NB: evidence_check exits 1 when it FINDS hallucinated evidence (value_not_found /
     # path_missing) — that is the useful signal, NOT a failure. So judge success by
     # whether valid JSON was produced, never by exit code. `|| true` keeps set -e calm.
-    python3 "$EVIDENCE_CHECK" . --batch .aris/claims.json > .aris/evidence_precheck.json 2>.aris/evidence_precheck.err || true
-    if [ -s .aris/evidence_precheck.json ] && python3 -c "import json,sys;json.load(open('.aris/evidence_precheck.json'))" 2>/dev/null; then
-        cat .aris/evidence_precheck.json
+    python3 "$EVIDENCE_CHECK" . --batch .ei/claims.json > .ei/evidence_precheck.json 2>.ei/evidence_precheck.err || true
+    if [ -s .ei/evidence_precheck.json ] && python3 -c "import json,sys;json.load(open('.ei/evidence_precheck.json'))" 2>/dev/null; then
+        cat .ei/evidence_precheck.json
     else
-        echo "WARN: evidence_check produced no valid output (see .aris/evidence_precheck.err);" >&2
+        echo "WARN: evidence_check produced no valid output (see .ei/evidence_precheck.err);" >&2
         echo "      pre-check skipped (Policy B); the Codex jury still runs." >&2
     fi
 else
-    echo "WARN: evidence_check.py not resolved at .aris/tools/, tools/, \$ARIS_REPO/tools/, or via ~/.aris/repo." >&2
+    echo "WARN: evidence_check.py not resolved at .ei/tools/, tools/, \$ARIS_REPO/tools/, or via ~/.ei/repo." >&2
     echo "      Pre-check skipped (Policy B); the Codex jury still runs. Fix: rerun" >&2
     echo "      bash tools/install_aris.sh, export ARIS_REPO, or copy the helper to tools/." >&2
 fi
@@ -102,7 +110,7 @@ the jury normally.
 
 **4. Carry the per-claim status into Step 2.** Feed a small
 `evidence pre-check: <id> → verified | value_not_found | path_missing | unparseable`
-table (from `.aris/evidence_precheck.json`) into the Step-2 Codex prompt so the jury knows
+table (from `.ei/evidence_precheck.json`) into the Step-2 Codex prompt so the jury knows
 which claims have real evidence to read. If the pre-check was skipped (helper unresolved),
 say so in that slot rather than omitting it.
 
@@ -234,15 +242,15 @@ proof `status` set) by `/proof-checker`; here we only attach experiment edges.
 
 ```bash
 cd "$(git rev-parse --show-toplevel 2>/dev/null || pwd)" || exit 1
-ARIS_REPO="${ARIS_REPO:-$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .aris/installed-skills.txt 2>/dev/null)}"
-if [ -z "${ARIS_REPO:-}" ] && [ -f "$HOME/.aris/repo" ]; then
-  ARIS_REPO=$(cat "$HOME/.aris/repo" 2>/dev/null) || true
+ARIS_REPO="${ARIS_REPO:-$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .ei/installed-skills.txt 2>/dev/null)}"
+if [ -z "${ARIS_REPO:-}" ] && [ -f "$HOME/.ei/repo" ]; then
+  ARIS_REPO=$(cat "$HOME/.ei/repo" 2>/dev/null) || true
 fi
-WIKI_SCRIPT=".aris/tools/research_wiki.py"
+WIKI_SCRIPT=".ei/tools/research_wiki.py"
 [ -f "$WIKI_SCRIPT" ] || WIKI_SCRIPT="tools/research_wiki.py"
 [ -f "$WIKI_SCRIPT" ] || { [ -n "${ARIS_REPO:-}" ] && WIKI_SCRIPT="$ARIS_REPO/tools/research_wiki.py"; }
 [ -f "$WIKI_SCRIPT" ] || {
-  echo "WARN: research_wiki.py not found; verdict will be reported but wiki edges/query-pack/log will be skipped. Fix: bash tools/install_aris.sh or smart_update.sh (refreshes ~/.aris/repo), export ARIS_REPO, or cp <ARIS-repo>/tools/research_wiki.py tools/." >&2
+  echo "WARN: research_wiki.py not found; verdict will be reported but wiki edges/query-pack/log will be skipped. Fix: bash tools/install_aris.sh or smart_update.sh (refreshes ~/.ei/repo), export ARIS_REPO, or cp <ARIS-repo>/tools/research_wiki.py tools/." >&2
   WIKI_SCRIPT=""
 }
 ```
@@ -308,4 +316,4 @@ if research-wiki/ exists:
 
 ## Review Tracing
 
-After each `mcp__codex__codex` or `mcp__codex__codex-reply` reviewer call, save the trace following `shared-references/review-tracing.md` (Policy C — forensic; never silently skip). Use `save_trace.sh` (resolved per the chain in `shared-references/integration-contract.md` §2) or write files directly to `.aris/traces/<skill>/<date>_run<NN>/`. Respect the `--- trace:` parameter (default: `full`).
+After each `mcp__codex__codex` or `mcp__codex__codex-reply` reviewer call, save the trace following `shared-references/review-tracing.md` (Policy C — forensic; never silently skip). Use `save_trace.sh` (resolved per the chain in `shared-references/integration-contract.md` §2) or write files directly to `.ei/traces/<skill>/<date>_run<NN>/`. Respect the `--- trace:` parameter (default: `full`).

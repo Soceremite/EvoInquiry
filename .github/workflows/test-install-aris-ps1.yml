@@ -5,6 +5,14 @@ on:
     paths:
       - 'tools/install_aris.ps1'
       - 'tests/test_install_aris_ps1.py'
+      - 'tools/state_paths.py'
+      - 'tools/registry_common.py'
+      - 'tools/*_registry.py'
+      - 'tools/filesystem_doctor.py'
+      - 'tools/schemas/**'
+      - 'tests/test_windows_governance.py'
+      - 'tests/test_filesystem_doctor.py'
+      - 'requirements-dev.txt'
       - '.github/workflows/test-install-aris-ps1.yml'
   workflow_dispatch:
 
@@ -22,10 +30,10 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.x'
-      - name: Install pytest
-        run: python -m pip install pytest
+          python-version: '3.12'
+      - name: Install test dependencies
+        run: python -m pip install -r requirements-dev.txt
       - name: Run installer tests with ${{ matrix.powershell }}
         env:
           ARIS_TEST_POWERSHELL: ${{ matrix.powershell }}
-        run: python -m pytest tests/test_install_aris_ps1.py -q
+        run: python -m pytest tests/test_install_aris_ps1.py tests/test_filesystem_doctor.py tests/test_windows_governance.py -q -rs

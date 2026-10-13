@@ -5,6 +5,15 @@ argument-hint: "[theorem-statement-and-assumptions]"
 allowed-tools: Read, Write, Edit, Grep, Glob
 ---
 
+<!-- EI-GOVERNANCE:BEGIN -->
+Resolve runtime state through tools/state_paths.py before .ei operations. Use
+[project-governance](../shared-references/project-governance.md) for fixed evidence,
+profiles and controlled migration; missing profiles retain compat-v1.
+For code or numerical checks used in a proof, reuse documented interfaces and pin source/environment/test receipts. A code test cannot substitute for the mathematical argument.
+For code/dependency changes, read [code-reuse-and-docs](../shared-references/code-reuse-and-docs.md) and [environment-stewardship](../shared-references/environment-stewardship.md).
+<!-- EI-GOVERNANCE:END -->
+
+
 # Proof Write: Rigorous Theorem / Lemma Drafting
 
 Write a mathematically honest proof package, not a polished fake proof.

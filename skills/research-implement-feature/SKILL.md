@@ -5,6 +5,15 @@ argument-hint: "[what-to-build] [— effort: lite|balanced|max|beast] [— ask: 
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, Skill, AskUserQuestion, mcp__codex__codex, mcp__codex__codex-reply
 ---
 
+<!-- EI-GOVERNANCE:BEGIN -->
+Resolve runtime state through tools/state_paths.py before .ei operations. Use
+[project-governance](../shared-references/project-governance.md) for fixed evidence,
+profiles and controlled migration; missing profiles retain compat-v1.
+Reuse stable shared interfaces after inspecting callers and tests. Document public shape/dtype/label/split/statistics, RNG and I/O contracts, and update representative consumers in the same change.
+For code/dependency changes, read [code-reuse-and-docs](../shared-references/code-reuse-and-docs.md) and [environment-stewardship](../shared-references/environment-stewardship.md).
+<!-- EI-GOVERNANCE:END -->
+
+
 # Research Implement: Feature
 
 Build: **$ARGUMENTS**

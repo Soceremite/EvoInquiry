@@ -5,6 +5,13 @@ argument-hint: "[topic-or-scope]"
 allowed-tools: Bash(*), Read, Grep, Glob, Write, Edit, mcp__codex__codex, mcp__codex__codex-reply, mcp__manual_review__review, mcp__manual_review__review_reply
 ---
 
+<!-- EI-GOVERNANCE:BEGIN -->
+Resolve runtime state through tools/state_paths.py before .ei operations. Use
+[project-governance](../shared-references/project-governance.md) for fixed evidence,
+profiles and controlled migration; missing profiles retain compat-v1.
+<!-- EI-GOVERNANCE:END -->
+
+
 # Research Review via External Reviewer Backend (ultra reasoning)
 
 > 🔒 **Do not wrap this skill in `/loop`, `/schedule`, or `CronCreate`.** It is
@@ -174,7 +181,7 @@ Update project memory/notes with key review conclusions.
 
 > **Composed mode** — if invoked with `— composed: <canonical-report-path>` (an
 > orchestrator like `/idea-discovery` passes this), do **not** write a standalone review
-> `.md` in the project root. The raw conversation is already persisted to `.aris/traces/…`
+> `.md` in the project root. The raw conversation is already persisted to `.ei/traces/…`
 > (see *Review Tracing* below — that audit copy is kept in every mode); fold the review
 > *conclusions* (consensus, claims matrix, prioritized TODOs) into the orchestrator's
 > canonical report and cite the trace path there. **Default (no `— composed:` directive):
@@ -214,7 +221,7 @@ Update project memory/notes with key review conclusions.
 
 ## Review Tracing
 
-After each reviewer call (`mcp__codex__codex`, `mcp__codex__codex-reply`, `mcp__manual_review__review`, or `mcp__manual_review__review_reply`), save the trace following `shared-references/review-tracing.md` (Policy C — forensic; never silently skip). Use `save_trace.sh` (resolved per the chain in `shared-references/integration-contract.md` §2) or write files directly to `.aris/traces/<skill>/<date>_run<NN>/`. Respect the `--- trace:` parameter (default: `full`).
+After each reviewer call (`mcp__codex__codex`, `mcp__codex__codex-reply`, `mcp__manual_review__review`, or `mcp__manual_review__review_reply`), save the trace following `shared-references/review-tracing.md` (Policy C — forensic; never silently skip). Use `save_trace.sh` (resolved per the chain in `shared-references/integration-contract.md` §2) or write files directly to `.ei/traces/<skill>/<date>_run<NN>/`. Respect the `--- trace:` parameter (default: `full`).
   A verdict-bearing manual response MUST begin with
   `Reviewer-Model: <exact-model-id>` — pass the model THIS session is actually
   running as in `executor_model`. Missing, unknown, or same-family identity

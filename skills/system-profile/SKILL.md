@@ -4,6 +4,14 @@ description: "Profile a target (script, process, GPU, memory, interconnect) for 
 argument-hint: '<target, e.g. "train.py", "gpu", "pid 1234", "vllm serving">'
 ---
 
+<!-- EI-GOVERNANCE:BEGIN -->
+Resolve runtime state through tools/state_paths.py before .ei operations. Use
+[project-governance](../shared-references/project-governance.md) for fixed evidence,
+profiles and controlled migration; missing profiles retain compat-v1.
+Record actual interpreter/import/platform/device observations rather than guessing compatibility from environment names. Profile data does not authorize package changes.
+<!-- EI-GOVERNANCE:END -->
+
+
 # System Profile
 
 Profile the specified target and summarize the results. Target: $ARGUMENTS

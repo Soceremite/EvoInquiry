@@ -13,6 +13,9 @@ budgets, blocking checkpoints, and stopping conditions.
 
 Before launching an artifact-producing run, apply [experiment storage](../shared-references/experiment-storage.md): check the actual output filesystem and effective checkpoint policy, reserve full-save staging space, and record the valid recovery path.
 On completed or explicitly ended training, validate required weights and persist evidence before releasing unused recovery state. For completed comparison groups, apply the shared winner-only policy after checking planned model dependencies.
+
+For this stage, read [project-governance](../shared-references/project-governance.md). Before formal launch bind a frozen source/config snapshot, environment revision and distinct execution ID. Preserve actual imports/exit codes, failed attempts and retry/resume parents; outputs belong to that execution.
+Use [code-reuse-and-docs](../shared-references/code-reuse-and-docs.md) for code changes and [environment-stewardship](../shared-references/environment-stewardship.md) for dependency changes.
 <!-- EVO-INQUIRY:END -->
 
 
@@ -35,7 +38,7 @@ If no server info is found in `AGENTS.md`, ask the user.
 
 **Environment contract** (`../shared-references/compute-env-contract.md`): before
 building or trusting any environment, read the provider's env ledger
-(`.aris/compute/<provider>.md`) — an unchanged spec hash means warm-reuse, a
+(`.ei/compute/<provider>.md`) — an unchanged spec hash means warm-reuse, a
 changed one means rebuild. New env → write the declarative spec first, render it
 for this provider's shape, and never declare it ready on import-success alone:
 run the seeded kernel witness, and after any rebuild/doc edit run the

@@ -11,6 +11,8 @@ principles within the user's scope and this skill's existing outputs, review
 standards, and recovery contracts. Carry them into nested research tasks and
 reviewer briefs. Continue authorized work through its necessary steps; honor
 budgets, blocking checkpoints, and stopping conditions.
+
+For this stage, read [project-governance](../shared-references/project-governance.md). Keep declared comparison/seed/failure rules and fixed baseline/evaluator refs. Reuse shared interfaces without erasing method-specific interventions.
 <!-- EVO-INQUIRY:END -->
 
 

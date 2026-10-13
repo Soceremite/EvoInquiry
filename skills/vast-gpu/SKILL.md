@@ -5,6 +5,13 @@ argument-hint: "[task-description or action]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob
 ---
 
+<!-- EI-GOVERNANCE:BEGIN -->
+Resolve runtime state through tools/state_paths.py before .ei operations. Use
+[project-governance](../shared-references/project-governance.md) for fixed evidence,
+profiles and controlled migration; missing profiles retain compat-v1.
+<!-- EI-GOVERNANCE:END -->
+
+
 # Vast.ai GPU Management
 
 Manage vast.ai GPU instance: $ARGUMENTS
@@ -239,7 +246,7 @@ Set up the rented instance for a specific experiment. Called automatically by `/
 
 > Follow `../shared-references/compute-env-contract.md`: write/reuse the
 > declarative env spec (ordered `pip_phases`, not one big install), record the
-> `env:<name>@<specHash>` block in `.aris/compute/vast.md`, and run the seeded
+> `env:<name>@<specHash>` block in `.ei/compute/vast.md`, and run the seeded
 > kernel witness before launching the real experiment — a fresh instance whose
 > `import torch` succeeds can still have the wrong-SM wheel.
 

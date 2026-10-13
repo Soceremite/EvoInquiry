@@ -53,11 +53,12 @@ def discover_variant(toolkit: Path, selector: str, codex: str) -> dict:
     """Reject an empty or mixed discovery context before running paid sessions."""
     command = cli_command(codex) + ["app-server", "--listen", "stdio://"] + selection_config(selector)
     proc = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-                            stderr=subprocess.DEVNULL, text=True, bufsize=1,
+                            stderr=subprocess.DEVNULL,
                             env=dict(os.environ, TOKIO_WORKER_THREADS="2"))
+    pending = bytearray()
     def send(data: dict) -> None:
         assert proc.stdin is not None
-        proc.stdin.write(json.dumps(data) + "\n")
+        proc.stdin.write((json.dumps(data) + "\n").encode())
         proc.stdin.flush()
     def receive(identifier: int) -> dict:
         assert proc.stdout is not None
@@ -65,15 +66,21 @@ def discover_variant(toolkit: Path, selector: str, codex: str) -> dict:
         with selectors.DefaultSelector() as ready:
             ready.register(proc.stdout, selectors.EVENT_READ)
             while time.monotonic() < deadline:
-                if ready.select(1):
-                    line = proc.stdout.readline()
-                    if not line:
-                        raise RuntimeError("Discovery app-server exited")
+                while b'\n' in pending:
+                    line, _, remainder = pending.partition(b'\n')
+                    pending[:] = remainder
+                    if not line.strip():
+                        continue
                     data = json.loads(line)
                     if data.get("id") == identifier:
                         if "error" in data:
                             raise RuntimeError(data["error"])
                         return data["result"]
+                if ready.select(1):
+                    chunk = os.read(proc.stdout.fileno(), 65536)
+                    if not chunk:
+                        raise RuntimeError("Discovery app-server exited")
+                    pending.extend(chunk)
         raise TimeoutError("Skill discovery response timed out")
     try:
         send({"id": 1, "method": "initialize", "params": {"clientInfo": {"name": "evo-inquiry-eval", "version": "1"}}})
@@ -110,6 +117,11 @@ def discover_variant(toolkit: Path, selector: str, codex: str) -> dict:
     helper = toolkit / 'tools/checkpoint_retention.py'
     if helper.is_file():
         resources.append(helper)
+    resources.extend(p for name in ('state_paths', 'registry_common', 'project_registry',
+                                    'artifact_registry', 'environment_registry',
+                                    'execution_registry', 'code_map', 'filesystem_doctor')
+                     if (p := toolkit / 'tools' / (name + '.py')).is_file())
+    resources.extend(sorted((toolkit / 'tools/schemas').glob('*.schema.json')))
     resource_hashes = {}
     for resource in resources:
         relative = resource.relative_to(toolkit)
@@ -166,6 +178,9 @@ def run_case(case: dict, fixture_root: Path, output: Path, toolkit: Path, codex:
                 os.killpg(proc.pid, signal.SIGKILL)
         proc.wait()
     events = read_events(destination / "events.jsonl")
+    startup_failure = (proc.returncode != 0 and not events and
+                       'failed to initialize in-process app-server client' in
+                       (destination / 'stderr.txt').read_text(errors='replace'))
     action_count = sum(e.get("type") == "item.started" and
                        e.get("item", {}).get("type") not in ("agent_message", "reasoning", "error") for e in events)
     if limit is None and action_count > case["max_tool_actions"]:
@@ -185,6 +200,7 @@ def run_case(case: dict, fixture_root: Path, output: Path, toolkit: Path, codex:
               "changed_or_created_files": sorted(k for k, v in after.items() if before.get(k) != v),
               "deleted_files": sorted(before.keys() - after.keys()),
               "session_completed": any(e.get("type") == "turn.completed" for e in events),
+              "failure_kind": "runtime_startup" if startup_failure else None,
               "observed_cache_variants": cache_variants,
               "variant_mismatch": any(tuple(v) != expected_variant for v in cache_variants),
               "assessment": "UNASSESSED", "evidence": str(destination)}
@@ -213,7 +229,8 @@ def main() -> None:
     parser.add_argument("--cases", default="smoke", help="smoke, all, or comma-separated IDs")
     parser.add_argument("--manifest", type=Path, default=ROOT / 'tests/behavior/evo-inquiry-cases.json',
                         help="Separate frozen case manifest; the original 24-case rubric stays unchanged")
-    parser.add_argument("--jobs", type=int, default=2, choices=range(1, 5))
+    parser.add_argument("--jobs", type=int, default=1, choices=range(1, 5),
+                        help="Default serial runs avoid runtime startup resource contention")
     parser.add_argument("--timeout-seconds", type=int, help="Explicit equal runtime ceiling for both variants; retain earlier attempts")
     args = parser.parse_args()
     manifest_path = args.manifest.resolve()

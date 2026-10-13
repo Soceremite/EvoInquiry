@@ -80,6 +80,17 @@ resources alongside compute. Use a bounded retention policy appropriate to the
 research, preserve necessary evidence, and budget a complete new save before
 rotating older recovery points.
 
+When research project identity, runtime state or reproducible handoffs matter,
+use [project-governance](project-governance.md): resolve .ei centrally, fix inputs
+and preserve existing workflow IDs/statuses. Profiles are optional. For actual
+implementation changes use [code-reuse-and-docs](code-reuse-and-docs.md); for
+dependency or environment changes use [environment-stewardship](environment-stewardship.md).
+Load only the relevant contract. These are embedded obligations of the selected
+work, not three additional mandatory skill calls.
+
+Prefer EI_REPO for repository discovery. For an existing helper that still
+accepts ARIS_REPO, use a command-local compatibility value from EI_REPO only
+when ARIS_REPO is unset; conflicting values must go through the central resolver.
 When a helper needs ARIS_REPO and no explicit project repository is selected,
 resolve the root of the loaded EvoInquiry package from the actual SKILL.md
 location (the root containing skills/ and tools/), and use that root with the

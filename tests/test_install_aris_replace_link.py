@@ -94,7 +94,7 @@ class ReplaceLinkTest(unittest.TestCase):
             str(REPO_ROOT / "skills" / CONFLICT_NAME),
             "--replace-link must re-point the symlink to the expected upstream target",
         )
-        manifest = self.project / ".aris" / "installed-skills.txt"
+        manifest = self.project / ".ei" / "installed-skills.txt"
         self.assertTrue(manifest.is_file(), "successful install must write the manifest")
         self.assertIn(CONFLICT_NAME, manifest.read_text(),
                       "replaced entry must be recorded as managed")

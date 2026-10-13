@@ -483,7 +483,7 @@ def test_save_trace_uses_only_validated_native_model_provenance(tmp_path: Path) 
     )
 
     assert result.returncode == 0, result.stderr
-    run_dir = next((challenge_path.parents[1] / ".aris" / "traces" / "auto-review-loop").iterdir())
+    run_dir = next((challenge_path.parents[1] / ".ei" / "traces" / "auto-review-loop").iterdir())
     request_path = next(run_dir.glob("*.request.json"))
     request = json.loads(request_path.read_text())
     # The call meta, not run.meta.json — "*.meta.json" matches both, and which one
@@ -551,7 +551,7 @@ def test_save_trace_records_failed_native_dispatch_without_claiming_evidence(
     )
 
     assert result.returncode == 0, result.stderr
-    run_dir = next((tmp_path / ".aris" / "traces" / "auto-review-loop").iterdir())
+    run_dir = next((tmp_path / ".ei" / "traces" / "auto-review-loop").iterdir())
     request = json.loads(next(run_dir.glob("*.request.json")).read_text())
     assert request["backend"] == "copilot-native"
     assert request["status"] == "error"

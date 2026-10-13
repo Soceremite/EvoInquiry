@@ -25,16 +25,17 @@
 # New-skill policy (--apply only; dry-run always just reports):
 #   default (TTY, no policy flag): each new upstream skill is confirmed one by
 #                                  one [y/N]; a decline is remembered in
-#                                  <local>/.aris-declined.txt and never re-asked
+#                                  <local>/.ei-declined.txt and never re-asked
 #   --add-new:  install every new skill (does NOT un-decline previously
-#               declined skills — edit/clear .aris-declined.txt for that)
+#               declined skills — edit/clear .ei-declined.txt for that)
 #   --skip-new: skip every new skill without recording a decline (same as the
 #               automatic behavior when there is no TTY)
 #
-# On successful --apply, writes $HOME/.aris/repo <- this repo's root (helper
+# On successful --apply, writes $HOME/.ei/repo <- this repo's root (helper
 # resolution chain layer 4, #366) so copy-installed skills can find tools/.
 
 set -euo pipefail
+EI_UPDATE_ARGUMENTS=("$@")
 
 # ─── Parse arguments ───────────────────────────────────────────────────────────
 APPLY=false
@@ -180,10 +181,10 @@ fi
 # install_aris.sh creates flat PER-SKILL symlinks (the root dir is real), so
 # the root-symlink check above can't see a managed flat install. The manifest
 # is the authoritative marker — refuse project-mode updates when one exists.
-if [[ "$MODE" == "project" && -f "$PROJECT_ROOT/.aris/installed-skills.txt" ]]; then
+if [[ "$MODE" == "project" && -f "$PROJECT_ROOT/.ei/installed-skills.txt" ]]; then
     REPO_ROOT_FOR_HINT="$(cd "$(dirname "$0")/.." && pwd)"
     echo "" >&2
-    echo -e "\033[0;31m✗ Managed symlink install detected (manifest: $PROJECT_ROOT/.aris/installed-skills.txt)\033[0m" >&2
+    echo -e "\033[0;31m✗ Managed symlink install detected (manifest: $PROJECT_ROOT/.ei/installed-skills.txt)\033[0m" >&2
     echo "" >&2
     echo "smart_update is for COPIED installs. This project is managed by install_aris.sh:" >&2
     echo "  cd <aris-repo> && git pull           # updates content of existing skills" >&2
@@ -240,7 +241,7 @@ fi
 
 # ─── New-skill confirmation state (declined list + group catalog lookup) ──────
 CATALOG_PATH="$REPO_ROOT/tools/skill-groups.tsv"
-DECLINED_FILE="$LOCAL_DIR/.aris-declined.txt"
+DECLINED_FILE="$LOCAL_DIR/.ei-declined.txt"
 
 is_declined() {  # $1 = skill name
     [[ -f "$DECLINED_FILE" ]] && grep -qxF "$1" "$DECLINED_FILE"
@@ -254,13 +255,21 @@ catalog_group_of() {  # $1 = skill name -> group id, or "?" if unknown
 
 # Layer-4 helper resolution (#366): a global pointer file lets globally/copy-
 # installed skills find $ARIS_REPO/tools without a per-project install.
+die() { echo "error: $*" >&2; exit 1; }
+warn() { echo "warning: $*" >&2; }
+EI_UPDATE_ROOT="${PROJECT_ROOT:-${PROJECT_PATH:-$HOME}}"
+EI_UPDATE_STATE="$(python3 "$REPO_ROOT/tools/state_paths.py" --root "$EI_UPDATE_ROOT" --mode write)" || die "state namespace conflict; use project-governance migration"
+EI_UPDATE_ROOT="$(dirname "$EI_UPDATE_STATE")"
+if $APPLY && [[ "${EI_UPDATE_GUARD:-}" != "$EI_UPDATE_ROOT" ]]; then
+    EI_UPDATE_GUARD="$EI_UPDATE_ROOT" python3 "$REPO_ROOT/tools/state_paths.py" --root "$EI_UPDATE_ROOT" --guard-command -- bash "$0" "${EI_UPDATE_ARGUMENTS[@]}"
+    exit $?
+fi
+
 ensure_global_pointer() {
-    local pointer="$HOME/.aris/repo"
-    mkdir -p "$(dirname "$pointer")" 2>/dev/null || return 0
-    local cur=""
-    [[ -f "$pointer" ]] && cur="$(cat "$pointer" 2>/dev/null || true)"
-    [[ "$cur" == "$REPO_ROOT" ]] && return 0
-    printf '%s\n' "$REPO_ROOT" > "$pointer.tmp.$$" && mv -f "$pointer.tmp.$$" "$pointer"
+    python3 "$REPO_ROOT/tools/state_paths.py" --root "$HOME" --set-repo-pointer "$REPO_ROOT" || {
+        warn "optional global pointer was not updated; resolve its namespace conflict first"
+        return 0
+    }
 }
 
 is_pristine_historical_copy() {
@@ -482,7 +491,7 @@ if $APPLY; then
     echo -e "${BLUE}Applying safe updates...${NC}"
 
     # ── New-skill three-state policy: interactive confirm / --add-new / --skip-new ──
-    # A skill already in .aris-declined.txt is never re-asked and never installed —
+    # A skill already in .ei-declined.txt is never re-asked and never installed —
     # not even by --add-new (only editing/clearing the declined file restores it).
     declare -a TO_INSTALL_NEW=()
     declare -a SKIPPED_NEW=()

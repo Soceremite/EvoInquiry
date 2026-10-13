@@ -7,7 +7,7 @@
 
 set -euo pipefail
 
-ARIS_META_DIR="${CLAUDE_PROJECT_DIR:-.}/.aris/meta"
+ARIS_META_DIR="$(python3 "$(dirname "${BASH_SOURCE[0]}")/../state_paths.py" --root "${CLAUDE_PROJECT_DIR:-.}" --mode read)/meta" || exit 2
 EVENTS_FILE="$ARIS_META_DIR/events.jsonl"
 LAST_RUN_FILE="$ARIS_META_DIR/.last_optimize"
 

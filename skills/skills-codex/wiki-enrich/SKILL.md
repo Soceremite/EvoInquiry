@@ -65,7 +65,7 @@ Resolve `$WIKI_ROOT` and `$WIKI_SCRIPT` (canonical chain — see `shared-referen
 cd "$(git rev-parse --show-toplevel 2>/dev/null || pwd)" || exit 1
 [ -d research-wiki/ ] || { echo "ERROR: research-wiki/ not found. Run /research-wiki init first." >&2; exit 1; }
 
-ARIS_REPO="${ARIS_REPO:-$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .aris/installed-skills-codex.txt 2>/dev/null)}"
+ARIS_REPO="${ARIS_REPO:-$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .ei/installed-skills-codex.txt 2>/dev/null)}"
 WIKI_SCRIPT=""
 [ -n "$ARIS_REPO" ] && [ -f "$ARIS_REPO/tools/research_wiki.py" ] && WIKI_SCRIPT="$ARIS_REPO/tools/research_wiki.py"
 [ -z "$WIKI_SCRIPT" ] && [ -f tools/research_wiki.py ] && WIKI_SCRIPT="tools/research_wiki.py"

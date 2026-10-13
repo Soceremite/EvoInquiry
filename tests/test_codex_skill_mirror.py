@@ -35,14 +35,14 @@ def has_send_input_block(text: str) -> bool:
 def test_codex_skill_set_matches_mainline() -> None:
     main_names = skill_names(MAIN_SKILLS)
     codex_names = skill_names(CODEX_SKILLS)
-    assert len(main_names) == 83
+    assert len(main_names) == 85
     assert codex_names == main_names | {"research-guide"}
 
 
 def test_codex_shared_reference_set_matches_mainline() -> None:
     main_refs = {p.name for p in (MAIN_SKILLS / "shared-references").glob("*.md")}
     codex_refs = {p.name for p in (CODEX_SKILLS / "shared-references").glob("*.md")}
-    assert len(main_refs) == 31
+    assert len(main_refs) == 34
     assert codex_refs == main_refs | {"evo-inquiry.md", "task-scope.md", "experiment-storage.md"}
 
 
@@ -86,13 +86,13 @@ def test_codex_mirror_wiki_writers_wired() -> None:
     assert "set_claim_status" not in rw, \
         "mirror research-wiki must not set claim status (empirical support is edge-only)"
     assert "add_claim" in rw, "mirror research-wiki must document the /proof-checker claim birth point (Hook 4)"
-    # No mainline-convention bleed in the synced mirror files: no `.aris/tools` resolver,
-    # no mainline `.aris/installed-skills.txt` manifest, and no bare `research_wiki.py <sub>`
+    # No mainline-convention bleed in the synced mirror files: no `.ei/tools` resolver,
+    # no mainline `.ei/installed-skills.txt` manifest, and no bare `research_wiki.py <sub>`
     # call (Codex global-install won't have it on PATH — must be `python3 "$WIKI_SCRIPT"`).
     for name in ("result-to-claim", "idea-creator", "proof-checker", "research-wiki", "wiki-enrich"):
         t = read(CODEX_SKILLS / name / "SKILL.md")
-        assert ".aris/tools" not in t, f"{name} mirror leaked the mainline .aris/tools resolver"
-        assert ".aris/installed-skills.txt" not in t, f"{name} mirror leaked the mainline manifest (use installed-skills-codex.txt)"
+        assert ".ei/tools" not in t, f"{name} mirror leaked the mainline .ei/tools resolver"
+        assert ".ei/installed-skills.txt" not in t, f"{name} mirror leaked the mainline manifest (use installed-skills-codex.txt)"
         assert re.search(r"research_wiki\.py\s+(add_claim|add_edge|add_experiment|upsert_idea)", t) is None, \
             f"{name} mirror has a bare research_wiki.py command (use python3 \"$WIKI_SCRIPT\")"
 
@@ -415,7 +415,7 @@ def test_codex_high_risk_skills_preserve_claude_semantics() -> None:
         "arxiv": [
             "Update Research Wiki",
             "integration-contract.md",
-            ".aris/installed-skills-codex.txt",
+            ".ei/installed-skills-codex.txt",
         ],
         "rebuttal": [
             "Review Tracing",
@@ -525,7 +525,7 @@ def test_codex_skill_instructions_use_codex_paths() -> None:
 
     assert "~/.codex/feishu.json" in auto_paper
     assert "~/.claude/feishu.json" not in auto_paper
-    assert ".aris/installed-skills-codex.txt" in paper_writing
+    assert ".ei/installed-skills-codex.txt" in paper_writing
     assert ".agents/skills/paper-writing" in paper_writing
     assert "~/.claude/skills/paper-writing/SKILL.md" not in paper_writing
     assert "~/.claude/settings.json" not in paper_writing
@@ -544,4 +544,4 @@ def test_codex_experiment_queue_points_to_bundled_helpers() -> None:
     assert "tools/experiment_queue/build_manifest.py" in text
     assert "tools/queue_manager.py" not in text
     assert "tools/build_manifest.py" not in text
-    assert ".aris/installed-skills-codex.txt" in text
+    assert ".ei/installed-skills-codex.txt" in text

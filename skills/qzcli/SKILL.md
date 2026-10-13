@@ -5,6 +5,13 @@ argument-hint: "[login|avail|list|create|stop <job-id>|batch|status|watch]"
 allowed-tools: Bash(*), Read, Write
 ---
 
+<!-- EI-GOVERNANCE:BEGIN -->
+Resolve runtime state through tools/state_paths.py before .ei operations. Use
+[project-governance](../shared-references/project-governance.md) for fixed evidence,
+profiles and controlled migration; missing profiles retain compat-v1.
+<!-- EI-GOVERNANCE:END -->
+
+
 # qzcli — 启智平台任务管理
 
 A kubectl/docker-style CLI for managing GPU compute jobs on the Qizhi (启智) platform.
@@ -15,7 +22,7 @@ A kubectl/docker-style CLI for managing GPU compute jobs on the Qizhi (启智) p
 
 Qizhi is the scheduler-cluster shape of `../shared-references/compute-env-contract.md`:
 images are built OFF-platform and referenced at submit time, so the declarative
-env spec + `env:<name>@<specHash>` ledger (`.aris/compute/qizhi.md`) is what
+env spec + `env:<name>@<specHash>` ledger (`.ei/compute/qizhi.md`) is what
 keeps "which image has which stack" answerable. Run the kernel witness inside a
 submitted job (not on the login side) before trusting an image for a long run.
 

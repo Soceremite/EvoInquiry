@@ -9,8 +9,8 @@
 #   bash tools/verify_paper_audits.sh <paper-dir> [--assurance draft|submission] [--json-out <path>]
 #
 # Defaults:
-#   --assurance: read from <paper-dir>/.aris/assurance.txt if present, else "draft"
-#   --json-out:  <paper-dir>/.aris/audit-verifier-report.json
+#   --assurance: read from <paper-dir>/.ei/assurance.txt if present, else "draft"
+#   --json-out:  <paper-dir>/.ei/audit-verifier-report.json
 #
 # Exit codes:
 #   0  All required audits present, schema-valid, fresh (no STALE), no
@@ -70,11 +70,12 @@ done
 [[ -n "$PAPER_DIR" ]] || { echo "usage: $0 <paper-dir> [--assurance ...] [--json-out ...]" >&2; exit 2; }
 [[ -d "$PAPER_DIR" ]] || { echo "paper-dir not found: $PAPER_DIR" >&2; exit 2; }
 PAPER_DIR="$(cd "$PAPER_DIR" && pwd)"
+EI_PAPER_STATE="$(python3 "$(dirname "${BASH_SOURCE[0]}")/state_paths.py" --root "$PAPER_DIR" --mode write)" || exit 2
 
 # Resolve assurance level
 if [[ -z "$ASSURANCE" ]]; then
-    if [[ -f "$PAPER_DIR/.aris/assurance.txt" ]]; then
-        ASSURANCE="$(tr -d '[:space:]' < "$PAPER_DIR/.aris/assurance.txt")"
+    if [[ -f "$EI_PAPER_STATE/assurance.txt" ]]; then
+        ASSURANCE="$(tr -d '[:space:]' < "$EI_PAPER_STATE/assurance.txt")"
     else
         ASSURANCE="draft"
     fi
@@ -84,7 +85,7 @@ case "$ASSURANCE" in
     *) echo "invalid --assurance: $ASSURANCE (expected draft or submission)" >&2; exit 2 ;;
 esac
 
-[[ -n "$JSON_OUT" ]] || JSON_OUT="$PAPER_DIR/.aris/audit-verifier-report.json"
+[[ -n "$JSON_OUT" ]] || JSON_OUT="$EI_PAPER_STATE/audit-verifier-report.json"
 mkdir -p "$(dirname "$JSON_OUT")"
 
 # ─── Helpers ──────────────────────────────────────────────────────────────────

@@ -9,7 +9,7 @@ This shim exists so existing users keep working without re-running
 install_aris.sh. The four legacy resolver layers all still hit a
 valid Python module:
 
-  layer 1  <project>/.aris/tools/figure_renderer.py
+  layer 1  <project>/.ei/tools/figure_renderer.py
            → symlink to $ARIS_REPO/tools/figure_renderer.py
            → this file (shim)
            → $ARIS_REPO/skills/figure-spec/scripts/figure_renderer.py
@@ -22,7 +22,7 @@ valid Python module:
 
   layer 4  $ARIS_REPO/tools/figure_renderer.py
            → this file (when ARIS_REPO is resolved from the global
-             pointer file ~/.aris/repo, #366 — no project manifest needed)
+             pointer file ~/.ei/repo, #366 — no project manifest needed)
 
 Shim semantics: `os.execv` replaces the current Python process with
 the real helper, so the helper sees its own `__file__`, `sys.path[0]`,

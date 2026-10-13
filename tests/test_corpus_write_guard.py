@@ -1,6 +1,6 @@
 """Tests for templates/claude-hooks/corpus_write_guard.py — the PreToolUse guard that
 denies Bash writes to the skill corpus. The safety property: it must BLOCK every casual
-shell-write to a corpus path, and must NOT block reads / analysis / writes to .aris/."""
+shell-write to a corpus path, and must NOT block reads / analysis / writes to .ei/."""
 
 import json
 import subprocess
@@ -37,12 +37,12 @@ def test_blocks_corpus_writes():
 
 def test_allows_reads_and_aris_writes():
     allowed = [
-        "grep -c skill_invoke .aris/meta/events.jsonl",
-        "wc -l .aris/meta/events.jsonl",
+        "grep -c skill_invoke .ei/meta/events.jsonl",
+        "wc -l .ei/meta/events.jsonl",
         "cat skills/meta-optimize/SKILL.md",            # READ a corpus file is fine
         "ls skills/",
-        "echo report > .aris/meta/REPORT.md",            # write to scratch is fine
-        "cat diff > .aris/meta/pending/01.diff",
+        "echo report > .ei/meta/REPORT.md",            # write to scratch is fine
+        "cat diff > .ei/meta/pending/01.diff",
         "python3 tools/provenance.py read skills/foo",   # read-only helper
         "git diff skills/",                              # read-only git
         "sed -n '1,5p' skills/foo/SKILL.md",             # sed WITHOUT -i = read

@@ -1,0 +1,3 @@
+method,seed,validation_score
+baseline,11,0.84
+method-b,11,0.86

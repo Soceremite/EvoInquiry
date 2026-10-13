@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 def test_package_preserves_skill_inventory_and_resolves_shared_reference():
     report = verify(ROOT)
     assert report['status'] == 'PASS', report['errors']
-    assert report['skill_entrypoints'] == 84
+    assert report['skill_entrypoints'] == 86
 
 
 def test_missing_principles_are_detected(tmp_path):
@@ -78,7 +78,7 @@ def frozen_package(tmp_path_factory):
     package = tmp_path_factory.mktemp('contract-package')
     contract = load_contract(ROOT)
     paths = set(contract['protected_files']) | {'tools/skill-contracts.json'}
-    paths |= {str(p.relative_to(ROOT)) for p in (ROOT / 'skills/skills-codex').glob('*/SKILL.md')}
+    paths |= {str(p.relative_to(ROOT)) for tree in ('skills', 'skills/skills-codex') for p in (ROOT / tree).glob('*/SKILL.md')}
     for rel in paths:
         destination = package / rel
         destination.parent.mkdir(parents=True, exist_ok=True)

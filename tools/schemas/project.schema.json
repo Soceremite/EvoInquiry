@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "EvoInquiry project v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "namespace_version",
+    "project_id",
+    "layout_profile",
+    "root",
+    "authority_map",
+    "compatibility_map",
+    "migration_manifest_ref"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "namespace_version": {
+      "const": 1
+    },
+    "project_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
+    },
+    "layout_profile": {
+      "enum": [
+        "compat-v1",
+        "governed-v1"
+      ]
+    },
+    "root": {
+      "type": "string",
+      "minLength": 1
+    },
+    "authority_map": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "compatibility_map": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "migration_manifest_ref": {
+      "anyOf": [
+        {
+          "type": "object",
+          "required": [
+            "path",
+            "sha256"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "artifact_id": {
+              "type": "string"
+            },
+            "revision": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "additionalProperties": false
+}

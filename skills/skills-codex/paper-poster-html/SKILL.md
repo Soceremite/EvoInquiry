@@ -69,8 +69,8 @@ paper (.tex / PDF) ──► content plan + claim→evidence audit (fresh review
   ```bash
   SKILL_HOME=""
   [ -d ".agents/skills/paper-poster-html/scripts" ] && SKILL_HOME=".agents/skills/paper-poster-html"
-  if [ -z "$SKILL_HOME" ] && [ -z "${ARIS_REPO:-}" ] && [ -f .aris/installed-skills-codex.txt ]; then
-      ARIS_REPO=$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .aris/installed-skills-codex.txt 2>/dev/null) || true
+  if [ -z "$SKILL_HOME" ] && [ -z "${ARIS_REPO:-}" ] && [ -f .ei/installed-skills-codex.txt ]; then
+      ARIS_REPO=$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .ei/installed-skills-codex.txt 2>/dev/null) || true
   fi
   [ -z "$SKILL_HOME" ] && [ -d "skills/paper-poster-html/scripts" ] && SKILL_HOME="skills/paper-poster-html"
   [ -z "$SKILL_HOME" ] && [ -n "${ARIS_REPO:-}" ] && [ -d "$ARIS_REPO/skills/paper-poster-html/scripts" ] && SKILL_HOME="$ARIS_REPO/skills/paper-poster-html"
@@ -363,7 +363,7 @@ every phase; enables compact-recovery resume.
 ## Review tracing
 
 Save every reviewer call's trace per `../shared-references/review-tracing.md` to
-`.aris/traces/paper-poster-html/<date>_run<NN>/` (audit + final agents, raw responses).
+`.ei/traces/paper-poster-html/<date>_run<NN>/` (audit + final agents, raw responses).
 
 ## Output contract
 

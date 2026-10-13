@@ -37,7 +37,7 @@ def _write_audits(
     executor: str = "codex-gpt-5.5",
     reviewer: str | None = None,
 ) -> None:
-    trace = paper / ".aris" / "traces" / "audit"
+    trace = paper / ".ei" / "traces" / "audit"
     trace.mkdir(parents=True)
     (trace / "response.md").write_text("review\n", encoding="utf-8")
     for filename, skill in AUDITS.items():
@@ -52,7 +52,7 @@ def _write_audits(
             "reason_code": "test",
             "summary": "fixture",
             "audited_input_hashes": {},
-            "trace_path": ".aris/traces/audit",
+            "trace_path": ".ei/traces/audit",
             "agent_id": "agent_019f",
             "reviewer_model": selected_reviewer,
             "reviewer_reasoning": "xhigh",
@@ -86,7 +86,7 @@ def _verify(
             capture_output=True,
             check=False,
         )
-        report = json.loads((paper / ".aris" / "audit-verifier-report.json").read_text())
+        report = json.loads((paper / ".ei" / "audit-verifier-report.json").read_text())
         return result, report
 
 
@@ -125,7 +125,7 @@ def _run_on(mutate) -> tuple[subprocess.CompletedProcess[str], dict]:
         result = subprocess.run(
             ["bash", str(VERIFIER), str(paper), "--assurance", "submission"],
             cwd=REPO_ROOT, text=True, capture_output=True, check=False)
-        report = json.loads((paper / ".aris" / "audit-verifier-report.json").read_text())
+        report = json.loads((paper / ".ei" / "audit-verifier-report.json").read_text())
         return result, report
 
 

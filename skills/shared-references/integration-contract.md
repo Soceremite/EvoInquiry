@@ -53,14 +53,14 @@ an existing helper. Every caller invokes the same entrypoint, but
 every caller must also resolve **where** that entrypoint lives,
 because the helper may sit at any of:
 
-- `<project>/.aris/tools/<helper>` — symlinked by `install_aris.sh` (Phase 0, #174)
+- `<project>/.ei/tools/<helper>` — symlinked by `install_aris.sh` (Phase 0, #174)
 - `<project>/tools/<helper>` — manual copy or running from inside the ARIS repo
 - `$ARIS_REPO/tools/<helper>` — env var or auto-resolved from the install manifest
-- `$ARIS_REPO/tools/<helper>` via `$HOME/.aris/repo` — global pointer file
+- `$ARIS_REPO/tools/<helper>` via `$HOME/.ei/repo` — global pointer file
   (one line, absolute repo path) written by `install_aris*.{sh,ps1}` and
   `smart_update*.{sh,ps1}` at install/update time; the only layer that
   resolves for a global copy-install (`~/.claude/skills`) with no
-  project-local `.aris/` manifest (#366)
+  project-local `.ei/` manifest (#366)
 
 Every caller — including those primarily exercised from inside the
 ARIS repo — MUST use the resolution chain. The chain's middle layer
@@ -79,15 +79,15 @@ because the prose endorsed the hardcoded form.
 # and `|| true` consumes a non-zero awk exit so chain evaluation
 # continues. Run `chmod +x` not required: the block uses `[ -f ]`.
 cd "$(git rev-parse --show-toplevel 2>/dev/null || pwd)" || exit 1
-if [ -z "${ARIS_REPO:-}" ] && [ -f .aris/installed-skills.txt ]; then
-    ARIS_REPO=$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .aris/installed-skills.txt 2>/dev/null) || true
+if [ -z "${ARIS_REPO:-}" ] && [ -f .ei/installed-skills.txt ]; then
+    ARIS_REPO=$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .ei/installed-skills.txt 2>/dev/null) || true
 fi
 # Layer 4: global pointer file, written by the installer/updater at
-# ~/.aris/repo (#366) — covers global copy-installs with no project manifest.
-if [ -z "${ARIS_REPO:-}" ] && [ -f "$HOME/.aris/repo" ]; then
-    ARIS_REPO=$(cat "$HOME/.aris/repo" 2>/dev/null) || true
+# ~/.ei/repo (#366) — covers global copy-installs with no project manifest.
+if [ -z "${ARIS_REPO:-}" ] && [ -f "$HOME/.ei/repo" ]; then
+    ARIS_REPO=$(cat "$HOME/.ei/repo" 2>/dev/null) || true
 fi
-HELPER=".aris/tools/<helper>"
+HELPER=".ei/tools/<helper>"
 [ -f "$HELPER" ] || HELPER="tools/<helper>"
 [ -f "$HELPER" ] || { [ -n "${ARIS_REPO:-}" ] && HELPER="$ARIS_REPO/tools/<helper>"; }
 [ -f "$HELPER" ] || HELPER=""
@@ -102,7 +102,7 @@ does not clobber one with another.
 If the SKILL is invoked from a subdirectory of a non-git project (no
 `.git/` anywhere up the tree), `git rev-parse --show-toplevel` fails
 and the `|| pwd` fallback keeps the resolver in the current directory.
-SKILLs that need to discover `.aris/` from a deeper subdirectory MUST
+SKILLs that need to discover `.ei/` from a deeper subdirectory MUST
 either run from project root or set `$ARIS_REPO` explicitly — the
 resolver intentionally does not walk parent directories.
 
@@ -118,9 +118,9 @@ verifiers whose exit code gates submission readiness (e.g.
 
 ```bash
 [ -n "$AUDIT_VERIFIER" ] || {
-  echo "ERROR: verify_paper_audits.sh not resolved at .aris/tools/, tools/, \$ARIS_REPO/tools/, or via ~/.aris/repo." >&2
+  echo "ERROR: verify_paper_audits.sh not resolved at .ei/tools/, tools/, \$ARIS_REPO/tools/, or via ~/.ei/repo." >&2
   echo "       assurance=submission requires the verifier; aborting Final Report." >&2
-  echo "       Fix: rerun bash tools/install_aris.sh (or smart_update.sh) to refresh ~/.aris/repo, or export ARIS_REPO." >&2
+  echo "       Fix: rerun bash tools/install_aris.sh (or smart_update.sh) to refresh ~/.ei/repo, or export ARIS_REPO." >&2
   exit 1
 }
 ```
@@ -133,7 +133,7 @@ gets produced, only the wiki side-effect is missed).
 ```bash
 [ -n "$WIKI_SCRIPT" ] || {
   echo "WARN: research_wiki.py not resolved; primary output unaffected, wiki side-effect skipped." >&2
-  echo "      Fix: rerun bash tools/install_aris.sh or smart_update.sh (refreshes ~/.aris/repo), export ARIS_REPO, or copy the helper to tools/." >&2
+  echo "      Fix: rerun bash tools/install_aris.sh or smart_update.sh (refreshes ~/.ei/repo), export ARIS_REPO, or copy the helper to tools/." >&2
 }
 [ -n "$WIKI_SCRIPT" ] && python3 "$WIKI_SCRIPT" ingest_paper research-wiki/ --arxiv-id "$id"
 ```
@@ -296,9 +296,9 @@ Three properties of layer 0:
 3. **Backwards-compatible.** The canonical 4-layer chain still works
    because Phase 3 keeps the legacy entry at `tools/<helper>` as a
    thin `os.execv` shim that forwards to the canonical location. So
-   `.aris/tools/<helper>` (layer 1), `tools/<helper>` (layer 2),
+   `.ei/tools/<helper>` (layer 1), `tools/<helper>` (layer 2),
    `$ARIS_REPO/tools/<helper>` via the manifest (layer 3), and
-   `$ARIS_REPO/tools/<helper>` via `~/.aris/repo` (layer 4) all
+   `$ARIS_REPO/tools/<helper>` via `~/.ei/repo` (layer 4) all
    resolve to a working Python script for any user who has not
    re-run `install_aris.sh`.
 
@@ -397,7 +397,7 @@ helper should not have to guess what to backfill.
 
 - ✅ `/research-wiki sync --arxiv-ids 2501.12345,1706.03762`
 - ✅ `/research-wiki sync --from-file ids.txt`
-- ⚠️ `/research-wiki sync` that scans `.aris/traces/` for arxiv IDs —
+- ⚠️ `/research-wiki sync` that scans `.ei/traces/` for arxiv IDs —
      only as a best-effort secondary mode, not the primary UX, and
      clearly labeled as heuristic.
 
@@ -444,7 +444,7 @@ resolve actual paths via §2.
 
 | Integration | Predicate | Helper | Artifact | Checklist | Backfill | Verifier |
 |---|---|---|---|---|---|---|
-| Submission audits (`max`/`beast`) | `paper/.aris/assurance.txt = submission` | `verify_paper_audits.sh` + 3 audit skills emit JSON | `paper/PROOF_AUDIT.json`, `PAPER_CLAIM_AUDIT.json`, `CITATION_AUDIT.json` + `paper/.aris/audit-verifier-report.json` | Phase 6.0 pre-flight checklist | Rerun the failed audit | `verify_paper_audits.sh` (exit 1 blocks) |
+| Submission audits (`max`/`beast`) | `paper/.ei/assurance.txt = submission` | `verify_paper_audits.sh` + 3 audit skills emit JSON | `paper/PROOF_AUDIT.json`, `PAPER_CLAIM_AUDIT.json`, `CITATION_AUDIT.json` + `paper/.ei/audit-verifier-report.json` | Phase 6.0 pre-flight checklist | Rerun the failed audit | `verify_paper_audits.sh` (exit 1 blocks) |
 | Research wiki ingest | `research-wiki/` exists | `research_wiki.py ingest_paper` | `research-wiki/papers/<slug>.md` + `log.md` entry | Step in each paper-reading skill | `research_wiki.py sync --arxiv-ids …` | `verify_wiki_coverage.sh` (diagnostic) |
 | paper-illustration-image2 finalization | `paper_illustration_image2.py preflight --workspace <cwd>` returns `ok=true` | `paper_illustration_image2.py` (`preflight`, `finalize`, `verify`) | `figures/ai_generated/figure_final.png`, `latex_include.tex`, `review_log.json` | Step 0 checklist in `paper-illustration-image2` | `paper_illustration_image2.py finalize --workspace <cwd> --best-image <png>` | `paper_illustration_image2.py verify` (skill-local gate; exit 1 on missing artifacts blocks finalize claim, parent workflow may continue with the alternate illustration path) |
 

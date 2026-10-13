@@ -154,7 +154,7 @@ or upstream source is producing fabricated entries — re-run with narrower
 terms before continuing.
 
 **Caching.** Default cache scope is per-project at
-`<project>/.aris/cache/verify_papers.json` with 30-day TTL. Cache keys use
+`<project>/.ei/cache/verify_papers.json` with 30-day TTL. Cache keys use
 canonical identifier priority: `arxiv:{id_without_version}` →
 `doi:{lowercase}` → `title:{sha1_of_normalized_title}[:16]`. The cache value
 preserves all known identifiers so the same paper found through different
@@ -180,13 +180,13 @@ the Policy D1 fallback. The full copy-safe snippet:
 ```bash
 # 1. Resolve $VERIFY_PAPERS via the canonical strict-safe chain (§2).
 cd "$(git rev-parse --show-toplevel 2>/dev/null || pwd)" || exit 1
-if [ -z "${ARIS_REPO:-}" ] && [ -f .aris/installed-skills.txt ]; then
-    ARIS_REPO=$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .aris/installed-skills.txt 2>/dev/null) || true
+if [ -z "${ARIS_REPO:-}" ] && [ -f .ei/installed-skills.txt ]; then
+    ARIS_REPO=$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .ei/installed-skills.txt 2>/dev/null) || true
 fi
-if [ -z "${ARIS_REPO:-}" ] && [ -f "$HOME/.aris/repo" ]; then
-    ARIS_REPO=$(cat "$HOME/.aris/repo" 2>/dev/null) || true
+if [ -z "${ARIS_REPO:-}" ] && [ -f "$HOME/.ei/repo" ]; then
+    ARIS_REPO=$(cat "$HOME/.ei/repo" 2>/dev/null) || true
 fi
-VERIFY_PAPERS=".aris/tools/verify_papers.py"
+VERIFY_PAPERS=".ei/tools/verify_papers.py"
 [ -f "$VERIFY_PAPERS" ] || VERIFY_PAPERS="tools/verify_papers.py"
 [ -f "$VERIFY_PAPERS" ] || { [ -n "${ARIS_REPO:-}" ] && VERIFY_PAPERS="$ARIS_REPO/tools/verify_papers.py"; }
 [ -f "$VERIFY_PAPERS" ] || VERIFY_PAPERS=""

@@ -104,7 +104,7 @@ def test_legacy_state_defaults_to_claude_and_rejects_unknown_reviewer():
         # Pre-provenance JSON had no executor/family/acceptance fields. Its
         # historical mainline executor was Claude, so a Codex verdict remains
         # compatible and becomes explicit rather than unclassified.
-        run_path = Path(d) / ".aris" / "runs" / "run-a.json"
+        run_path = Path(d) / ".ei" / "runs" / "run-a.json"
         run_path.parent.mkdir(parents=True)
         legacy = {
             "run_id": "run-a",
@@ -270,7 +270,7 @@ def test_state_is_valid_json_on_disk():
     with _tmp() as d:
         rs.start_run(d, "run-a", PHASES)
         rs.set_status(d, "run-a", "W1", "done", artifact="x/y.md")
-        p = Path(d) / ".aris" / "runs" / "run-a.json"
+        p = Path(d) / ".ei" / "runs" / "run-a.json"
         state = json.loads(p.read_text())  # must parse
         assert rs._find_phase(state, "W1")["artifact"] == "x/y.md"
 

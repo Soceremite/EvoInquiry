@@ -5,7 +5,7 @@ can fail mid-run — a rate limit, a crash, an overnight timeout. Today there is
 record of *which phase finished*, so a resume restarts from scratch (this is the
 live complaint in issue #272: "the survey run failed — can it continue from the
 last task?"). `tools/run_state.py` fixes that: a run is an **ordered list of
-phases with status**, persisted at `<root>/.aris/runs/<run_id>.json`.
+phases with status**, persisted at `<root>/.ei/runs/<run_id>.json`.
 
 Workflow-level deterministic checks are recorded separately under `gates` in
 the same state file. A gate may emit `PASS` or `BLOCKED` with durable reasons;
@@ -54,7 +54,7 @@ your own phase done is fine (`set done`); acquitting it is not. `accept` records
 the `reviewer` and warns loudly if it looks like the executor's own family
 (a `claude*` reviewer ≈ self-acquittal). Record `verdict_id` as a **durable
 handle** — the reviewer thread/trace id, or the path/sha of the verifier's report
-(e.g. `.aris/audit-verifier-report.json`) — not just a label, so the acceptance
+(e.g. `.ei/audit-verifier-report.json`) — not just a label, so the acceptance
 is auditable later.
 
 **Concurrency:** one orchestrator per run (single-writer contract). Mutations are

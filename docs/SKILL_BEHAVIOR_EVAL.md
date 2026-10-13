@@ -127,3 +127,19 @@ same command with this separate manifest, a new output directory and `--jobs 1`.
 Check actual file removal, surviving model hashes, all evidence preservation,
 dependency pins, and a final handoff. Freeze this manifest and fixtures before
 execution; keep their results separate from the original and initial storage cases.
+
+## Governance and environment cases
+
+The four [separate governance cases](../tests/behavior/evo-inquiry-governance-cases.json) cover read-only project inventory, an already authorized initialization, actual interpreter inspection without installation, and a small method extension that reuses a shared batch interface. The original 24 prompts and judging rubric remain unchanged. Keep results of the separate extension and original small-task regression distinct.
+
+Use a verified filesystem for evaluation workspaces; a worktree with broken flock cannot measure successful formal initialization. Archive the raw output afterward without rewriting historical paths. The harness defaults to one session at a time because a measured concurrent CLI startup returned EAGAIN before producing any events. Such zero-action app-server initialization failures are marked `runtime_startup`, retained, and may receive a fresh serial retry. They are neither passed cases nor evidence of a skill routing failure.
+
+```sh
+python tools/evaluate_skill_behavior.py \
+  --toolkit /path/to/clean-installed-source \
+  --manifest tests/behavior/evo-inquiry-governance-cases.json \
+  --output /path/to/verified/evaluation-directory \
+  --cases all --jobs 1
+```
+
+Discovery compares the enabled skill entries, shared guidance, checkpoint helper, governance modules and schemas with the exact selected source. Input notifications and responses may arrive in the same pipe read; the JSONL receiver retains buffered messages rather than treating a drained OS pipe as a missing response. These checks establish a clean execution context; assessment still requires inspecting real traces and artifacts.

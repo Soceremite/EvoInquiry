@@ -5,6 +5,13 @@ argument-hint: "[paper-dir | pdf | arxiv-id]"
 allowed-tools: Bash(*), Read, Write, Grep, Glob, mcp__codex__codex
 ---
 
+<!-- EI-GOVERNANCE:BEGIN -->
+Resolve runtime state through tools/state_paths.py before .ei operations. Use
+[project-governance](../shared-references/project-governance.md) for fixed evidence,
+profiles and controlled migration; missing profiles retain compat-v1.
+<!-- EI-GOVERNANCE:END -->
+
+
 # Integrity Forensics — thin launcher for Anti-Autoresearch
 
 Audit target: **$ARGUMENTS**
@@ -28,11 +35,11 @@ Audit target: **$ARGUMENTS**
 - **ANTI_AR_COMMIT = `b47af6f983b38347b6d2110379e266400597cf66`** — the SHA-pin.
   The launcher NEVER tracks upstream HEAD; bumping this constant is a reviewed
   change (see Pin-bump checklist).
-- **CLONE_DIR = `~/.aris/anti-autoresearch`** — the pinned working copy. Host-neutral
+- **CLONE_DIR = `~/.ei/anti-autoresearch`** — the pinned working copy. Host-neutral
   on purpose: ARIS also runs on DeepSeek Harness, Codex CLI, Cursor, Trae,
   Antigravity and Copilot CLI, where `~/.claude/` would name an installation the
   user does not have. An older clone at `~/.claude/anti-autoresearch` is unused;
-  move it and its `.aris_eval_ok_*` receipt only to keep an offline
+  move it and its `.ei_eval_ok_*` receipt only to keep an offline
   deterministic-only run working, otherwise delete it whenever convenient.
 - **NO REVIEWER KNOBS.** This launcher exposes no reviewer model/effort
   parameters and never maps ARIS `— effort:` onto upstream settings. The
@@ -40,18 +47,18 @@ Audit target: **$ARGUMENTS**
   design decision). Overriding upstream review policy from a launcher would
   create a second, unauditable configuration surface.
 - **GATE_HELPER = `forensics_gate.py`** — resolved via the canonical chain
-  (`shared-references/integration-contract.md` §2): `.aris/tools/` →
-  `tools/` → `$ARIS_REPO/tools/` → `$ARIS_REPO/tools/` via `~/.aris/repo`.
+  (`shared-references/integration-contract.md` §2): `.ei/tools/` →
+  `tools/` → `$ARIS_REPO/tools/` → `$ARIS_REPO/tools/` via `~/.ei/repo`.
   Failure policy A (required): if it cannot be resolved at
   `assurance: submission`, STOP — never improvise the gate.
 
 ## Step 0 — Bootstrap the pin (idempotent)
 
 ```bash
-CLONE_DIR="$HOME/.aris/anti-autoresearch"
+CLONE_DIR="$HOME/.ei/anti-autoresearch"
 ANTI_AR_COMMIT="b47af6f983b38347b6d2110379e266400597cf66"
 
-mkdir -p "$HOME/.aris"
+mkdir -p "$HOME/.ei"
 if [ ! -d "$CLONE_DIR/.git" ]; then
     git clone --no-checkout https://github.com/wanshuiyin/Anti-Autoresearch.git "$CLONE_DIR"
 fi
@@ -76,7 +83,7 @@ git -C "$CLONE_DIR" clean -ffdxq || {
 # pin is allowed to produce a verdict. NEVER skip; NEVER proceed on failure.
 # The marker lives OUTSIDE the clone: a marker inside a tamperable tree proves
 # nothing (and `git clean` above would erase it, forcing re-eval every run).
-MARKER="${CLONE_DIR}.aris_eval_ok_${ANTI_AR_COMMIT}"
+MARKER="${CLONE_DIR}.ei_eval_ok_${ANTI_AR_COMMIT}"
 if [ ! -f "$MARKER" ]; then
     ( cd "$CLONE_DIR" && python3 eval/run_eval.py ) || {
         echo "FATAL: upstream eval gate FAILED at pin $ANTI_AR_COMMIT — refusing to"
@@ -232,7 +239,7 @@ verdict — decides whether the gate opens.
   that a determined executor can hand it a stale report. Likewise `human:` / `checker:` / `cross-family-review:` labels are
   accountability, not authentication: a false label is an explicit,
   permanent false record.
-- **Out of scope**: a party rewriting the `.aris/` artifacts consistently with
+- **Out of scope**: a party rewriting the `.ei/` artifacts consistently with
   shell access has owner power (they could delete the directory outright).
   The gate defends against the sloppy or corner-cutting executor and against
   honest crashes/races/resumes — not against the machine's owner.
@@ -277,7 +284,7 @@ contract — forbidden.
 ## Review tracing
 
 Upstream saves its own per-dimension traces under the paper's
-`.aris/traces/`. The launcher adds only the `.aris/forensics/` artifacts:
+`.ei/traces/`. The launcher adds only the `.ei/forensics/` artifacts:
 `gate.json` (pins `anti_ar_commit` + report/ledger hashes + the paper-text
 fingerprint), `obligations.json` (the append-only ledger), and
 `last_report.json` (the sha-verified archive of the folded report that

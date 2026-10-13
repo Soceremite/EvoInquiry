@@ -5,6 +5,13 @@ argument-hint: "[description-or-method-file]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, WebSearch, mcp__codex-image2__generate, mcp__codex-image2__generate_start, mcp__codex-image2__generate_status, mcp__codex__codex, mcp__codex__codex-reply
 ---
 
+<!-- EI-GOVERNANCE:BEGIN -->
+Resolve runtime state through tools/state_paths.py before .ei operations. Use
+[project-governance](../shared-references/project-governance.md) for fixed evidence,
+profiles and controlled migration; missing profiles retain compat-v1.
+<!-- EI-GOVERNANCE:END -->
+
+
 # Paper Illustration Image2
 
 Generate publication-quality paper figures using **Claude as the planner/reviewer**
@@ -90,20 +97,20 @@ and a **local Codex app-server MCP bridge** as the raster renderer.
   # Layers 1-4: shared-runtime chain via shim at tools/paper_illustration_image2.py.
   if [ -z "$IMAGE2_HELPER" ]; then
     cd "$(git rev-parse --show-toplevel 2>/dev/null || pwd)" || exit 1
-    if [ -z "${ARIS_REPO:-}" ] && [ -f .aris/installed-skills.txt ]; then
-        ARIS_REPO=$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .aris/installed-skills.txt 2>/dev/null) || true
+    if [ -z "${ARIS_REPO:-}" ] && [ -f .ei/installed-skills.txt ]; then
+        ARIS_REPO=$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .ei/installed-skills.txt 2>/dev/null) || true
     fi
-    if [ -z "${ARIS_REPO:-}" ] && [ -f "$HOME/.aris/repo" ]; then
-        ARIS_REPO=$(cat "$HOME/.aris/repo" 2>/dev/null) || true
+    if [ -z "${ARIS_REPO:-}" ] && [ -f "$HOME/.ei/repo" ]; then
+        ARIS_REPO=$(cat "$HOME/.ei/repo" 2>/dev/null) || true
     fi
-    IMAGE2_HELPER=".aris/tools/paper_illustration_image2.py"
+    IMAGE2_HELPER=".ei/tools/paper_illustration_image2.py"
     [ -f "$IMAGE2_HELPER" ] || IMAGE2_HELPER="tools/paper_illustration_image2.py"
     [ -f "$IMAGE2_HELPER" ] || { [ -n "${ARIS_REPO:-}" ] && IMAGE2_HELPER="$ARIS_REPO/tools/paper_illustration_image2.py"; }
     [ -f "$IMAGE2_HELPER" ] || IMAGE2_HELPER=""
   fi
   [ -z "$IMAGE2_HELPER" ] && {
-    echo "ERROR: paper_illustration_image2.py not resolved (layer 0: \$CLAUDE_SKILL_DIR/scripts/; layers 1-4: .aris/tools/, tools/, \$ARIS_REPO/tools/, \$ARIS_REPO/tools/ via ~/.aris/repo)." >&2
-    echo "       /paper-illustration-image2 cannot proceed. Fix: rerun bash tools/install_aris.sh or smart_update.sh (refreshes ~/.aris/repo), or copy the canonical script from \$ARIS_REPO/skills/paper-illustration-image2/scripts/." >&2
+    echo "ERROR: paper_illustration_image2.py not resolved (layer 0: \$CLAUDE_SKILL_DIR/scripts/; layers 1-4: .ei/tools/, tools/, \$ARIS_REPO/tools/, \$ARIS_REPO/tools/ via ~/.ei/repo)." >&2
+    echo "       /paper-illustration-image2 cannot proceed. Fix: rerun bash tools/install_aris.sh or smart_update.sh (refreshes ~/.ei/repo), or copy the canonical script from \$ARIS_REPO/skills/paper-illustration-image2/scripts/." >&2
     exit 1
   }
   ```

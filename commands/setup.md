@@ -51,16 +51,16 @@ Requires `python3` 3.9+ on PATH (macOS system Python is fine, no packages).
 ## 3. Point ARIS helpers at the plugin
 
 Skills resolve helper scripts (`verify_papers.py`, `save_trace.sh`, …) through
-`~/.aris/repo`. Write it only if it is missing or points at a directory that no
+`~/.ei/repo`. Write it only if it is missing or points at a directory that no
 longer exists — an existing ARIS clone is just as good and must not be
 overwritten:
 
 ```bash
-mkdir -p ~/.aris
-if [ ! -f ~/.aris/repo ] || [ ! -d "$(cat ~/.aris/repo)" ]; then
-  printf '%s\n' "${CLAUDE_PLUGIN_ROOT}" > ~/.aris/repo
+mkdir -p ~/.ei
+if [ ! -f ~/.ei/repo ] || [ ! -d "$(cat ~/.ei/repo)" ]; then
+  printf '%s\n' "${CLAUDE_PLUGIN_ROOT}" > ~/.ei/repo
 fi
-cat ~/.aris/repo
+cat ~/.ei/repo
 ```
 
 ## 4. Tell the user what to do next

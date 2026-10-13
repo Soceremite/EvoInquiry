@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
-"""Regression test for install_aris.sh #174: project-local .aris/tools symlink.
+"""Regression test for install_aris.sh #174: project-local .ei/tools symlink.
 
 Covers:
-  install: fresh project gets `.aris/tools -> <repo>/tools`
+  install: fresh project gets `.ei/tools -> <repo>/tools`
   install: idempotent on rerun
-  install: warns and leaves alone if `.aris/tools` already exists with
+  install: warns and leaves alone if `.ei/tools` already exists with
            a different target / as a non-symlink path
   uninstall: removes the managed symlink
-  uninstall: preserves non-managed `.aris/tools` (different target / real dir)
+  uninstall: preserves non-managed `.ei/tools` (different target / real dir)
   agent profiles: ownership sidecar removes only links this installer created
   dry-run: prints planned action without writing anything
 """
@@ -53,7 +53,7 @@ class InstallTest(unittest.TestCase):
     def test_install_creates_tools_symlink(self):
         result = self._run()
         self.assertEqual(result.returncode, 0, msg=result.stderr)
-        link = self.project / ".aris" / "tools"
+        link = self.project / ".ei" / "tools"
         self.assertTrue(link.is_symlink(), f"expected {link} to be a symlink")
         self.assertEqual(
             os.readlink(link),
@@ -77,44 +77,44 @@ class InstallTest(unittest.TestCase):
             text=True,
         )
         self.assertEqual(result.returncode, 0, msg=result.stderr)
-        link = self.project / ".aris" / "tools"
+        link = self.project / ".ei" / "tools"
         self.assertFalse(link.exists(), "dry-run must not create the symlink")
-        self.assertIn(".aris/tools", result.stdout, "dry-run output must mention .aris/tools")
+        self.assertIn(".ei/tools", result.stdout, "dry-run output must mention .ei/tools")
 
     def test_install_is_idempotent(self):
         # Run twice; second run should be a no-op for the tools symlink
         self._run()
         result = self._run()
         self.assertEqual(result.returncode, 0, msg=result.stderr)
-        link = self.project / ".aris" / "tools"
+        link = self.project / ".ei" / "tools"
         self.assertTrue(link.is_symlink())
         self.assertEqual(os.readlink(link), str(REPO_ROOT / "tools"))
 
     def test_install_does_not_replace_existing_dir(self):
-        # User already has a real .aris/tools dir; installer must leave it alone
-        (self.project / ".aris").mkdir()
-        existing_dir = self.project / ".aris" / "tools"
+        # User already has a real .ei/tools dir; installer must leave it alone
+        (self.project / ".ei").mkdir()
+        existing_dir = self.project / ".ei" / "tools"
         existing_dir.mkdir()
         marker = existing_dir / "user_file.txt"
         marker.write_text("user content")
 
         result = self._run()
         self.assertEqual(result.returncode, 0, msg=result.stderr)
-        self.assertFalse((self.project / ".aris" / "tools").is_symlink())
+        self.assertFalse((self.project / ".ei" / "tools").is_symlink())
         self.assertTrue(marker.exists(), "user-created content must be preserved")
         self.assertEqual(marker.read_text(), "user content")
 
     def test_install_does_not_replace_different_symlink(self):
-        # User already has .aris/tools pointing somewhere else
-        (self.project / ".aris").mkdir()
+        # User already has .ei/tools pointing somewhere else
+        (self.project / ".ei").mkdir()
         elsewhere = self.tmp / "elsewhere"
         elsewhere.mkdir()
-        os.symlink(str(elsewhere), str(self.project / ".aris" / "tools"))
+        os.symlink(str(elsewhere), str(self.project / ".ei" / "tools"))
 
         result = self._run()
         self.assertEqual(result.returncode, 0, msg=result.stderr)
         self.assertEqual(
-            os.readlink(self.project / ".aris" / "tools"),
+            os.readlink(self.project / ".ei" / "tools"),
             str(elsewhere),
             "non-managed symlink must be preserved",
         )
@@ -123,18 +123,18 @@ class InstallTest(unittest.TestCase):
 
     def test_uninstall_removes_managed_symlink(self):
         self._run()  # install
-        self.assertTrue((self.project / ".aris" / "tools").is_symlink())
+        self.assertTrue((self.project / ".ei" / "tools").is_symlink())
         result = self._run("--uninstall")
         self.assertEqual(result.returncode, 0, msg=result.stderr)
         self.assertFalse(
-            (self.project / ".aris" / "tools").exists(),
+            (self.project / ".ei" / "tools").exists(),
             "uninstall must remove the managed symlink",
         )
 
     def test_uninstall_preserves_non_managed_dir(self):
         # First install, then replace tools symlink with a user dir, then uninstall
         self._run()
-        link = self.project / ".aris" / "tools"
+        link = self.project / ".ei" / "tools"
         link.unlink()
         link.mkdir()
         marker = link / "preserved.txt"
@@ -148,7 +148,7 @@ class InstallTest(unittest.TestCase):
     def test_uninstall_preserves_non_managed_symlink(self):
         # Install creates managed symlink, user replaces with custom symlink, uninstall must skip
         self._run()
-        link = self.project / ".aris" / "tools"
+        link = self.project / ".ei" / "tools"
         link.unlink()
         elsewhere = self.tmp / "elsewhere"
         elsewhere.mkdir()
@@ -162,7 +162,7 @@ class InstallTest(unittest.TestCase):
     def test_uninstall_removes_installer_created_agent_profiles(self):
         self._run()
         agent = self.project / ".github" / "agents" / "aris-reviewer-openai.agent.md"
-        ownership = self.project / ".aris" / "installed-agent-profiles.txt"
+        ownership = self.project / ".ei" / "installed-agent-profiles.txt"
         self.assertTrue(agent.is_symlink())
         self.assertIn(agent.name, ownership.read_text().splitlines())
 
@@ -181,7 +181,7 @@ class InstallTest(unittest.TestCase):
 
         install = self._run()
         self.assertEqual(install.returncode, 0, msg=install.stderr)
-        ownership = self.project / ".aris" / "installed-agent-profiles.txt"
+        ownership = self.project / ".ei" / "installed-agent-profiles.txt"
         if ownership.exists():
             self.assertNotIn(agent.name, ownership.read_text().splitlines())
 

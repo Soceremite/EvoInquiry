@@ -55,7 +55,7 @@ def test_install_aris_codex_dry_run_has_no_project_writes(tmp_path: Path) -> Non
     )
 
     assert "(dry-run) no changes made" in dry_run.stdout
-    assert not (project / ".aris").exists()
+    assert not (project / ".ei").exists()
     assert not (project / ".agents").exists()
     assert not (project / "AGENTS.md").exists()
 
@@ -81,7 +81,7 @@ def test_install_aris_codex_reconcile_and_uninstall(tmp_path: Path) -> None:
         ]
     )
 
-    manifest = project / ".aris" / "installed-skills-codex.txt"
+    manifest = project / ".ei" / "installed-skills-codex.txt"
     assert manifest.exists()
     assert (project / "AGENTS.md").exists()
     agents_text = (project / "AGENTS.md").read_text()
@@ -147,7 +147,7 @@ def test_install_aris_codex_reconcile_and_uninstall(tmp_path: Path) -> None:
     )
     assert (project / ".agents" / "skills" / "local-only").exists()
     assert not (project / ".agents" / "skills" / "beta").exists()
-    assert (project / ".aris" / "installed-skills-codex.txt.prev").exists()
+    assert (project / ".ei" / "installed-skills-codex.txt.prev").exists()
     assert "ARIS Codex Skill Scope" not in (project / "AGENTS.md").read_text()
 
 
@@ -187,8 +187,8 @@ def test_install_aris_codex_uninstall_uses_manifest_repo_root(tmp_path: Path) ->
     assert not alpha_link.exists()
     assert not (project / ".agents" / "skills" / "beta").exists()
     assert not (project / ".agents" / "skills" / "shared-references").exists()
-    assert not (project / ".aris" / "installed-skills-codex.txt").exists()
-    assert (project / ".aris" / "installed-skills-codex.txt.prev").exists()
+    assert not (project / ".ei" / "installed-skills-codex.txt").exists()
+    assert (project / ".ei" / "installed-skills-codex.txt.prev").exists()
 
 
 def test_install_aris_codex_reconcile_removes_stale_links_from_manifest_repo(tmp_path: Path) -> None:
@@ -238,7 +238,7 @@ def test_install_aris_codex_reconcile_removes_stale_links_from_manifest_repo(tmp
     assert (project / ".agents" / "skills" / "gamma").resolve() == (
         new_repo / "skills" / "skills-codex" / "gamma"
     )
-    manifest = (project / ".aris" / "installed-skills-codex.txt").read_text()
+    manifest = (project / ".ei" / "installed-skills-codex.txt").read_text()
     assert "\talpha\t" not in manifest
     assert f"repo_root\t{new_repo}" in manifest
 
@@ -279,7 +279,7 @@ def test_install_aris_codex_reconcile_accepts_already_deleted_stale_link(tmp_pat
         ]
     )
 
-    manifest = (project / ".aris" / "installed-skills-codex.txt").read_text()
+    manifest = (project / ".ei" / "installed-skills-codex.txt").read_text()
     assert "\talpha\t" not in manifest
 
 

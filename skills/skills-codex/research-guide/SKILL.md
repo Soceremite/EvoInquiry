@@ -32,6 +32,14 @@ Find relevant existing proposals, literature notes, raw results, review artifact
 or run state using targeted searches. Read only material that affects the next
 decision. Projects need no particular directory layout or guide-specific state.
 
+When project identity or runtime state matters, discover the existing profile
+through the shared .ei resolver; a missing profile still uses compat-v1 without
+initialization. Route requested project audits/layouts/migrations to
+[project-governance](../project-governance/SKILL.md) and dependency/environment
+maintenance to [environment-maintenance](../environment-maintenance/SKILL.md).
+Carry fixed evidence refs and existing consumer/lease/pin constraints into the
+selected step. Do not add governance setup to an unrelated small task.
+
 For a resumed run, confirm its project and task identity, then inspect the
 artifacts supporting each relevant status. File existence or `done` alone does
 not establish acceptance. Preserve accepted/provisional distinctions and the

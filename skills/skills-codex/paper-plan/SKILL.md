@@ -10,6 +10,8 @@ principles within the user's scope and this skill's existing outputs, review
 standards, and recovery contracts. Carry them into nested research tasks and
 reviewer briefs. Continue authorized work through its necessary steps; honor
 budgets, blocking checkpoints, and stopping conditions.
+
+For this stage, read [project-governance](../shared-references/project-governance.md). Plan the narrative from fixed report/evidence revisions and actual review status; retain these refs for drafting instead of re-reading a floating current report.
 <!-- EVO-INQUIRY:END -->
 
 

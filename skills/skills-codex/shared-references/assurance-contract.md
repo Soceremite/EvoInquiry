@@ -74,7 +74,7 @@ Every mandatory audit must write a JSON artifact, and may also write a Markdown 
     "main.tex": "sha256:a3f8...",
     "sections/5_evidence.tex": "sha256:b2d1..."
   },
-  "trace_path": ".aris/traces/paper-claim-audit/2026-04-21_run01/",
+  "trace_path": ".ei/traces/paper-claim-audit/2026-04-21_run01/",
   "agent_id": "019dae73-fc12-4ab8-...",
   "executor_model": "codex-gpt-6-astra",
   "executor_family": "openai",

@@ -25,7 +25,7 @@ budgets, blocking checkpoints, and stopping conditions.
 This skill exists to enforce a **privilege boundary**. Producers like
 [`/meta-optimize`](../meta-optimize/SKILL.md) (and, later, `corpus-audit`) are
 **read-only** — no `Write`/`Edit`, no apply step; they can only *stage* candidate patches
-under `.aris/meta/pending/`. **This skill is the only place a staged patch becomes a real
+under `.ei/meta/pending/`. **This skill is the only place a staged patch becomes a real
 change to the corpus.** Splitting "propose" from "land" across two skills with different
 tool grants is what makes "a loop cannot apply its own patch" structural rather than a
 sentence the producer is asked to obey.
@@ -72,7 +72,7 @@ never silently apply:
 ### Step 0: Load staging + resolve the helper
 
 ```bash
-PENDING=".aris/meta/pending"
+PENDING=".ei/meta/pending"
 [ -d "$PENDING" ] || { echo "Nothing staged. Run /meta-optimize first."; exit 0; }
 echo "Staged:"; cat "$PENDING/manifest.jsonl"
 ```
@@ -80,8 +80,8 @@ echo "Staged:"; cat "$PENDING/manifest.jsonl"
 Resolve `provenance.py` through the Codex manifest:
 
 ```bash
-if [ -z "${ARIS_REPO:-}" ] && [ -f .aris/installed-skills-codex.txt ]; then
-  ARIS_REPO=$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .aris/installed-skills-codex.txt 2>/dev/null) || true
+if [ -z "${ARIS_REPO:-}" ] && [ -f .ei/installed-skills-codex.txt ]; then
+  ARIS_REPO=$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .ei/installed-skills-codex.txt 2>/dev/null) || true
 fi
 PROVENANCE=""
 [ -n "${ARIS_REPO:-}" ] && [ -f "$ARIS_REPO/tools/provenance.py" ] && PROVENANCE="$ARIS_REPO/tools/provenance.py"
@@ -104,7 +104,7 @@ per patch (`PASS → eligible` / `KILL → refused: <reason>`).
 
 For each patch that PASSED Step 1 **and** was named by the user:
 
-1. **Back up** the target to `.aris/meta/backups/<date>/<target>` (use the **Write** tool
+1. **Back up** the target to `.ei/meta/backups/<date>/<target>` (use the **Write** tool
    to copy contents; corpus paths are not Bash-writable when `corpus_write_guard` is
    active — and the applier should use Write/Edit for corpus mutation anyway).
 2. **Apply** the diff by **Edit/Write** on the target corpus file.
@@ -116,13 +116,13 @@ For each patch that PASSED Step 1 **and** was named by the user:
    This records `review_independence: same-family` and
    `acceptance_status: provisional`; `is_auto_curatable` remains false. If the
    active overlay produced a cross-family result, use strict `stamp` instead.
-4. **Log** to `.aris/meta/optimizations.jsonl`:
+4. **Log** to `.ei/meta/optimizations.jsonl`:
    `{ts, patch, target, author_model, reviewer_model, jury_review_id, applied: true}`.
 
 ### Step 3: Report
 
 Per patch: `LANDED <target>` (+ backup path + provenance sidecar) or
-`REFUSED <patch>: <reason>`. Remove landed patches from `.aris/meta/pending/`. Remind the
+`REFUSED <patch>: <reason>`. Remove landed patches from `.ei/meta/pending/`. Remind the
 user a landed patch is revertable from its backup, and to test the changed skill next run.
 
 ## Provenance is a receipt, not an acquittal of correctness
@@ -153,12 +153,12 @@ auto-curator reads it as evidence):
   corpus; the jury-at-landing + stamp discipline above is what governs Write/Edit
   mutations (that discipline is procedure, not a hook-enforced mechanism).
 - **Back up before every mutation.** Reversible by construction.
-- **Only land staged patches.** Applies what producers staged in `.aris/meta/pending/`;
+- **Only land staged patches.** Applies what producers staged in `.ei/meta/pending/`;
   invents nothing of its own.
 
 ## Review Tracing
 
 Save each landing-jury reviewer call's trace per
 [`review-tracing.md`](../shared-references/review-tracing.md) to
-`.aris/traces/meta-apply/<date>_run<NN>/` — the acquittal that landed a corpus change must
+`.ei/traces/meta-apply/<date>_run<NN>/` — the acquittal that landed a corpus change must
 be forensically recoverable.

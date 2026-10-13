@@ -12,6 +12,8 @@ reviewer briefs. Continue authorized work through its necessary steps; honor
 budgets, blocking checkpoints, and stopping conditions.
 
 Carry the relevant [experiment storage policy](../shared-references/experiment-storage.md) into planning, implementation, and launch phases. Reuse its budget and retention decisions rather than introducing another storage report or checkpoint state system.
+
+For this stage, read [project-governance](../shared-references/project-governance.md). Keep the existing run_state.py coordinator and IDs. Attach artifact_refs, execution_refs and spec_refs to original phases without changing gate semantics; namespace migration and artifact layout selection remain separate.
 <!-- EVO-INQUIRY:END -->
 
 
@@ -38,7 +40,7 @@ End-to-end autonomous research workflow for: **$ARGUMENTS**
 - **AUTO_WRITE = false** — When `true`, automatically invoke Workflow 3 (`/paper-writing`) after Stage 4. `VENUE` is needed only when Stage 5 begins — a missing venue defers paper writing; it never blocks Stages 1-4. When `false` (default), Stage 4 generates `NARRATIVE_REPORT.md` and stops — user invokes `/paper-writing` manually.
 - **VENUE = (unset)** — Target venue for paper writing; bound only when Stage 5 begins. Options: `ICLR`, `NeurIPS`, `ICML`, `CVPR`, `ACL`, `AAAI`, `ACM`, `IEEE_CONF`, `IEEE_JOURNAL`. No default: a missing venue defers paper writing — it never blocks Stages 1-4 and is never guessed.
 - **RENDER_HTML = true** — When `true` (default), auto-render `NARRATIVE_REPORT.md` to HTML at Stage 4 completion via `/render-html`. Uses `--no-review` because Stage 3 already produced a traced same-family provisional review. Set `false` to skip. Rendering failure is non-blocking.
-- **RESUMABLE = true** — Record per-stage state under `.aris/runs/` and resume
+- **RESUMABLE = true** — Record per-stage state under `.ei/runs/` and resume
   from the first non-terminal phase. Same-family Codex review produces
   `provisional`; deterministic or overlay gates produce `accepted`.
 
@@ -82,8 +84,8 @@ It orchestrates up to four major workflows in sequence. Workflow 3 (paper writin
 When `RESUMABLE=true`, resolve helpers through the Codex manifest:
 
 ```bash
-if [ -z "${ARIS_REPO:-}" ] && [ -f .aris/installed-skills-codex.txt ]; then
-  ARIS_REPO=$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .aris/installed-skills-codex.txt 2>/dev/null) || true
+if [ -z "${ARIS_REPO:-}" ] && [ -f .ei/installed-skills-codex.txt ]; then
+  ARIS_REPO=$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .ei/installed-skills-codex.txt 2>/dev/null) || true
 fi
 RUN_STATE=""
 ITER_LOG=""

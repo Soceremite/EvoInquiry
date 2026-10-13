@@ -1,7 +1,7 @@
 # Evidence Pre-check
 
 > **Codex mirror adaptation (normative).** Resolve `evidence_check.py` through
-> `.aris/installed-skills-codex.txt` and `$ARIS_REPO/tools/`. The deterministic
+> `.ei/installed-skills-codex.txt` and `$ARIS_REPO/tools/`. The deterministic
 > existence check may be accepted; the fresh Codex semantic review that follows
 > is same-family and therefore provisional. Only a Claude/Gemini overlay or a
 > deterministic verifier supplies accepted assurance.

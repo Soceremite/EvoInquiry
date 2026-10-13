@@ -5,12 +5,19 @@ argument-hint: "[patch-number-or-all]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, mcp__codex__codex, mcp__codex__codex-reply
 ---
 
+<!-- EI-GOVERNANCE:BEGIN -->
+Resolve runtime state through tools/state_paths.py before .ei operations. Use
+[project-governance](../shared-references/project-governance.md) for fixed evidence,
+profiles and controlled migration; missing profiles retain compat-v1.
+<!-- EI-GOVERNANCE:END -->
+
+
 # Meta-Apply: the privileged landing gate for self-modification patches
 
 This skill exists to enforce a **privilege boundary**. Producers like
 [`/meta-optimize`](../meta-optimize/SKILL.md) (and, later, `corpus-audit`) are
 **read-only** — no `Write`/`Edit`, no apply step; they can only *stage* candidate patches
-under `.aris/meta/pending/`. **This skill is the only place a staged patch becomes a real
+under `.ei/meta/pending/`. **This skill is the only place a staged patch becomes a real
 change to the corpus.** Splitting "propose" from "land" across two skills with different
 tool grants is what makes "a loop cannot apply its own patch" structural rather than a
 sentence the producer is asked to obey.
@@ -56,15 +63,15 @@ never silently apply:
 ### Step 0: Load staging + resolve the helper
 
 ```bash
-PENDING=".aris/meta/pending"
+PENDING=".ei/meta/pending"
 [ -d "$PENDING" ] || { echo "Nothing staged. Run /meta-optimize first."; exit 0; }
 echo "Staged:"; cat "$PENDING/manifest.jsonl"
 ```
 
 Resolve `provenance.py` via the 4-layer chain in
 [`integration-contract.md`](../shared-references/integration-contract.md) §2
-(`.aris/tools/` → `tools/` → `$ARIS_REPO/tools/` → `$ARIS_REPO/tools/` via
-`~/.aris/repo`).
+(`.ei/tools/` → `tools/` → `$ARIS_REPO/tools/` → `$ARIS_REPO/tools/` via
+`~/.ei/repo`).
 
 ### Step 1: Jury-at-landing for each requested patch
 
@@ -81,7 +88,7 @@ per patch (`PASS → eligible` / `KILL → refused: <reason>`).
 
 For each patch that PASSED Step 1 **and** was named by the user:
 
-1. **Back up** the target to `.aris/meta/backups/<date>/<target>` (use the **Write** tool
+1. **Back up** the target to `.ei/meta/backups/<date>/<target>` (use the **Write** tool
    to copy contents; corpus paths are not Bash-writable when `corpus_write_guard` is
    active — and the applier should use Write/Edit for corpus mutation anyway).
 2. **Apply** the diff by **Edit/Write** on the target corpus file.
@@ -94,13 +101,13 @@ For each patch that PASSED Step 1 **and** was named by the user:
    at the moment the authorization record is written. The stamp is a **process receipt**
    (who authored, who acquitted-at-landing, content hash) — NOT a claim the change is
    correct.
-4. **Log** to `.aris/meta/optimizations.jsonl`:
+4. **Log** to `.ei/meta/optimizations.jsonl`:
    `{ts, patch, target, author_model, reviewer_model, jury_thread_id, applied: true}`.
 
 ### Step 3: Report
 
 Per patch: `LANDED <target>` (+ backup path + provenance sidecar) or
-`REFUSED <patch>: <reason>`. Remove landed patches from `.aris/meta/pending/`. Remind the
+`REFUSED <patch>: <reason>`. Remove landed patches from `.ei/meta/pending/`. Remind the
 user a landed patch is revertable from its backup, and to test the changed skill next run.
 
 ## Provenance is a receipt, not an acquittal of correctness
@@ -130,12 +137,12 @@ auto-curator reads it as evidence):
   corpus; the jury-at-landing + stamp discipline above is what governs Write/Edit
   mutations (that discipline is procedure, not a hook-enforced mechanism).
 - **Back up before every mutation.** Reversible by construction.
-- **Only land staged patches.** Applies what producers staged in `.aris/meta/pending/`;
+- **Only land staged patches.** Applies what producers staged in `.ei/meta/pending/`;
   invents nothing of its own.
 
 ## Review Tracing
 
 Save each landing-jury codex call's trace per
 [`review-tracing.md`](../shared-references/review-tracing.md) to
-`.aris/traces/meta-apply/<date>_run<NN>/` — the acquittal that landed a corpus change must
+`.ei/traces/meta-apply/<date>_run<NN>/` — the acquittal that landed a corpus change must
 be forensically recoverable.

@@ -24,13 +24,13 @@
 # New-skill policy (-Apply only; dry-run always just reports):
 #   default (TTY, no policy switch): each new upstream skill is confirmed one
 #                                    by one [y/N]; a decline is remembered in
-#                                    <local>\.aris-declined.txt and never re-asked
+#                                    <local>\.ei-declined.txt and never re-asked
 #   -AddNew:  install every new skill (does NOT un-decline previously declined
-#             skills — edit/clear .aris-declined.txt for that)
+#             skills — edit/clear .ei-declined.txt for that)
 #   -SkipNew: skip every new skill without recording a decline (same as the
 #             automatic behavior when there is no interactive console)
 #
-# On successful -Apply, writes $env:USERPROFILE\.aris\repo <- this repo's root
+# On successful -Apply, writes $env:USERPROFILE\.ei\repo <- this repo's root
 # (helper resolution chain layer 4, #366) so copy-installed skills can find tools\.
 
 [CmdletBinding(DefaultParameterSetName = 'Global')]
@@ -53,6 +53,38 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
+
+$EiOriginalParameters = @{} + $PSBoundParameters
+function Invoke-EiNamespaceGuard {
+    param([string]$Root, [bool]$Mutating)
+    $python = Get-Command python3 -ErrorAction SilentlyContinue
+    if (-not $python) { $python = Get-Command python -ErrorAction SilentlyContinue }
+    if (-not $python) { throw 'Python is required for the EvoInquiry namespace resolver' }
+    $resolver = Join-Path $PSScriptRoot 'state_paths.py'
+    $state = & $python.Source $resolver --root $Root --mode write
+    if ($LASTEXITCODE -ne 0) { throw 'State namespace conflict; use project-governance migration' }
+    if (-not $Mutating -or $env:EI_POWERSHELL_GUARD -eq $Root) { return $true }
+    $forward = New-Object System.Collections.Generic.List[string]
+    foreach ($argument in @('-NoProfile', '-File', $PSCommandPath)) { $forward.Add($argument) }
+    foreach ($key in ($EiOriginalParameters.Keys | Sort-Object)) {
+        $value = $EiOriginalParameters[$key]
+        if ($value -is [System.Management.Automation.SwitchParameter]) {
+            if ($value.IsPresent) { $forward.Add('-' + $key) }
+        } else {
+            $forward.Add('-' + $key)
+            foreach ($item in @($value)) { $forward.Add([string]$item) }
+        }
+    }
+    $previous = $env:EI_POWERSHELL_GUARD
+    try {
+        $env:EI_POWERSHELL_GUARD = $Root
+        $engine = (Get-Process -Id $PID).Path
+        & $python.Source $resolver --root $Root --guard-command -- $engine @forward | Out-Host
+        if ($LASTEXITCODE -ne 0) { throw 'Guarded operation failed; inspect the preceding diagnostic' }
+    } finally { $env:EI_POWERSHELL_GUARD = $previous }
+    return $false
+}
+
 
 if ($AddNew -and $SkipNew) {
     Write-Host "Error: -AddNew and -SkipNew are mutually exclusive" -ForegroundColor Red
@@ -141,7 +173,7 @@ if ($PSCmdlet.ParameterSetName -eq 'Project') {
 
 # ─── New-skill confirmation state (declined list + group catalog lookup) ──────
 $CatalogPath = Join-Path $RepoRoot 'tools\skill-groups.tsv'
-$DeclinedFile = Join-Path $LocalDir '.aris-declined.txt'
+$DeclinedFile = Join-Path $LocalDir '.ei-declined.txt'
 
 function Test-Declined {
     param([string]$Name)
@@ -160,23 +192,20 @@ function Get-CatalogGroup {
 }
 
 # Layer-4 helper resolution (#366): a global pointer file lets globally/copy-
-# installed skills find $env:USERPROFILE\.aris\repo without a per-project install.
+# installed skills find $env:USERPROFILE\.ei\repo without a per-project install.
 function Ensure-GlobalPointer {
-    # $env:USERPROFILE is the Windows PowerShell convention; fall back to $HOME
-    # so this also works under pwsh on non-Windows hosts (e.g. CI, WSL testing).
     $userProfile = if ($env:USERPROFILE) { $env:USERPROFILE } else { $HOME }
-    $pointerDir = Join-Path $userProfile '.aris'
-    $pointer = Join-Path $pointerDir 'repo'
-    try {
-        if (-not (Test-Path $pointerDir)) { New-Item -ItemType Directory -Path $pointerDir -Force | Out-Null }
-    } catch { return }
-    $cur = $null
-    if (Test-Path $pointer) { $cur = (Get-Content -Path $pointer -Raw -ErrorAction SilentlyContinue) }
-    if ($cur -and $cur.Trim() -eq $RepoRoot) { return }
-    $tmp = "$pointer.tmp.$PID"
-    Set-Content -Path $tmp -Value $RepoRoot
-    Move-Item -Path $tmp -Destination $pointer -Force
+    if ($env:EI_POWERSHELL_GUARD -and
+        [IO.Path]::GetFullPath($env:EI_POWERSHELL_GUARD) -eq [IO.Path]::GetFullPath($userProfile)) { return }
+    $python = Get-Command python3 -ErrorAction SilentlyContinue
+    if (-not $python) { $python = Get-Command python -ErrorAction SilentlyContinue }
+    if (-not $python) { Write-Warning 'Optional repository pointer needs Python'; return }
+    & $python.Source (Join-Path $PSScriptRoot 'state_paths.py') --root $userProfile --set-repo-pointer $RepoRoot
+    if ($LASTEXITCODE -ne 0) { Write-Warning 'Optional global pointer was not updated; reconcile its namespace' }
 }
+
+$EiStateRoot = if ($ProjectRoot) { $ProjectRoot } elseif ($env:USERPROFILE) { $env:USERPROFILE } else { $HOME }
+if (-not (Invoke-EiNamespaceGuard $EiStateRoot ([bool]$Apply))) { exit 0 }
 
 # ─── Refuse to operate on symlinked installs ──────────────────────────────────
 if (Test-Path $LocalDir) {
@@ -200,7 +229,7 @@ if (Test-Path $LocalDir) {
 # the root-junction check above can't see a managed flat install. The manifest
 # is the authoritative marker — refuse project-mode updates when one exists.
 if ($ProjectPath) {
-    $manifest = Join-Path $ProjectRoot '.aris/installed-skills.txt'
+    $manifest = Join-Path $ProjectRoot '.ei/installed-skills.txt'
     if (Test-Path $manifest) {
         Write-Host ""
         Write-Host "✗ Managed install detected (manifest: $manifest)" -ForegroundColor Red
@@ -372,7 +401,7 @@ function Show-MergeReport {
 }
 
 # New-skill three-state policy: interactive confirm / -AddNew / -SkipNew.
-# A skill already in .aris-declined.txt is never re-asked and never installed —
+# A skill already in .ei-declined.txt is never re-asked and never installed —
 # not even by -AddNew (only editing/clearing the declined file restores it).
 function Resolve-NewSkillPolicy {
     param([string[]]$NewList, [string]$Policy)

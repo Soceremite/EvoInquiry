@@ -5,6 +5,13 @@ argument-hint: "[description-of-diagram]"
 allowed-tools: Bash(*), Read, Write, Edit, mcp__codex__codex
 ---
 
+<!-- EI-GOVERNANCE:BEGIN -->
+Resolve runtime state through tools/state_paths.py before .ei operations. Use
+[project-governance](../shared-references/project-governance.md) for fixed evidence,
+profiles and controlled migration; missing profiles retain compat-v1.
+<!-- EI-GOVERNANCE:END -->
+
+
 # FigureSpec: Deterministic JSON → SVG Figure Generation
 
 Generate publication-quality **architecture diagrams**, **workflow pipelines**, **audit cascades**, and **system topology** figures as editable SVG vector graphics using a deterministic JSON → SVG renderer.
@@ -39,7 +46,7 @@ Phase 3.1 (Arch C) move: the canonical implementation now lives at
 `skills/figure-spec/scripts/figure_renderer.py` (this SKILL's own
 `scripts/` subdirectory). A backwards-compatible shim at
 `tools/figure_renderer.py` forwards to the canonical file via
-`os.execv`, so existing users with `.aris/tools/figure_renderer.py`
+`os.execv`, so existing users with `.ei/tools/figure_renderer.py`
 or a manually copied `tools/figure_renderer.py` keep working
 unchanged.
 
@@ -58,20 +65,20 @@ fi
 # Layers 1-4: shared-runtime chain (legacy compatibility + non-CC hosts).
 if [ -z "$FIGURE_RENDERER" ]; then
   cd "$(git rev-parse --show-toplevel 2>/dev/null || pwd)" || exit 1
-  if [ -z "${ARIS_REPO:-}" ] && [ -f .aris/installed-skills.txt ]; then
-      ARIS_REPO=$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .aris/installed-skills.txt 2>/dev/null) || true
+  if [ -z "${ARIS_REPO:-}" ] && [ -f .ei/installed-skills.txt ]; then
+      ARIS_REPO=$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .ei/installed-skills.txt 2>/dev/null) || true
   fi
-  if [ -z "${ARIS_REPO:-}" ] && [ -f "$HOME/.aris/repo" ]; then
-      ARIS_REPO=$(cat "$HOME/.aris/repo" 2>/dev/null) || true
+  if [ -z "${ARIS_REPO:-}" ] && [ -f "$HOME/.ei/repo" ]; then
+      ARIS_REPO=$(cat "$HOME/.ei/repo" 2>/dev/null) || true
   fi
-  FIGURE_RENDERER=".aris/tools/figure_renderer.py"
+  FIGURE_RENDERER=".ei/tools/figure_renderer.py"
   [ -f "$FIGURE_RENDERER" ] || FIGURE_RENDERER="tools/figure_renderer.py"
   [ -f "$FIGURE_RENDERER" ] || { [ -n "${ARIS_REPO:-}" ] && FIGURE_RENDERER="$ARIS_REPO/tools/figure_renderer.py"; }
   [ -f "$FIGURE_RENDERER" ] || FIGURE_RENDERER=""
 fi
 [ -z "$FIGURE_RENDERER" ] && {
-  echo "ERROR: figure_renderer.py not resolved (layer 0: \$CLAUDE_SKILL_DIR/scripts/; layers 1-4: .aris/tools/, tools/, \$ARIS_REPO/tools/, \$ARIS_REPO/tools/ via ~/.aris/repo)." >&2
-  echo "       /figure-spec cannot produce SVG output. Fix: rerun bash tools/install_aris.sh or smart_update.sh (refreshes ~/.aris/repo), or copy the helper from \$ARIS_REPO/skills/figure-spec/scripts/." >&2
+  echo "ERROR: figure_renderer.py not resolved (layer 0: \$CLAUDE_SKILL_DIR/scripts/; layers 1-4: .ei/tools/, tools/, \$ARIS_REPO/tools/, \$ARIS_REPO/tools/ via ~/.ei/repo)." >&2
+  echo "       /figure-spec cannot produce SVG output. Fix: rerun bash tools/install_aris.sh or smart_update.sh (refreshes ~/.ei/repo), or copy the helper from \$ARIS_REPO/skills/figure-spec/scripts/." >&2
   exit 1
 }
 ```
@@ -259,4 +266,4 @@ Three-stage horizontal cascade with inputs feeding in from top, outputs exiting 
 
 ## Review Tracing
 
-After each `mcp__codex__codex` or `mcp__codex__codex-reply` reviewer call, save the trace following `shared-references/review-tracing.md` (Policy C — forensic; never silently skip). Use `save_trace.sh` (resolved per the chain in `shared-references/integration-contract.md` §2) or write files directly to `.aris/traces/<skill>/<date>_run<NN>/`. Respect the `--- trace:` parameter (default: `full`).
+After each `mcp__codex__codex` or `mcp__codex__codex-reply` reviewer call, save the trace following `shared-references/review-tracing.md` (Policy C — forensic; never silently skip). Use `save_trace.sh` (resolved per the chain in `shared-references/integration-contract.md` §2) or write files directly to `.ei/traces/<skill>/<date>_run<NN>/`. Respect the `--- trace:` parameter (default: `full`).

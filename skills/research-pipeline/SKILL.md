@@ -5,6 +5,14 @@ argument-hint: "[research-direction] [— resume <run_id>]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, WebSearch, WebFetch, Skill, mcp__codex__codex, mcp__codex__codex-reply
 ---
 
+<!-- EI-GOVERNANCE:BEGIN -->
+Resolve runtime state through tools/state_paths.py before .ei operations. Use
+[project-governance](../shared-references/project-governance.md) for fixed evidence,
+profiles and controlled migration; missing profiles retain compat-v1.
+Keep the existing run_state.py coordinator and IDs. Attach artifact_refs, execution_refs and spec_refs to original phases without changing gate semantics; namespace migration and artifact layout selection remain separate.
+<!-- EI-GOVERNANCE:END -->
+
+
 # Full Research Pipeline: Idea → Experiments → Submission
 
 > ⏱ **External cadence: non-judgmental heartbeat only.** An overnight `/loop` /
@@ -20,7 +28,7 @@ allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, WebSearch, WebFetch, Skil
 > `loop` type (so a silent death surfaces as STALE); unregister on completion. The
 > watchdog only detects — it never acquits. Each tick also record the new-finding count
 > via the `iteration_log.py` helper (resolve through the canonical
-> `.aris/tools → tools → $ARIS_REPO/tools → $ARIS_REPO/tools via ~/.aris/repo`
+> `.ei/tools → tools → $ARIS_REPO/tools → $ARIS_REPO/tools via ~/.ei/repo`
 > chain, integration-contract §2; warn-and-skip if unresolved):
 > `python3 "$ITER_LOG" note <root> <run_id> <phase> <n>`. On the returned
 > `pivot=structural` (stale ≥ 2) the nudge must change a STRUCTURAL constraint and pick an
@@ -42,7 +50,7 @@ End-to-end autonomous research workflow for: **$ARGUMENTS**
 - **VENUE = (unset)** — Target venue for paper writing; bound only when Stage 5 begins. Options: `ICLR`, `NeurIPS`, `ICML`, `CVPR`, `ACL`, `AAAI`, `ACM`, `IEEE_CONF`, `IEEE_JOURNAL`. No default: a missing venue defers paper writing — it never blocks Stages 1-4 and is never guessed.
 - **RENDER_HTML = true** — When `true` (default), auto-render `NARRATIVE_REPORT.md` to HTML at Stage 4 completion via `/render-html`. Uses `--no-review` (this is an internal handoff doc to `/paper-writing`, not a reviewer-facing final artifact — the upstream Stage 3 auto-review loop already cross-model-reviewed the claims). Set `false` to skip, or pass `— render html: false`. **Non-blocking**: if `/render-html` fails or Codex MCP is unavailable, log the failure and continue — the HTML view is a nice-to-have, not a Stage 4 prerequisite.
 
-- **RESUMABLE = true** — When `true` (default), the pipeline records per-stage state to `.aris/runs/<run_id>.json` so a crashed/interrupted run can resume via `/research-pipeline — resume <run_id>` instead of restarting. Stage status splits `done` (executor finished writing) from `accepted` (the stage's cross-model gate / deterministic verifier passed); resume re-validates any `done`-but-unaccepted stage. See `shared-references/resumable-runs.md`.
+- **RESUMABLE = true** — When `true` (default), the pipeline records per-stage state to `.ei/runs/<run_id>.json` so a crashed/interrupted run can resume via `/research-pipeline — resume <run_id>` instead of restarting. Stage status splits `done` (executor finished writing) from `accepted` (the stage's cross-model gate / deterministic verifier passed); resume re-validates any `done`-but-unaccepted stage. See `shared-references/resumable-runs.md`.
 
 > 💡 Override via argument, e.g., `/research-pipeline "topic" — AUTO_PROCEED: false, human checkpoint: true, difficulty: nightmare, code review: false, base repo: https://github.com/org/project, auto_write: true, venue: NeurIPS`.
 
@@ -87,8 +95,8 @@ This pipeline is long and can fail mid-run; it tracks per-stage state via
 Skip this whole section if `RESUMABLE = false`.
 
 Resolve the helper via the canonical chain (integration-contract §2):
-`.aris/tools/run_state.py` → `tools/run_state.py` → `$ARIS_REPO/tools/run_state.py`
-→ `$ARIS_REPO/tools/run_state.py` via `~/.aris/repo`
+`.ei/tools/run_state.py` → `tools/run_state.py` → `$ARIS_REPO/tools/run_state.py`
+→ `$ARIS_REPO/tools/run_state.py` via `~/.ei/repo`
 (warn-and-skip if unresolved — never block the pipeline).
 
 **Phases**, in order: `idea-discovery, experiment-bridge, auto-review-loop, summary, paper-writing`.
@@ -133,10 +141,10 @@ findings and changes *direction*, never *judges quality*.
 Resolve the helper via the canonical chain (integration-contract §2), warn-and-skip
 if unresolved (never block the run):
 ```bash
-ITER_LOG=".aris/tools/iteration_log.py"
+ITER_LOG=".ei/tools/iteration_log.py"
 [ -f "$ITER_LOG" ] || ITER_LOG="tools/iteration_log.py"
 [ -f "$ITER_LOG" ] || ITER_LOG="${ARIS_REPO:-}/tools/iteration_log.py"
-[ -f "$ITER_LOG" ] || { [ -z "${ARIS_REPO:-}" ] && [ -f "$HOME/.aris/repo" ] && ARIS_REPO="$(cat "$HOME/.aris/repo" 2>/dev/null)"; } || true
+[ -f "$ITER_LOG" ] || { [ -z "${ARIS_REPO:-}" ] && [ -f "$HOME/.ei/repo" ] && ARIS_REPO="$(cat "$HOME/.ei/repo" 2>/dev/null)"; } || true
 [ -f "$ITER_LOG" ] || ITER_LOG="${ARIS_REPO:-}/tools/iteration_log.py"
 [ -f "$ITER_LOG" ] || { echo "WARN: iteration_log.py not resolved; skipping stall detection" >&2; ITER_LOG=""; }
 ```

@@ -31,7 +31,7 @@ REQUIRE a verdict id + reviewer AND that
 the phase already be `done` (use --force to override) — you cannot acquit a phase
 that never ran, nor mark one accepted without recording who acquitted it.
 
-State at ``<root>/.aris/runs/<run_id>.json`` (file-based, no DB). Single-writer
+State at ``<root>/.ei/runs/<run_id>.json`` (file-based, no DB). Single-writer
 contract (one orchestrator per run); a best-effort flock guards against a
 concurrent resumer. See shared-references/resumable-runs.md.
 """
@@ -47,6 +47,13 @@ from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Iterator, Optional
+
+try:
+    from .state_paths import resolve_state_root, state_writer
+    from .registry_common import verify_ref
+except ImportError:
+    from state_paths import resolve_state_root, state_writer
+    from registry_common import verify_ref
 
 try:
     from provenance import model_family
@@ -80,11 +87,11 @@ def _now() -> str:
     return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
-def _run_path(root: str, run_id: str) -> Path:
+def _run_path(root: str, run_id: str, mode: str = 'read') -> Path:
     safe = "".join(c for c in run_id if c.isalnum() or c in "-_.")
     if not safe or safe != run_id or run_id in (".", ".."):
         raise ValueError(f"invalid run_id {run_id!r} (use [A-Za-z0-9-_.])")
-    return Path(root) / ".aris" / "runs" / f"{run_id}.json"
+    return resolve_state_root(root, mode) / "runs" / f"{run_id}.json"
 
 
 @contextmanager
@@ -94,7 +101,14 @@ def _lock(root: str, run_id: str) -> Iterator[None]:
     Single-writer is the contract; this only guards against a stray concurrent
     resumer. No-op where fcntl is unavailable.
     """
-    p = _run_path(root, run_id)
+    with state_writer(root):
+        with _run_file_lock(root, run_id):
+            yield
+
+
+@contextmanager
+def _run_file_lock(root: str, run_id: str) -> Iterator[None]:
+    p = _run_path(root, run_id, 'write')
     p.parent.mkdir(parents=True, exist_ok=True)
     if fcntl is None:
         yield
@@ -111,8 +125,8 @@ def _lock(root: str, run_id: str) -> Iterator[None]:
             fh.close()
 
 
-def _load(root: str, run_id: str) -> dict:
-    p = _run_path(root, run_id)
+def _load(root: str, run_id: str, mode: str = 'read') -> dict:
+    p = _run_path(root, run_id, mode)
     if not p.exists():
         raise FileNotFoundError(f"no run state at {p}")
     return json.loads(p.read_text(encoding="utf-8"))
@@ -197,9 +211,25 @@ def record_gate_result(
         return state
 
 
-def load_run(root: str, run_id: str) -> dict:
+def load_run(root: str, run_id: str, *, legacy_read: bool = False) -> dict:
     """Return the persisted state for a run without mutating it."""
-    return _load(root, run_id)
+    return _load(root, run_id, 'legacy-read' if legacy_read else 'read')
+
+
+def attach_references(root: str, run_id: str, phase: str, *, artifact_refs=(), execution_refs=(), spec_refs=()) -> dict:
+    """Attach fixed identities without changing phase status, policy or review provenance."""
+    for reference in [*artifact_refs, *execution_refs, *spec_refs]:
+        verify_ref(root, reference)
+    with _lock(root, run_id):
+        state = _load(root, run_id)
+        item = _find_phase(state, phase)
+        for key, refs in [('artifact_refs', artifact_refs), ('execution_refs', execution_refs), ('spec_refs', spec_refs)]:
+            collection = item.setdefault(key, [])
+            for reference in refs:
+                if reference not in collection:
+                    collection.append(reference)
+        _save(root, run_id, state)
+        return state
 
 
 def _find_phase(state: dict, phase: str) -> dict:
@@ -365,8 +395,9 @@ def main() -> int:
     s = sub.add_parser("accept"); s.add_argument("root"); s.add_argument("run_id"); s.add_argument("phase"); s.add_argument("--verdict-id", required=True); s.add_argument("--reviewer", required=True); s.add_argument("--force", action="store_true")
     s = sub.add_parser("mark-provisional"); s.add_argument("root"); s.add_argument("run_id"); s.add_argument("phase"); s.add_argument("--verdict-id", required=True); s.add_argument("--reviewer", required=True); s.add_argument("--executor")
     s = sub.add_parser("resume"); s.add_argument("root"); s.add_argument("run_id")
-    s = sub.add_parser("status"); s.add_argument("root"); s.add_argument("run_id")
+    s = sub.add_parser("status"); s.add_argument("root"); s.add_argument("run_id"); s.add_argument('--legacy-read', action='store_true')
     s = sub.add_parser("list"); s.add_argument("root")
+    s = sub.add_parser('attach-refs'); s.add_argument('root'); s.add_argument('run_id'); s.add_argument('phase'); s.add_argument('--record', required=True)
     a = ap.parse_args()
 
     try:
@@ -385,11 +416,17 @@ def main() -> int:
             print(rp["phase"])  # machine-readable: the resume target phase name
             print(json.dumps(rp), file=sys.stderr)
         elif a.cmd == "status":
-            _print_status(_load(a.root, a.run_id))
+            _print_status(load_run(a.root, a.run_id, legacy_read=a.legacy_read))
         elif a.cmd == "list":
-            d = Path(a.root) / ".aris" / "runs"
+            d = resolve_state_root(a.root, 'read') / "runs"
             for f in sorted(d.glob("*.json")) if d.exists() else []:
                 print(f.stem)
+        elif a.cmd == 'attach-refs':
+            refs = json.loads(Path(a.record).read_text())
+            _print_status(attach_references(a.root, a.run_id, a.phase,
+                                           artifact_refs=refs.get('artifact_refs', []),
+                                           execution_refs=refs.get('execution_refs', []),
+                                           spec_refs=refs.get('spec_refs', [])))
     except (FileNotFoundError, KeyError, ValueError) as e:
         print(f"error: {e}", file=sys.stderr); return 1
     return 0

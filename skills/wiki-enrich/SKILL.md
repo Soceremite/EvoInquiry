@@ -5,6 +5,13 @@ argument-hint: "[target: slug|missing|all] [--source alphaxiv|deepxiv|arxiv|auto
 allowed-tools: Bash(*), Read, Write, Edit, Glob, Grep, WebFetch
 ---
 
+<!-- EI-GOVERNANCE:BEGIN -->
+Resolve runtime state through tools/state_paths.py before .ei operations. Use
+[project-governance](../shared-references/project-governance.md) for fixed evidence,
+profiles and controlled migration; missing profiles retain compat-v1.
+<!-- EI-GOVERNANCE:END -->
+
+
 # Wiki Enrich: Fill Paper TODO Sections (Karpathy LLM-Wiki)
 
 Target: **$ARGUMENTS**
@@ -55,11 +62,11 @@ Resolve `$WIKI_ROOT` and `$WIKI_SCRIPT` (canonical chain — see `shared-referen
 cd "$(git rev-parse --show-toplevel 2>/dev/null || pwd)" || exit 1
 [ -d research-wiki/ ] || { echo "ERROR: research-wiki/ not found. Run /research-wiki init first." >&2; exit 1; }
 
-ARIS_REPO="${ARIS_REPO:-$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .aris/installed-skills.txt 2>/dev/null)}"
-if [ -z "${ARIS_REPO:-}" ] && [ -f "$HOME/.aris/repo" ]; then
-  ARIS_REPO=$(cat "$HOME/.aris/repo" 2>/dev/null) || true
+ARIS_REPO="${ARIS_REPO:-$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .ei/installed-skills.txt 2>/dev/null)}"
+if [ -z "${ARIS_REPO:-}" ] && [ -f "$HOME/.ei/repo" ]; then
+  ARIS_REPO=$(cat "$HOME/.ei/repo" 2>/dev/null) || true
 fi
-WIKI_SCRIPT=".aris/tools/research_wiki.py"
+WIKI_SCRIPT=".ei/tools/research_wiki.py"
 [ -f "$WIKI_SCRIPT" ] || WIKI_SCRIPT="tools/research_wiki.py"
 [ -f "$WIKI_SCRIPT" ] || { [ -n "${ARIS_REPO:-}" ] && WIKI_SCRIPT="$ARIS_REPO/tools/research_wiki.py"; }
 [ -f "$WIKI_SCRIPT" ] || { echo "ERROR: research_wiki.py not found." >&2; exit 1; }

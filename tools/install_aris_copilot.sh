@@ -9,7 +9,7 @@
 # no separate skill mirror is needed.
 #
 # Managed entries are tracked in:
-#   <project>/.aris/installed-skills-copilot.txt
+#   <project>/.ei/installed-skills-copilot.txt
 #
 # Usage:
 #   bash tools/install_aris_copilot.sh [project_path] [options]
@@ -33,7 +33,7 @@
 #   Y/n/e prompts); fresh install with --quiet/no TTY installs everything (old behavior).
 #   Reconcile keeps exactly what the manifest says is installed; NEW upstream
 #   skills need per-skill confirmation (declined ones are remembered in
-#   .aris/skills-declined-copilot.txt and never re-asked).
+#   .ei/skills-declined-copilot.txt and never re-asked).
 #
 # Options:
 #   --aris-repo PATH       override aris-repo discovery
@@ -52,13 +52,14 @@
 #   S6  Concurrent runs in same project serialize via mkdir lockdir.
 #   S7  Crash mid-apply leaves the previous manifest intact; rerun adopts.
 #   S8  Uninstall revalidates each managed symlink's target before removing.
-#   S9  If .aris/, .github/, or .github/skills/ is itself a symlink, abort.
+#   S9  If .ei/, .github/, or .github/skills/ is itself a symlink, abort.
 #   S10 Reject upstream entries that are symlinks to outside aris-repo.
 #   S11 Revalidate exact target match (lstat + readlink) before every mutation.
 #   S12 Temp files live in the same directory as the destination.
 #   S13 Skill names must match ^[A-Za-z0-9][A-Za-z0-9._-]*$ (slug regex).
 
 set -euo pipefail
+EI_ORIGINAL_ARGUMENTS=("$@")
 
 # --- Constants ---
 MANIFEST_VERSION="1"
@@ -66,8 +67,8 @@ MANIFEST_NAME="installed-skills-copilot.txt"
 MANIFEST_PREV_NAME="installed-skills-copilot.txt.prev"
 DECLINED_NAME="skills-declined-copilot.txt"
 CATALOG_REL="tools/skill-groups.tsv"
-GLOBAL_POINTER="$HOME/.aris/repo"
-ARIS_DIR_NAME=".aris"
+GLOBAL_POINTER="$HOME/.ei/repo"
+ARIS_DIR_NAME=".ei"
 LOCK_DIR_NAME=".install-copilot.lock.d"
 SKILLS_REL=".github/skills"
 AGENTS_REL=".github/agents"
@@ -102,7 +103,7 @@ while [[ $# -gt 0 ]]; do
     case "$1" in
         --reconcile) ACTION="reconcile"; shift ;;
         --uninstall) ACTION="uninstall"; shift ;;
-        --aris-repo) ARIS_REPO_OVERRIDE="${2:?--aris-repo requires path}"; shift 2 ;;
+        --aris-repo|--ei-repo) ARIS_REPO_OVERRIDE="${2:?--aris-repo requires path}"; shift 2 ;;
         --dry-run) DRY_RUN=true; shift ;;
         --quiet) QUIET=true; shift ;;
         --no-doc) NO_DOC=true; shift ;;
@@ -181,6 +182,8 @@ resolve_aris_repo() {
         parent="$(cd "$script_dir/.." && pwd)"
         if [[ -d "$parent/skills" && -f "$parent/AGENT_GUIDE.md" ]]; then
             p="$parent"
+        elif [[ -n "${EI_REPO:-}" && -d "$EI_REPO/skills" ]]; then
+            p="$(abs_path "$EI_REPO")"
         elif [[ -n "${ARIS_REPO:-}" && -d "$ARIS_REPO/skills" ]]; then
             p="$(abs_path "$ARIS_REPO")"
         else
@@ -509,12 +512,11 @@ filter_upstream_by_selection() {  # $1 = upstream file, $2 = selected file, $3 =
 # installed skills find $ARIS_REPO/tools without a per-project install.
 ensure_global_pointer() {
     $DRY_RUN && return 0
-    mkdir -p "$(dirname "$GLOBAL_POINTER")" 2>/dev/null || { warn "cannot create $(dirname "$GLOBAL_POINTER") — skipping global pointer"; return 0; }
-    local cur=""
-    [[ -f "$GLOBAL_POINTER" ]] && cur="$(cat "$GLOBAL_POINTER" 2>/dev/null || true)"
-    [[ "$cur" == "$ARIS_REPO" ]] && return 0
-    printf '%s\n' "$ARIS_REPO" > "$GLOBAL_POINTER.tmp.$$" && mv -f "$GLOBAL_POINTER.tmp.$$" "$GLOBAL_POINTER"
-    log "  + global pointer $GLOBAL_POINTER -> $ARIS_REPO"
+    python3 "$(cd "$(dirname "$0")" && pwd)/state_paths.py" --root "$HOME" --set-repo-pointer "$ARIS_REPO" || {
+        warn "optional global pointer was not updated; resolve its namespace conflict first"
+        return 0
+    }
+    log "  + global repository pointer -> $ARIS_REPO"
 }
 
 load_manifest() {
@@ -543,7 +545,13 @@ PROJECT_PATH="$(abs_path "$PROJECT_PATH")"
 ARIS_REPO="$(resolve_aris_repo)"
 PROJECT_SKILLS_DIR="$PROJECT_PATH/$SKILLS_REL"
 PROJECT_AGENTS_DIR="$PROJECT_PATH/$AGENTS_REL"
-PROJECT_ARIS_DIR="$PROJECT_PATH/$ARIS_DIR_NAME"
+PROJECT_ARIS_DIR="$(python3 "$(cd "$(dirname "$0")" && pwd)/state_paths.py" --root "$PROJECT_PATH" --mode write)" || die "state namespace conflict; use project-governance migration"
+# Keep the namespace lock across the complete mutation, including installer locks.
+# A dry-run resolves state but creates no guard lock or directory.
+if ! $DRY_RUN && ! $LIST_GROUPS && [[ "${EI_NAMESPACE_GUARD:-}" != "$PROJECT_PATH" ]]; then
+    EI_NAMESPACE_GUARD="$PROJECT_PATH" python3 "$(cd "$(dirname "$0")" && pwd)/state_paths.py" --root "$PROJECT_PATH" --guard-command -- bash "$0" "${EI_ORIGINAL_ARGUMENTS[@]}"
+    exit $?
+fi
 MANIFEST_PATH="$PROJECT_ARIS_DIR/$MANIFEST_NAME"
 MANIFEST_PREV="$PROJECT_ARIS_DIR/$MANIFEST_PREV_NAME"
 LOCK_DIR="$PROJECT_ARIS_DIR/$LOCK_DIR_NAME"
@@ -841,7 +849,7 @@ PYEOF
         return 0
     fi
 
-    tmp="$DOC_FILE.aris-copilot-tmp.$$"
+    tmp="$DOC_FILE.ei-copilot-tmp.$$"
     printf '%s' "$new_content" > "$tmp"
     current=""
     [[ -f "$DOC_FILE" ]] && current="$(cat "$DOC_FILE")"
@@ -887,7 +895,7 @@ PYEOF
         return 0
     fi
 
-    tmp="$DOC_FILE.aris-copilot-tmp.$$"
+    tmp="$DOC_FILE.ei-copilot-tmp.$$"
     printf '%s' "$new_content" > "$tmp"
     current="$(cat "$DOC_FILE")"
     if [[ "$current" != "$original" ]]; then

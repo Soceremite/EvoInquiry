@@ -1,0 +1,1 @@
+Only this isolated fixture may be changed. Local CPU commands are authorized. No network, GPU, package installation, external reviewer, notifications, or other projects. Complete the requested bounded task; do not create a full research workflow.

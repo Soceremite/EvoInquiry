@@ -872,7 +872,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument(
         "--blog-mode",
         action="store_true",
-        help="Enable blog/talk mode (adds .aris-blog body class, opt-in active-H2 highlighting)",
+        help="Enable blog/talk mode (adds .ei-blog body class, opt-in active-H2 highlighting)",
     )
     ap.add_argument(
         "--collapse-code-min",

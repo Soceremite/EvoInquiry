@@ -27,8 +27,8 @@ Gate policy (fixed):
   otherwise                    → NO_NEW_BLOCKER
 
 Pure stdlib. Artifacts:
-  <paper>/.aris/forensics/gate.json          (one per run; overwritten)
-  <paper>/.aris/forensics/obligations.json   (append-only ledger; never pruned)
+  <paper>/.ei/forensics/gate.json          (one per run; overwritten)
+  <paper>/.ei/forensics/obligations.json   (append-only ledger; never pruned)
 """
 import argparse
 import contextlib
@@ -115,7 +115,11 @@ def fingerprint(f):
 
 
 def _forensics_dir(paper_dir):
-    d = os.path.join(paper_dir, ".aris", "forensics")
+    try:
+        from .state_paths import resolve_state_root
+    except ImportError:
+        from state_paths import resolve_state_root
+    d = str(resolve_state_root(paper_dir, 'write') / 'forensics')
     os.makedirs(d, exist_ok=True)
     return d
 
@@ -135,7 +139,7 @@ _FINGERPRINT_EXTS = (".tex", ".bib", ".sty", ".cls", ".bst", ".inc", ".def",
 
 def _paper_fingerprint(paper_dir):
     """sha256 over the paper's compile inputs + deliverables (sorted relpaths,
-    dot-dirs like .aris/.git excluded, symlinked dirs followed) — binds a gate
+    dot-dirs like .ei/.git excluded, symlinked dirs followed) — binds a gate
     artifact to the content it audited, so a paper edited (or recompiled)
     AFTER a clean sweep reads as STALE (via the `fresh` subcommand) instead of
     inheriting the old gate."""

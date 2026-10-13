@@ -12,6 +12,8 @@ principles within the user's scope and this skill's existing outputs, review
 standards, and recovery contracts. Carry them into nested research tasks and
 reviewer briefs. Continue authorized work through its necessary steps; honor
 budgets, blocking checkpoints, and stopping conditions.
+
+For this stage, read [project-governance](../shared-references/project-governance.md). Pin the proof and executable evidence revisions examined; preserve actual review status and test limitations. Do not replace proof reasoning with schema checks.
 <!-- EVO-INQUIRY:END -->
 
 
@@ -413,7 +415,7 @@ separate axis carried by edges (`/result-to-claim`), never written into `status`
 Resolve the helper via the Codex-side chain (skip cleanly if unavailable; the audit is
 already complete):
 ```
-ARIS_REPO="${ARIS_REPO:-$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .aris/installed-skills-codex.txt 2>/dev/null)}"
+ARIS_REPO="${ARIS_REPO:-$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .ei/installed-skills-codex.txt 2>/dev/null)}"
 WIKI_SCRIPT=""
 [ -n "$ARIS_REPO" ] && [ -f "$ARIS_REPO/tools/research_wiki.py" ] && WIKI_SCRIPT="$ARIS_REPO/tools/research_wiki.py"
 [ -z "$WIKI_SCRIPT" ] && [ -f tools/research_wiki.py ] && WIKI_SCRIPT="tools/research_wiki.py"
@@ -496,7 +498,7 @@ The artifact conforms to the schema in `shared-references/assurance-contract.md`
     "main.tex":                 "sha256:...",
     "sections/4.theory.tex":    "sha256:..."
   },
-  "trace_path":       ".aris/traces/proof-checker/<date>_run<NN>/",
+  "trace_path":       ".ei/traces/proof-checker/<date>_run<NN>/",
   "thread_id":        "<codex mcp thread id>",
   "executor_model":   "codex-gpt-6-astra",
   "executor_family":  "openai",

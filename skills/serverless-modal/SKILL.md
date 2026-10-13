@@ -5,6 +5,13 @@ argument-hint: "[task-description]"
 allowed-tools: Bash(*), Read, Grep, Glob, Edit, Write
 ---
 
+<!-- EI-GOVERNANCE:BEGIN -->
+Resolve runtime state through tools/state_paths.py before .ei operations. Use
+[project-governance](../shared-references/project-governance.md) for fixed evidence,
+profiles and controlled migration; missing profiles retain compat-v1.
+<!-- EI-GOVERNANCE:END -->
+
+
 # Modal Cloud GPU — Training & Inference
 
 Task: $ARGUMENTS
@@ -19,7 +26,7 @@ Task: $ARGUMENTS
   Treat the `modal.Image` chain as the RENDERED form of the declarative env spec in
   `../shared-references/compute-env-contract.md` — same spec fields (base, ordered
   pip phases, env vars, smoke probes), same `env:<name>@<specHash>` ledger entry in
-  `.aris/compute/modal.md`, same three-tier validation before a long run.
+  `.ei/compute/modal.md`, same three-tier validation before a long run.
 
 **Best for**: Users without a local GPU who need to debug CUDA code, run small-scale tests, or iterate quickly on experiments. The $5 free tier (no card) is enough for code debugging; $30 (with card) covers most small-scale experiment runs.
 

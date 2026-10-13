@@ -35,7 +35,7 @@ budgets, blocking checkpoints, and stopping conditions.
 **Do NOT use** for:
 - LaTeX paper output — the final reader-facing artifact is PDF, not HTML.
 - `SKILL.md` files — those are internal LLM-facing protocol.
-- `.aris/traces/*` review traces — forensic debug, not human display.
+- `.ei/traces/*` review traces — forensic debug, not human display.
 - Every Markdown file in your project — only artifacts that benefit from sticky TOC, callouts, math, or score progressions.
 
 ## Core invariants
@@ -57,8 +57,8 @@ Resolve `$RENDER_HTML` with the Codex hybrid chain (managed project install, in-
 ```bash
 RENDER_HTML=""
 cd "$(git rev-parse --show-toplevel 2>/dev/null || pwd)" || exit 1
-if [ -z "${ARIS_REPO:-}" ] && [ -f .aris/installed-skills-codex.txt ]; then
-    ARIS_REPO=$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .aris/installed-skills-codex.txt 2>/dev/null) || true
+if [ -z "${ARIS_REPO:-}" ] && [ -f .ei/installed-skills-codex.txt ]; then
+    ARIS_REPO=$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .ei/installed-skills-codex.txt 2>/dev/null) || true
 fi
 [ -f ".agents/skills/render-html/scripts/render_html.py" ] && RENDER_HTML=".agents/skills/render-html/scripts/render_html.py"
 [ -z "$RENDER_HTML" ] && [ -f "skills/render-html/scripts/render_html.py" ] && RENDER_HTML="skills/render-html/scripts/render_html.py"
@@ -234,7 +234,7 @@ Verdict rules:
 **Save outputs**:
 
 1. Write the JSON verdict to `<out_path>.review.json` (sibling to the HTML).
-2. Save the raw codex trace to `.aris/traces/render-html/<YYYY-MM-DD>_run<NN>/review.{txt,json}` per `shared-references/review-tracing.md`.
+2. Save the raw codex trace to `.ei/traces/render-html/<YYYY-MM-DD>_run<NN>/review.{txt,json}` per `shared-references/review-tracing.md`.
 3. Print a one-line summary to the user: `verdict, N blocking, N warnings, trace: <path>`.
 
 **If `verdict == FAIL`**: the HTML is **NOT** a delivered review-passed view. Tell the user the blocking issues, point them at the source (fix MD or template, not the HTML), and re-render. Do not silently overwrite or mark as complete.

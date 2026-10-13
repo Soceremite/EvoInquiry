@@ -34,8 +34,8 @@ Audit target: **$ARGUMENTS**
 - **ANTI_AR_REPO = `https://github.com/wanshuiyin/Anti-Autoresearch.git`**
 - **ANTI_AR_COMMIT = `b47af6f983b38347b6d2110379e266400597cf66`** — never
   tracks HEAD; bumping is a reviewed change (mainline Pin-bump checklist).
-- **CLONE_DIR = `~/.aris/anti-autoresearch`** — host-neutral. An older clone at
-  `~/.claude/anti-autoresearch` is unused; move it and its `.aris_eval_ok_*`
+- **CLONE_DIR = `~/.ei/anti-autoresearch`** — host-neutral. An older clone at
+  `~/.claude/anti-autoresearch` is unused; move it and its `.ei_eval_ok_*`
   receipt to keep an offline deterministic-only run working — this pack's own
   mode — otherwise delete it whenever convenient.
 - **NO REVIEWER KNOBS** — and no `— effort:` mapping onto upstream settings.
@@ -43,9 +43,9 @@ Audit target: **$ARGUMENTS**
 ## Step 0 — Bootstrap the pin (identical to mainline)
 
 ```bash
-CLONE_DIR="$HOME/.aris/anti-autoresearch"
+CLONE_DIR="$HOME/.ei/anti-autoresearch"
 ANTI_AR_COMMIT="b47af6f983b38347b6d2110379e266400597cf66"
-mkdir -p "$HOME/.aris"
+mkdir -p "$HOME/.ei"
 if [ ! -d "$CLONE_DIR/.git" ]; then
     git clone --no-checkout https://github.com/wanshuiyin/Anti-Autoresearch.git "$CLONE_DIR"
 fi
@@ -58,7 +58,7 @@ git -C "$CLONE_DIR" reset --hard -q "$ANTI_AR_COMMIT" || { echo "FATAL: reset fa
 git -C "$CLONE_DIR" clean -ffdxq || { echo "FATAL: clean failed"; exit 1; }
 [ -z "$(git -C "$CLONE_DIR" status --porcelain)" ] || { echo "FATAL: tree not pristine"; exit 1; }
 # marker OUTSIDE the clone (a marker inside a tamperable tree proves nothing)
-MARKER="${CLONE_DIR}.aris_eval_ok_${ANTI_AR_COMMIT}"
+MARKER="${CLONE_DIR}.ei_eval_ok_${ANTI_AR_COMMIT}"
 if [ ! -f "$MARKER" ]; then
     ( cd "$CLONE_DIR" && python3 eval/run_eval.py ) || {
         echo "FATAL: upstream eval gate FAILED at pin — refusing an unvalidated pin"; exit 1; }

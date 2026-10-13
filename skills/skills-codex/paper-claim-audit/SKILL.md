@@ -12,6 +12,8 @@ principles within the user's scope and this skill's existing outputs, review
 standards, and recovery contracts. Carry them into nested research tasks and
 reviewer briefs. Continue authorized work through its necessary steps; honor
 budgets, blocking checkpoints, and stopping conditions.
+
+For this stage, read [project-governance](../shared-references/project-governance.md). Audit against fixed raw execution/result/report refs and preserve the actual verdict digest. Governance integrity and scientific fidelity are separate checks.
 <!-- EVO-INQUIRY:END -->
 
 
@@ -273,7 +275,7 @@ Skip if `RENDER_HTML = false` is set in `AGENTS.md` / `CLAUDE.md` or passed as `
 
 ## Review Tracing
 
-After each reviewer agent call, save the trace following `shared-references/review-tracing.md` (Policy C — forensic; never silently skip). Use `save_trace.sh` (resolved per the chain in `shared-references/integration-contract.md` §2) or write files directly to `.aris/traces/<skill>/<date>_run<NN>/`. Respect the `--- trace:` parameter (default: `full`).
+After each reviewer agent call, save the trace following `shared-references/review-tracing.md` (Policy C — forensic; never silently skip). Use `save_trace.sh` (resolved per the chain in `shared-references/integration-contract.md` §2) or write files directly to `.ei/traces/<skill>/<date>_run<NN>/`. Respect the `--- trace:` parameter (default: `full`).
 
 ## Submission Artifact Emission
 
@@ -297,7 +299,7 @@ The artifact conforms to the schema in `shared-references/assurance-contract.md`
     "sections/5.evidence.tex":               "sha256:...",
     "/abs/path/to/results/run_2026_04_19.json": "sha256:..."
   },
-  "trace_path":       ".aris/traces/paper-claim-audit/<date>_run<NN>/",
+  "trace_path":       ".ei/traces/paper-claim-audit/<date>_run<NN>/",
   "thread_id":        "<codex mcp thread id>",
   "executor_model":   "codex-gpt-6-astra",
   "executor_family":  "openai",

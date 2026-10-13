@@ -12,6 +12,8 @@ reviewer briefs. Continue authorized work through its necessary steps; honor
 budgets, blocking checkpoints, and stopping conditions.
 
 Ordinary interpretation, confounds, and missing-metric caveats belong in the analysis. For authorized analysis followed by planning, apply [task-scope](../shared-references/task-scope.md) and complete those outputs without an incidental formal claim workflow.
+
+For this stage, read [project-governance](../shared-references/project-governance.md). Resolve fixed execution/spec/environment/evaluator refs once. List included and excluded attempts and apply the predeclared slot aggregation; show failed/missing seeds and protocol/environment differences. current is navigation only.
 <!-- EVO-INQUIRY:END -->
 
 

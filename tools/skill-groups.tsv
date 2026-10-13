@@ -32,6 +32,9 @@ group	paper-visuals	配图与展示	插图、示意图、海报、幻灯片与�
 group	submission	投稿与基金	返修 rebuttal、重投 pipeline、基金申请书
 group	patent	专利	发明构建、权利要求、实施例到各国格式的专利流水线
 group	meta-utils	元工具与杂项	skill 语料自优化、通知、面试准备等
+group	project-governance	项目与环境治理	项目身份、固定证据、受控迁移与冻结环境消费者保护
+skill	project-governance	project-governance	-	项目治理、证据登记与 .ei 命名空间迁移
+skill	environment-maintenance	project-governance	-	环境复用、独立候选验证与消费者保护
 skill	arxiv	lit-search	-	arXiv 搜索/下载/入库
 skill	alphaxiv	lit-search	-	单篇论文快速解读(AlphaXiv 摘要)
 skill	deepxiv	lit-search	-	DeepXiv 渐进式论文阅读

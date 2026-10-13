@@ -4,11 +4,11 @@
 Covers the bug that left a real user's research-wiki/ empty for a week:
 caller skills hard-coded `python3 tools/research_wiki.py`, which silently
 fails when <project>/tools/ is not on disk (the post-install_aris.sh
-default — install_aris.sh creates .aris/tools symlink, not tools/).
+default — install_aris.sh creates .ei/tools symlink, not tools/).
 
 The fix is a 4-layer resolution chain documented in
 skills/shared-references/wiki-helper-resolution.md (layer 4, added in
-#366, is the global pointer file `~/.aris/repo` written by the
+#366, is the global pointer file `~/.ei/repo` written by the
 installer/updater — it covers a global copy-install with no
 project-local manifest). This test runs the chain in concrete
 scenarios and asserts the helper is reachable in each.
@@ -40,11 +40,11 @@ HELPER = REPO_ROOT / "tools" / "research_wiki.py"
 # exit the same way `awk` does.
 RESOLUTION_CHAIN = r'''
 cd "$(git rev-parse --show-toplevel 2>/dev/null || pwd)" || exit 1
-ARIS_REPO="${ARIS_REPO:-$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .aris/installed-skills.txt 2>/dev/null)}"
-if [ -z "${ARIS_REPO:-}" ] && [ -f "$HOME/.aris/repo" ]; then
-    ARIS_REPO=$(cat "$HOME/.aris/repo" 2>/dev/null) || true
+ARIS_REPO="${ARIS_REPO:-$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .ei/installed-skills.txt 2>/dev/null)}"
+if [ -z "${ARIS_REPO:-}" ] && [ -f "$HOME/.ei/repo" ]; then
+    ARIS_REPO=$(cat "$HOME/.ei/repo" 2>/dev/null) || true
 fi
-WIKI_SCRIPT=".aris/tools/research_wiki.py"
+WIKI_SCRIPT=".ei/tools/research_wiki.py"
 [ -f "$WIKI_SCRIPT" ] || WIKI_SCRIPT="tools/research_wiki.py"
 [ -f "$WIKI_SCRIPT" ] || { [ -n "${ARIS_REPO:-}" ] && WIKI_SCRIPT="$ARIS_REPO/tools/research_wiki.py"; }
 [ -f "$WIKI_SCRIPT" ] || exit 42
@@ -70,7 +70,7 @@ def _git_init(path: Path) -> None:
 def _run_chain(cwd: Path, env_overrides: dict | None = None, home: Path | None = None):
     env = os.environ.copy()
     env.pop("ARIS_REPO", None)
-    # Hermetic $HOME: a real dev machine may already have a ~/.aris/repo
+    # Hermetic $HOME: a real dev machine may already have a ~/.ei/repo
     # pointer file (written by install_aris.sh/smart_update.sh, #366),
     # which would make layer-4 fire unexpectedly in tests that are only
     # meant to exercise layers 1-3, or in the helper-missing test.
@@ -95,7 +95,7 @@ class ChainTest(unittest.TestCase):
         self.project = self.tmp / "project"
         self.project.mkdir()
         _git_init(self.project)
-        # Hermetic $HOME (no ~/.aris/repo) so layer 4 stays inert unless a
+        # Hermetic $HOME (no ~/.ei/repo) so layer 4 stays inert unless a
         # test explicitly writes the pointer file into it.
         self.home = self.tmp / "home"
         self.home.mkdir()
@@ -104,18 +104,18 @@ class ChainTest(unittest.TestCase):
         shutil.rmtree(self.tmp, ignore_errors=True)
 
     # ------------------------------------------------------------------
-    # Layer 1: .aris/tools/ symlink (post-install_aris.sh default)
+    # Layer 1: .ei/tools/ symlink (post-install_aris.sh default)
     # ------------------------------------------------------------------
     def test_layer1_symlink(self):
-        """Helper at .aris/tools/research_wiki.py -> <repo>/tools/."""
-        (self.project / ".aris").mkdir()
-        (self.project / ".aris" / "tools").symlink_to(REPO_ROOT / "tools")
+        """Helper at .ei/tools/research_wiki.py -> <repo>/tools/."""
+        (self.project / ".ei").mkdir()
+        (self.project / ".ei" / "tools").symlink_to(REPO_ROOT / "tools")
 
         result = _run_chain(self.project, home=self.home)
         self.assertEqual(result.returncode, 0, msg=result.stderr)
         self.assertEqual(
             result.stdout.splitlines()[0],
-            ".aris/tools/research_wiki.py",
+            ".ei/tools/research_wiki.py",
         )
         self.assertTrue((self.project / "research-wiki" / "query_pack.md").exists())
 
@@ -159,7 +159,7 @@ class ChainTest(unittest.TestCase):
     # Layer 3a: $ARIS_REPO env var
     # ------------------------------------------------------------------
     def test_layer3_aris_repo_env(self):
-        """ARIS_REPO env var points at the repo; no .aris/tools, no tools/."""
+        """ARIS_REPO env var points at the repo; no .ei/tools, no tools/."""
         result = _run_chain(
             self.project,
             env_overrides={"ARIS_REPO": str(REPO_ROOT)},
@@ -177,8 +177,8 @@ class ChainTest(unittest.TestCase):
     # ------------------------------------------------------------------
     def test_layer3_manifest_repo_root(self):
         """ARIS_REPO unset; install manifest contains repo_root field."""
-        (self.project / ".aris").mkdir()
-        manifest = self.project / ".aris" / "installed-skills.txt"
+        (self.project / ".ei").mkdir()
+        manifest = self.project / ".ei" / "installed-skills.txt"
         manifest.write_text(f"repo_root\t{REPO_ROOT}\n")
 
         result = _run_chain(self.project, home=self.home)
@@ -190,14 +190,14 @@ class ChainTest(unittest.TestCase):
 
     # ------------------------------------------------------------------
     # Layer 4: ARIS_REPO resolved from the global pointer file
-    # ~/.aris/repo (#366) — covers a global copy-install with no
-    # project-local manifest and no .aris/tools symlink.
+    # ~/.ei/repo (#366) — covers a global copy-install with no
+    # project-local manifest and no .ei/tools symlink.
     # ------------------------------------------------------------------
     def test_layer4_global_pointer_file(self):
         """No symlink, no tools/, no ARIS_REPO env, no manifest;
-        ~/.aris/repo points at the ARIS repo."""
-        (self.home / ".aris").mkdir()
-        (self.home / ".aris" / "repo").write_text(f"{REPO_ROOT}\n")
+        ~/.ei/repo points at the ARIS repo."""
+        (self.home / ".ei").mkdir()
+        (self.home / ".ei" / "repo").write_text(f"{REPO_ROOT}\n")
 
         result = _run_chain(self.project, home=self.home)
         self.assertEqual(result.returncode, 0, msg=result.stderr)

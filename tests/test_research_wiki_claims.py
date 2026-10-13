@@ -32,13 +32,13 @@ class TestClaimLayer(unittest.TestCase):
 
     def test_creates_page_with_proof_status_and_provenance(self):
         rw.add_claim(self.root, "thm-main-ub", "Main upper bound",
-                     status="verified", provenance=".aris/traces/proof-checker/r1",
+                     status="verified", provenance=".ei/traces/proof-checker/r1",
                      statement="X <= Y")
         fm = self._page("thm-main-ub").read_text()
         self.assertIn("node_type: claim", fm)
         self.assertIn("node_id: claim:thm-main-ub", fm)
         self.assertIn("status: verified", fm)
-        self.assertIn(".aris/traces/proof-checker/r1", fm)
+        self.assertIn(".ei/traces/proof-checker/r1", fm)
 
     def test_slug_honored_verbatim(self):
         rw.add_claim(self.root, "b1-sieve-lb", "Sieve lower bound", status="unproven")

@@ -4,7 +4,7 @@
 The profiles under <aris-repo>/.github/agents/ serve only auto-review-loop's
 Copilot backend, and .github/ is the user's namespace. So:
   - they are deployed only while auto-review-loop is installed
-  - --no-agent-profiles switches them off and is remembered in .aris/
+  - --no-agent-profiles switches them off and is remembered in .ei/
   - --agent-profiles undoes that
   - a re-run cleans up links this installer created earlier when the
     condition no longer holds (migration for installs made before #431),
@@ -30,8 +30,8 @@ class AgentProfilesTest(unittest.TestCase):
         self.project.mkdir()
         self.agents_dir = self.project / ".github" / "agents"
         self.link = self.agents_dir / PROFILE
-        self.ownership = self.project / ".aris" / "installed-agent-profiles.txt"
-        self.opt_out = self.project / ".aris" / "agent-profiles-opt-out"
+        self.ownership = self.project / ".ei" / "installed-agent-profiles.txt"
+        self.opt_out = self.project / ".ei" / "agent-profiles-opt-out"
 
     def tearDown(self):
         shutil.rmtree(self.tmp, ignore_errors=True)

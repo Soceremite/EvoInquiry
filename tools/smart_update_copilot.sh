@@ -14,7 +14,7 @@
 #
 # Customization detection:
 #   On first --apply, records SHA-256 checksums of installed files to
-#   <local>/.aris-copilot-baselines.sha256. On subsequent runs, a file is
+#   <local>/.ei-copilot-baselines.sha256. On subsequent runs, a file is
 #   considered "customized" if its current hash differs from the recorded
 #   baseline (i.e., user modified it after install). Files matching their
 #   baseline are safe to overwrite with the new upstream version.
@@ -22,7 +22,7 @@
 # New-skill policy (--apply only; dry-run always just reports):
 #   default (TTY, no policy flag): each new upstream skill is confirmed one by
 #                                  one [y/N]; a decline is remembered in
-#                                  <local>/.aris-declined.txt and never re-asked
+#                                  <local>/.ei-declined.txt and never re-asked
 #   --add-new:  install every new skill (does NOT un-decline previously
 #               declined skills)
 #   --skip-new: skip every new skill without recording a decline (same as the
@@ -34,10 +34,11 @@
 # shared-references is support content, not a selectable skill: it is always
 # kept in sync and never subject to this confirmation.
 #
-# On successful --apply, writes $HOME/.aris/repo <- this repo's root (helper
+# On successful --apply, writes $HOME/.ei/repo <- this repo's root (helper
 # resolution chain layer 4, #366) so copy-installed skills can find tools/.
 
 set -euo pipefail
+EI_UPDATE_ARGUMENTS=("$@")
 
 APPLY=false
 FORCE_AGENTS=false
@@ -79,7 +80,7 @@ BASE_UPSTREAM="$REPO_ROOT/skills"
 SKIP_DIRS_PATTERN="^(skills-codex|skills-codex-claude-review|skills-codex-gemini-review)$"
 
 # Baseline checksum file for hash-based customization detection
-BASELINE_FILE_NAME=".aris-copilot-baselines.sha256"
+BASELINE_FILE_NAME=".ei-copilot-baselines.sha256"
 
 resolve_upstream() {
     if $HAS_CUSTOM_UPSTREAM; then
@@ -150,7 +151,7 @@ copy_agent_atomically() {
     [[ ! -L "$target" ]] || die "refusing symlinked agent destination: $target"
     target_dir="$(dirname "$target")"
     refuse_symlink_components "$target_dir" "$LOCAL_AGENTS_ROOT"
-    tmp="$(mktemp "$target_dir/.aris-agent.XXXXXX")" || die "cannot create temporary agent file in $target_dir"
+    tmp="$(mktemp "$target_dir/.ei-agent.XXXXXX")" || die "cannot create temporary agent file in $target_dir"
     if ! cp "$source" "$tmp"; then
         rm -f "$tmp"
         die "cannot copy agent profile: $source"
@@ -197,12 +198,12 @@ record_baseline() {
 UPSTREAM="$(resolve_upstream)"
 LOCAL="$(resolve_local)"
 BASELINE_FILE="$LOCAL/$BASELINE_FILE_NAME"
-AGENT_BASELINE_FILE="$LOCAL/.aris-agent-baselines.sha256"
+AGENT_BASELINE_FILE="$LOCAL/.ei-agent-baselines.sha256"
 
 # Refuse if managed by install_aris_copilot.sh
 if [[ "$MODE" == "project" ]]; then
     local_project="$(cd "$PROJECT_PATH" 2>/dev/null && pwd)"
-    manifest="$local_project/.aris/installed-skills-copilot.txt"
+    manifest="$local_project/.ei/installed-skills-copilot.txt"
     if [[ -f "$manifest" ]]; then
         die "this project uses symlink install (manifest: $manifest). Use: git pull && bash tools/install_aris_copilot.sh \"$local_project\" --reconcile"
     fi
@@ -219,7 +220,7 @@ log ""
 
 # ─── New-skill confirmation state (declined list + group catalog lookup) ──────
 CATALOG_PATH="$REPO_ROOT/tools/skill-groups.tsv"
-DECLINED_FILE="$LOCAL/.aris-declined.txt"
+DECLINED_FILE="$LOCAL/.ei-declined.txt"
 
 is_declined() {  # $1 = skill name
     [[ -f "$DECLINED_FILE" ]] && grep -qxF "$1" "$DECLINED_FILE"
@@ -233,13 +234,19 @@ catalog_group_of() {  # $1 = skill name -> group id, or "?" if unknown
 
 # Layer-4 helper resolution (#366): a global pointer file lets globally/copy-
 # installed skills find $ARIS_REPO/tools without a per-project install.
+EI_UPDATE_ROOT="${PROJECT_ROOT:-${PROJECT_PATH:-$HOME}}"
+EI_UPDATE_STATE="$(python3 "$REPO_ROOT/tools/state_paths.py" --root "$EI_UPDATE_ROOT" --mode write)" || die "state namespace conflict; use project-governance migration"
+EI_UPDATE_ROOT="$(dirname "$EI_UPDATE_STATE")"
+if $APPLY && [[ "${EI_UPDATE_GUARD:-}" != "$EI_UPDATE_ROOT" ]]; then
+    EI_UPDATE_GUARD="$EI_UPDATE_ROOT" python3 "$REPO_ROOT/tools/state_paths.py" --root "$EI_UPDATE_ROOT" --guard-command -- bash "$0" "${EI_UPDATE_ARGUMENTS[@]}"
+    exit $?
+fi
+
 ensure_global_pointer() {
-    local pointer="$HOME/.aris/repo"
-    mkdir -p "$(dirname "$pointer")" 2>/dev/null || return 0
-    local cur=""
-    [[ -f "$pointer" ]] && cur="$(cat "$pointer" 2>/dev/null || true)"
-    [[ "$cur" == "$REPO_ROOT" ]] && return 0
-    printf '%s\n' "$REPO_ROOT" > "$pointer.tmp.$$" && mv -f "$pointer.tmp.$$" "$pointer"
+    python3 "$REPO_ROOT/tools/state_paths.py" --root "$HOME" --set-repo-pointer "$REPO_ROOT" || {
+        warn "optional global pointer was not updated; resolve its namespace conflict first"
+        return 0
+    }
 }
 
 # Build diff report
@@ -463,7 +470,7 @@ fi
 
 
 # ── New-skill three-state policy: interactive confirm / --add-new / --skip-new ──
-# A skill already in .aris-declined.txt is never re-asked and never installed —
+# A skill already in .ei-declined.txt is never re-asked and never installed —
 # not even by --add-new (only editing/clearing the declined file restores it).
 # shared-references is support content, not a selectable skill: always synced.
 TO_INSTALL_NEW=()

@@ -5,6 +5,13 @@ argument-hint: "[paper-dir-or-pdf] [— venue: ICLR, canvas: 185x90cm landscape,
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, WebFetch, WebSearch, AskUserQuestion, mcp__codex__codex
 ---
 
+<!-- EI-GOVERNANCE:BEGIN -->
+Resolve runtime state through tools/state_paths.py before .ei operations. Use
+[project-governance](../shared-references/project-governance.md) for fixed evidence,
+profiles and controlled migration; missing profiles retain compat-v1.
+<!-- EI-GOVERNANCE:END -->
+
+
 # Paper Poster (HTML): measurement-gated poster generation
 
 One HTML file styled for an exact print canvas (`@page { size: W H }`), rendered to PDF
@@ -299,7 +306,7 @@ phase; enables compact-recovery resume.
 ## Review tracing
 
 Save every codex reviewer call's trace per `shared-references/review-tracing.md` to
-`.aris/traces/paper-poster-html/<date>_run<NN>/` (audit + final threads, raw responses).
+`.ei/traces/paper-poster-html/<date>_run<NN>/` (audit + final threads, raw responses).
 
 ## Output contract
 

@@ -5,6 +5,15 @@ argument-hint: "[experiment-plan-path-or-topic]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, Skill, mcp__codex__codex, mcp__codex__codex-reply
 ---
 
+<!-- EI-GOVERNANCE:BEGIN -->
+Resolve runtime state through tools/state_paths.py before .ei operations. Use
+[project-governance](../shared-references/project-governance.md) for fixed evidence,
+profiles and controlled migration; missing profiles retain compat-v1.
+Before implementation, inspect reusable interfaces and their real callers/tests; update public docs/examples and contract tests together. Bind a recipe revision and record smoke, recovery and scientific reviews separately.
+For code/dependency changes, read [code-reuse-and-docs](../shared-references/code-reuse-and-docs.md) and [environment-stewardship](../shared-references/environment-stewardship.md).
+<!-- EI-GOVERNANCE:END -->
+
+
 # Workflow 1.5: Experiment Bridge
 
 Implement and deploy experiments from plan: **$ARGUMENTS**

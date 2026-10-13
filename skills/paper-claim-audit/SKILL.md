@@ -5,6 +5,14 @@ argument-hint: "[paper-directory]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, Skill, mcp__codex__codex
 ---
 
+<!-- EI-GOVERNANCE:BEGIN -->
+Resolve runtime state through tools/state_paths.py before .ei operations. Use
+[project-governance](../shared-references/project-governance.md) for fixed evidence,
+profiles and controlled migration; missing profiles retain compat-v1.
+Audit against fixed raw execution/result/report refs and preserve the actual verdict digest. Governance integrity and scientific fidelity are separate checks.
+<!-- EI-GOVERNANCE:END -->
+
+
 # Paper Claim Audit: Zero-Context Evidence Verification
 
 > 🔒 **Do not wrap this skill in `/loop`, `/schedule`, or `CronCreate`.** It is
@@ -266,7 +274,7 @@ Skip if `RENDER_HTML = false` is set in the project's `CLAUDE.md` or passed as `
 
 ## Review Tracing
 
-After each `mcp__codex__codex` or `mcp__codex__codex-reply` reviewer call, save the trace following `shared-references/review-tracing.md` (Policy C — forensic; never silently skip). Use `save_trace.sh` (resolved per the chain in `shared-references/integration-contract.md` §2) or write files directly to `.aris/traces/<skill>/<date>_run<NN>/`. Respect the `--- trace:` parameter (default: `full`).
+After each `mcp__codex__codex` or `mcp__codex__codex-reply` reviewer call, save the trace following `shared-references/review-tracing.md` (Policy C — forensic; never silently skip). Use `save_trace.sh` (resolved per the chain in `shared-references/integration-contract.md` §2) or write files directly to `.ei/traces/<skill>/<date>_run<NN>/`. Respect the `--- trace:` parameter (default: `full`).
 
 ## Submission Artifact Emission
 
@@ -290,7 +298,7 @@ The artifact conforms to the schema in `shared-references/assurance-contract.md`
     "sections/5.evidence.tex":               "sha256:...",
     "/abs/path/to/results/run_2026_04_19.json": "sha256:..."
   },
-  "trace_path":       ".aris/traces/paper-claim-audit/<date>_run<NN>/",
+  "trace_path":       ".ei/traces/paper-claim-audit/<date>_run<NN>/",
   "thread_id":        "<codex mcp thread id>",
   "reviewer_model":   "<resolved — the model that actually ran (target: gpt-6-astra)>",
   "reviewer_reasoning": "<resolved — the effort that actually ran (target: ultra)>",

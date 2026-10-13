@@ -95,6 +95,7 @@ def build(config):
                 "id": template.get("id", phase["name"]),
                 "cmd": template["cmd"],
                 "expected_output": template.get("expected_output"),
+                **({'execution': substitute(template['execution'], {})} if 'execution' in template else {}),
             })
         else:
             for values in expand_grid(grid):
@@ -105,6 +106,8 @@ def build(config):
                 if "expected_output" in template:
                     job["expected_output"] = substitute(
                         template["expected_output"], values)
+                if 'execution' in template:
+                    job['execution'] = substitute(template['execution'], values)
                 phase_out["jobs"].append(job)
         out["phases"].append(phase_out)
     return out

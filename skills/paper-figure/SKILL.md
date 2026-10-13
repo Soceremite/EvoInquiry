@@ -5,6 +5,14 @@ argument-hint: "[figure-plan-or-data-path]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, mcp__codex__codex, mcp__codex__codex-reply
 ---
 
+<!-- EI-GOVERNANCE:BEGIN -->
+Resolve runtime state through tools/state_paths.py before .ei operations. Use
+[project-governance](../shared-references/project-governance.md) for fixed evidence,
+profiles and controlled migration; missing profiles retain compat-v1.
+Pin the included result files, execution list and aggregation protocol. Do not redraw historical evidence by resolving current or selecting the best retry.
+<!-- EI-GOVERNANCE:END -->
+
+
 # Paper Figure: Publication-Quality Plots from Experiment Data
 
 Generate all figures and tables for a paper based on: **$ARGUMENTS**

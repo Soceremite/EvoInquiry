@@ -5,6 +5,13 @@ argument-hint: "<input.md> [--template academic|dashboard] [--out <path>] [--tit
 allowed-tools: Bash(*), Read, Write, mcp__codex__codex
 ---
 
+<!-- EI-GOVERNANCE:BEGIN -->
+Resolve runtime state through tools/state_paths.py before .ei operations. Use
+[project-governance](../shared-references/project-governance.md) for fixed evidence,
+profiles and controlled migration; missing profiles retain compat-v1.
+<!-- EI-GOVERNANCE:END -->
+
+
 # /render-html: Markdown → single-file HTML for human reading
 
 > **Markdown is for writers. HTML is for readers.** ARIS workflow nodes write Markdown (canonical, audit-trail-friendly, machine-parseable). `/render-html` turns *selected* artifacts into a polished single-file HTML view for the human who actually has to read them. The Markdown stays the source of truth.
@@ -25,7 +32,7 @@ allowed-tools: Bash(*), Read, Write, mcp__codex__codex
 **Do NOT use** for:
 - LaTeX paper output — the final reader-facing artifact is PDF, not HTML.
 - `SKILL.md` files — those are internal LLM-facing protocol.
-- `.aris/traces/*` review traces — forensic debug, not human display.
+- `.ei/traces/*` review traces — forensic debug, not human display.
 - Every Markdown file in your project — only artifacts that benefit from sticky TOC, callouts, math, or score progressions.
 
 ## Core invariants
@@ -53,16 +60,16 @@ fi
 # Layers 1-3: shared-runtime chain (non-CC hosts + manual installs).
 if [ -z "$RENDER_HTML" ]; then
   cd "$(git rev-parse --show-toplevel 2>/dev/null || pwd)" || exit 1
-  if [ -z "${ARIS_REPO:-}" ] && [ -f .aris/installed-skills.txt ]; then
-      ARIS_REPO=$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .aris/installed-skills.txt 2>/dev/null) || true
+  if [ -z "${ARIS_REPO:-}" ] && [ -f .ei/installed-skills.txt ]; then
+      ARIS_REPO=$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .ei/installed-skills.txt 2>/dev/null) || true
   fi
-  RENDER_HTML=".aris/skills/render-html/scripts/render_html.py"
+  RENDER_HTML=".ei/skills/render-html/scripts/render_html.py"
   [ -f "$RENDER_HTML" ] || RENDER_HTML="skills/render-html/scripts/render_html.py"
   [ -f "$RENDER_HTML" ] || { [ -n "${ARIS_REPO:-}" ] && RENDER_HTML="$ARIS_REPO/skills/render-html/scripts/render_html.py"; }
   [ -f "$RENDER_HTML" ] || RENDER_HTML=""
 fi
 [ -z "$RENDER_HTML" ] && {
-  echo "ERROR: render_html.py not resolved (layer 0: \$CLAUDE_SKILL_DIR/scripts/; layers 1-3: .aris/skills/render-html/scripts/, skills/render-html/scripts/, \$ARIS_REPO/skills/render-html/scripts/)." >&2
+  echo "ERROR: render_html.py not resolved (layer 0: \$CLAUDE_SKILL_DIR/scripts/; layers 1-3: .ei/skills/render-html/scripts/, skills/render-html/scripts/, \$ARIS_REPO/skills/render-html/scripts/)." >&2
   echo "       /render-html cannot produce HTML output. Fix: rerun bash tools/install_aris.sh, or copy from \$ARIS_REPO/skills/render-html/scripts/." >&2
   exit 1
 }
@@ -225,7 +232,7 @@ Verdict rules:
 **Save outputs**:
 
 1. Write the JSON verdict to `<out_path>.review.json` (sibling to the HTML).
-2. Save the raw codex trace to `.aris/traces/render-html/<YYYY-MM-DD>_run<NN>/review.{txt,json}` per `shared-references/review-tracing.md`.
+2. Save the raw codex trace to `.ei/traces/render-html/<YYYY-MM-DD>_run<NN>/review.{txt,json}` per `shared-references/review-tracing.md`.
 3. Print a one-line summary to the user: `verdict, N blocking, N warnings, trace: <path>`.
 
 **If `verdict == FAIL`**: the HTML is **NOT** a delivered review-passed view. Tell the user the blocking issues, point them at the source (fix MD or template, not the HTML), and re-render. Do not silently overwrite or mark as complete.

@@ -53,7 +53,7 @@ of an existing helper. Every caller invokes the same entrypoint,
 but every caller must also resolve **where** that entrypoint lives.
 On the Codex side the helper may be at:
 
-- `$ARIS_REPO/tools/<helper>` — env var or auto-resolved from `.aris/installed-skills-codex.txt`
+- `$ARIS_REPO/tools/<helper>` — env var or auto-resolved from `.ei/installed-skills-codex.txt`
 - `<project>/tools/<helper>` — manual copy or running from inside the ARIS repo
 - `~/.codex/skills/<skill-name>/<helper>` — Codex global install layout
 
@@ -73,8 +73,8 @@ project and could not find the helper.
 # file exists, `|| true` consumes a non-zero awk exit so chain
 # evaluation continues, and `${ARIS_REPO:-}` defaults to empty under
 # `set -u`.
-if [ -z "${ARIS_REPO:-}" ] && [ -f .aris/installed-skills-codex.txt ]; then
-    ARIS_REPO=$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .aris/installed-skills-codex.txt 2>/dev/null) || true
+if [ -z "${ARIS_REPO:-}" ] && [ -f .ei/installed-skills-codex.txt ]; then
+    ARIS_REPO=$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .ei/installed-skills-codex.txt 2>/dev/null) || true
 fi
 HELPER=""
 [ -n "${ARIS_REPO:-}" ] && [ -f "$ARIS_REPO/tools/<helper>" ] && HELPER="$ARIS_REPO/tools/<helper>"
@@ -309,7 +309,7 @@ helper should not have to guess what to backfill.
 
 - ✅ `/research-wiki sync --arxiv-ids 2501.12345,1706.03762`
 - ✅ `/research-wiki sync --from-file ids.txt`
-- ⚠️ `/research-wiki sync` that scans `.aris/traces/` for arxiv IDs —
+- ⚠️ `/research-wiki sync` that scans `.ei/traces/` for arxiv IDs —
      only as a best-effort secondary mode, not the primary UX, and
      clearly labeled as heuristic.
 
@@ -356,7 +356,7 @@ resolve actual paths via §2.
 
 | Integration | Predicate | Helper | Artifact | Checklist | Backfill | Verifier |
 |---|---|---|---|---|---|---|
-| Submission audits (`max`/`beast`) | `paper/.aris/assurance.txt = submission` | `verify_paper_audits.sh` + 3 audit skills emit JSON | `paper/PROOF_AUDIT.json`, `PAPER_CLAIM_AUDIT.json`, `CITATION_AUDIT.json` + `paper/.aris/audit-verifier-report.json` | Phase 6.0 pre-flight checklist | Rerun the failed audit | `verify_paper_audits.sh` (exit 1 blocks) |
+| Submission audits (`max`/`beast`) | `paper/.ei/assurance.txt = submission` | `verify_paper_audits.sh` + 3 audit skills emit JSON | `paper/PROOF_AUDIT.json`, `PAPER_CLAIM_AUDIT.json`, `CITATION_AUDIT.json` + `paper/.ei/audit-verifier-report.json` | Phase 6.0 pre-flight checklist | Rerun the failed audit | `verify_paper_audits.sh` (exit 1 blocks) |
 | Research wiki ingest | `research-wiki/` exists | `research_wiki.py ingest_paper` | `research-wiki/papers/<slug>.md` + `log.md` entry | Step in each paper-reading skill | `research_wiki.py sync --arxiv-ids …` | `verify_wiki_coverage.sh` (diagnostic) |
 
 When adding a new cross-skill integration, add a row to the table above

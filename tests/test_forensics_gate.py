@@ -43,7 +43,7 @@ def _gate(d, verdict, findings=(), executor="claude-opus-4-8"):
     rep = _report(os.path.join(d, "report.json"), verdict, findings)
     rc = fg.main(["evaluate", "--report", rep, "--paper-dir", d,
                   "--anti-ar-commit", "d8f510c", "--executor-model", executor])
-    gate = json.load(open(os.path.join(d, ".aris", "forensics", "gate.json")))
+    gate = json.load(open(os.path.join(d, ".ei", "forensics", "gate.json")))
     return rc, gate
 
 
@@ -79,12 +79,12 @@ def test_obligations_append_only_and_disappearance_never_closes():
     with tempfile.TemporaryDirectory() as d:
         rep1 = _report(os.path.join(d, "r1.json"), "HARD_FLAGS", [_finding()])
         fg.main(["update", "--report", rep1, "--paper-dir", d])
-        led = json.load(open(os.path.join(d, ".aris", "forensics", "obligations.json")))
+        led = json.load(open(os.path.join(d, ".ei", "forensics", "obligations.json")))
         assert len(led["obligations"]) == 1 and led["obligations"][0]["status"] == "OPEN"
         # the finding vanishes from the next report (reworded span) — must stay OPEN
         rep2 = _report(os.path.join(d, "r2.json"), "CLEAN_GIVEN_EVIDENCE", [])
         fg.main(["update", "--report", rep2, "--paper-dir", d])
-        led = json.load(open(os.path.join(d, ".aris", "forensics", "obligations.json")))
+        led = json.load(open(os.path.join(d, ".ei", "forensics", "obligations.json")))
         o = led["obligations"][0]
         assert o["status"] == "OPEN" and "unresolved_disappearance" in o
         # and the gate still BLOCKS despite the clean upstream verdict
@@ -99,7 +99,7 @@ def test_same_finding_across_runs_is_one_obligation():
         rep2 = _report(os.path.join(d, "r2.json"), "HARD_FLAGS", [_finding()])
         fg.main(["update", "--report", rep1, "--paper-dir", d])
         fg.main(["update", "--report", rep2, "--paper-dir", d])
-        led = json.load(open(os.path.join(d, ".aris", "forensics", "obligations.json")))
+        led = json.load(open(os.path.join(d, ".ei", "forensics", "obligations.json")))
         assert len(led["obligations"]) == 1     # fingerprint-stable, not F001-keyed
 
 
@@ -108,7 +108,7 @@ def test_zero_weight_findings_never_gate():
         ais = _finding(sev="info", pattern="AIS-LLM-PHRASE-TICS", weight=0)
         rep = _report(os.path.join(d, "r1.json"), "CLEAN_GIVEN_EVIDENCE", [ais])
         fg.main(["update", "--report", rep, "--paper-dir", d])
-        led = json.load(open(os.path.join(d, ".aris", "forensics", "obligations.json")))
+        led = json.load(open(os.path.join(d, ".ei", "forensics", "obligations.json")))
         assert led["obligations"] == []
 
 
@@ -116,7 +116,7 @@ def test_resolution_requires_evidence_and_verifier():
     with tempfile.TemporaryDirectory() as d:
         rep = _report(os.path.join(d, "r1.json"), "HARD_FLAGS", [_finding()])
         fg.main(["update", "--report", rep, "--paper-dir", d])
-        oid = json.load(open(os.path.join(d, ".aris", "forensics", "obligations.json")))["obligations"][0]["obligation_id"]
+        oid = json.load(open(os.path.join(d, ".ei", "forensics", "obligations.json")))["obligations"][0]["obligation_id"]
         # missing evidence file → refused
         try:
             fg.main(["resolve", "--paper-dir", d, "--obligation-id", oid,
@@ -161,7 +161,7 @@ def test_waiver_is_not_resolution_and_needs_a_human():
     with tempfile.TemporaryDirectory() as d:
         rep = _report(os.path.join(d, "r1.json"), "HARD_FLAGS", [_finding()])
         fg.main(["update", "--report", rep, "--paper-dir", d])
-        oid = json.load(open(os.path.join(d, ".aris", "forensics", "obligations.json")))["obligations"][0]["obligation_id"]
+        oid = json.load(open(os.path.join(d, ".ei", "forensics", "obligations.json")))["obligations"][0]["obligation_id"]
         try:
             fg.main(["waive", "--paper-dir", d, "--obligation-id", oid,
                      "--approver", "executor-llm", "--reason", "let me through"])
@@ -170,7 +170,7 @@ def test_waiver_is_not_resolution_and_needs_a_human():
             pass
         fg.main(["waive", "--paper-dir", d, "--obligation-id", oid,
                  "--approver", "human:Ruofeng Yang", "--reason", "known benchmark quirk, documented in appendix"])
-        led = json.load(open(os.path.join(d, ".aris", "forensics", "obligations.json")))
+        led = json.load(open(os.path.join(d, ".ei", "forensics", "obligations.json")))
         o = led["obligations"][0]
         assert o["status"] == "WAIVED" and o["finding_snapshot"]["severity"] == "critical"
         clean = _report(os.path.join(d, "report.json"), "CLEAN_GIVEN_EVIDENCE", [])
@@ -189,7 +189,7 @@ def test_severity_ratchets_and_clean_still_blocks():
         fg.main(["update", "--report", r1, "--paper-dir", d])
         r2 = _report(os.path.join(d, "r2.json"), "HARD_FLAGS", [_finding(sev="critical")])
         fg.main(["update", "--report", r2, "--paper-dir", d])
-        led = json.load(open(os.path.join(d, ".aris", "forensics", "obligations.json")))
+        led = json.load(open(os.path.join(d, ".ei", "forensics", "obligations.json")))
         assert len(led["obligations"]) == 1 and led["obligations"][0]["severity"] == "critical"
         # even a later CLEAN report cannot outrank the open critical obligation
         rc, g = _gate(d, "CLEAN_GIVEN_EVIDENCE")
@@ -200,7 +200,7 @@ def test_recurrence_after_resolution_reopens():
     with tempfile.TemporaryDirectory() as d:
         r1 = _report(os.path.join(d, "r1.json"), "HARD_FLAGS", [_finding()])
         fg.main(["update", "--report", r1, "--paper-dir", d])
-        oid = json.load(open(os.path.join(d, ".aris", "forensics", "obligations.json")))["obligations"][0]["obligation_id"]
+        oid = json.load(open(os.path.join(d, ".ei", "forensics", "obligations.json")))["obligations"][0]["obligation_id"]
         ev = os.path.join(d, "results.json"); open(ev, "w").write("{}")
         fg.main(["resolve", "--paper-dir", d, "--obligation-id", oid,
                  "--fix-type", "corrected-from-results", "--evidence", ev,
@@ -208,7 +208,7 @@ def test_recurrence_after_resolution_reopens():
         # the same finding comes back — the fix didn't hold
         r2 = _report(os.path.join(d, "r2.json"), "HARD_FLAGS", [_finding()])
         fg.main(["update", "--report", r2, "--paper-dir", d])
-        led = json.load(open(os.path.join(d, ".aris", "forensics", "obligations.json")))
+        led = json.load(open(os.path.join(d, ".ei", "forensics", "obligations.json")))
         o = led["obligations"][0]
         assert o["status"] == "OPEN" and o["previous_resolutions"]   # archived, not erased
         rc, _g = _gate(d, "HARD_FLAGS")
@@ -225,7 +225,7 @@ def test_unrelated_edit_does_not_duplicate_obligations():
                  "--paper-dir", d])
         fg.main(["update", "--report", _report(os.path.join(d, "r2.json"), "HARD_FLAGS", [f2]),
                  "--paper-dir", d])
-        led = json.load(open(os.path.join(d, ".aris", "forensics", "obligations.json")))
+        led = json.load(open(os.path.join(d, ".ei", "forensics", "obligations.json")))
         assert len(led["obligations"]) == 1
 
 
@@ -254,7 +254,7 @@ def test_null_findings_and_weird_status_fail_closed():
         except SystemExit:
             pass
         # a mangled ledger status is not "closed" — gate BLOCKs
-        led_path = os.path.join(d, ".aris", "forensics", "obligations.json")
+        led_path = os.path.join(d, ".ei", "forensics", "obligations.json")
         led = json.load(open(led_path))
         led["obligations"].append({"obligation_id": "x" * 24, "status": "TOTALLY_DONE"})
         json.dump(led, open(led_path, "w"))
@@ -270,7 +270,7 @@ def test_gate_refuses_unfolded_report():
         clean = _report(os.path.join(d, "clean.json"), "CLEAN_GIVEN_EVIDENCE", [])
         rc = fg.main(["gate", "--report", clean, "--paper-dir", d,   # never folded
                       "--anti-ar-commit", "d8f510c"])
-        g = json.load(open(os.path.join(d, ".aris", "forensics", "gate.json")))
+        g = json.load(open(os.path.join(d, ".ei", "forensics", "gate.json")))
         assert rc == 1 and g["ledger_bound"] is False
 
 
@@ -281,7 +281,7 @@ def test_gate_refuses_missing_ledger():
         clean = _report(os.path.join(d, "clean.json"), "CLEAN_GIVEN_EVIDENCE", [])
         rc = fg.main(["gate", "--report", clean, "--paper-dir", d,
                       "--anti-ar-commit", "d8f510c"])
-        g = json.load(open(os.path.join(d, ".aris", "forensics", "gate.json")))
+        g = json.load(open(os.path.join(d, ".ei", "forensics", "gate.json")))
         assert rc == 1 and g["policy_decision"] == "BLOCK" and g["ledger_bound"] is False
 
 
@@ -329,7 +329,7 @@ def test_closed_status_without_receipt_blocks():
     with tempfile.TemporaryDirectory() as d:
         rep = _report(os.path.join(d, "report.json"), "CLEAN_GIVEN_EVIDENCE", [])
         fg.main(["update", "--report", rep, "--paper-dir", d])
-        led_path = os.path.join(d, ".aris", "forensics", "obligations.json")
+        led_path = os.path.join(d, ".ei", "forensics", "obligations.json")
         led = json.load(open(led_path))
         led["obligations"].append({"obligation_id": "a" * 24, "status": "RESOLVED",
                                    "severity": "critical"})   # no resolution receipt
@@ -341,7 +341,7 @@ def test_closed_status_without_receipt_blocks():
         json.dump(led, open(led_path, "w"))
         rc = fg.main(["gate", "--report", rep, "--paper-dir", d,
                       "--anti-ar-commit", "d8f510c"])
-        g = json.load(open(os.path.join(d, ".aris", "forensics", "gate.json")))
+        g = json.load(open(os.path.join(d, ".ei", "forensics", "gate.json")))
         assert rc == 1 and g["malformed_ledger_entries"] == 3
 
 
@@ -358,7 +358,7 @@ def test_disappearance_history_survives_reappearance():
         fg.main(["update", "--report",
                  _report(os.path.join(d, "r3.json"), "HARD_FLAGS", [_finding()]),
                  "--paper-dir", d])
-        led = json.load(open(os.path.join(d, ".aris", "forensics", "obligations.json")))
+        led = json.load(open(os.path.join(d, ".ei", "forensics", "obligations.json")))
         o = led["obligations"][0]
         assert o["status"] == "OPEN"
         assert "unresolved_disappearance" not in o          # current: present again
@@ -398,7 +398,7 @@ def test_fresh_rejects_block_and_forged_policy():
                  "--anti-ar-commit", "d8f510c"])
         assert fg.main(["fresh", "--paper-dir", d]) == 1     # BLOCK is not pass-capable
         # a hand-crafted unknown policy token is not pass-capable either
-        gp = os.path.join(d, ".aris", "forensics", "gate.json")
+        gp = os.path.join(d, ".ei", "forensics", "gate.json")
         g = json.load(open(gp)); g["policy_decision"] = "TOTALLY_FINE"
         json.dump(g, open(gp, "w"))
         assert fg.main(["fresh", "--paper-dir", d]) == 1
@@ -418,7 +418,7 @@ def test_fresh_pin_and_version_binding():
         # a gate produced at an older pin must be re-audited, never inherited
         assert fg.main(["fresh", "--paper-dir", d, "--anti-ar-commit", "newpin99"]) == 1
         # and a gate from an older gate-schema version must be re-derived
-        gp = os.path.join(d, ".aris", "forensics", "gate.json")
+        gp = os.path.join(d, ".ei", "forensics", "gate.json")
         g = json.load(open(gp)); g["gate_version"] = "0"
         json.dump(g, open(gp, "w"))
         assert fg.main(["fresh", "--paper-dir", d, "--anti-ar-commit", "d8f510c"]) == 1
@@ -434,7 +434,7 @@ def test_ledger_out_of_band_edit_detected():
         fg.main(["evaluate", "--report", rep, "--paper-dir", d,
                  "--anti-ar-commit", "d8f510c"])
         assert fg.main(["fresh", "--paper-dir", d]) == 0     # WARN is pass-capable
-        led_path = os.path.join(d, ".aris", "forensics", "obligations.json")
+        led_path = os.path.join(d, ".ei", "forensics", "obligations.json")
         led = json.load(open(led_path))
         del led["obligations"][0]                            # out-of-band deletion
         json.dump(led, open(led_path, "w"))
@@ -477,7 +477,7 @@ def test_evidence_tampered_after_resolution_blocks():
     with tempfile.TemporaryDirectory() as d:
         rep = _report(os.path.join(d, "r1.json"), "HARD_FLAGS", [_finding()])
         fg.main(["update", "--report", rep, "--paper-dir", d])
-        oid = json.load(open(os.path.join(d, ".aris", "forensics",
+        oid = json.load(open(os.path.join(d, ".ei", "forensics",
                                           "obligations.json")))["obligations"][0]["obligation_id"]
         ev = os.path.join(d, "results.json"); open(ev, "w").write("{}")
         fg.main(["resolve", "--paper-dir", d, "--obligation-id", oid,
@@ -499,7 +499,7 @@ def test_ledger_mutation_invalidates_standing_gate():
         assert fg.main(["fresh", "--paper-dir", d]) == 0
         hard = _report(os.path.join(d, "r2.json"), "HARD_FLAGS", [_finding()])
         fg.main(["update", "--report", hard, "--paper-dir", d])   # ledger mutates
-        assert not os.path.isfile(os.path.join(d, ".aris", "forensics", "gate.json"))
+        assert not os.path.isfile(os.path.join(d, ".ei", "forensics", "gate.json"))
         assert fg.main(["fresh", "--paper-dir", d]) == 1     # NO_GATE, fail closed
 
 
@@ -518,7 +518,7 @@ def test_concurrent_updates_lose_nothing():
         with concurrent.futures.ThreadPoolExecutor(max_workers=8) as ex:
             results = list(ex.map(run, reports))
         assert all(r.returncode == 0 for r in results), [r.stderr for r in results]
-        led = json.load(open(os.path.join(d, ".aris", "forensics", "obligations.json")))
+        led = json.load(open(os.path.join(d, ".ei", "forensics", "obligations.json")))
         assert len(led["obligations"]) == 8      # append-only survived concurrency
 
 
@@ -528,7 +528,7 @@ def test_evaluate_is_atomic_update_plus_gate():
         rc = fg.main(["evaluate", "--report", rep, "--paper-dir", d,
                       "--anti-ar-commit", "d8f510c"])
         assert rc == 1
-        g = json.load(open(os.path.join(d, ".aris", "forensics", "gate.json")))
+        g = json.load(open(os.path.join(d, ".ei", "forensics", "gate.json")))
         assert g["policy_decision"] == "BLOCK" and g["ledger_bound"] is True
 
 
@@ -551,9 +551,9 @@ def test_concurrent_evaluates_do_not_corrupt():
             results = list(ex.map(run, reports))
         assert all(r.returncode == 1 for r in results), [r.stderr for r in results]
         assert all("Traceback" not in r.stderr for r in results), [r.stderr for r in results]
-        led = json.load(open(os.path.join(d, ".aris", "forensics", "obligations.json")))
+        led = json.load(open(os.path.join(d, ".ei", "forensics", "obligations.json")))
         assert len(led["obligations"]) == 4
-        g = json.load(open(os.path.join(d, ".aris", "forensics", "gate.json")))
+        g = json.load(open(os.path.join(d, ".ei", "forensics", "gate.json")))
         assert g["policy_decision"] == "BLOCK"   # whichever won, it's a coherent artifact
 
 

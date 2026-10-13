@@ -4,6 +4,14 @@ description: 'Turn a refined research proposal or method idea into a detailed, c
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, WebSearch, WebFetch
 ---
 
+<!-- EI-GOVERNANCE:BEGIN -->
+Resolve runtime state through tools/state_paths.py before .ei operations. Use
+[project-governance](../shared-references/project-governance.md) for fixed evidence,
+profiles and controlled migration; missing profiles retain compat-v1.
+Freeze a versioned experiment spec with declared variant/seed slots, protocol/data/split/evaluator refs, storage/compute budget and failure aggregation. A new spec revision does not grant execution resources.
+<!-- EI-GOVERNANCE:END -->
+
+
 # Experiment Plan: Claim-Driven, Paper-Oriented Validation
 
 Refine and concretize: **$ARGUMENTS**

@@ -8,7 +8,7 @@ The canonical implementation now lives at
 This shim keeps the four legacy resolver layers working without a
 re-install:
 
-  .aris/tools/paper_illustration_image2.py
+  .ei/tools/paper_illustration_image2.py
        → $ARIS_REPO/tools/paper_illustration_image2.py (this shim)
        → $ARIS_REPO/skills/paper-illustration-image2/scripts/paper_illustration_image2.py
 

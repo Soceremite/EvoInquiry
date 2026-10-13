@@ -13,6 +13,7 @@ name cannot be shown to differ from the executor's, so it cannot acquit.
 
 from __future__ import annotations
 
+from contextlib import nullcontext
 import http.server
 import json
 import os
@@ -44,7 +45,16 @@ SERVER_NAME = os.environ.get("MANUAL_REVIEW_SERVER_NAME", "manual-review")
 DEFAULT_TIMEOUT_SEC = int(os.environ.get("MANUAL_REVIEW_TIMEOUT_SEC", "86400"))
 MODE = os.environ.get("MANUAL_REVIEW_MODE", "browser")  # "browser" or "file"
 AUTO_OPEN = os.environ.get("MANUAL_REVIEW_AUTO_OPEN", "true").lower() in {"1", "true", "yes"}
-PENDING_DIR = Path(os.environ.get("MANUAL_REVIEW_PENDING_DIR", ".aris/pending_review"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'tools'))
+from state_paths import resolve_state_root, state_writer
+
+_project_root = Path.cwd().resolve()
+_pending_override = os.environ.get('MANUAL_REVIEW_PENDING_DIR', '').strip()
+if _pending_override and Path(_pending_override).resolve() not in {
+        _project_root / '.ei/pending_review', _project_root / '.aris/pending_review'}:
+    PENDING_DIR = Path(_pending_override)
+else:
+    PENDING_DIR = resolve_state_root(_project_root, 'write') / 'pending_review'
 DEBUG_LOG_RAW = os.environ.get("MANUAL_REVIEW_DEBUG_LOG", "").strip()
 DEBUG_LOG = Path(DEBUG_LOG_RAW).expanduser() if DEBUG_LOG_RAW else None
 DEFAULT_PORT = int(os.environ.get("MANUAL_REVIEW_PORT", "17900"))
@@ -800,7 +810,9 @@ def _run_blocking_tool(handler, args, request_id, pending: _PendingCall):
     """Run a blocking tool handler in background, send response when done."""
     global _pending_call
     try:
-        response = handler(args, request_id, pending.cancel_event, pending.cancel_reason)
+        managed = PENDING_DIR.resolve() == _project_root / '.ei/pending_review'
+        with state_writer(_project_root) if managed else nullcontext():
+            response = handler(args, request_id, pending.cancel_event, pending.cancel_reason)
         if not pending.suppress_response and not pending.cancel_event.is_set():
             # Clear _pending_call BEFORE sending so the next request doesn't
             # fail-fast on a thread that's about to exit

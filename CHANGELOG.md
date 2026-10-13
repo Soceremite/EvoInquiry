@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.1.0-beta.1 — 2026-10-13
+
+- Add project-governance and environment-maintenance entrypoints, with versioned identities, fixed evidence references, guarded .ei state resolution and recoverable local publication/migration.
+- Add independent environment candidates, real validation receipts, immutable recipe inputs, consumer bindings, leases and reproduction pins; preserve queued/running environment revisions.
+- Add frozen source/config execution snapshots, distinct failed/retry/resume identities, predeclared aggregation and a source/doc freshness map. Retain existing workflow/review/checkpoint controls.
+- Add a deployment filesystem doctor, native install/rollback receipts, real GPU restoration and isolated dependency-conflict pilots, and focused natural-request/Windows acceptance.
+- Replace active .aris defaults through reviewed namespace adaptations. Legacy state requires explicit read or an approved, journaled migration; no live project is automatically migrated.
+
+
 ## 1.0.0 — 2026-10-12
 
 - Publish the first stable Codex research toolkit with 84 skill entrypoints spanning literature, research design, theory, experiments, evidence review, papers, presentations, proposals, and patents.

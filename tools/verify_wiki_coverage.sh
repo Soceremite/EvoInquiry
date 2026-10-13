@@ -15,7 +15,7 @@
 #   bash tools/verify_wiki_coverage.sh <wiki_root> [--scan <path> ...] [--json-out <path>]
 #
 # Defaults:
-#   --scan: scans CWD-level `.aris/traces/`, `paper/`, `PAPER_PLAN.md`,
+#   --scan: scans CWD-level `.ei/traces/`, `paper/`, `PAPER_PLAN.md`,
 #           `NARRATIVE_REPORT.md`, `references.bib` if they exist.
 #   --json-out: <wiki_root>/.wiki-coverage-report.json
 #
@@ -50,7 +50,8 @@ WIKI_ROOT="$(cd "$WIKI_ROOT" && pwd)"
 
 # Default scan set: obvious places where arxiv IDs show up
 if [[ ${#SCAN_PATHS[@]} -eq 0 ]]; then
-    for p in .aris/traces paper PAPER_PLAN.md NARRATIVE_REPORT.md references.bib; do
+    EI_WIKI_STATE=$(python3 "$(cd "$(dirname "$0")" && pwd)/state_paths.py" --root "$PWD" --mode read) || exit 2
+    for p in "$EI_WIKI_STATE/traces" paper PAPER_PLAN.md NARRATIVE_REPORT.md references.bib; do
         [[ -e "$p" ]] && SCAN_PATHS+=("$p")
     done
 fi
@@ -157,13 +158,17 @@ if [[ "$MISS_COUNT" -gt 0 ]]; then
     HINT_IDS=$(head -20 "$MISSING" | paste -sd, -)
     # Resolve helper path the same way the skills do (per
     # skills/shared-references/wiki-helper-resolution.md)
-    HINT_SCRIPT=".aris/tools/research_wiki.py"
+    HINT_SCRIPT="${EI_WIKI_STATE:-$PWD/.ei}/tools/research_wiki.py"
     [[ -f "$HINT_SCRIPT" ]] || HINT_SCRIPT="tools/research_wiki.py"
-    [[ -f "$HINT_SCRIPT" ]] || { [[ -n "${ARIS_REPO:-}" ]] && HINT_SCRIPT="$ARIS_REPO/tools/research_wiki.py"; }
+    EI_WIKI_REPO="${EI_REPO:-${ARIS_REPO:-}}"
+    [[ -f "$HINT_SCRIPT" ]] || { [[ -n "$EI_WIKI_REPO" ]] && HINT_SCRIPT="$EI_WIKI_REPO/tools/research_wiki.py"; }
     # Layer 4: global pointer file written by the installer/updater (#366).
-    if [[ -z "${ARIS_REPO:-}" && ! -f "$HINT_SCRIPT" && -f "$HOME/.aris/repo" ]]; then
-        ARIS_REPO=$(cat "$HOME/.aris/repo" 2>/dev/null) || true
-        [[ -n "$ARIS_REPO" ]] && HINT_SCRIPT="$ARIS_REPO/tools/research_wiki.py"
+    if [[ -z "$EI_WIKI_REPO" && ! -f "$HINT_SCRIPT" ]]; then
+        EI_WIKI_GLOBAL=$(python3 "$(cd "$(dirname "$0")" && pwd)/state_paths.py" --root "$HOME" --mode read 2>/dev/null) || EI_WIKI_GLOBAL=""
+        if [[ -n "$EI_WIKI_GLOBAL" && -f "$EI_WIKI_GLOBAL/repo" ]]; then
+            EI_WIKI_REPO=$(cat "$EI_WIKI_GLOBAL/repo" 2>/dev/null) || true
+            [[ -n "$EI_WIKI_REPO" ]] && HINT_SCRIPT="$EI_WIKI_REPO/tools/research_wiki.py"
+        fi
     fi
     [[ -f "$HINT_SCRIPT" ]] || HINT_SCRIPT="<resolve-via-shared-ref>/research_wiki.py"
     echo "Backfill suggestion:" >&2

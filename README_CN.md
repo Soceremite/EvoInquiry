@@ -4,11 +4,13 @@
 
 [English](README.md) · [完整 skill 清单](docs/SKILLS_CATALOG.md) · [版本下载](https://github.com/Soceremite/EvoInquiry/releases) · [参与贡献](CONTRIBUTING_CN.md)
 
-**1.0.0 — 首个正式版**
+**1.1.0-beta.1 — 项目与环境治理升级**
 
-EvoInquiry 是面向 Codex 的科研工作流工具集，提供 **84 个 Codex skill**，
+EvoInquiry 是面向 Codex 的科研工作流工具集，提供 **86 个 Codex skill**，
 帮助你从宽泛的研究方向出发，形成具体方案，实施和评估实验，审查证据，
 并准备论文与投稿材料。既可以按需使用单个 skill，也可以串联成完整科研流程。
+
+这个预发布版本新增项目治理、固定执行证据和环境维护能力；需要稳定版本时仍可选择 1.0.0。治理能力按任务需要启用，普通论文阅读和小型修改保持原有范围。修改范围见[实施计划](docs/UPGRADE_IMPLEMENTATION_CN.md)，具体使用见[治理使用指南](docs/GOVERNANCE_USAGE_CN.md)，实际测试与限制见[验收记录](docs/UPGRADE_VALIDATION_CN.md)。已有安装在升级前继续使用其安装版本。
 
 <a id="capabilities"></a>
 
@@ -17,6 +19,8 @@ EvoInquiry 是面向 Codex 的科研工作流工具集，提供 **84 个 Codex s
 | 能力 | 适用任务 | 代表 skill |
 | --- | --- | --- |
 | 课题接续 | 复用已有证据、定位当前不确定性、协调下一项授权工作 | `research-guide` |
+| 项目与证据治理 | 固定实验输入与执行身份、恢复报告发布、规划旧状态迁移 | `project-governance` |
+| 环境维护 | 验证独立候选环境、保护排队绑定与论文复现依赖 | `environment-maintenance` |
 | 文献与知识积累 | 检索论文、梳理相关工作、检查新颖性、维护科研知识库 | `research-lit`、`novelty-check`、`research-wiki` |
 | 选题与研究设计 | 探索方向、打磨方法、围绕可检验的主张制定实验方案 | `idea-discovery`、`research-refine`、`experiment-plan` |
 | 理论推导与证明 | 整理假设、推导公式、撰写证明、检查证明缺口 | `formula-derivation`、`proof-writer`、`proof-checker` |
@@ -37,7 +41,7 @@ EvoInquiry 是面向 Codex 的科研工作流工具集，提供 **84 个 Codex s
 对比实验优先仅保留按验证指标选出的最优模型，同时保护计划中的模型依赖和所有实验记录。
 框架集成与可选的本地断点工具见[存储策略](skills/skills-codex/shared-references/experiment-storage.md)。
 
-1.0 版本主要面向 ML、AI 与相关工程科研。
+EvoInquiry 主要面向 ML、AI 与相关工程科研。
 领域专用流程和后端集成见[完整清单](docs/SKILLS_CATALOG.md)，请按项目需要选择。
 
 <a id="installation"></a>
@@ -47,20 +51,20 @@ EvoInquiry 是面向 Codex 的科研工作流工具集，提供 **84 个 Codex s
 请使用提供 `codex plugin` 命令的 Codex 版本。
 插件安装已在 Linux 上使用 Codex CLI **0.162.1** 验证。
 
-从 [1.0.0 Release](https://github.com/Soceremite/EvoInquiry/releases/tag/v1.0.0)
-下载并解压 `evo-inquiry-1.0.0.tar.gz` 或 `.zip`，进入解压后的根目录，
+从 [1.1.0-beta.1 Release](https://github.com/Soceremite/EvoInquiry/releases/tag/v1.1.0-beta.1)
+下载并解压 `evo-inquiry-1.1.0-beta.1.tar.gz` 或 `.zip`，进入解压后的根目录，
 执行下面两个插件命令安装。
 Codex CLI 0.162.1 会把安装来源目录复制到缓存，包括本地未跟踪文件；
 使用只含公开文件的源码包，可避免复制验证记录、构建目录和 Git 历史。
 
 ```sh
-cd /path/to/evo-inquiry-1.0.0
+cd /path/to/evo-inquiry-1.1.0-beta.1
 codex plugin marketplace add "$PWD"
 codex plugin add evo-inquiry@evo-inquiry
 ```
 
 需要查看和开发源码时，可以使用
-`git clone --branch v1.0.0 https://github.com/Soceremite/EvoInquiry.git EvoInquiry`。
+`git clone --branch v1.1.0-beta.1 https://github.com/Soceremite/EvoInquiry.git EvoInquiry`。
 安装插件时使用干净的 Release 解压目录。
 安装后启动新的 Codex 会话，skill 会以 `evo-inquiry:` 命名空间出现，
 例如 `evo-inquiry:research-refine`。
@@ -91,7 +95,7 @@ codex plugin add evo-inquiry@evo-inquiry
 > 保存比较表，完成分析后停止。
 
 需要端到端流程时，使用 `evo-inquiry:research-pipeline`，并说明研究方向、
-已有工作、目标产物和可用资源。本版本提供 84 个 skill 入口，
+已有工作、目标产物和可用资源。开发版提供 86 个 skill 入口，
 包括单步工具、课题协调、总流程和可选服务后端。
 
 如果需要项目级科研使用说明，可以将可选的
@@ -137,9 +141,15 @@ python -m pytest tests/ -q
 修改源码后需要刷新插件并启动新会话。移动源码目录后，
 请重新注册该目录的本地 marketplace。
 
-需要切换版本时，进入目标 Release 的干净解压目录，重复上面的两条安装命令，
-然后启动新会话。
-请保留当前使用的版本目录，供本地 marketplace 读取。
+切换版本或移动来源目录时，进入目标 Release 的干净解压目录，先替换已有 marketplace 来源，再重新安装：
+
+```sh
+codex plugin marketplace remove evo-inquiry
+codex plugin marketplace add "$PWD"
+codex plugin add evo-inquiry@evo-inquiry
+```
+
+然后启动新会话，保留当前使用的来源目录。保留旧版目录即可用相同步骤回滚；插件切换不会自动迁移科研项目。存储探测、持久项目部署、备份边界与已验证的版本切换见[部署指南](docs/DEPLOYMENT_GUIDE.md)。
 
 <a id="license"></a>
 

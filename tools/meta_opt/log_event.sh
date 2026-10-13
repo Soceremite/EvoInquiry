@@ -6,13 +6,14 @@
 # Called automatically by Claude Code hooks (PostToolUse, UserPromptSubmit, etc.)
 # Input: JSON via stdin (Claude Code hook payload)
 # Output:
-#   Project: $CLAUDE_PROJECT_DIR/.aris/meta/events.jsonl  (project-specific details)
-#   Global:  ~/.aris/meta/events.jsonl                    (cross-project trends)
+#   Project: $CLAUDE_PROJECT_DIR/.ei/meta/events.jsonl  (project-specific details)
+#   Global:  ~/.ei/meta/events.jsonl                    (cross-project trends)
 
 set -euo pipefail
 
-PROJECT_META="${CLAUDE_PROJECT_DIR:-.}/.aris/meta"
-GLOBAL_META="$HOME/.aris/meta"
+EI_RESOLVER="$(dirname "${BASH_SOURCE[0]}")/../state_paths.py"
+PROJECT_META="$(python3 "$EI_RESOLVER" --root "${CLAUDE_PROJECT_DIR:-.}" --mode write)/meta" || exit 2
+GLOBAL_META="$(python3 "$EI_RESOLVER" --root "$HOME" --mode write)/meta" || exit 2
 mkdir -p "$PROJECT_META" "$GLOBAL_META"
 
 # Read stdin payload into env var (cannot use heredoc + herestring simultaneously)

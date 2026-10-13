@@ -5,6 +5,14 @@ argument-hint: "[method-description-or-claim]"
 allowed-tools: Bash(*), Read, Grep, Glob, Write, Edit, mcp__codex__codex, mcp__codex__codex-reply
 ---
 
+<!-- EI-GOVERNANCE:BEGIN -->
+Resolve runtime state through tools/state_paths.py before .ei operations. Use
+[project-governance](../shared-references/project-governance.md) for fixed evidence,
+profiles and controlled migration; missing profiles retain compat-v1.
+Keep declared comparison/seed/failure rules and fixed baseline/evaluator refs. Reuse shared interfaces without erasing method-specific interventions.
+<!-- EI-GOVERNANCE:END -->
+
+
 # Ablation Planner
 
 Systematically design ablation studies that answer the questions reviewers will ask. Codex leads the design (reviewer perspective), CC reviews feasibility and implements.

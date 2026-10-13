@@ -5,6 +5,13 @@ argument-hint: "[paper-base-dir] [— target-venue: <name>] [— review-corpus: 
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, Skill, mcp__codex__codex, mcp__codex__codex-reply
 ---
 
+<!-- EI-GOVERNANCE:BEGIN -->
+Resolve runtime state through tools/state_paths.py before .ei operations. Use
+[project-governance](../shared-references/project-governance.md) for fixed evidence,
+profiles and controlled migration; missing profiles retain compat-v1.
+<!-- EI-GOVERNANCE:END -->
+
+
 # Resubmit Pipeline: Text-Only Microedit Mode
 
 Compose a polished paper into a new venue under text-only constraints: **$ARGUMENTS**
@@ -38,7 +45,7 @@ Existing skills cover adjacent territory but none of this exact composition: `/r
 - **REVIEWER_MODEL** = inherits from `/auto-paper-improvement-loop`'s default (`gpt-6-astra` via Codex MCP) unless the user passes `— reviewer-model: gpt-5.4` (legacy) or another OpenAI model. Codex reasoning effort is fixed at `xhigh` for all reviewer calls per the existing skill convention.
 - **ROUNDS** = 2 (default; matches `/auto-paper-improvement-loop`'s diminishing-returns line). A 3rd round only fires if Phase 2 reports non-convergence AND the user explicitly approves at the round-2 checkpoint.
 - **EFFORT** = `max` (default for resubmit; resubmit is high-stakes). The user can override with `— effort: balanced` if time is extremely tight.
-- **EDIT_WHITELIST_PATH** = `<paper-base-dir>/../<NewVenue>/.aris/edit_whitelist.yaml` (auto-generated in Phase 0; user can override with a custom path).
+- **EDIT_WHITELIST_PATH** = `<paper-base-dir>/../<NewVenue>/.ei/edit_whitelist.yaml` (auto-generated in Phase 0; user can override with a custom path).
 - **NEVER_OVERWRITE** = true (always; this is a hard contract — prior submission directories are immutable).
 - **ASSURANCE_LEVEL** = `submission` (default; resubmit always targets a real submission).
 
@@ -77,7 +84,7 @@ mkdir "$NEW_VENUE_DIR" 2>/dev/null || {
     echo "ERROR: $NEW_VENUE_DIR already exists; resubmit-pipeline never overwrites prior submissions. Pick a different target-venue or rename the existing dir." >&2
     exit 1
 }
-mkdir -p "$NEW_VENUE_DIR/.aris"
+mkdir -p "$NEW_VENUE_DIR/.ei"
 ```
 
 **Composition rules** (all `cp`, never `\input{../...}`, never symlink):
@@ -87,7 +94,7 @@ mkdir -p "$NEW_VENUE_DIR/.aris"
 3. **`math_commands.tex`** (and any other macro file the sections depend on) — physical `cp` into `$NEW_VENUE_DIR/`.
 4. **`Figure/` (or `figures/`)** — copy the directory in (`cp -r`). **Path trap**: existing sections likely write `\includegraphics{Figure/foo.pdf}`. If you set `\graphicspath{{../Figure/}}` from a child directory, it resolves `../Figure/Figure/foo.pdf` — wrong. Either copy `Figure/` in directly (preferred), or use `\graphicspath{{../}}`.
 5. **Bibliography** — write `\bibliographystyle{<venue-bst>}` + `\bibliography{../references}` directly in the new `main.tex`. **Never** `\input` an existing `ref.tex` or `references.tex` that already contains its own `\bibliography{}` command (path resolution silently breaks).
-6. **`.aris/`** — create `$NEW_VENUE_DIR/.aris/` and write `assurance.txt` containing `submission` (matches the verifier's expected location).
+6. **`.ei/`** — create `$NEW_VENUE_DIR/.ei/` and write `assurance.txt` containing `submission` (matches the verifier's expected location).
 
 **Output of Phase 0**: a new sibling dir with all source files, no edits to text content yet, ready for compile.
 
@@ -181,7 +188,7 @@ For each file under $REVIEW_CORPUS:
 
 The load-bearing phase. `/auto-paper-improvement-loop` is invoked with **two safety mechanisms**:
 
-1. **`— edit-whitelist <path>`** — a YAML file enumerating allowed paths and forbidden operations. Auto-generated in Phase 0 at `$NEW_VENUE_DIR/.aris/edit_whitelist.yaml`:
+1. **`— edit-whitelist <path>`** — a YAML file enumerating allowed paths and forbidden operations. Auto-generated in Phase 0 at `$NEW_VENUE_DIR/.ei/edit_whitelist.yaml`:
 
    ```yaml
    allowed_paths:
@@ -208,15 +215,15 @@ The load-bearing phase. `/auto-paper-improvement-loop` is invoked with **two saf
    ```bash
    # Snapshot the new venue dir BEFORE auto-loop runs (for diff baseline,
    # works whether or not paper-base-dir is a git repo)
-   SNAPSHOT_DIR="$NEW_VENUE_DIR/.aris/snapshots/round-0"
+   SNAPSHOT_DIR="$NEW_VENUE_DIR/.ei/snapshots/round-0"
    mkdir -p "$SNAPSHOT_DIR"
-   rsync -a --exclude='.aris' --exclude='*.pdf' --exclude='*.aux' \
+   rsync -a --exclude='.ei' --exclude='*.pdf' --exclude='*.aux' \
          "$NEW_VENUE_DIR/" "$SNAPSHOT_DIR/"
 
    # Single auto-loop invocation; rounds + checkpoints are loop-internal.
    # The whitelist file is the only resubmit-specific param.
    /auto-paper-improvement-loop "$NEW_VENUE_DIR/" \
-       --edit-whitelist "$NEW_VENUE_DIR/.aris/edit_whitelist.yaml" \
+       --edit-whitelist "$NEW_VENUE_DIR/.ei/edit_whitelist.yaml" \
        — assurance: submission \
        — effort: "$EFFORT" \
        — human checkpoint: true
@@ -228,24 +235,24 @@ The load-bearing phase. `/auto-paper-improvement-loop` is invoked with **two saf
    for ROUND in 1 2; do  # auto-loop's MAX_ROUNDS = 2
      # auto-loop pauses at HUMAN_CHECKPOINT after each round
      # diff this round vs prior snapshot (works without git)
-     diff -ruN "$NEW_VENUE_DIR/.aris/snapshots/round-$((ROUND-1))" "$NEW_VENUE_DIR" \
-         > "$NEW_VENUE_DIR/.aris/round-$ROUND-diff.txt"
+     diff -ruN "$NEW_VENUE_DIR/.ei/snapshots/round-$((ROUND-1))" "$NEW_VENUE_DIR" \
+         > "$NEW_VENUE_DIR/.ei/round-$ROUND-diff.txt"
 
      # Whitelist compliance check on the diff
-     check_whitelist_compliance "$NEW_VENUE_DIR/.aris/round-$ROUND-diff.txt" \
-                                  "$NEW_VENUE_DIR/.aris/edit_whitelist.yaml"
+     check_whitelist_compliance "$NEW_VENUE_DIR/.ei/round-$ROUND-diff.txt" \
+                                  "$NEW_VENUE_DIR/.ei/edit_whitelist.yaml"
 
      # Selective regression audits (only fire if relevant files touched)
-     if grep -qE 'theorem|lemma|proposition|corollary' "$NEW_VENUE_DIR/.aris/round-$ROUND-diff.txt"; then
+     if grep -qE 'theorem|lemma|proposition|corollary' "$NEW_VENUE_DIR/.ei/round-$ROUND-diff.txt"; then
          /proof-checker "$NEW_VENUE_DIR/main.tex" --restatement-check
      fi
-     if grep -qE '[0-9]+(\.[0-9]+)?\s*(%|±|x|×)' "$NEW_VENUE_DIR/.aris/round-$ROUND-diff.txt"; then
+     if grep -qE '[0-9]+(\.[0-9]+)?\s*(%|±|x|×)' "$NEW_VENUE_DIR/.ei/round-$ROUND-diff.txt"; then
          /paper-claim-audit "$NEW_VENUE_DIR/"
      fi
 
      # Snapshot this round for next-round diff
-     rsync -a --exclude='.aris' --exclude='*.pdf' --exclude='*.aux' \
-           "$NEW_VENUE_DIR/" "$NEW_VENUE_DIR/.aris/snapshots/round-$ROUND/"
+     rsync -a --exclude='.ei' --exclude='*.pdf' --exclude='*.aux' \
+           "$NEW_VENUE_DIR/" "$NEW_VENUE_DIR/.ei/snapshots/round-$ROUND/"
 
      # Convergence check — see "Convergence Criteria" section below
      # If converged, signal HUMAN_CHECKPOINT to terminate early
@@ -324,10 +331,10 @@ A previous run's opt-out never carries over.
 **Diff report**:
 
 ```bash
-diff -u $PAPER_BASE_DIR/main.tex $NEW_VENUE_DIR/main.tex > $NEW_VENUE_DIR/.aris/DIFF_REPORT.md
+diff -u $PAPER_BASE_DIR/main.tex $NEW_VENUE_DIR/main.tex > $NEW_VENUE_DIR/.ei/DIFF_REPORT.md
 for f in $PAPER_BASE_DIR/sec/*.tex; do
     base=$(basename $f)
-    diff -u "$f" "$NEW_VENUE_DIR/sec/$base" >> $NEW_VENUE_DIR/.aris/DIFF_REPORT.md
+    diff -u "$f" "$NEW_VENUE_DIR/sec/$base" >> $NEW_VENUE_DIR/.ei/DIFF_REPORT.md
 done
 ```
 
@@ -374,7 +381,7 @@ Every resubmit run writes one master report at `$NEW_VENUE_DIR/RESUBMIT_REPORT.{
 
 - Source dir, target venue, target style files used, run start / end timestamps
 - Pointers to all artifacts: `BASELINE.md`, `PROOF_AUDIT.json`, `PAPER_CLAIM_AUDIT.json`, `CITATION_AUDIT.json`, `KNOWN_WEAKNESSES.md`, `PAPER_IMPROVEMENT_LOG.md`, `KILL_ARGUMENT.json`, `COMPILE_REPORT.json`, `DIFF_REPORT.md`
-- Forensics outcome (unless opted out): the gate decision from `.aris/forensics/gate.json` **plus every OPEN obligation listed verbatim** — a `WARN` that passes `fresh` still carries findings awaiting human disposition; they must appear in this ledger, never silently drop out of the deliverables
+- Forensics outcome (unless opted out): the gate decision from `.ei/forensics/gate.json` **plus every OPEN obligation listed verbatim** — a `WARN` that passes `fresh` still carries findings awaiting human disposition; they must appear in this ledger, never silently drop out of the deliverables
 - SHA256 hashes of every input file consumed (for `verify_paper_audits.sh` compatibility)
 - All thread IDs (Phase 1 audits + Phase 2 reviewer rounds + Phase 3 kill-argument's two threads)
 - `audit_skill: resubmit-pipeline`, `verdict ∈ {PASS, WARN, FAIL, NOT_APPLICABLE, BLOCKED, ERROR}`, `reason_code: <one of the listed codes>`
@@ -429,15 +436,15 @@ The skill emits one of 7 verdicts (the 6 from the assurance contract + a `USER_D
 - `<NEW_VENUE_DIR>/KILL_ARGUMENT.json` + `.md` — Phase 3 adversarial gate
 - `<NEW_VENUE_DIR>/COMPILE_REPORT.json` — Phase 4 compile + page-limit check
 - `<NEW_VENUE_DIR>/DIFF_REPORT.md` — full diff vs base venue body
-- `<NEW_VENUE_DIR>/.aris/edit_whitelist.yaml` — Phase 0-generated whitelist
-- `<NEW_VENUE_DIR>/.aris/round-N-diff.txt` — per-round diff for the gate
-- `<NEW_VENUE_DIR>/.aris/traces/<phase>/<date>_runNN/` — Codex traces per phase
+- `<NEW_VENUE_DIR>/.ei/edit_whitelist.yaml` — Phase 0-generated whitelist
+- `<NEW_VENUE_DIR>/.ei/round-N-diff.txt` — per-round diff for the gate
+- `<NEW_VENUE_DIR>/.ei/traces/<phase>/<date>_runNN/` — Codex traces per phase
 
 The new venue dir is **the** deliverable; the prior venue dir is untouched.
 
 ## Review Tracing
 
-Every Codex MCP reviewer call across all phases saves traces per `shared-references/review-tracing.md` to `<NEW_VENUE_DIR>/.aris/traces/<phase-name>/<date>_run<NN>/`. Both threads of `/kill-argument` are preserved separately. The master `RESUBMIT_REPORT.json` `trace_path` field points to the top-level traces directory.
+Every Codex MCP reviewer call across all phases saves traces per `shared-references/review-tracing.md` to `<NEW_VENUE_DIR>/.ei/traces/<phase-name>/<date>_run<NN>/`. Both threads of `/kill-argument` are preserved separately. The master `RESUBMIT_REPORT.json` `trace_path` field points to the top-level traces directory.
 
 ## Notes
 

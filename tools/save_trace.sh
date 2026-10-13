@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# save_trace.sh — Save a reviewer call trace to .aris/traces/
+# save_trace.sh — Save a reviewer call trace to .ei/traces/
 # Part of the ARIS Review Tracing Protocol (shared-references/review-tracing.md)
 #
 # Policy C (forensic helper). SKILL callers MUST resolve the helper path
@@ -8,9 +8,9 @@
 # block then runs `bash "$TRACE_HELPER" --skill ... --purpose ... --model ...`.
 # Do NOT hard-code `bash tools/save_trace.sh` from a SKILL; the path is
 # only stable from inside the ARIS repo (manual smoke testing) and breaks
-# silently in downstream user projects that have only `.aris/tools/`,
+# silently in downstream user projects that have only `.ei/tools/`,
 # `$ARIS_REPO/tools/` (env var or manifest), or `$ARIS_REPO/tools/` resolved
-# via the global pointer file `~/.aris/repo` (#366).
+# via the global pointer file `~/.ei/repo` (#366).
 #
 # Usage (from inside the ARIS repo, smoke test):
 #   bash tools/save_trace.sh \
@@ -221,7 +221,8 @@ fi
 
 # --- Determine run directory ---
 TODAY=$(date +%Y-%m-%d)
-TRACES_DIR=".aris/traces/${SKILL}"
+EI_STATE_ROOT_RESOLVED="$(python3 "$(dirname "${BASH_SOURCE[0]}")/state_paths.py" --root . --mode write)" || exit 2
+TRACES_DIR="$EI_STATE_ROOT_RESOLVED/traces/${SKILL}"
 mkdir -p "$TRACES_DIR"
 
 # Find next run number for today
@@ -429,8 +430,8 @@ json.dump(data, open(e["ST_OUT"], "w"), indent=2)
 '
 
 # --- Append to events.jsonl (if it exists) ---
-EVENTS_FILE=".aris/meta/events.jsonl"
-if [[ -d ".aris/meta" ]]; then
+EVENTS_FILE="$EI_STATE_ROOT_RESOLVED/meta/events.jsonl"
+if [[ -d "$EI_STATE_ROOT_RESOLVED/meta" ]]; then
   ST_SKILL="$SKILL" ST_PURPOSE="$PURPOSE" ST_THREAD="$THREAD_ID" \
   ST_TRACE="${RUN_DIR}/" ST_STATUS="$STATUS" ST_EVENTS="$EVENTS_FILE" \
   ST_BACKEND="$BACKEND" ST_TOOL="$TOOL" \

@@ -23,6 +23,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Install interactive test support
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y expect
       - name: Install test dependencies
         run: python -m pip install -r requirements-dev.txt
       - name: Verify release version and package
@@ -37,7 +42,7 @@ jobs:
         run: python -m pytest tests/ -q -rs
 
   publish:
-    needs: test
+    needs: [test, windows]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -69,3 +74,24 @@ jobs:
             --repo "$GITHUB_REPOSITORY" --verify-tag \
             --title "EvoInquiry ${version}" --notes-file RELEASE_NOTES.md \
             "${release_flags[@]}"
+
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        powershell: [powershell.exe, pwsh]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install test dependencies
+        run: python -m pip install -r requirements-dev.txt
+      - name: Verify native Windows installer and local governance
+        env:
+          ARIS_TEST_POWERSHELL: ${{ matrix.powershell }}
+        run: python -m pytest tests/test_install_aris_ps1.py tests/test_filesystem_doctor.py tests/test_windows_governance.py -q -rs

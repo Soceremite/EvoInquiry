@@ -5,6 +5,13 @@ argument-hint: "[research-direction]"
 allowed-tools: Bash(*), Read, Write, Grep, Glob, WebSearch, WebFetch, Agent, Skill, mcp__codex__codex, mcp__codex__codex-reply, mcp__manual_review__review, mcp__manual_review__review_reply
 ---
 
+<!-- EI-GOVERNANCE:BEGIN -->
+Resolve runtime state through tools/state_paths.py before .ei operations. Use
+[project-governance](../shared-references/project-governance.md) for fixed evidence,
+profiles and controlled migration; missing profiles retain compat-v1.
+<!-- EI-GOVERNANCE:END -->
+
+
 # Research Idea Creator
 
 Generate publishable research ideas for: $ARGUMENTS
@@ -70,24 +77,24 @@ contract):
 cd "$(git rev-parse --show-toplevel 2>/dev/null || pwd)" || exit 1
 ARIS_REPO="${ARIS_REPO:-}"
 ARIS_HOME="${HOME:-}"
-if [ -z "${ARIS_REPO:-}" ] && [ -f .aris/installed-skills.txt ]; then
-  ARIS_REPO=$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .aris/installed-skills.txt 2>/dev/null) || true
+if [ -z "${ARIS_REPO:-}" ] && [ -f .ei/installed-skills.txt ]; then
+  ARIS_REPO=$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .ei/installed-skills.txt 2>/dev/null) || true
 fi
-if [ -z "${ARIS_REPO:-}" ] && [ -n "$ARIS_HOME" ] && [ -f "$ARIS_HOME/.aris/repo" ]; then
-  ARIS_REPO=$(cat "$ARIS_HOME/.aris/repo" 2>/dev/null) || true
+if [ -z "${ARIS_REPO:-}" ] && [ -n "$ARIS_HOME" ] && [ -f "$ARIS_HOME/.ei/repo" ]; then
+  ARIS_REPO=$(cat "$ARIS_HOME/.ei/repo" 2>/dev/null) || true
 fi
-WIKI_SCRIPT=".aris/tools/research_wiki.py"
+WIKI_SCRIPT=".ei/tools/research_wiki.py"
 [ -f "$WIKI_SCRIPT" ] || WIKI_SCRIPT="tools/research_wiki.py"
 [ -f "$WIKI_SCRIPT" ] || { [ -n "${ARIS_REPO:-}" ] && WIKI_SCRIPT="$ARIS_REPO/tools/research_wiki.py"; }
 [ -f "$WIKI_SCRIPT" ] || {
-  echo "WARN: research_wiki.py not found at .aris/tools/, tools/, \$ARIS_REPO/tools/, or via ~/.aris/repo." >&2
+  echo "WARN: research_wiki.py not found at .ei/tools/, tools/, \$ARIS_REPO/tools/, or via ~/.ei/repo." >&2
   echo "      The idea-creation primary output (idea ranking) will still be produced." >&2
   echo "      Wiki writes and query_pack rebuilds will be skipped; a fresh cached pack may still be loaded through the scanner." >&2
-  echo "      Fix: rerun 'bash tools/install_aris.sh' or 'smart_update.sh' (refreshes ~/.aris/repo), export ARIS_REPO, or 'cp <ARIS-repo>/tools/research_wiki.py tools/'." >&2
+  echo "      Fix: rerun 'bash tools/install_aris.sh' or 'smart_update.sh' (refreshes ~/.ei/repo), export ARIS_REPO, or 'cp <ARIS-repo>/tools/research_wiki.py tools/'." >&2
   WIKI_SCRIPT=""
 }
 
-THREAT_SCANNER=".aris/tools/threat_scan.py"
+THREAT_SCANNER=".ei/tools/threat_scan.py"
 [ -f "$THREAT_SCANNER" ] || THREAT_SCANNER="tools/threat_scan.py"
 [ -f "$THREAT_SCANNER" ] || { [ -n "${ARIS_REPO:-}" ] && THREAT_SCANNER="$ARIS_REPO/tools/threat_scan.py"; }
 [ -f "$THREAT_SCANNER" ] || THREAT_SCANNER=""
@@ -530,7 +537,7 @@ if research-wiki/ exists AND [ -n "$WIKI_SCRIPT" ]:
           || echo "WARN: upsert_idea failed for <id> (continuing; audit/report unaffected)" >&2
     python3 "$WIKI_SCRIPT" log research-wiki/ "idea-creator wrote N ideas (M recommended, K eliminated)"
 elif research-wiki/ exists AND [ -z "$WIKI_SCRIPT" ]:
-    echo "WARN: ideas NOT recorded — research_wiki.py unreachable (see Phase 0). Fix: bash tools/install_aris.sh or smart_update.sh (refreshes ~/.aris/repo), or export ARIS_REPO." >&2
+    echo "WARN: ideas NOT recorded — research_wiki.py unreachable (see Phase 0). Fix: bash tools/install_aris.sh or smart_update.sh (refreshes ~/.ei/repo), or export ARIS_REPO." >&2
 ```
 
 ## Output Protocols
@@ -547,7 +554,7 @@ elif research-wiki/ exists AND [ -z "$WIKI_SCRIPT" ]:
 > external-review conclusions into it as sections/appendices instead of emitting
 > `LIT_LANDSCAPE.md` / `RESEARCH_REVIEW.md` / `MANIFEST.md` alongside. Pilot scratch is
 > disposable (keep the script + one results file; delete launcher logs and redundant
-> `*_summary.json`); review traces stay in `.aris/traces/…` and the report cites the
+> `*_summary.json`); review traces stay in `.ei/traces/…` and the report cites the
 > path. **Default (no `— composed:` directive): standalone — write `IDEA_REPORT.md` and
 > any other documented files as normal.** Never infer composed mode from a report file
 > merely existing. Full rules:
@@ -581,4 +588,4 @@ implement                     → write code
 
 ## Review Tracing
 
-After each reviewer call (`mcp__codex__codex`, `mcp__codex__codex-reply`, `mcp__manual_review__review`, or `mcp__manual_review__review_reply`), save the trace following `shared-references/review-tracing.md` (Policy C — forensic; never silently skip). Use `save_trace.sh` (resolved per the chain in `shared-references/integration-contract.md` §2) or write files directly to `.aris/traces/<skill>/<date>_run<NN>/`. Respect the `--- trace:` parameter (default: `full`).
+After each reviewer call (`mcp__codex__codex`, `mcp__codex__codex-reply`, `mcp__manual_review__review`, or `mcp__manual_review__review_reply`), save the trace following `shared-references/review-tracing.md` (Policy C — forensic; never silently skip). Use `save_trace.sh` (resolved per the chain in `shared-references/integration-contract.md` §2) or write files directly to `.ei/traces/<skill>/<date>_run<NN>/`. Respect the `--- trace:` parameter (default: `full`).

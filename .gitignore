@@ -46,7 +46,7 @@ patent/
 .omc/
 
 # ARIS runtime state (per-project traces, caches, installed-skills manifest)
-.aris/
+.ei/
 
 # EvoInquiry local validation evidence and release output
 /validation/
@@ -56,3 +56,11 @@ patent/
 venv/
 .env.*
 !.env.example
+
+.aris/
+
+.ei-migration/
+
+.ei-namespace.lock
+
+update_plan/

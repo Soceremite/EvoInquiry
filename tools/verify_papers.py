@@ -9,10 +9,10 @@ fabricated references propagate through downstream skills.
 
 Used by `/research-lit` (Step 1.5, mandatory), `/idea-creator`, `/novelty-check`.
 
-Helper resolution chain: `.aris/tools/verify_papers.py` →
+Helper resolution chain: `.ei/tools/verify_papers.py` →
 `tools/verify_papers.py` → `$ARIS_REPO/tools/verify_papers.py` →
 `$ARIS_REPO/tools/verify_papers.py` via the global pointer file
-`~/.aris/repo` (#366). See
+`~/.ei/repo` (#366). See
 `skills/shared-references/wiki-helper-resolution.md` for the canonical pattern.
 
 CLI:
@@ -204,9 +204,17 @@ def resolve_cache_path(scope: str, cache_dir: str | None) -> Path | None:
     if cache_dir:
         return Path(cache_dir) / "verify_papers.json"
     if scope == "user":
-        return Path.home() / ".aris-cache" / "verify_papers.json"
+        try:
+            from .state_paths import resolve_state_root
+        except ImportError:
+            from state_paths import resolve_state_root
+        return resolve_state_root(Path.home(), 'write') / "cache/verify_papers.json"
     if scope == "project":
-        return Path(".aris/cache/verify_papers.json")
+        try:
+            from .state_paths import resolve_state_root
+        except ImportError:
+            from state_paths import resolve_state_root
+        return resolve_state_root(Path.cwd(), 'write') / "cache/verify_papers.json"
     return None
 
 

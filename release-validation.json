@@ -1,244 +1,276 @@
 {
-  "version": "1.0.0",
-  "implementation_commit": "ab30307a9c0b34aa191cdc5af0e8925321561f63",
-  "upstream_commit": "3b19a22dc5a64c983d2eafd6c2c94000fadc4f8d",
-  "preservation_baseline_commit": "b9c7861fd22cd2f5471765d583c593f083fa12cc",
-  "behavior_comparison_baseline_commit": "a807775afdc26666c82d67c43d43f75e95daa7c4",
-  "upstream_preservation": {
-    "status": "PASS",
-    "Codex_entrypoints": 84,
-    "retained_workflow_bodies_and_non_description_frontmatter": 83,
+  "version": "1.1.0-beta.1",
+  "release_kind": "prerelease",
+  "baseline_commit": "69cfbc5dc5fc34c4d7e6146fe66f5520866f7dfe",
+  "historical_validation": "https://github.com/Soceremite/EvoInquiry/blob/v1.0.0/release-validation.json",
+  "preservation": {
+    "Codex_entrypoints": 86,
+    "retained_original_workflow_bodies": 83,
     "protected_baseline_files": 450,
-    "changed_Codex_extension_hooks": 15,
-    "comparison": "Original workflow bodies, non-description metadata, and fixed protected runtime/reference files remain byte-identical outside the registered hooks."
+    "reviewed_upgrade_adaptations": 31,
+    "status": "PASS",
+    "checkpoint_helper_sha256": "0ae5d3bcfb25dd6299e12fae6ca44907c30fe66081621ddd703cac1fb263e254",
+    "scientific_review_gates_preserved": true
   },
   "local_checks": {
-    "inventory_check": "PASS",
-    "fixed_baseline_preservation": "PASS",
-    "full_suite": {
-      "command": [
-        "/lyd/miniconda/envs/sspwm-portable/bin/python",
-        "-m",
-        "pytest",
-        "tests/",
-        "-q",
-        "-rs"
-      ],
-      "exit_code": 0,
-      "seconds": 226.26,
-      "python": "3.12.14",
-      "credential_environment_removed": true,
-      "removed_credential_variable_count": 0,
-      "GPU_visibility_disabled": true,
-      "completed_at_utc": "2026-10-12T05:03:52.968011+00:00",
-      "passed": 848,
-      "skipped": 20,
-      "scope": "Historical beta.5 core implementation check; stable-release checks are recorded separately."
+    "previous_complete_suite": {
+      "date": "2026-10-12",
+      "passed": 900,
+      "skipped": 21,
+      "failed": 0,
+      "seconds": 950.88,
+      "scope": "Earlier source; final source checked separately"
     },
-    "checkpoint_tests": 54,
-    "post_suite_changes": "Beta.5 public validation documents followed the implementation suite. Stable promotion adds version metadata, release documents, a publication workflow update and offline publication tests; skill instructions and runtime helpers stay unchanged.",
-    "lifecycle_independent_forward": {
+    "previous_final_governance": {
+      "passed": 52,
+      "failed": 0,
+      "scope": "Final project-venv integration before follow-up work"
+    },
+    "checkpoint_CPU": {
+      "passed": 54,
+      "failed": 0,
       "status": "PASS",
-      "helper_sha256": "0ae5d3bcfb25dd6299e12fae6ca44907c30fe66081621ddd703cac1fb263e254",
-      "CPU_SGD_runs": 4,
-      "updates_per_run": 60,
-      "results_files_unchanged": 16,
-      "artifact_and_metadata_bytes_before": 65785,
-      "artifact_and_metadata_bytes_after": 5179,
-      "checks": [
-        "validation-selected winner and explicit teacher dependency",
-        "actual process kill and journal recovery",
-        "ENOSPC and failed-export preservation",
-        "corrupt archived survivor refuses finish and prune retry; restored survivor allows completion"
-      ],
-      "limit": "Local cooperating processes; no actual power-loss or GPU certification."
+      "seconds": 17.92,
+      "training_interpreter": "Existing separate PyTorch interpreter; dependencies unchanged",
+      "scope": "54 standalone CPU checks; optional CUDA initialization warning from the CPU sandbox does not establish GPU absence"
+    },
+    "final_full_suite": {
+      "status": "PASS",
+      "date": "2026-10-13",
+      "passed": 908,
+      "skipped": 23,
+      "failed": 0,
+      "seconds": 418.94,
+      "warnings": 3,
+      "skipped_scopes": {
+        "Windows_native": 13,
+        "expect_interactive": 4,
+        "optional_MiniMax_without_credentials": 4,
+        "PyTorch_unavailable_in_management_interpreter": 2
+      }
+    },
+    "post_suite_affected_checks": {
+      "status": "PASS",
+      "passed": 40,
+      "failed": 0,
+      "seconds": 12.95,
+      "scope": "Mirror, preservation, plugin manifest and release arguments after the GPU-access shared-guidance clarification"
     }
   },
-  "behavior_evaluation": {
-    "status": "COMPLETE_WITH_LIMITS",
-    "original_manifest_sha256": "a3967b120a2a9bfdc962ae74ae2cfbffdf6505e65a902a8d28b2b3181aeb9651",
-    "original_subset": [
-      "04",
-      "05",
-      "06",
-      "09",
-      "10",
-      "11",
-      "13",
-      "14",
-      "15",
-      "16",
-      "17",
-      "18",
-      "24"
+  "real_GPU_pilot": {
+    "status": "PASS",
+    "hardware": "NVIDIA H100 80GB HBM3",
+    "device": "cuda:0",
+    "main_variants": 2,
+    "seeds": [
+      11,
+      22,
+      33
     ],
-    "storage_manifest_sha256": "e72474cbcf4f15a58b1b37729e2f597ec78076e0d0db41a10ef5daec380aaf07",
-    "storage_cases": 4,
-    "protocol": "docs/SKILL_BEHAVIOR_EVAL.md",
-    "historical_beta4_full_matrix": {
-      "passed": 22,
-      "cases": 24,
-      "inconclusive": [
-        "04",
-        "13"
-      ],
-      "scope": "Historical result; not a fresh beta.5 full-matrix run."
+    "main_attempts": 7,
+    "successful_slots": 6,
+    "retained_interruption_exit_code": 17,
+    "resume_at_step": 12,
+    "total_optimizer_steps": 24,
+    "independent_continuous_control_attempts": 1,
+    "matched": [
+      "model",
+      "optimizer",
+      "scheduler",
+      "Python RNG",
+      "CPU RNG",
+      "CUDA RNG",
+      "validation loss",
+      "best validation loss"
+    ],
+    "full_state_restoration_identical": true,
+    "save_budget_bytes": 512000,
+    "save_peak_bytes": 63232,
+    "torch_peak_allocated_bytes": 68206592,
+    "seconds": 257.85,
+    "scientific_verdict": "not-assessed",
+    "scope": "Single-device deterministic short trainer, not distributed or large-scale certification"
+  },
+  "independent_environment_pilot": {
+    "status": "PASS",
+    "venvs": 2,
+    "offline_wheel_installation": true,
+    "actual_pip_solver_conflict": "ResolutionImpossible",
+    "conflict_exit_code": 1,
+    "actual_consumer_failure": "TypeError",
+    "failed_candidate": "rejected",
+    "old_package_and_frozen_binding_unchanged": true,
+    "seconds": 14.42,
+    "scope": "Synthetic offline wheel packages; GPU checks recorded separately"
+  },
+  "plugin_installation": {
+    "status": "PASS",
+    "Codex_CLI": "0.162.1",
+    "sequence": [
+      "1.1 development",
+      "1.0.0 rollback",
+      "1.1 development restore"
+    ],
+    "ordinary_native_discovery": true,
+    "unique_enabled_skills": 86,
+    "all_installed_public_files_byte_checked": true,
+    "unrelated_configuration_preserved": true,
+    "acceptance_source_tree_sha256": "c0d79fc3ef0ba98eee723127c82ac2fa4236d1073023223ac50ab34e191f8789",
+    "final_release_installation": {
+      "status": "PASS",
+      "version": "1.1.0-beta.1",
+      "unique_enabled_skills": 86,
+      "public_files_byte_checked": 785,
+      "source_scope": "Clean pre-release candidate; final committed assets separately verified at publication and installation",
+      "ordinary_native_discovery": true,
+      "unrelated_settings_preserved": true
     },
-    "model": "gpt-6.1-sol",
-    "reasoning_effort": "max",
+    "configuration_scope": "Earlier install/rollback matched its recorded settings. Before the beta switch, model and effort had changed independently; only those two fields explained the baseline difference. User-requested default model changes are separately recorded and retained."
+  },
+  "behavior_evaluation": {
+    "status": "PASS_SCOPED",
     "Codex_CLI": "0.162.1",
     "runtime_ceiling_seconds": 600,
     "tool_action_limit": 32,
-    "stable_proactivity_improvement_established": false,
-    "original_subset_passed": 13,
-    "original_subset_outcomes": {
-      "04": "PASS",
-      "05": "PASS",
-      "06": "PASS",
-      "09": "PASS",
-      "10": "PASS",
-      "11": "PASS",
-      "13": "PASS",
-      "14": "PASS",
-      "15": "PASS",
-      "16": "PASS",
-      "17": "PASS",
-      "18": "PASS",
-      "24": "PASS"
-    },
-    "core_source_scope": "Core changes through ab30307; earlier unaffected successful cases reused under the published protocol. Not a fresh full24-case matrix or new executions against all later archive instruction bytes.",
-    "storage_outcomes": {
-      "S01": "INCONCLUSIVE",
-      "S02": "PASS",
-      "S03": "PASS",
-      "S04": "PASS"
-    },
-    "lifecycle_extension": {
-      "source_commit": "ab6ed6d285054ed0026fba678d794d71535d6725",
-      "manifest_sha256": "765639412dc08b7bfa1cf6db629aeebca980ec917bb593e3fec34eb1ff3196c3",
-      "cases": 2,
-      "outcomes": {
-        "L01": "PASS",
-        "L02": "PASS"
-      },
-      "seconds": {
-        "L01": 481.38,
-        "L02": 405.1
-      },
-      "actual_file_removal_and_evidence_preservation": true
-    },
-    "retained_failed_and_incomplete_attempts": "Initial two-sided case04 timeouts, earlier missing standalone trackers, three zero-action CLI startup failures with completed retries, parent-runner interruptions with unknown exit/timing, and both inconclusive S01 attempts retained."
-  },
-  "development_checks": {
-    "implementation_archive": {
-      "source_commit": "ab30307a9c0b34aa191cdc5af0e8925321561f63",
-      "file_count": 699,
-      "tar_zip_bytes_match": true,
-      "relocated_package_status": "PASS",
-      "skill_entrypoints": 84,
-      "helper_policy_and_fixture_files_present": true,
-      "private_records_excluded": true,
-      "scope": "Implementation archive; final public validation documents are updated after behavior checks."
-    },
-    "final_installation": {
-      "status": "PASS",
-      "ordinary_discovery_without_variant_overrides": true,
-      "entrypoints": 84,
-      "selector": "evo-inquiry@evo-inquiry",
-      "version": "1.0.0-beta.5",
-      "public_source_files_matching": 730,
-      "all_entrypoints_shared_references_and_helper_match": true,
-      "private_validation_and_dist_excluded": true,
-      "model_settings_preserved": true,
-      "helper_sha256": "0ae5d3bcfb25dd6299e12fae6ca44907c30fe66081621ddd703cac1fb263e254",
-      "source_directory": "dist/installed-source/evo-inquiry-1.0.0-beta.5",
-      "reason_for_clean_source": "Codex CLI0.162.1 copies local untracked files into caches; clean public source excludes validation, dist and Git history.",
-      "scope": "Historical beta.5 local Codex installation; stable promotion does not change skill/helper instruction bytes or re-register this local installation."
-    },
-    "temporary_evaluation_plugins_removed": true,
-    "final_source_archive": {
-      "method": "Build from final committed public source with tools/build_beta_release.py; asset release-manifest.json separately records exact commit and checksums.",
-      "implementation_archive_validation": "PASS",
-      "file_count": 730,
-      "private_records_excluded": true,
-      "scope": "Historical beta.5 package checks. Stable assets are built from their exact committed source and record inventory and checksums in their own release-manifest.json."
-    },
-    "lifecycle_implementation_archive": {
-      "status": "PASS",
-      "source_commit": "ab6ed6d285054ed0026fba678d794d71535d6725",
-      "file_count": 730,
-      "tar_zip_bytes_match": true,
-      "all_source_bytes_match": true,
-      "relocated_preservation_and_references": "PASS",
-      "relocated_terminal_fixture_status": "PASS",
-      "private_records_excluded": true
-    },
-    "public_document_links": {
-      "status": "PASS",
-      "documents": 10,
-      "local_targets": 59,
-      "scope": "Local file targets outside code examples; external links and anchors not fetched."
-    }
-  },
-  "CI_scope": "Implementation evidence includes local Linux checks. Stable publication requires exact-release full Linux/macOS GitHub Actions; per-version results are recorded by the Publish release workflow.",
-  "limits": [
-    "Fresh CLI storage-implementation case S01 is inconclusive at 600 seconds; deterministic checkpoint tests and CPU framework continuation passed independently.",
-    "No GPU, distributed/object-store recovery, actual power-loss certification, live providers, or complete research pipeline was verified.",
-    "New skill instructions do not automatically reconfigure existing training programs or delete existing checkpoints.",
-    "Synthetic cases do not establish general research correctness or improved research outcomes."
-  ],
-  "lifecycle_extension_commit": "ab6ed6d285054ed0026fba678d794d71535d6725",
-  "release_status": "1.0.0 release source; publication is gated by the full Linux/macOS suites",
-  "stable_release": {
-    "version": "1.0.0",
-    "promoted_from": "1.0.0-beta.5",
-    "skill_and_runtime_changes": "None during stable promotion; only version metadata, public documents, publication workflow and its offline tests change.",
-    "publication_workflow": ".github/workflows/release-beta.yml",
-    "publication_gate": [
-      "tag matches VERSION and plugin version",
-      "preservation, inventory and paragraph-format checks",
-      "full Linux and macOS regression suites"
+    "new_manifest_sha256": "4dc9aeb692a333ac077f4c935c077abda9fa850df2ef4b498a5d10e5b9b409d7",
+    "original_manifest_sha256": "a3967b120a2a9bfdc962ae74ae2cfbffdf6505e65a902a8d28b2b3181aeb9651",
+    "new_cases": [
+      "G01",
+      "G02",
+      "G03",
+      "G04"
     ],
-    "release_url": "https://github.com/Soceremite/EvoInquiry/releases/tag/v1.0.0",
-    "source_assets": [
-      "evo-inquiry-1.0.0.tar.gz",
-      "evo-inquiry-1.0.0.zip",
-      "SHA256SUMS",
-      "release-manifest.json"
+    "unchanged_original_cases": [
+      "16",
+      "17"
     ],
-    "local_checks": {
-      "version_consistency": "PASS",
-      "fixed_baseline_preservation": "PASS",
-      "inventory": "PASS",
-      "release_note_paragraph_formatting": "PASS",
-      "document_link_targets": 47,
-      "publication_argument_cases": {
-        "passed": 2,
-        "scope": "Offline execution of actual publisher with a local gh stub: stable/latest vs prerelease, exact current-version assets, complete notes body."
+    "evaluation_source_tree_sha256": "c0d79fc3ef0ba98eee723127c82ac2fa4236d1073023223ac50ab34e191f8789",
+    "G01_initial_startup_failure": {
+      "actions": 0,
+      "seconds": 12.02,
+      "cause": "app-server initialization returned EAGAIN",
+      "retained": true,
+      "scope": "Runtime startup, not a completed behavior case"
+    },
+    "fresh_serial_retry": true,
+    "general_proactivity_or_research_quality_established": false,
+    "budget_note": "All six cases used a recorded 600-second ceiling. Original cases 16/17 define 300 seconds; case 17 completed only within the expanded evaluation budget.",
+    "source_scope": "Recorded development acceptance source. Subsequent changes clarify GPU access failures in shared guidance and update evaluation harness, CI and release metadata; the full source tree was not behavior-retested.",
+    "model_settings_by_subset": {
+      "governance_G01_G02_G03_G04": {
+        "model": "gpt-6.1-sol",
+        "reasoning_effort": "max"
       },
-      "full_linux_sandbox_run": {
-        "status": "FAIL",
-        "passed": 841,
-        "skipped": 20,
-        "failed": 9,
-        "seconds": 429.6,
-        "completed_at_utc": "2026-10-12T07:40:58.653087+00:00",
-        "credential_environment_removed": true,
-        "GPU_visibility_disabled": true
-      },
-      "sandbox_failure_followup": {
+      "original_16_17": {
+        "model": "gpt-6-astra",
+        "reasoning_effort": "xhigh"
+      }
+    },
+    "evaluation_note": "Unpaired engineering acceptance, not a latency/quality comparison. Runtime metadata records the actual settings for each subset; the original small-task subset inherited a changed user default. Subsequent model-backed calls explicitly retain the requested gpt-6.1-sol.",
+    "case_results": {
+      "G01": {
         "status": "PASS",
-        "passed": 9,
-        "skipped": 0,
-        "failed": 0,
-        "seconds": 48.23,
-        "completed_at_utc": "2026-10-12T07:45:47.673175+00:00",
-        "credential_environment_removed": true,
-        "GPU_visibility_disabled": true
+        "seconds": 348.69,
+        "tool_actions": 19,
+        "runtime_ceiling_seconds": 600,
+        "critical_errors_observed": 0,
+        "repeated_authorization_requests_observed": 0,
+        "scope": "Frozen required outcome and original input preservation"
       },
-      "environment_failure_diagnosis": "Three overlay/installer tests were blocked by file ownership preservation; six browser/manual-review tests were blocked by loopback socket permissions. All nine passed with those permissions and unchanged code.",
-      "full_suite_scope": "The failed sandbox attempt and successful targeted follow-up are separate executions. Exact-release full Linux/macOS suites remain required by the publication workflow.",
-      "temporary_test_files_removed": true
-    }
+      "G02": {
+        "status": "PASS",
+        "seconds": 267.45,
+        "tool_actions": 21,
+        "runtime_ceiling_seconds": 600,
+        "critical_errors_observed": 0,
+        "repeated_authorization_requests_observed": 0,
+        "scope": "Frozen required outcome and original input preservation"
+      },
+      "G03": {
+        "status": "PASS",
+        "seconds": 447.89,
+        "tool_actions": 16,
+        "runtime_ceiling_seconds": 600,
+        "critical_errors_observed": 0,
+        "repeated_authorization_requests_observed": 0,
+        "scope": "Frozen required outcome and original input preservation"
+      },
+      "G04": {
+        "status": "PASS",
+        "seconds": 200.99,
+        "tool_actions": 14,
+        "runtime_ceiling_seconds": 600,
+        "critical_errors_observed": 0,
+        "repeated_authorization_requests_observed": 0,
+        "scope": "Frozen required outcome and original input preservation"
+      },
+      "16": {
+        "status": "PASS",
+        "seconds": 216.79,
+        "tool_actions": 5,
+        "runtime_ceiling_seconds": 600,
+        "critical_errors_observed": 0,
+        "repeated_authorization_requests_observed": 0,
+        "scope": "Frozen required outcome and original input preservation"
+      },
+      "17": {
+        "status": "PASS",
+        "seconds": 333.22,
+        "tool_actions": 2,
+        "runtime_ceiling_seconds": 600,
+        "critical_errors_observed": 0,
+        "repeated_authorization_requests_observed": 0,
+        "scope": "Expanded 600-second budget; exceeds original default of 300 seconds"
+      }
+    },
+    "original_24_case_full_target_assessed": false,
+    "critical_errors_observed": 0,
+    "nonblocking_observations": [
+      "One inventory artifact overgeneralized -B use; the trace preserved the actual command and no project bytecode or forbidden state was observed.",
+      "Small implementation/inspection cases had considerable reference-reading or report length; no paired performance improvement established."
+    ],
+    "independent_trace_and_artifact_assessment": true
+  },
+  "filesystem": {
+    "doctor_status": "PASS",
+    "deployment_scope": "single host, exact inspected directory",
+    "observed_quarkfs_lock_exclusion": "FAIL",
+    "observed_overlay_lock_replace_fsync": "PASS",
+    "observed_XFS_emptyDir_lock_replace_fsync": "PASS",
+    "host_XFS_bind": "read-only",
+    "durable_writable_volume_confirmed": false,
+    "unsafe_governance_writes_fail_before_state_creation": true,
+    "operator_persistence_and_backup_confirmation_required": true,
+    "multi_host_or_power_loss_certified": false
+  },
+  "CI_required_gates": {
+    "Linux": "full suite plus expect interactive tests",
+    "macOS": "full suite",
+    "Windows": [
+      "powershell.exe installer",
+      "pwsh installer",
+      "filesystem probe",
+      "local project/environment/execution/report acceptance"
+    ],
+    "results_location": "GitHub Actions for the source commit/tag"
+  },
+  "unverified": [
+    "Durable production project deployment on this host",
+    "Multi-host or network filesystem concurrency",
+    "Power-loss behavior",
+    "Actual SSH/screen queue deployment",
+    "Windows directory fsync and POSIX checkpoint helper",
+    "Distributed/large-scale GPU training",
+    "Optional live external reviewer providers with missing credentials"
+  ],
+  "public_package": {
+    "committed_files_only": true,
+    "private_plans_logs_credentials_builds_and_Git_excluded": true,
+    "checksums": "SHA256SUMS",
+    "source_identity": "Commit and inventory in release-manifest.json"
+  },
+  "evidence_archive": {
+    "status": "PASS",
+    "scope": "GPU/environment pilot and all natural-language traces archived with per-file SHA-256 verification; private evidence excluded from public assets"
   }
 }

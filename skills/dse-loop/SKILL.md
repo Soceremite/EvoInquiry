@@ -5,6 +5,15 @@ argument-hint: "[task-description — include program, parameters, objective, an
 allowed-tools: Bash(*), Read, Grep, Glob, Write, Edit
 ---
 
+<!-- EI-GOVERNANCE:BEGIN -->
+Resolve runtime state through tools/state_paths.py before .ei operations. Use
+[project-governance](../shared-references/project-governance.md) for fixed evidence,
+profiles and controlled migration; missing profiles retain compat-v1.
+Reuse tested evaluator/data contracts and record a distinct frozen execution per actual candidate/retry. Keep authorized search bounds and all negative/failed attempts.
+For code/dependency changes, read [code-reuse-and-docs](../shared-references/code-reuse-and-docs.md) and [environment-stewardship](../shared-references/environment-stewardship.md).
+<!-- EI-GOVERNANCE:END -->
+
+
 # DSE Loop: Autonomous Design Space Exploration
 
 > 🔁 **Do not wrap this skill in `/loop` / `CronCreate`.** It already loops

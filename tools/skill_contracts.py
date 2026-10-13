@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Field-level preservation checks against the committed beta.3 contract."""
+"""Preservation checks with explicit, digest-pinned governance upgrade adaptations."""
 from __future__ import annotations
 
 import hashlib
@@ -8,8 +8,17 @@ from pathlib import Path
 import re
 
 SOURCE_COMMIT = "b9c7861fd22cd2f5471765d583c593f083fa12cc"
+UPGRADE_SOURCE_COMMIT = '69cfbc5dc5fc34c4d7e6146fe66f5520866f7dfe'
 HOOK = re.compile(r"\n<!-- EVO-INQUIRY:BEGIN -->\n.*?<!-- EVO-INQUIRY:END -->\n\n", re.S)
 FRONTMATTER = re.compile(r"\A---\n(.*?)\n---\n", re.S)
+GOVERNANCE_HOOK = re.compile(r'\n<!-- EI-GOVERNANCE:BEGIN -->\n.*?<!-- EI-GOVERNANCE:END -->\n\n', re.S)
+
+
+def normalize_namespace(text: str) -> str:
+    """Reverse only namespace tokens, not scientific symbols such as torch.einsum."""
+    text = GOVERNANCE_HOOK.sub('', text)
+    text = text.replace('.ei/queue', '.aris_queue')
+    return re.sub(r'\.ei(?=[/\\\s"\x27`._-]|$)', '.aris', text)
 
 
 def digest(data: bytes) -> str:
@@ -48,11 +57,13 @@ def skill_parts(text: str) -> tuple[str, str, str]:
 
 def load_contract(root: Path) -> dict:
     data = json.loads((root / "tools/skill-contracts.json").read_text(encoding="utf-8"))
-    if data.get("source_commit") != SOURCE_COMMIT or data.get("schema_version") != 1:
+    if data.get("source_commit") != SOURCE_COMMIT or data.get("schema_version") != 2:
         raise ValueError("contract source or schema differs from the frozen beta.3 baseline")
     retained = data.get("retained_skills", {})
-    if len(retained) != 83 or data.get("added_skills") != ["research-guide"]:
-        raise ValueError("expected 83 retained skills and the registered research-guide extension")
+    if (len(retained) != 83 or data.get('added_skills') != ['research-guide', 'project-governance', 'environment-maintenance']
+            or data.get('mainline_added_skills') != ['project-governance', 'environment-maintenance']
+            or data.get('upgrade_source_commit') != UPGRADE_SOURCE_COMMIT):
+        raise ValueError('expected 83 retained skills and three registered governance/coordinator extensions')
     return data
 
 
@@ -71,7 +82,7 @@ def contract_errors(root: Path) -> list[str]:
     for name in sorted(actual - expected):
         errors.append(f"Unregistered Codex skill: {name}")
     mainline = {p.parent.name for p in (root / "skills").glob("*/SKILL.md")}
-    if mainline != retained:
+    if mainline != retained | set(contract['mainline_added_skills']):
         errors.append("Retained upstream inventory differs from frozen skill contract")
     for name in sorted(actual & expected):
         path = base / name / "SKILL.md"
@@ -88,10 +99,20 @@ def contract_errors(root: Path) -> list[str]:
             frozen = contract["retained_skills"][name]
             if digest(frontmatter.encode()) != frozen["frontmatter_except_description_sha256"]:
                 errors.append(f"{name}: protected frontmatter changed")
-            if digest(body.encode()) != frozen["body_without_hook_sha256"]:
+            normalized = normalize_namespace(body)
+            if digest(normalized.encode()) != frozen["body_without_hook_sha256"]:
                 errors.append(f"{name}: protected workflow body changed")
     for rel, expected_hash in contract["protected_files"].items():
         path = root / rel
-        if not path.is_file() or digest(path.read_bytes()) != expected_hash:
+        adaptation = contract.get('approved_upgrade_files', {}).get(rel)
+        if adaptation:
+            expected_hash = adaptation['sha256']
+        valid = path.is_file() and digest(path.read_bytes()) == expected_hash
+        if not valid and path.is_file() and not adaptation:
+            try:
+                valid = digest(normalize_namespace(path.read_text()).encode()) == expected_hash
+            except UnicodeError:
+                pass
+        if not valid:
             errors.append(f"{rel}: protected baseline file changed or missing")
     return errors

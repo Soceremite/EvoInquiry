@@ -10,10 +10,10 @@ import sys
 
 try:
     from tools.publication_policy import load_policy, publication_errors
-    from tools.skill_contracts import HOOK, contract_errors, load_contract, skill_parts
+    from tools.skill_contracts import HOOK, contract_errors, load_contract, normalize_namespace, skill_parts
 except ModuleNotFoundError:
     from publication_policy import load_policy, publication_errors
-    from skill_contracts import HOOK, contract_errors, load_contract, skill_parts
+    from skill_contracts import HOOK, contract_errors, load_contract, normalize_namespace, skill_parts
 
 BLOCK = HOOK
 
@@ -47,7 +47,10 @@ def verify(root: Path, baseline: Path | None = None) -> dict:
         if baseline is not None and skill.parent.name in retained:
             old = baseline / rel
             try:
-                equal = old.is_file() and skill_parts(body)[:2] == skill_parts(old.read_text())[:2]
+                current_parts = skill_parts(body)[:2]
+                current_parts = (current_parts[0], normalize_namespace(current_parts[1]))
+                old_parts = skill_parts(old.read_text())[:2] if old.is_file() else None
+                equal = old.is_file() and current_parts == old_parts
             except (ValueError, TypeError):
                 equal = False
             if not equal:
@@ -90,6 +93,7 @@ def verify(root: Path, baseline: Path | None = None) -> dict:
             '.github/workflows/release-beta.yml',
             'tools/verify_evo_inquiry.py',
         } | set(policy['adapted_upstream_documents']) | {str(p.relative_to(root)) for p in skills}
+        permitted |= set(load_contract(root).get('approved_upgrade_files', {}))
         for original in baseline.rglob('*'):
             rel = original.relative_to(baseline)
             if '.git' in rel.parts or '__pycache__' in rel.parts or '.pytest_cache' in rel.parts or original.suffix == '.pyc':

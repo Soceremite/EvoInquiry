@@ -3,7 +3,7 @@
 #
 # Each ARIS skill is symlinked into `<project>/.claude/skills/<skill-name>` so
 # Claude Code's slash-command discovery (which only scans one level deep) finds it.
-# A versioned manifest at `<project>/.aris/installed-skills.txt` tracks every
+# A versioned manifest at `<project>/.ei/installed-skills.txt` tracks every
 # entry this installer created — uninstall and reconcile read from the manifest
 # and never touch user-owned skills with the same name.
 #
@@ -29,7 +29,7 @@
 #   Y/n/e prompts); fresh install with --quiet/no TTY installs everything (old behavior).
 #   Reconcile keeps exactly what the manifest says is installed; NEW upstream
 #   skills need per-skill confirmation (declined ones are remembered in
-#   .aris/skills-declined.txt and never re-asked).
+#   .ei/skills-declined.txt and never re-asked).
 #
 # Options:
 #   --aris-repo PATH       override aris-repo discovery
@@ -48,7 +48,7 @@
 #   --clear-stale-lock     remove stale lock dir from a crashed prior run
 #                          (host+PID metadata is verified before removal)
 #   --no-agent-profiles    never put Copilot reviewer profiles into the
-#                          project's .github/agents/ (remembered in .aris/;
+#                          project's .github/agents/ (remembered in .ei/;
 #                          undo with --agent-profiles). Without either flag
 #                          the profiles are deployed only while
 #                          auto-review-loop is installed.
@@ -63,19 +63,20 @@
 #   S6  Concurrent runs in same project serialize via mkdir lockdir.
 #   S7  Crash mid-apply leaves the previous manifest intact; rerun adopts.
 #   S8  Uninstall revalidates each managed symlink's target before removing.
-#   S9  If .aris/, .claude/, or .claude/skills/ is itself a symlink, abort.
+#   S9  If .ei/, .claude/, or .claude/skills/ is itself a symlink, abort.
 #   S10 Reject upstream entries that are symlinks to outside aris-repo.
 #   S11 Revalidate exact target match (lstat + readlink) before every mutation.
-#   S12 The optional `.aris/tools` symlink (added in #174) is the only managed
+#   S12 The optional `.ei/tools` symlink (added in #174) is the only managed
 #       artifact NOT tracked in the manifest. It is identified at uninstall
 #       time by exact target match against `<aris-repo>/tools`. Any other
-#       path or differently-targeted symlink at `.aris/tools` is left alone.
+#       path or differently-targeted symlink at `.ei/tools` is left alone.
 #   S12 Temp files live in the same directory as the destination.
 #   S13 Skill names must match ^[A-Za-z0-9][A-Za-z0-9._-]*$ (slug regex).
 #   S14 Copilot agent links are removed only when listed in the dedicated
 #       installed-agent-profiles.txt ownership sidecar.
 
 set -euo pipefail
+EI_ORIGINAL_ARGUMENTS=("$@")
 
 # ─── Constants ────────────────────────────────────────────────────────────────
 MANIFEST_VERSION="1"
@@ -84,8 +85,8 @@ MANIFEST_PREV_NAME="installed-skills.txt.prev"
 AGENT_MANIFEST_NAME="installed-agent-profiles.txt"
 DECLINED_NAME="skills-declined.txt"
 CATALOG_REL="tools/skill-groups.tsv"
-GLOBAL_POINTER="$HOME/.aris/repo"
-ARIS_DIR_NAME=".aris"
+GLOBAL_POINTER="$HOME/.ei/repo"
+ARIS_DIR_NAME=".ei"
 LOCK_DIR_NAME=".install.lock.d"
 SKILLS_REL=".claude/skills"
 DOC_FILE_NAME="CLAUDE.md"
@@ -160,7 +161,7 @@ while [[ $# -gt 0 ]]; do
     case "$1" in
         --reconcile)         FORWARDED_ARGS+=("$1"); ACTION="reconcile"; shift ;;
         --uninstall)         FORWARDED_ARGS+=("$1"); ACTION="uninstall"; shift ;;
-        --aris-repo)         FORWARDED_ARGS+=("$1" "${2:?--aris-repo requires path}"); ARIS_REPO_OVERRIDE="$2"; shift 2 ;;
+        --aris-repo|--ei-repo)         FORWARDED_ARGS+=("$1" "${2:?--aris-repo requires path}"); ARIS_REPO_OVERRIDE="$2"; shift 2 ;;
         --dry-run)           FORWARDED_ARGS+=("$1"); DRY_RUN=true; shift ;;
         --quiet)             FORWARDED_ARGS+=("$1"); QUIET=true; shift ;;
         --no-doc)            FORWARDED_ARGS+=("$1"); NO_DOC=true; shift ;;
@@ -255,7 +256,7 @@ resolve_aris_repo() {
     for guess in \
         "$HOME/Desktop/aris_repo" \
         "$HOME/aris_repo" \
-        "$HOME/.aris" \
+        "$HOME/.ei" \
         "$HOME/Desktop/Auto-claude-code-research-in-sleep" \
         "$HOME/.codex/Auto-claude-code-research-in-sleep" \
         "$HOME/.claude/Auto-claude-code-research-in-sleep" ; do
@@ -307,8 +308,8 @@ build_upstream_inventory() {
 #   group\t<id>\t<display>\t<description>
 #   skill\t<name>\t<group-id>\t<requires: comma list or "-">
 # Selection state lives in two project files:
-#   .aris/installed-skills.txt  — what IS installed (existing manifest)
-#   .aris/skills-declined.txt   — skills the user explicitly said no to;
+#   .ei/installed-skills.txt  — what IS installed (existing manifest)
+#   .ei/skills-declined.txt   — skills the user explicitly said no to;
 #                                 never re-prompted on reconcile.
 # "Skipped" (via --skip-new / --quiet) is NOT declined — those skills are
 # asked about again on the next interactive reconcile.
@@ -573,12 +574,11 @@ filter_upstream_by_selection() {  # $1 = upstream file, $2 = selected file, $3 =
 # installed skills find $ARIS_REPO/tools without a per-project install.
 ensure_global_pointer() {
     $DRY_RUN && return 0
-    mkdir -p "$(dirname "$GLOBAL_POINTER")" 2>/dev/null || { warn "cannot create $(dirname "$GLOBAL_POINTER") — skipping global pointer"; return 0; }
-    local cur=""
-    [[ -f "$GLOBAL_POINTER" ]] && cur="$(cat "$GLOBAL_POINTER" 2>/dev/null || true)"
-    [[ "$cur" == "$ARIS_REPO" ]] && return 0
-    printf '%s\n' "$ARIS_REPO" > "$GLOBAL_POINTER.tmp.$$" && mv -f "$GLOBAL_POINTER.tmp.$$" "$GLOBAL_POINTER"
-    log "  + global pointer $GLOBAL_POINTER -> $ARIS_REPO"
+    python3 "$(cd "$(dirname "$0")" && pwd)/state_paths.py" --root "$HOME" --set-repo-pointer "$ARIS_REPO" || {
+        warn "optional global pointer was not updated; resolve its namespace conflict first"
+        return 0
+    }
+    log "  + global repository pointer -> $ARIS_REPO"
 }
 
 # Parse manifest into a global associative-style array via temp file lookup
@@ -651,7 +651,13 @@ fi
 ARIS_REPO="$(resolve_aris_repo)"
 SKILLS_DIR_ABS="$ARIS_REPO/skills"
 PROJECT_SKILLS_DIR="$PROJECT_PATH/$SKILLS_REL"
-PROJECT_ARIS_DIR="$PROJECT_PATH/$ARIS_DIR_NAME"
+PROJECT_ARIS_DIR="$(python3 "$(cd "$(dirname "$0")" && pwd)/state_paths.py" --root "$PROJECT_PATH" --mode write)" || die "state namespace conflict; use project-governance migration"
+# Keep the namespace lock across the complete mutation, including installer locks.
+# A dry-run resolves state but creates no guard lock or directory.
+if ! $DRY_RUN && ! $LIST_GROUPS && [[ "${EI_NAMESPACE_GUARD:-}" != "$PROJECT_PATH" ]]; then
+    EI_NAMESPACE_GUARD="$PROJECT_PATH" python3 "$(cd "$(dirname "$0")" && pwd)/state_paths.py" --root "$PROJECT_PATH" --guard-command -- bash "$0" "${EI_ORIGINAL_ARGUMENTS[@]}"
+    exit $?
+fi
 MANIFEST_PATH="$PROJECT_ARIS_DIR/$MANIFEST_NAME"
 MANIFEST_PREV="$PROJECT_ARIS_DIR/$MANIFEST_PREV_NAME"
 AGENT_MANIFEST_PATH="$PROJECT_ARIS_DIR/$AGENT_MANIFEST_NAME"
@@ -666,8 +672,8 @@ if $LIST_GROUPS; then
     exit 0
 fi
 
-# ─── S9: refuse if .aris / .claude / .claude/skills is itself a symlink ───────
-# (.aris and .claude/skills may not exist yet — only check if present.)
+# ─── S9: refuse if .ei / .claude / .claude/skills is itself a symlink ───────
+# (.ei and .claude/skills may not exist yet — only check if present.)
 check_no_symlinked_parents() {
     local p
     for p in "$PROJECT_ARIS_DIR" "$PROJECT_PATH/.claude" "$PROJECT_SKILLS_DIR" "$PROJECT_PATH/.github" "$PROJECT_PATH/.github/agents"; do
@@ -762,7 +768,7 @@ migrate_legacy() {
        This may contain user edits. Choose explicitly:
          --migrate-copy keep-user        (keep nested copy intact, install flat alongside;
                                           old copy becomes inert for Claude discovery)
-         --migrate-copy prefer-upstream  (archive nested copy to .aris/legacy-copy-backup-<ts>/
+         --migrate-copy prefer-upstream  (archive nested copy to .ei/legacy-copy-backup-<ts>/
                                           AFTER new flat install is verified, then flatten)"
             fi
             # actual handling deferred until after apply (for prefer-upstream)
@@ -946,12 +952,12 @@ apply_plan() {
     done < "$plan"
 }
 
-# Phase 0 (#174): ensure project-local `.aris/tools` symlink exists, pointing
+# Phase 0 (#174): ensure project-local `.ei/tools` symlink exists, pointing
 # to the canonical aris-repo `tools/` dir. Pure-additive: existing users who
 # don't rerun the installer never see this. The symlink is currently inert
 # (no SKILL.md references it); it sets up future #177 path-rewrites.
 #
-# Idempotent. If `.aris/tools` already exists with a different target (or as
+# Idempotent. If `.ei/tools` already exists with a different target (or as
 # a real file/dir), warn and leave it alone — never replace user content.
 # Membership in the "managed" set is determined by exact target match against
 # `$ARIS_REPO/tools`, not via the manifest, so we don't need to bump the
@@ -966,12 +972,12 @@ ensure_tools_symlink() {
         if [[ "$cur" == "$expected_target" ]]; then
             return 0
         fi
-        warn ".aris/tools already exists with different target ($cur); leaving alone (#174)"
+        warn ".ei/tools already exists with different target ($cur); leaving alone (#174)"
         return 0
     fi
 
     if [[ -e "$link_path" ]]; then
-        warn ".aris/tools already exists as a non-symlink path; leaving alone (#174)"
+        warn ".ei/tools already exists as a non-symlink path; leaving alone (#174)"
         return 0
     fi
 
@@ -979,11 +985,11 @@ ensure_tools_symlink() {
         log "  (dry-run) ln -s $expected_target $link_path"
     else
         ln -s "$expected_target" "$link_path"
-        log "  + .aris/tools -> tools/ (Phase 0, #174)"
+        log "  + .ei/tools -> tools/ (Phase 0, #174)"
     fi
 }
 
-# Counterpart for uninstall: only remove `.aris/tools` if it is exactly the
+# Counterpart for uninstall: only remove `.ei/tools` if it is exactly the
 # managed symlink (target == $ARIS_REPO/tools). User-created directories /
 # files / different symlinks are untouched.
 remove_tools_symlink() {
@@ -1001,7 +1007,7 @@ remove_tools_symlink() {
         log "  (dry-run) rm $link_path"
     else
         rm -f "$link_path"
-        log "  - .aris/tools (managed symlink)"
+        log "  - .ei/tools (managed symlink)"
     fi
 }
 
@@ -1118,7 +1124,7 @@ remove_agent_profiles() {
 # #431: the profiles only serve auto-review-loop's Copilot backend, and
 # .github/ is the user's namespace — so deploy them only while that skill is
 # installed, and let the user say no outright. The opt-out is remembered in
-# .aris/ so a later reconcile does not bring the links back.
+# .ei/ so a later reconcile does not bring the links back.
 agent_profiles_wanted() {  # $1 = selected file
     case "$AGENT_PROFILES_FLAG" in
         off) return 1 ;;
@@ -1204,7 +1210,7 @@ PYEOF
 
     # Compare-and-swap: re-read file, only commit if unchanged from snapshot
     if $DRY_RUN; then log "  (dry-run) would update CLAUDE.md ARIS block"; return 0; fi
-    tmp="$DOC_FILE.aris-tmp.$$"
+    tmp="$DOC_FILE.ei-tmp.$$"
     printf '%s' "$new_content" > "$tmp"
     local current; current="$(cat "$DOC_FILE")"
     if [[ "$current" != "$original" ]]; then
@@ -1248,7 +1254,7 @@ do_uninstall() {
         fi
     done < "$manifest_data"
     rm -f "$manifest_data"
-    # #174 Phase 0: best-effort cleanup of `.aris/tools` symlink, only if it
+    # #174 Phase 0: best-effort cleanup of `.ei/tools` symlink, only if it
     # is exactly the managed symlink. Anything else (user-created dir, custom
     # symlink target) is left alone.
     remove_tools_symlink
@@ -1347,7 +1353,7 @@ if (( N_CONFLICT > 0 )); then
 fi
 
 if $DRY_RUN; then
-    # #174 preview: print the planned `.aris/tools` symlink action (function
+    # #174 preview: print the planned `.ei/tools` symlink action (function
     # is idempotent + DRY_RUN-aware, so it just logs in this mode)
     ensure_tools_symlink
     # F5 preview: print planned agent profile symlinks (or their removal).
@@ -1372,7 +1378,7 @@ log "Applying:"
 apply_plan "$PLAN_FILE" "$MANIFEST_TMP"
 commit_manifest "$MANIFEST_TMP"
 
-# #174 Phase 0: ensure project-local .aris/tools symlink (purely additive).
+# #174 Phase 0: ensure project-local .ei/tools symlink (purely additive).
 # Runs after manifest commit so a failure here doesn't roll back skill links.
 ensure_tools_symlink
 # F5 / #431: Copilot agent profiles from <aris-repo>/.github/agents/ — only

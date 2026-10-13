@@ -1,0 +1,176 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "EvoInquiry consumer v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "consumer_id",
+    "project_id",
+    "experiment_id",
+    "entrypoint",
+    "job_ref",
+    "workflow_run_id",
+    "execution_run_id",
+    "env_revision",
+    "lease",
+    "pin",
+    "importance",
+    "lifecycle",
+    "confirmed_by",
+    "confirmed_at",
+    "source"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "consumer_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
+    },
+    "project_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
+    },
+    "experiment_id": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "entrypoint": {
+      "type": "string",
+      "minLength": 1
+    },
+    "job_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "workflow_run_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "execution_run_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "env_revision": {
+      "type": "object",
+      "required": [
+        "path",
+        "sha256"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "artifact_id": {
+          "type": "string"
+        },
+        "revision": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "lease": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "pin": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "reason",
+          "ref"
+        ],
+        "properties": {
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          },
+          "ref": {
+            "type": "object",
+            "required": [
+              "path",
+              "sha256"
+            ],
+            "properties": {
+              "path": {
+                "type": "string",
+                "minLength": 1
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              },
+              "artifact_id": {
+                "type": "string"
+              },
+              "revision": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "importance": {
+      "enum": [
+        "unknown",
+        "standard",
+        "critical"
+      ]
+    },
+    "lifecycle": {
+      "enum": [
+        "unknown",
+        "planned",
+        "queued",
+        "running",
+        "completed",
+        "abandoned"
+      ]
+    },
+    "confirmed_by": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "confirmed_at": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "source": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "additionalProperties": false
+}

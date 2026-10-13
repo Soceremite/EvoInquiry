@@ -4,7 +4,7 @@
 Covers:
   fresh:      --quiet with no selection flags installs everything (legacy)
   fresh:      --skills subset installs the subset + catalog `requires` deps,
-              records unselected skills in .aris/skills-declined.txt
+              records unselected skills in .ei/skills-declined.txt
   fresh:      --groups installs a whole group; unknown names die
   fresh:      an excluded hard dep is NOT auto-included (warning instead)
   reconcile:  new upstream skill — --skip-new skips without declining,
@@ -12,7 +12,7 @@ Covers:
   reconcile:  --exclude removes an installed skill and declines it,
               --skills re-enables a declined skill
   flags:      --all conflicts with --groups/--skills; --list-groups prints
-  pointer:    $HOME/.aris/repo is written on successful install
+  pointer:    $HOME/.ei/repo is written on successful install
 
 All runs use a synthetic aris-repo fixture and an overridden $HOME so the
 real global pointer is never touched.
@@ -87,7 +87,7 @@ class SelectiveInstallTest(unittest.TestCase):
         return {p.name for p in skills.iterdir()} - {"shared-references"}
 
     def _declined(self):
-        f = self.project / ".aris" / "skills-declined.txt"
+        f = self.project / ".ei" / "skills-declined.txt"
         if not f.is_file():
             return set()
         return set(f.read_text().split())
@@ -183,15 +183,15 @@ class SelectiveInstallTest(unittest.TestCase):
 
     def test_global_pointer_written(self):
         self._run()
-        pointer = self.home / ".aris" / "repo"
-        self.assertTrue(pointer.is_file(), "installer must write ~/.aris/repo")
+        pointer = self.home / ".ei" / "repo"
+        self.assertTrue(pointer.is_file(), "installer must write ~/.ei/repo")
         self.assertEqual(pointer.read_text().strip(), str(self.repo))
 
     def test_dry_run_writes_nothing(self):
         self._run("--dry-run")
         self.assertEqual(self._installed(), set())
-        self.assertFalse((self.home / ".aris" / "repo").exists())
-        self.assertFalse((self.project / ".aris" / "skills-declined.txt").exists())
+        self.assertFalse((self.home / ".ei" / "repo").exists())
+        self.assertFalse((self.project / ".ei" / "skills-declined.txt").exists())
 
     # ─── interactive menu (needs a pty via expect) ─────────────────────────
 

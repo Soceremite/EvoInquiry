@@ -1,1 +1,1 @@
-Current project: calibration-missing. See .aris/runs/calibration-missing.json.
+Current project: calibration-missing. See .ei/runs/calibration-missing.json.

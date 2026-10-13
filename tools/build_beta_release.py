@@ -38,7 +38,7 @@ def main() -> None:
     if policy_errors:
         raise SystemExit('\n'.join(policy_errors))
     forbidden = [str(p) for p in tracked if
-                 p.parts[0] in {'validation', 'dist', '.aris', '.claude', '.git'} or
+                 p.parts[0] in {'validation', 'dist', '.ei', '.aris', '.ei-migration', '.claude', '.git'} or
                  p.name in {'auth.json', 'config.before.toml', '.env', 'id_rsa', 'id_ed25519'} or
                  (p.name.startswith('.env.') and p.name != '.env.example')]
     if forbidden:

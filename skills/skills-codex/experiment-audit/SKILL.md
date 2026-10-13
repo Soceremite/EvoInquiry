@@ -12,6 +12,8 @@ principles within the user's scope and this skill's existing outputs, review
 standards, and recovery contracts. Carry them into nested research tasks and
 reviewer briefs. Continue authorized work through its necessary steps; honor
 budgets, blocking checkpoints, and stopping conditions.
+
+For this stage, read [project-governance](../shared-references/project-governance.md). Audit fixed input/content/review digests, declared execution inclusion and relevant interface freshness. Registry/schema PASS is integrity only and never upgrades scientific review or accepted/provisional.
 <!-- EVO-INQUIRY:END -->
 
 
@@ -194,7 +196,7 @@ Also write `EXPERIMENT_AUDIT.json` for machine consumption:
   "reason_code": "scope_exceeds_evidence",
   "summary": "Two-scene evaluation supports a qualified claim only.",
   "audited_input_hashes": {"results/eval.json": "sha256:<hash>"},
-  "trace_path": ".aris/traces/experiment-audit/2026-04-10_run01/",
+  "trace_path": ".ei/traces/experiment-audit/2026-04-10_run01/",
   "agent_id": "agent_019f...",
   "verdict_id": "agent_019f...",
   "executor_model": "codex-gpt-6-astra",
@@ -293,4 +295,4 @@ Motivated by community-reported integrity issues (#57, #131) where executor agen
 
 ## Review Tracing
 
-After each reviewer agent call, save the trace following `shared-references/review-tracing.md` (Policy C — forensic; never silently skip). Use `save_trace.sh` (resolved per the chain in `shared-references/integration-contract.md` §2) or write files directly to `.aris/traces/<skill>/<date>_run<NN>/`. Respect the `--- trace:` parameter (default: `full`).
+After each reviewer agent call, save the trace following `shared-references/review-tracing.md` (Policy C — forensic; never silently skip). Use `save_trace.sh` (resolved per the chain in `shared-references/integration-contract.md` §2) or write files directly to `.ei/traces/<skill>/<date>_run<NN>/`. Respect the `--- trace:` parameter (default: `full`).

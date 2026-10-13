@@ -10,7 +10,7 @@
       Claude: <project>\.claude\skills\<skill-name>
       Codex:  <project>\.agents\skills\<skill-name>
 
-    Managed entries are tracked in .aris manifests. The script never replaces
+    Managed entries are tracked in .ei manifests. The script never replaces
     real files or user-owned skill directories; conflicts must be resolved
     explicitly.
 
@@ -28,7 +28,7 @@
       redirected console installs everything (legacy behavior).
       Reconcile keeps exactly what the manifest says is installed; NEW
       upstream skills need per-skill confirmation (declined ones are
-      remembered in .aris\skills-declined.txt and never re-asked).
+      remembered in .ei\skills-declined.txt and never re-asked).
 
 .PARAMETER Groups
     Comma-separated catalog group ids to install on a fresh install (or
@@ -98,12 +98,44 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
+
+$EiOriginalParameters = @{} + $PSBoundParameters
+function Invoke-EiNamespaceGuard {
+    param([string]$Root, [bool]$Mutating)
+    $python = Get-Command python3 -ErrorAction SilentlyContinue
+    if (-not $python) { $python = Get-Command python -ErrorAction SilentlyContinue }
+    if (-not $python) { throw 'Python is required for the EvoInquiry namespace resolver' }
+    $resolver = Join-Path $PSScriptRoot 'state_paths.py'
+    $state = & $python.Source $resolver --root $Root --mode write
+    if ($LASTEXITCODE -ne 0) { throw 'State namespace conflict; use project-governance migration' }
+    if (-not $Mutating -or $env:EI_POWERSHELL_GUARD -eq $Root) { return $true }
+    $forward = New-Object System.Collections.Generic.List[string]
+    foreach ($argument in @('-NoProfile', '-File', $PSCommandPath)) { $forward.Add($argument) }
+    foreach ($key in ($EiOriginalParameters.Keys | Sort-Object)) {
+        $value = $EiOriginalParameters[$key]
+        if ($value -is [System.Management.Automation.SwitchParameter]) {
+            if ($value.IsPresent) { $forward.Add('-' + $key) }
+        } else {
+            $forward.Add('-' + $key)
+            foreach ($item in @($value)) { $forward.Add([string]$item) }
+        }
+    }
+    $previous = $env:EI_POWERSHELL_GUARD
+    try {
+        $env:EI_POWERSHELL_GUARD = $Root
+        $engine = (Get-Process -Id $PID).Path
+        & $python.Source $resolver --root $Root --guard-command -- $engine @forward | Out-Host
+        if ($LASTEXITCODE -ne 0) { throw 'Guarded operation failed; inspect the preceding diagnostic' }
+    } finally { $env:EI_POWERSHELL_GUARD = $previous }
+    return $false
+}
+
 $Utf8NoBom = New-Object System.Text.UTF8Encoding($false)
 $ManifestVersion = '1'
 $SafeNameRegex = '^[A-Za-z0-9][A-Za-z0-9._-]*$'
 $SupportNames = @('shared-references')
 $CatalogRel = 'tools/skill-groups.tsv'
-$GlobalPointerDir = Join-Path $HOME '.aris'
+$GlobalPointerDir = Join-Path $HOME '.ei'
 $GlobalPointerPath = Join-Path $GlobalPointerDir 'repo'
 $script:LockDir = $null
 $script:LockAcquired = $false
@@ -355,8 +387,8 @@ function Test-SafeName {
 #   group\t<id>\t<display>\t<description>
 #   skill\t<name>\t<group-id>\t<requires: comma list or "->
 # Selection state lives in two project files:
-#   .aris/installed-skills[-codex].txt  — what IS installed (manifest)
-#   .aris/skills-declined[-codex].txt   — skills the user explicitly said no
+#   .ei/installed-skills[-codex].txt  — what IS installed (manifest)
+#   .ei/skills-declined[-codex].txt   — skills the user explicitly said no
 #                                         to; never re-prompted on reconcile.
 # "Skipped" (via -SkipNew / -Quiet) is NOT declined — those skills are asked
 # about again on the next interactive reconcile.
@@ -667,21 +699,14 @@ function Build-Selection {
 function Ensure-GlobalPointer {
     param([string]$RepoRoot)
     if ($DryRun) { return }
-    try {
-        New-Item -ItemType Directory -Force -Path $GlobalPointerDir -ErrorAction Stop | Out-Null
-    } catch {
-        Write-Warning "cannot create $GlobalPointerDir -- skipping global pointer"
-        return
-    }
-    $current = ''
-    if (Test-Path -LiteralPath $GlobalPointerPath -PathType Leaf) {
-        $current = (Read-Text $GlobalPointerPath).Trim()
-    }
-    if ($current -eq $RepoRoot) { return }
-    $tmp = "$GlobalPointerPath.tmp.$PID"
-    Write-Text $tmp ($RepoRoot + "`n")
-    Move-Item -LiteralPath $tmp -Destination $GlobalPointerPath -Force
-    Write-Host "  + global pointer $GlobalPointerPath -> $RepoRoot"
+    # The guarded parent already holds this root; Windows locks are exclusive.
+    if ($env:EI_POWERSHELL_GUARD -and
+        [IO.Path]::GetFullPath($env:EI_POWERSHELL_GUARD) -eq [IO.Path]::GetFullPath($HOME)) { return }
+    $python = Get-Command python3 -ErrorAction SilentlyContinue
+    if (-not $python) { $python = Get-Command python -ErrorAction SilentlyContinue }
+    if (-not $python) { Write-Warning 'Optional repository pointer needs Python'; return }
+    & $python.Source (Join-Path $PSScriptRoot 'state_paths.py') --root $HOME --set-repo-pointer $RepoRoot
+    if ($LASTEXITCODE -ne 0) { Write-Warning 'Optional global pointer was not updated; reconcile its namespace' }
 }
 
 function Build-Inventory {
@@ -1011,11 +1036,11 @@ function Ensure-ToolsJunction {
     if (Test-LinkItem $item) {
         $currentTarget = Get-LinkTarget $linkPath
         if (Same-Path $currentTarget $expectedTarget) { return }
-        Write-Warning ".aris\tools already points to $currentTarget; leaving it unchanged"
+        Write-Warning ".ei\tools already points to $currentTarget; leaving it unchanged"
         return
     }
     if ($null -ne $item) {
-        Write-Warning ".aris\tools already exists as a real path; leaving it unchanged"
+        Write-Warning ".ei\tools already exists as a real path; leaving it unchanged"
         return
     }
     if ($DryRun) {
@@ -1024,7 +1049,7 @@ function Ensure-ToolsJunction {
     }
     New-Item -ItemType Directory -Force -Path $ArisDir | Out-Null
     New-Junction $linkPath $expectedTarget
-    Write-Host "  + .aris\tools"
+    Write-Host "  + .ei\tools"
 }
 
 function Remove-ToolsJunction {
@@ -1041,7 +1066,7 @@ function Remove-ToolsJunction {
         if (-not (Test-Path -LiteralPath $otherManifestPath -PathType Leaf)) { continue }
         $otherManifest = Load-Manifest $otherManifestPath
         if ($otherManifest.Headers.ContainsKey('repo_root') -and (Same-Path $otherManifest.Headers['repo_root'] $RepoRoot)) {
-            Write-Host "  = .aris\tools (kept; $manifestName still uses this ARIS repo)"
+            Write-Host "  = .ei\tools (kept; $manifestName still uses this ARIS repo)"
             return
         }
     }
@@ -1049,7 +1074,7 @@ function Remove-ToolsJunction {
         Write-Host "  (dry-run) remove $linkPath"
     } else {
         Remove-LinkPath $linkPath
-        Write-Host "  - .aris\tools"
+        Write-Host "  - .ei\tools"
     }
 }
 
@@ -1156,7 +1181,7 @@ function Update-ManagedDoc {
 $($Config.BlockBegin)
 ## $($Config.Title)
 ARIS skills installed in this project: $Count entries.
-Manifest: ``.aris/$($Config.ManifestName)``
+Manifest: ``.ei/$($Config.ManifestName)``
 ARIS repo root: ``$RepoRoot``
 Project skill path: ``$($Config.TargetRelDisplay)/<skill-name>``
 For ARIS workflows, prefer the project-local skills under ``$($Config.TargetRelDisplay)/``.
@@ -1269,12 +1294,19 @@ function Invoke-Main {
         Show-GroupCatalog $catalog
         return
     }
+    if (-not (Invoke-EiNamespaceGuard $projectRoot (-not $DryRun))) { return }
     $selectedPlatform = $Platform
     if ($selectedPlatform -eq 'auto') {
         $selectedPlatform = Detect-Platform $projectRoot
     }
     $config = New-Config $projectRoot $repoRoot $selectedPlatform
-    $arisDir = Join-Path $projectRoot '.aris'
+    $resolver = Join-Path $PSScriptRoot 'state_paths.py'
+    $python = Get-Command python3 -ErrorAction SilentlyContinue
+    if (-not $python) { $python = Get-Command python -ErrorAction SilentlyContinue }
+    if (-not $python) { Die 'Python is required to resolve the EvoInquiry state namespace' }
+    $arisDir = & $python.Source $resolver --root $projectRoot --mode write
+    if ($LASTEXITCODE -ne 0) { Die 'State namespace conflict; use project-governance migration' }
+    $arisDir = [string]$arisDir
     $manifestPath = Join-Path $arisDir $config.ManifestName
     $manifestPrevPath = Join-Path $arisDir $config.ManifestPrevName
     $docPath = Join-Path $projectRoot $config.DocName

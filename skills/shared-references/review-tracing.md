@@ -21,7 +21,7 @@ Do NOT trace: purely informational LLM calls (e.g., `codex exec` for code genera
 ## Trace Directory
 
 ```
-.aris/traces/<skill-name>/<YYYY-MM-DD>_run<NN>/
+.ei/traces/<skill-name>/<YYYY-MM-DD>_run<NN>/
   ├── run.meta.json                      # Run-level metadata
   ├── 001-<purpose>.request.json         # Request snapshot
   ├── 001-<purpose>.response.md          # Full response text
@@ -46,13 +46,13 @@ The full invocation:
 ```bash
 # Resolve $TRACE_HELPER (canonical strict-safe chain; see integration-contract.md §2).
 cd "$(git rev-parse --show-toplevel 2>/dev/null || pwd)" || exit 1
-if [ -z "${ARIS_REPO:-}" ] && [ -f .aris/installed-skills.txt ]; then
-    ARIS_REPO=$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .aris/installed-skills.txt 2>/dev/null) || true
+if [ -z "${ARIS_REPO:-}" ] && [ -f .ei/installed-skills.txt ]; then
+    ARIS_REPO=$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .ei/installed-skills.txt 2>/dev/null) || true
 fi
-if [ -z "${ARIS_REPO:-}" ] && [ -f "$HOME/.aris/repo" ]; then
-    ARIS_REPO=$(cat "$HOME/.aris/repo" 2>/dev/null) || true
+if [ -z "${ARIS_REPO:-}" ] && [ -f "$HOME/.ei/repo" ]; then
+    ARIS_REPO=$(cat "$HOME/.ei/repo" 2>/dev/null) || true
 fi
-TRACE_HELPER=".aris/tools/save_trace.sh"
+TRACE_HELPER=".ei/tools/save_trace.sh"
 [ -f "$TRACE_HELPER" ] || TRACE_HELPER="tools/save_trace.sh"
 [ -f "$TRACE_HELPER" ] || { [ -n "${ARIS_REPO:-}" ] && TRACE_HELPER="$ARIS_REPO/tools/save_trace.sh"; }
 [ -f "$TRACE_HELPER" ] || TRACE_HELPER=""
@@ -86,7 +86,7 @@ else
   # required (unless `--- trace: off` was explicitly set on this
   # SKILL invocation). Write the four files below directly per the
   # schemas in "File Schemas", into:
-  #   .aris/traces/<skill-name>/<YYYY-MM-DD>_run<NN>/
+  #   .ei/traces/<skill-name>/<YYYY-MM-DD>_run<NN>/
   #     run.meta.json
   #     <NNN>-<purpose>.request.json
   #     <NNN>-<purpose>.response.md
@@ -336,10 +336,10 @@ Tracing respects three modes, set via inline parameter `--- trace: off | meta | 
 
 ## Integration with events.jsonl
 
-After writing a trace, append a compact summary event to `.aris/meta/events.jsonl`:
+After writing a trace, append a compact summary event to `.ei/meta/events.jsonl`:
 
 ```json
-{"event":"review_trace","skill":"auto-review-loop","purpose":"round-1-review","thread_id":null,"trace_path":".aris/traces/auto-review-loop/2026-04-15_run01/","backend":"copilot-native","tool":"task(agent_type=rubber-duck)","executor_model":"claude-sonnet-4.6","executor_model_source":"host-session-event","executor_family":"anthropic","reviewer_model_source":"host-session-event","reviewer_family":"openai","family_relation":"different","independence_verified":true,"native_evidence_id":"cne_0123456789abcdef0123456789abcdef","native_evidence_path":"/project/review-stage/COPILOT_NATIVE_run_20260715_a1b2c3d4_ROUND_1_REVIEW.evidence.json","status":"ok"}
+{"event":"review_trace","skill":"auto-review-loop","purpose":"round-1-review","thread_id":null,"trace_path":".ei/traces/auto-review-loop/2026-04-15_run01/","backend":"copilot-native","tool":"task(agent_type=rubber-duck)","executor_model":"claude-sonnet-4.6","executor_model_source":"host-session-event","executor_family":"anthropic","reviewer_model_source":"host-session-event","reviewer_family":"openai","family_relation":"different","independence_verified":true,"native_evidence_id":"cne_0123456789abcdef0123456789abcdef","native_evidence_path":"/project/review-stage/COPILOT_NATIVE_run_20260715_a1b2c3d4_ROUND_1_REVIEW.evidence.json","status":"ok"}
 ```
 
 This allows `/meta-optimize` to discover traces without reading the full trace files.
@@ -355,12 +355,12 @@ its judgment actually changed:
 ```bash
 # Diff the raw response bodies across the two calls in question
 skill=auto-review-loop run=2026-04-15_run01
-diff ".aris/traces/$skill/$run/002-round-2.response.md" \
-     ".aris/traces/$skill/$run/003-round-3.response.md"
+diff ".ei/traces/$skill/$run/002-round-2.response.md" \
+     ".ei/traces/$skill/$run/003-round-3.response.md"
 
 # Grep for the sentence where the assessment turned
 grep -En 'however|but|concern|missing|cannot' \
-     ".aris/traces/$skill/$run/003-round-3.response.md"
+     ".ei/traces/$skill/$run/003-round-3.response.md"
 ```
 
 The paragraph where the assessment changed **is** the causal explanation for the
@@ -386,6 +386,6 @@ Practical triggers:
 
 ## Privacy
 
-- `.aris/traces/` should be in `.gitignore` — traces are project-local, never committed
+- `.ei/traces/` should be in `.gitignore` — traces are project-local, never committed
 - Traces may contain sensitive research content; treat them as confidential
 - Use `--- trace: off` for projects with strict confidentiality requirements

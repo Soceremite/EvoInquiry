@@ -287,7 +287,7 @@ ARIS Audit Artifact Schema (`shared-references/assurance-contract.md`):
     "references.bib":                    "sha256:<...>",
     "main.pdf":                          "sha256:<...>"
   },
-  "trace_path": ".aris/traces/kill-argument/<date>_run<NN>/",
+  "trace_path": ".ei/traces/kill-argument/<date>_run<NN>/",
   "agent_id": "<defense agent_id — primary; attack agent_id in details>",
   "executor_model": "codex-gpt-6-astra",
   "executor_family": "openai",
@@ -383,7 +383,7 @@ To the user:
 
 - `<paper-dir>/KILL_ARGUMENT.md` — human-readable report
 - `<paper-dir>/KILL_ARGUMENT.json` — machine-readable ledger
-- `.aris/traces/kill-argument/<date>_runNN/` — per-thread codex traces (Attack memo + Adjudication memo)
+- `.ei/traces/kill-argument/<date>_runNN/` — per-thread codex traces (Attack memo + Adjudication memo)
 - Optional: applied fixes if user explicitly requests; default is **detect-only, do not auto-modify**.
 - `<paper-dir>/KILL_ARGUMENT.html` (when `RENDER_HTML = true`, default) — single-file HTML view auto-rendered via `/render-html` with the JSON sidecar. Full review gate applies. **Non-blocking**: if `/render-html` fails, the kill-argument verdict still counts as complete.
 
@@ -406,7 +406,7 @@ To the user:
 
 ## Review Tracing
 
-After each `spawn_agent` reviewer call, save the trace following `shared-references/review-tracing.md` (Policy C — forensic; never silently skip).  Use `save_trace.sh` (resolved per the chain in `shared-references/integration-contract.md` §2) or write files directly to `.aris/traces/kill-argument/<date>_run<NN>/`.  Both threads' raw responses should be preserved.
+After each `spawn_agent` reviewer call, save the trace following `shared-references/review-tracing.md` (Policy C — forensic; never silently skip).  Use `save_trace.sh` (resolved per the chain in `shared-references/integration-contract.md` §2) or write files directly to `.ei/traces/kill-argument/<date>_run<NN>/`.  Both threads' raw responses should be preserved.
 
 ## Notes
 

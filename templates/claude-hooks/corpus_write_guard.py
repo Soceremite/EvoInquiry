@@ -75,7 +75,7 @@ def main() -> int:
             "BLOCKED by corpus_write_guard: Bash may not WRITE the skill corpus "
             f"(matched: {hit!r}). Corpus mutation must go through the Write/Edit tools "
             "(reviewable, attributable). A read-only producer (meta-optimize / corpus-"
-            "audit) stages patches to .aris/meta/ and hands off to /meta-apply, which "
+            "audit) stages patches to .ei/meta/ and hands off to /meta-apply, which "
             "lands them with the Write/Edit tools after the cross-model jury + human gate.\n")
         return 2  # PreToolUse: block the call, show stderr to the model
     return 0
