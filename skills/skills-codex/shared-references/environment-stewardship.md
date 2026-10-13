@@ -17,6 +17,10 @@ Python and platform. Preserve actual failed checks. Promotion needs candidate-
 bound authorization and metadata, actual-import/ABI-device, small numerical and
 representative-consumer receipts. No layer's PASS substitutes for another.
 If a critical consumer or platform is untested, stop promotion and record why.
+Required consumer coverage comes only from successful consumers-layer receipts;
+IDs on metadata/import/numerical receipts do not establish consumer coverage.
+The command must exercise the named method interfaces; ID labels alone cannot
+certify semantics or scientific validity.
 
 The registry supports record_candidate, find_compatible, promote_candidate and
 bind_consumer. Exact requirements are supported by the MVP; unresolved version
@@ -24,6 +28,14 @@ ranges need the existing solver and real checks, not a guessed match.
 Promotion copies recipe/lock/build inputs into the frozen revision. Record
 expected and observed fingerprints separately; verify_environment probes the
 actual interpreter/imports before formal launch and stops on drift.
+New candidates pin the validated absolute executable entry. Keep a venv's
+logical entry rather than resolving its final executable symlink to base Python.
+Fingerprint version 2 records prefix/base-prefix and module kind, origin and
+namespace search locations. Historical records without a version keep version 1
+verification and its narrower coverage; obtain a separately validated revision
+for the richer fingerprint, never rewrite a fixed historical record.
+Import logs are separate from the framed machine fingerprint. Use inspect
+--diagnostics to retain captured stdout/stderr and the real probe exit code.
 
 Observe interpreter, package versions/import origins, Python/platform/host and
 relevant CUDA runtime/driver/device facts. GPU facts require actual device checks

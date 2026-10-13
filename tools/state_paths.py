@@ -15,21 +15,25 @@ import sys
 import warnings
 
 try:
-    from .registry_common import RegistryError, atomic_write, digest, file_digest, file_lock, local_path, read_record
+    from .registry_common import RegistryError, atomic_write, digest, file_digest, file_lock, is_junction, is_redirect, local_path, read_record
 except ImportError:
-    from registry_common import RegistryError, atomic_write, digest, file_digest, file_lock, local_path, read_record
+    from registry_common import RegistryError, atomic_write, digest, file_digest, file_lock, is_junction, is_redirect, local_path, read_record
 
 
 def tree_inventory(path):
     """Return content identity including safe link locators, never following links."""
     path = Path(path)
     records = []
+    if is_redirect(path):
+        raise RegistryError(f'State inventory root cannot be a symlink or Junction: {path}')
     if not path.exists():
         return records
     for directory, folders, files in os.walk(path, followlinks=False):
         for name in sorted(folders + files):
             item = Path(directory) / name
             rel = item.relative_to(path).as_posix()
+            if is_junction(item):
+                raise RegistryError(f'State inventory cannot traverse a Junction: {item}')
             if item.is_symlink():
                 records.append({'path': rel, 'kind': 'symlink', 'target': os.readlink(item)})
             elif item.is_file():
@@ -46,7 +50,7 @@ def _migration_receipt(project):
     if not receipt.is_file() or receipt.is_symlink():
         raise RegistryError('Both .aris and .ei exist without a verified migration receipt')
     try:
-        data = json.loads(receipt.read_text())
+        data = json.loads(receipt.read_text(encoding='utf-8'))
         if (data['status'] != 'committed' or data['source'] != '.aris'
                 or data['target'] != '.ei' or data['root'] != str(project)
                 or digest(tree_inventory(project / '.aris')) != data['source_inventory_sha256']):
@@ -82,7 +86,7 @@ def resolve_state_root(root, mode='write'):
     if mode not in ('read', 'write', 'legacy-read', 'migration'):
         raise RegistryError(f'Unknown resolver mode: {mode}')
     active, old = project / '.ei', project / '.aris'
-    if active.is_symlink() or old.is_symlink():
+    if is_redirect(active) or is_redirect(old):
         raise RegistryError('State roots must be real directories')
     for path in (active, old):
         if path.exists() and not path.is_dir():
@@ -96,11 +100,11 @@ def resolve_state_root(root, mode='write'):
         if mode != 'legacy-read' or Path(legacy).resolve() != old:
             raise RegistryError('ARIS_STATE_ROOT is supported only for explicit legacy-read')
         warnings.warn('ARIS_STATE_ROOT is deprecated; migrate to .ei', DeprecationWarning)
-    journal_root = project / '.ei-migration'
+    journal_root = local_path(project, '.ei-migration')
     if mode != 'migration' and journal_root.is_dir():
         for receipt in journal_root.glob('*/progress.json'):
             try:
-                status = json.loads(receipt.read_text()).get('status')
+                status = read_record(receipt).get('status')
             except json.JSONDecodeError:
                 raise RegistryError(f'Corrupt migration journal: {receipt}') from None
             if status not in ('committed', 'rolled-back'):
@@ -108,7 +112,7 @@ def resolve_state_root(root, mode='write'):
     if mode == 'migration':
         return active
     if mode == 'write':
-        for receipt in (active / 'layout-transactions').glob('*/receipt.json'):
+        for receipt in local_path(project, '.ei/layout-transactions').glob('*/receipt.json'):
             if read_record(receipt).get('status') not in ('committed', 'rolled-back'):
                 raise RegistryError(f'Unfinished layout change: {receipt}; resume or roll back')
     if active.exists() and old.exists():

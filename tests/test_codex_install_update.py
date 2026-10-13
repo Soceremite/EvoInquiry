@@ -91,9 +91,9 @@ def test_install_aris_codex_reconcile_and_uninstall(tmp_path: Path) -> None:
     assert '$1=="repo_root"{print $2; exit}' in agents_text
     assert "$1==repo_root" not in agents_text
     assert (project / ".agents" / "skills" / "alpha").is_symlink()
-    assert (project / ".agents" / "skills" / "beta").resolve() == (repo / "skills" / "skills-codex" / "beta")
+    assert (project / ".agents" / "skills" / "beta").resolve() == (repo / "skills" / "skills-codex" / "beta").resolve()
     assert (project / ".agents" / "skills" / "shared-references").resolve() == (
-        repo / "skills" / "skills-codex" / "shared-references"
+        (repo / "skills" / "skills-codex" / "shared-references").resolve()
     )
 
     run(
@@ -109,7 +109,7 @@ def test_install_aris_codex_reconcile_and_uninstall(tmp_path: Path) -> None:
         ]
     )
     assert (project / ".agents" / "skills" / "beta").resolve() == (
-        repo / "skills" / "skills-codex-claude-review" / "beta"
+        (repo / "skills" / "skills-codex-claude-review" / "beta").resolve()
     )
 
     (repo / "skills" / "skills-codex" / "alpha").rename(repo / "skills" / "skills-codex" / "alpha-removed")
@@ -170,7 +170,7 @@ def test_install_aris_codex_uninstall_uses_manifest_repo_root(tmp_path: Path) ->
 
     alpha_link = project / ".agents" / "skills" / "alpha"
     assert alpha_link.is_symlink()
-    assert alpha_link.resolve() == original_repo / "skills" / "skills-codex" / "alpha"
+    assert alpha_link.resolve() == (original_repo / "skills" / "skills-codex" / "alpha").resolve()
 
     run(
         [
@@ -215,7 +215,7 @@ def test_install_aris_codex_reconcile_removes_stale_links_from_manifest_repo(tmp
     alpha_link = project / ".agents" / "skills" / "alpha"
     beta_link = project / ".agents" / "skills" / "beta"
     assert alpha_link.is_symlink()
-    assert alpha_link.resolve() == original_repo / "skills" / "skills-codex" / "alpha"
+    assert alpha_link.resolve() == (original_repo / "skills" / "skills-codex" / "alpha").resolve()
 
     # #366 selective install: new upstream skills need --add-new (or an
     # interactive yes) on reconcile -- a plain --quiet reconcile only keeps
@@ -234,9 +234,9 @@ def test_install_aris_codex_reconcile_removes_stale_links_from_manifest_repo(tmp
     )
 
     assert not alpha_link.exists()
-    assert beta_link.resolve() == new_repo / "skills" / "skills-codex" / "beta"
+    assert beta_link.resolve() == (new_repo / "skills" / "skills-codex" / "beta").resolve()
     assert (project / ".agents" / "skills" / "gamma").resolve() == (
-        new_repo / "skills" / "skills-codex" / "gamma"
+        (new_repo / "skills" / "skills-codex" / "gamma").resolve()
     )
     manifest = (project / ".ei" / "installed-skills-codex.txt").read_text()
     assert "\talpha\t" not in manifest

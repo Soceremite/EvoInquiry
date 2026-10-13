@@ -40,7 +40,7 @@ def discover_project(root, mode='read'):
 def init_project(root, project_id, profile='compat-v1', authority_map=None):
     """Create an explicitly selected profile; never overwrite an existing one."""
     project = Path(root).resolve()
-    record = {'schema_version': 1, 'namespace_version': 1, 'project_id': identifier(project_id),
+    record = {'schema_version': 1, 'namespace_version': 1, 'project_id': identifier(project_id, path_component_required=False),
               'layout_profile': profile, 'root': str(project),
               'authority_map': authority_map or {}, 'compatibility_map': {},
               'migration_manifest_ref': None}
@@ -59,6 +59,7 @@ def init_project(root, project_id, profile='compat-v1', authority_map=None):
 def inventory(root):
     """Inventory identity, ownership, potential writers and legacy artifacts, read-only."""
     project = Path(root).resolve()
+    local_path(project, '.ei-migration')
     result = {'root': str(project), 'roots': {}, 'writers': [], 'legacy_artifacts': []}
     for namespace in ('.aris', '.ei'):
         state = project / namespace

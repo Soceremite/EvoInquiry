@@ -397,7 +397,6 @@ def launch_execution(root, execution_run_id, arguments=(), *, timeout=None):
     if discover_project(root)['layout_profile'] == 'governed-v1' and 'arguments' not in snapshot:
         raise RegistryError('Governed formal launch requires explicit frozen arguments, including an empty array')
     observed = verify_environment(root, record['env_revision'])
-    environment = read_record(verify_ref(root, record['env_revision']))
     snapshot_dir = verify_ref(root, record['snapshot_ref']).parent
     with state_writer(root) as state, file_lock(state / 'locks/executions.lock'):
         current = read_record(path)
@@ -433,7 +432,7 @@ finally:
              if getattr(module, '__file__', None)}
     pathlib.Path(trace).write_text(json.dumps(paths, sort_keys=True))
 '''
-    command = [environment['interpreter'], '-I', '-c', bootstrap, str(root), str(snapshot_dir),
+    command = [observed['interpreter'], '-I', '-c', bootstrap, str(root), str(snapshot_dir),
                snapshot['entrypoint'], str(directory / 'import-paths.json'), *map(str, arguments)]
     with state_writer(root):
         with (directory / 'process.log').open('wb') as log:

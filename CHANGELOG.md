@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.1.0-beta.2 — 2026-10-13
+
+- Count required consumer coverage only from successful consumers-layer receipts; preserve rejected candidates and prior frozen bindings.
+- Pin validated interpreter entries across working-directory and PATH changes while preserving virtual-environment prefixes and dependencies. Verify historical fingerprint records without rewriting them.
+- Separate import logs from a framed machine fingerprint; expose captured stdout/stderr and exit status with inspect --diagnostics. Fingerprint version 2 records module kinds, origins, namespace locations and interpreter prefixes.
+- Parse Python source according to its encoding cookie or BOM while continuing to hash original source bytes.
+- Reject symlink/Junction traversal, reserved file components and ambiguous Windows references in governance state and evidence. Protect consumer IDs from case collisions on case-insensitive filesystems; keep installer-managed skill links supported.
+- Add real venv, noisy-import, namespace-drift, source-encoding and directory-alias regressions, plus native NTFS Junction and case-collision acceptance in both Windows PowerShell CI gates. Preserve all 83 original workflow bodies and checkpoint helper bytes.
+
 ## 1.1.0-beta.1 — 2026-10-13
 
 - Add project-governance and environment-maintenance entrypoints, with versioned identities, fixed evidence references, guarded .ei state resolution and recoverable local publication/migration.

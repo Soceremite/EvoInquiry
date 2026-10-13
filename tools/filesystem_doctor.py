@@ -17,15 +17,13 @@ import sys
 import tempfile
 
 try:
-    from .registry_common import RegistryError, atomic_write, file_lock, file_digest
+    from .registry_common import RegistryError, atomic_write, file_lock, file_digest, _regular_ancestors
 except ImportError:
-    from registry_common import RegistryError, atomic_write, file_lock, file_digest
+    from registry_common import RegistryError, atomic_write, file_lock, file_digest, _regular_ancestors
 
 
 def inspect_directory(directory):
-    requested = Path(directory).absolute()
-    if any(p.is_symlink() for p in (requested, *requested.parents)):
-        raise RegistryError('Choose a directory without symlink ancestors')
+    requested = _regular_ancestors(directory)
     if not requested.is_dir():
         raise RegistryError('Choose an existing deployment directory')
     result = {'directory': str(requested), 'platform': sys.platform,

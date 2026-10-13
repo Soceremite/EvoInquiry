@@ -11,6 +11,7 @@ import json
 from pathlib import Path
 import subprocess
 import sys
+import tokenize
 
 try:
     from .registry_common import RegistryError, atomic_write, digest, file_digest, local_path, now, read_record
@@ -20,7 +21,8 @@ except ImportError:
 
 def _symbols(root, relative):
     path = local_path(root, relative)
-    tree = ast.parse(path.read_text(), filename=str(relative))
+    with tokenize.open(path) as source:
+        tree = ast.parse(source.read(), filename=str(relative))
     parts = list(Path(relative).with_suffix('').parts)
     if 'src' in parts:
         parts = parts[parts.index('src') + 1:]

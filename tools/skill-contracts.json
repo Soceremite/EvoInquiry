@@ -1001,6 +1001,18 @@
       "baseline_sha256": "699d3eccec8a966c404e4dcfc829e5d05627feb63be7cc02850a4df062f499c6",
       "reason": "Check the canonical installed repository pointer and actual directory identity; macOS /var and /private/var aliases must denote the same repository. All selective-install scenarios and pointer existence checks remain required.",
       "upgrade_baseline_sha256": "699d3eccec8a966c404e4dcfc829e5d05627feb63be7cc02850a4df062f499c6"
+    },
+    "tests/test_codex_install_update.py": {
+      "sha256": "f2c9c7a04128339f842a17ebb58779bc52f1d88fbfcbd239de9192450701ca61",
+      "baseline_sha256": "9ea83746b102a9f7f4f680f88ca1f475ed211c51a466f072c159c396e73880b1",
+      "upgrade_baseline_sha256": "9ea83746b102a9f7f4f680f88ca1f475ed211c51a466f072c159c396e73880b1",
+      "reason": "Compare canonical directory identity on both sides of installer assertions; selection, reconcile, manifest ownership and exact-target deletion checks are preserved. Real directory-alias regressions exercise the original contracts."
+    },
+    "tests/test_copilot_install.py": {
+      "sha256": "7a88b482a486a8f564d314b7a60fd08425739b9c93d9dec83beefc9a40e2ed6e",
+      "baseline_sha256": "77d4ae91cf3e396d867b99776b95a93deb16e8f4a496aa1f06172f53178a2832",
+      "upgrade_baseline_sha256": "77d4ae91cf3e396d867b99776b95a93deb16e8f4a496aa1f06172f53178a2832",
+      "reason": "Compare canonical directory identity on both sides of installer assertions; selection, reconcile, manifest ownership and exact-target deletion checks are preserved. Real directory-alias regressions exercise the original contracts."
     }
   }
 }

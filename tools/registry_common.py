@@ -10,8 +10,9 @@ from datetime import datetime, timezone
 import hashlib
 import json
 import os
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 import re
+import stat
 import tempfile
 import threading
 
@@ -23,12 +24,42 @@ class RegistryError(ValueError):
     """A record, reference, or recovery condition prevents the requested change."""
 
 
+def is_junction(path):
+    """Recognize NTFS mount-point redirects on Python 3.10 and newer."""
+    path = Path(path)
+    check = getattr(path, 'is_junction', None)
+    if check is not None:
+        return check()
+    try:
+        information = path.lstat()
+    except (FileNotFoundError, NotADirectoryError):
+        return False
+    return getattr(information, 'st_reparse_tag', None) == getattr(stat, 'IO_REPARSE_TAG_MOUNT_POINT', 0xA0000003)
+
+
+def is_redirect(path):
+    """State and evidence paths cannot traverse symlinks or NTFS Junctions."""
+    return Path(path).is_symlink() or is_junction(path)
+
+
+def path_component(value):
+    """Require a portable file component, independent of the current host OS."""
+    if (not value or value in ('.', '..') or value[-1] in (' ', '.')
+            or any(ord(character) < 32 or character in '<>:"/\\|?*' for character in value)
+            or re.fullmatch(r'(CON|PRN|AUX|NUL|CONIN\$|CONOUT\$|COM[1-9¹²³]|LPT[1-9¹²³])',
+                            value.split('.')[0], flags=re.IGNORECASE)):
+        raise RegistryError(f'Invalid portable path component: {value!r}')
+    return value
+
+
 def _regular_ancestors(path):
-    """Reject symlink traversal even when a caller constructs a state subpath directly."""
+    """Reject redirects even when a caller constructs a state subpath directly."""
     path = Path(path).absolute()
+    for part in path.parts[1:]:  # The absolute anchor/drive is not a file component.
+        path_component(part)
     for ancestor in (path, *path.parents):
-        if ancestor.is_symlink():
-            raise RegistryError(f'Symlink is outside the local registry contract: {ancestor}')
+        if is_redirect(ancestor):
+            raise RegistryError(f'Symlink or Junction is outside the local registry contract: {ancestor}')
     return path
 
 
@@ -60,27 +91,33 @@ def file_digest(path):
     return result.hexdigest()
 
 
-def identifier(value):
+def identifier(value, *, path_component_required=True):
     """Reject IDs that can escape or ambiguously address a registry directory."""
     if not isinstance(value, str) or not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_.-]{0,127}', value):
         raise RegistryError(f'Invalid identifier: {value!r}')
+    if path_component_required:
+        path_component(value)
     return value
 
 
 def local_path(root, relative):
-    """Resolve an explicit project path; reject traversal and symlink ancestors."""
+    """Resolve a portable project path; reject traversal and filesystem redirects."""
     root = Path(root).resolve()
+    if isinstance(relative, str) and '\\' in relative:
+        raise RegistryError('Project references must use portable forward slashes')
     relative = Path(relative)
-    if relative.is_absolute() or not relative.parts or '..' in relative.parts:
+    windows = PureWindowsPath(str(relative))
+    if relative.is_absolute() or windows.drive or windows.root or not relative.parts or '..' in relative.parts:
         raise RegistryError(f'Expected a project-relative path: {relative}')
     path = root
     for part in relative.parts:
+        path_component(part)
         path = path / part
-        if path.is_symlink():
-            raise RegistryError(f'Symlink is outside the local registry contract: {path}')
+        if is_redirect(path):
+            raise RegistryError(f'Symlink or Junction is outside the local registry contract: {path}')
     if not path.is_relative_to(root):
         raise RegistryError(f'Path escapes project: {path}')
-    return path
+    return _regular_ancestors(path)
 
 
 def read_record(path):
@@ -232,7 +269,7 @@ def fixed_ref(root, path):
     relative = Path(path)
     if 'current' in relative.parts:
         raise RegistryError('current is navigation, not a fixed evidence reference')
-    target = local_path(root, relative)
+    target = local_path(root, path)
     return {'path': relative.as_posix(), 'sha256': file_digest(target)}
 
 
@@ -241,6 +278,8 @@ def verify_ref(root, reference, *, legacy_read=False):
     if not isinstance(reference, dict) or not reference.get('path') or not re.fullmatch(
             '[0-9a-f]{64}', reference.get('sha256', '')):
         raise RegistryError('A fixed reference requires path and SHA-256')
+    if not isinstance(reference['path'], str) or '\\' in reference['path']:
+        raise RegistryError('Project references must use portable forward slashes')
     relative = Path(reference['path'])
     if 'current' in relative.parts:
         raise RegistryError('A floating current alias is not evidence')

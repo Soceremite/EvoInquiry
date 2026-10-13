@@ -4,7 +4,7 @@
 
 [中文](README_CN.md) · [Skill inventory](docs/SKILLS_CATALOG.md) · [Releases](https://github.com/Soceremite/EvoInquiry/releases) · [Contributing](CONTRIBUTING.md)
 
-**1.1.0-beta.1 — project and environment governance**
+**1.1.0-beta.2 — portable project and environment governance**
 
 EvoInquiry is a research workflow toolkit for Codex. It provides **86 Codex skills**
 that help you turn a broad research direction into a focused proposal, implement
@@ -12,7 +12,7 @@ and evaluate experiments, assess the evidence, and prepare a paper for
 submission. Use individual skills for a specific task or connect them into
 a longer research workflow.
 
-This prerelease adds project governance, fixed execution evidence and environment maintenance; 1.0.0 remains the stable option. Governance is selected when the task needs it, so paper reading and small edits keep their existing scope. See the [implementation plan](docs/UPGRADE_IMPLEMENTATION_CN.md), [governance usage guide](docs/GOVERNANCE_USAGE_CN.md), and [validation results and limits](docs/UPGRADE_VALIDATION_CN.md). Existing installations keep their installed version until upgraded.
+This prerelease adds project governance, fixed execution evidence and environment maintenance; 1.0.0 remains the stable option. Governance is selected when the task needs it, so paper reading and small edits keep their existing scope. See the [implementation plan](docs/UPGRADE_IMPLEMENTATION_CN.md), [governance usage guide](docs/GOVERNANCE_USAGE_CN.md), and [validation results and limits](docs/UPGRADE_VALIDATION_CN.md). Existing installations keep their installed version until upgraded. This update strengthens method-validation coverage, virtual-environment launches, import inspection and source decoding, with dedicated directory-alias and native Windows path checks. See the [portability validation](docs/PORTABILITY_VALIDATION_CN.md) for coverage and historical-record compatibility.
 
 <a id="capabilities"></a>
 
@@ -60,21 +60,21 @@ Domain-specific workflows and provider integrations are available in the
 Use a Codex installation that provides the `codex plugin` commands. Plugin
 installation has been checked with Codex CLI **0.162.1** on Linux.
 
-Download and extract `evo-inquiry-1.1.0-beta.1.tar.gz` or `.zip` from the
-[1.1.0-beta.1 release](https://github.com/Soceremite/EvoInquiry/releases/tag/v1.1.0-beta.1),
+Download and extract `evo-inquiry-1.1.0-beta.2.tar.gz` or `.zip` from the
+[1.1.0-beta.2 release](https://github.com/Soceremite/EvoInquiry/releases/tag/v1.1.0-beta.2),
 then enter its root directory and run the two plugin commands below.
 Codex CLI 0.162.1 copies the installation directory into
 its cache, including local untracked files. Use an archive containing the public
 files to keep local validation records, build outputs and Git history out of it.
 
 ```sh
-cd /path/to/evo-inquiry-1.1.0-beta.1
+cd /path/to/evo-inquiry-1.1.0-beta.2
 codex plugin marketplace add "$PWD"
 codex plugin add evo-inquiry@evo-inquiry
 ```
 
 For source development, use
-`git clone --branch v1.1.0-beta.1 https://github.com/Soceremite/EvoInquiry.git EvoInquiry`.
+`git clone --branch v1.1.0-beta.2 https://github.com/Soceremite/EvoInquiry.git EvoInquiry`.
 Use a clean release archive for plugin installation. Start a new Codex session
 after installation. Skills appear under the `evo-inquiry:`
 namespace, for example `evo-inquiry:research-refine`.

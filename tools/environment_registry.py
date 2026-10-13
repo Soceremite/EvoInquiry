@@ -9,7 +9,10 @@ from __future__ import annotations
 import argparse
 from datetime import datetime, timezone
 import json
+import os
 from pathlib import Path
+import secrets
+import shutil
 import subprocess
 import sys
 
@@ -46,22 +49,92 @@ def environment_diff(before, after, prefix=''):
     return result
 
 
-def probe_environment(interpreter, imports=(), *, timeout=60, device_probe=False):
+def absolute_interpreter(interpreter, *, root=None):
+    """Keep the executable's logical entry, including a venv's final symlink."""
+    entry = os.fspath(interpreter)
+    if not entry:
+        raise RegistryError('An interpreter entry is required')
+    if not os.path.isabs(entry) and not os.path.dirname(entry):
+        entry = shutil.which(entry)
+        if entry is None:
+            raise RegistryError(f'Interpreter is not on PATH: {interpreter}')
+    elif not os.path.isabs(entry):
+        entry = os.path.join(root or os.getcwd(), entry)
+    return os.path.abspath(entry)
+
+
+def bound_interpreter(record, root):
+    """Pin new entries and recover legacy relative entries from their fixed probe.
+
+    Resolve directory aliases, never the executable's final symlink. A wrapper
+    whose entry differs from sys.executable needs an explicit new validation.
+    """
+    observed = record['observed_fingerprint'].get('interpreter')
+    if not isinstance(observed, str) or not os.path.isabs(observed):
+        raise RegistryError('Fingerprint must contain an absolute interpreter entry')
+    declared = os.fspath(record['interpreter'])
+    if not os.path.isabs(declared) and not os.path.dirname(declared):
+        names = {os.path.normcase(Path(observed).name)}
+        if os.name == 'nt' and Path(observed).suffix.lower() == '.exe':
+            names.add(os.path.normcase(Path(observed).stem))
+        if os.path.normcase(declared) not in names:
+            raise RegistryError('Interpreter entry differs from the validated executable; create a new revision')
+        entry = observed  # Do not consult a possibly changed PATH for an old record.
+    else:
+        entry = absolute_interpreter(declared, root=root)
+    def logical(value):
+        return os.path.normcase(str(Path(value).parent.resolve() / Path(value).name))
+    if logical(entry) != logical(observed):
+        raise RegistryError('Interpreter entry differs from the validated executable; create a new revision')
+    return os.path.abspath(observed)
+
+
+def _fingerprint_version(record):
+    version = record['observed_fingerprint'].get('fingerprint_version', 1)
+    if type(version) is not int or version not in (1, 2):
+        raise RegistryError('Unsupported environment fingerprint version')
+    return version
+
+
+def probe_environment(interpreter, imports=(), *, timeout=60, device_probe=False,
+                      fingerprint_version=2, diagnostics=None):
     """Run the actual interpreter and requested imports in isolated mode.
 
     Imported modules may execute their initialization. Request only the imports
-    needed by the approved validation. This does not install or repair packages.
+    needed by the approved validation. Optional diagnostics receives stdout,
+    stderr and the actual exit code, without writing project state. Version 1
+    reproduces historical fixed-record fingerprints.
     """
+    if type(fingerprint_version) is not int or fingerprint_version not in (1, 2):
+        raise RegistryError('Unsupported environment fingerprint version')
+    interpreter = absolute_interpreter(interpreter)
+    marker = 'EVOINQUIRY_FINGERPRINT_' + secrets.token_hex(16) + ':'
     program = r'''
-import csv, importlib, importlib.metadata, io, json, platform, subprocess, sys
+import sys
+sys.stdout.reconfigure(encoding='utf-8', errors='backslashreplace')
+sys.stderr.reconfigure(encoding='utf-8', errors='backslashreplace')
+import csv, importlib, importlib.machinery, importlib.metadata, io, json, platform, subprocess
+version = int(sys.argv[3])
 packages = {d.metadata['Name']: d.version for d in importlib.metadata.distributions() if d.metadata['Name']}
 imports = {}
 for name in json.loads(sys.argv[1]):
     module = importlib.import_module(name)
     imports[name] = {'path': getattr(module, '__file__', None), 'version': str(getattr(module, '__version__', 'unknown'))}
+    if version == 2:
+        spec = getattr(module, '__spec__', None)
+        origin = getattr(spec, 'origin', None)
+        locations = getattr(spec, 'submodule_search_locations', None)
+        kind = ('builtin' if origin == 'built-in' else 'frozen' if origin == 'frozen'
+                else 'namespace' if origin is None and locations is not None
+                else 'extension' if isinstance(getattr(spec, 'loader', None), importlib.machinery.ExtensionFileLoader)
+                else 'file' if origin is not None else 'unknown')
+        imports[name].update(kind=kind, origin=origin,
+                             search_locations=list(locations) if locations is not None else None)
 fingerprint = {'interpreter': sys.executable, 'python': platform.python_version(),
                'platform': platform.platform(), 'host': platform.node(),
                'packages': packages, 'imports': imports}
+if version == 2:
+    fingerprint.update(fingerprint_version=2, prefix=sys.prefix, base_prefix=sys.base_prefix)
 if json.loads(sys.argv[2]):
     torch = importlib.import_module('torch')
     accelerator = {'kind': 'torch', 'cuda_runtime': torch.version.cuda,
@@ -75,16 +148,42 @@ if json.loads(sys.argv[2]):
     except (OSError, subprocess.TimeoutExpired) as error:
         accelerator.update(driver_probe_exit_code=127, physical_devices=[], driver_probe_error=str(error))
     fingerprint['accelerator'] = accelerator
-print(json.dumps(fingerprint, sort_keys=True))
+print('\n' + sys.argv[4] + json.dumps(fingerprint, sort_keys=True, ensure_ascii=True), flush=True)
 '''
-    completed = subprocess.run([str(interpreter), '-I', '-B', '-c', program, json.dumps(list(imports)), json.dumps(device_probe)],
-                               capture_output=True, text=True, timeout=timeout)
-    if completed.returncode:
-        raise RegistryError('Environment import probe failed: ' + completed.stderr[-3000:])
+    command = [interpreter, '-I', '-B', '-c', program, json.dumps(list(imports)),
+               json.dumps(device_probe), str(fingerprint_version), marker]
     try:
-        return json.loads(completed.stdout)
+        completed = subprocess.run(command, capture_output=True, timeout=timeout)
+    except (OSError, subprocess.TimeoutExpired) as error:
+        if diagnostics is not None:
+            diagnostics.update(stdout=(getattr(error, 'stdout', None) or b'').decode('utf-8', errors='replace'),
+                               stderr=(getattr(error, 'stderr', None) or b'').decode('utf-8', errors='replace'),
+                               exit_code=None, error=str(error))
+        raise RegistryError('Environment probe could not complete: ' + str(error)) from error
+    stdout = completed.stdout.decode('utf-8', errors='replace')
+    stderr = completed.stderr.decode('utf-8', errors='replace')
+    frames = [line[len(marker):] for line in stdout.splitlines() if line.startswith(marker)]
+    if diagnostics is not None:
+        diagnostics.update(stdout='\n'.join(line for line in stdout.splitlines() if not line.startswith(marker)),
+                           stderr=stderr, exit_code=completed.returncode)
+    if completed.returncode:
+        raise RegistryError(f'Environment import probe failed (exit {completed.returncode}): ' + (stderr or stdout)[-3000:])
+    if len(frames) != 1:
+        raise RegistryError('Environment probe output was not one framed fingerprint')
+    try:
+        fingerprint = json.loads(frames[0])
     except json.JSONDecodeError:
         raise RegistryError('Environment probe output was not a fingerprint') from None
+    if (not isinstance(fingerprint, dict)
+            or any(not isinstance(fingerprint.get(key), str) or not fingerprint[key]
+                   for key in ('interpreter', 'python', 'platform', 'host'))
+            or not os.path.isabs(fingerprint['interpreter'])
+            or any(not isinstance(fingerprint.get(key), dict) for key in ('packages', 'imports'))
+            or (fingerprint_version == 2 and (fingerprint.get('fingerprint_version') != 2
+                or any(not isinstance(fingerprint.get(key), str) or not fingerprint[key]
+                       for key in ('prefix', 'base_prefix'))))):
+        raise RegistryError('Environment probe returned an invalid fingerprint')
+    return fingerprint
 
 
 def verify_environment(root, reference):
@@ -94,8 +193,9 @@ def verify_environment(root, reference):
         raise RegistryError('Formal execution requires a validated frozen environment revision')
     for key in ('recipe_ref', 'lock_ref', 'build_ref'):
         verify_ref(root, record[key])
-    observed = probe_environment(record['interpreter'], record['observed_fingerprint'].get('imports', {}),
-                                 device_probe='accelerator' in record['observed_fingerprint'])
+    observed = probe_environment(bound_interpreter(record, root), record['observed_fingerprint'].get('imports', {}),
+                                 device_probe='accelerator' in record['observed_fingerprint'],
+                                 fingerprint_version=_fingerprint_version(record))
     if observed != record['observed_fingerprint']:
         raise RegistryError('Actual environment fingerprint changed; create an independent candidate')
     return observed
@@ -158,13 +258,21 @@ class EnvironmentRegistry:
                 return False
             verify_ref(self.root, receipt['output_ref'])
             stages.add(receipt.get('stage'))
-            tested_consumers.update(receipt.get('consumer_ids', []))
+            if receipt.get('stage') == 'consumers':
+                consumers = receipt.get('consumer_ids', [])
+                if not isinstance(consumers, list) or any(not isinstance(item, str) or not item for item in consumers):
+                    return False
+                tested_consumers.update(consumers)
         return {'metadata', 'imports', 'numerical', 'consumers'} <= stages and set(required_consumers) <= tested_consumers
 
     def record_candidate(self, record, diff, receipts, required_consumers=()):
         """Persist an independent candidate and failed receipts without touching a frozen instance."""
         record = dict(record, diff=list(diff), test_receipts=list(receipts), lifecycle='candidate')
         validate_schema('environment', record)
+        _fingerprint_version(record)
+        identifier(record['env_id'])
+        identifier(record['revision'])
+        record['interpreter'] = bound_interpreter(record, self.root)
         for key in ('recipe_ref', 'lock_ref', 'build_ref'):
             verify_ref(self.root, record[key])
         if (not _matches(record['observed_fingerprint'], record['expected_fingerprint'])
@@ -186,8 +294,9 @@ class EnvironmentRegistry:
         if not (approval.get('approved') is True and approval.get('candidate_ref') == reference
                 and approval.get('confirmed_by') and approval.get('confirmed_at')):
             raise RegistryError('Promotion requires approval bound to the candidate revision')
-        observed = probe_environment(record['interpreter'], record['observed_fingerprint'].get('imports', {}),
-                                     device_probe='accelerator' in record['observed_fingerprint'])
+        observed = probe_environment(bound_interpreter(record, self.root), record['observed_fingerprint'].get('imports', {}),
+                                     device_probe='accelerator' in record['observed_fingerprint'],
+                                     fingerprint_version=_fingerprint_version(record))
         if observed != record['observed_fingerprint']:
             raise RegistryError('Candidate interpreter changed after validation; validate a new revision')
         frozen = dict(record, lifecycle='frozen')
@@ -228,6 +337,8 @@ class EnvironmentRegistry:
         path = state / 'consumers' / (record['consumer_id'] + '.json')
         if path.exists():
             previous = read_record(path)
+            if previous['consumer_id'] != record['consumer_id']:
+                raise RegistryError('Consumer ID collides with an existing filesystem entry')
             atomic_write(state / 'consumer-history' / record['consumer_id'] / (digest(previous) + '.json'), previous)
         historical = state / 'consumer-history' / record['consumer_id'] / (digest(record) + '.json')
         if historical.exists() and read_record(historical) != record:
@@ -240,6 +351,7 @@ class EnvironmentRegistry:
     def bind_consumer(self, record):
         """Bind a selected task, preserving busy bindings, pins and all prior consumer records."""
         validate_schema('consumer', record)
+        identifier(record['consumer_id'])
         environment = validate_schema('environment', read_record(verify_ref(self.root, record['env_revision'])))
         if environment['lifecycle'] != 'frozen':
             raise RegistryError('Consumer binding requires a validated frozen environment')
@@ -420,6 +532,7 @@ def main():
     probe.add_argument('--interpreter', default=sys.executable)
     probe.add_argument('--imports', nargs='*', default=[])
     probe.add_argument('--device-probe', action='store_true', help='Authorized PyTorch/CUDA/driver inspection')
+    probe.add_argument('--diagnostics', action='store_true', help='Include captured import stdout/stderr and exit code')
     find = sub.add_parser('find')
     find.add_argument('--requirements', required=True)
     candidate = sub.add_parser('record-candidate')
@@ -451,7 +564,11 @@ def main():
     registry = EnvironmentRegistry(args.root)
     try:
         if args.command == 'inspect':
-            result = probe_environment(args.interpreter, args.imports, device_probe=args.device_probe)
+            diagnostics = {} if args.diagnostics else None
+            result = probe_environment(args.interpreter, args.imports, device_probe=args.device_probe,
+                                       diagnostics=diagnostics)
+            if args.diagnostics:
+                result = {'fingerprint': result, 'probe_diagnostics': diagnostics}
         elif args.command == 'find':
             result = registry.find_compatible(read_record(args.requirements))
         elif args.command == 'record-candidate':

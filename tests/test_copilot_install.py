@@ -111,12 +111,12 @@ def test_install_copilot_creates_github_skills_symlinks(tmp_path: Path) -> None:
     assert (project / ".github" / "skills" / "alpha").is_symlink()
     assert (project / ".github" / "skills" / "beta").is_symlink()
     assert (project / ".github" / "skills" / "gamma").is_symlink()
-    assert (project / ".github" / "skills" / "alpha").resolve() == (repo / "skills" / "alpha")
-    assert (project / ".github" / "skills" / "beta").resolve() == (repo / "skills" / "beta")
+    assert (project / ".github" / "skills" / "alpha").resolve() == (repo / "skills" / "alpha").resolve()
+    assert (project / ".github" / "skills" / "beta").resolve() == (repo / "skills" / "beta").resolve()
 
     # Verify shared-references is included
     assert (project / ".github" / "skills" / "shared-references").is_symlink()
-    assert (project / ".github" / "skills" / "shared-references").resolve() == (repo / "skills" / "shared-references")
+    assert (project / ".github" / "skills" / "shared-references").resolve() == (repo / "skills" / "shared-references").resolve()
 
     # Verify Codex-specific packages are NOT installed
     assert not (project / ".github" / "skills" / "skills-codex").exists()
@@ -189,7 +189,7 @@ def test_install_copilot_reconcile_adds_and_removes(tmp_path: Path) -> None:
 
     assert not (project / ".github" / "skills" / "alpha").exists()
     assert (project / ".github" / "skills" / "delta").is_symlink()
-    assert (project / ".github" / "skills" / "delta").resolve() == (repo / "skills" / "delta")
+    assert (project / ".github" / "skills" / "delta").resolve() == (repo / "skills" / "delta").resolve()
     assert (project / ".github" / "skills" / "beta").is_symlink()
 
 
@@ -260,7 +260,7 @@ def test_install_copilot_uninstall_uses_manifest_repo_root(tmp_path: Path) -> No
 
     alpha_link = project / ".github" / "skills" / "alpha"
     assert alpha_link.is_symlink()
-    assert alpha_link.resolve() == original_repo / "skills" / "alpha"
+    assert alpha_link.resolve() == (original_repo / "skills" / "alpha").resolve()
 
     # Uninstall with a DIFFERENT --aris-repo (should still work via manifest repo_root)
     run(
@@ -330,7 +330,7 @@ def test_install_copilot_replace_link_resolves_conflict(tmp_path: Path) -> None:
     )
 
     assert result.returncode == 0
-    assert (project / ".github" / "skills" / "alpha").resolve() == (repo / "skills" / "alpha")
+    assert (project / ".github" / "skills" / "alpha").resolve() == (repo / "skills" / "alpha").resolve()
 
 
 def test_install_copilot_reconcile_already_deleted_stale_link(tmp_path: Path) -> None:
@@ -530,8 +530,8 @@ def test_install_copilot_deploys_agents(tmp_path: Path) -> None:
     assert agents_dir.exists()
     assert (agents_dir / "aris-reviewer-openai.agent.md").is_symlink()
     assert (agents_dir / "aris-reviewer-claude.agent.md").is_symlink()
-    assert (agents_dir / "aris-reviewer-openai.agent.md").resolve() == (repo_agents / "aris-reviewer-openai.agent.md")
-    assert (agents_dir / "aris-reviewer-claude.agent.md").resolve() == (repo_agents / "aris-reviewer-claude.agent.md")
+    assert (agents_dir / "aris-reviewer-openai.agent.md").resolve() == (repo_agents / "aris-reviewer-openai.agent.md").resolve()
+    assert (agents_dir / "aris-reviewer-claude.agent.md").resolve() == (repo_agents / "aris-reviewer-claude.agent.md").resolve()
 
 
 def test_reviewer_profiles_use_supported_frontmatter_and_explicit_models() -> None:
