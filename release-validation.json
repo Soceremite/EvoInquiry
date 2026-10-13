@@ -7,7 +7,7 @@
     "Codex_entrypoints": 86,
     "retained_original_workflow_bodies": 83,
     "protected_baseline_files": 450,
-    "reviewed_upgrade_adaptations": 31,
+    "reviewed_upgrade_adaptations": 32,
     "status": "PASS",
     "checkpoint_helper_sha256": "0ae5d3bcfb25dd6299e12fae6ca44907c30fe66081621ddd703cac1fb263e254",
     "scientific_review_gates_preserved": true
@@ -47,7 +47,8 @@
         "expect_interactive": 4,
         "optional_MiniMax_without_credentials": 4,
         "PyTorch_unavailable_in_management_interpreter": 2
-      }
+      },
+      "scope": "Pre-CI complete regression; subsequent portability, CI diagnostics and evaluation-model pinning changes have separate affected checks and mandatory release CI gates."
     },
     "post_suite_affected_checks": {
       "status": "PASS",
@@ -55,6 +56,15 @@
       "failed": 0,
       "seconds": 12.95,
       "scope": "Mirror, preservation, plugin manifest and release arguments after the GPU-access shared-guidance clarification"
+    },
+    "platform_fix_affected_checks": {
+      "status": "PASS",
+      "date": "2026-10-13",
+      "passed": 88,
+      "skipped": 14,
+      "failed": 0,
+      "seconds": 99.3,
+      "scope": "Linux affected regression: selective installer, real environment and execution checks, filesystem doctor, preservation/mirrors, plugin/release arguments and evaluation harness. Twelve Windows installer cases, one native Windows flow and one expect case are covered by the required platform CI rather than this local run."
     }
   },
   "real_GPU_pilot": {

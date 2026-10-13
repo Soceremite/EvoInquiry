@@ -6,6 +6,8 @@
 - Add independent environment candidates, real validation receipts, immutable recipe inputs, consumer bindings, leases and reproduction pins; preserve queued/running environment revisions.
 - Add frozen source/config execution snapshots, distinct failed/retry/resume identities, predeclared aggregation and a source/doc freshness map. Retain existing workflow/review/checkpoint controls.
 - Add a deployment filesystem doctor, native install/rollback receipts, real GPU restoration and isolated dependency-conflict pilots, and focused natural-request/Windows acceptance.
+- Handle canonical repository aliases in macOS installation checks and built-in module origins in Windows environment acceptance; expose actual failed validation receipts in CI.
+- Pin recorded model/provider/effort settings for every behavior-evaluation session so changes to user defaults cannot silently mix evaluation configurations.
 - Replace active .aris defaults through reviewed namespace adaptations. Legacy state requires explicit read or an approved, journaled migration; no live project is automatically migrated.
 
 

@@ -60,6 +60,8 @@ On Linux, two-core process affinity bounds runtime thread pools; apply identical
 settings to both variants. Runtime startup failures and timeouts are recorded
 explicitly. Remove temporary test plugins after the evaluation.
 
+The runner snapshots configured model/provider/reasoning choices and passes them as explicit CLI overrides to discovery and every case. `--model gpt-6.1-sol --reasoning-effort max` can select a fixed comparison setting. Changing user defaults during an evaluation cannot change those pinned fields. Older receipts recorded the initial defaults without pinning; preserve those receipts and avoid treating different recorded model subsets as paired performance evidence. Provider endpoint/credentials and unspecified configuration still belong to the external runtime.
+
 The case defaults use a 300-second ceiling. `--timeout-seconds 600` can set an
 explicit equal ceiling for both variants when a high reasoning setting requires
 more time. Record the override, retain original timeouts, and retry only affected

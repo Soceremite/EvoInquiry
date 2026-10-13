@@ -185,7 +185,10 @@ class SelectiveInstallTest(unittest.TestCase):
         self._run()
         pointer = self.home / ".ei" / "repo"
         self.assertTrue(pointer.is_file(), "installer must write ~/.ei/repo")
-        self.assertEqual(pointer.read_text().strip(), str(self.repo))
+        # macOS may expose the same temporary directory via /var and /private/var.
+        recorded_repo = Path(pointer.read_text().strip())
+        self.assertEqual(recorded_repo, self.repo.resolve())
+        self.assertTrue(recorded_repo.samefile(self.repo))
 
     def test_dry_run_writes_nothing(self):
         self._run("--dry-run")

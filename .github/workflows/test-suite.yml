@@ -76,7 +76,10 @@ jobs:
       - name: Show bash version (the macOS leg must be 3.2.x)
         run: bash --version | head -1
       - name: Run full test suite
-        run: python -m pytest tests/ -q
+        run: python -m pytest tests/ -q --junitxml=validation/ci/test-results.xml
+      - name: Report actual pytest failures
+        if: always()
+        run: python tools/report_ci_failures.py validation/ci/test-results.xml
 
   windows:
     runs-on: windows-latest
@@ -95,4 +98,7 @@ jobs:
       - name: Verify native Windows installer and local governance
         env:
           ARIS_TEST_POWERSHELL: ${{ matrix.powershell }}
-        run: python -m pytest tests/test_install_aris_ps1.py tests/test_filesystem_doctor.py tests/test_windows_governance.py -q -rs
+        run: python -m pytest tests/test_install_aris_ps1.py tests/test_filesystem_doctor.py tests/test_windows_governance.py -q -rs --junitxml=validation/ci/test-results.xml
+      - name: Report actual pytest failures
+        if: always()
+        run: python tools/report_ci_failures.py validation/ci/test-results.xml

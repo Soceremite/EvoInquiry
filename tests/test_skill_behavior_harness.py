@@ -1,5 +1,6 @@
 """The evaluation harness must retain evidence without leaking or self-grading."""
 from pathlib import Path
+import json
 import os
 import sys
 
@@ -92,6 +93,34 @@ time.sleep(20)
     assert not result['session_completed']
     assert result['seconds'] < 3
     assert (output / '01/events.jsonl').is_file()
+
+
+@pytest.mark.skipif(os.name != 'posix', reason='CLI process-group harness uses POSIX signals')
+def test_frozen_model_override_survives_changed_user_default(setup_case, tmp_path, monkeypatch):
+    case, fixtures, output, toolkit = setup_case
+    defaults = tmp_path / 'mutable-defaults.json'
+    defaults.write_text(json.dumps({'model': 'gpt-6.1-sol', 'model_reasoning_effort': 'max'}))
+    monkeypatch.setenv('EI_TEST_MODEL_DEFAULTS', str(defaults))
+    pinned = json.loads(defaults.read_text())
+    cli = fake_cli(tmp_path, '''import json,os,sys
+from pathlib import Path
+settings=json.loads(Path(os.environ['EI_TEST_MODEL_DEFAULTS']).read_text())
+for i,arg in enumerate(sys.argv[:-1]):
+    if arg=='-c':
+        key,_,value=sys.argv[i+1].partition('=')
+        if key in ('model','model_reasoning_effort'):
+            settings[key]=json.loads(value)
+sys.stdin.read()
+Path('observed-model.json').write_text(json.dumps(settings))
+print(json.dumps({'type':'turn.completed'}))
+''')
+    for identifier, ambient in [('01', 'gpt-6.1-sol'), ('02', 'gpt-6-astra')]:
+        defaults.write_text(json.dumps({'model': ambient, 'model_reasoning_effort': 'xhigh'}))
+        result = run_case(dict(case, id=identifier), fixtures, output, toolkit, cli,
+                          'evo-inquiry@evo-inquiry-eval-beta4', pinned)
+        assert result['session_completed']
+        assert result['model_settings'] == pinned
+        assert json.loads((output / identifier / 'project/observed-model.json').read_text()) == pinned
 
 
 @pytest.mark.parametrize('drift', ['skill', 'guidance', 'storage', 'helper', 'governance', 'schema'])

@@ -995,6 +995,12 @@
       "baseline_sha256": "3a238488d4d51a7e76a06900509c52beb18b021df526e4623e588ee16ef12b57",
       "upgrade_baseline_sha256": "3a238488d4d51a7e76a06900509c52beb18b021df526e4623e588ee16ef12b57",
       "reason": "Extend native Windows acceptance with local governance and filesystem tests, dependency setup and relevant triggers; retain every original installer test for both PowerShell runtimes."
+    },
+    "tests/test_install_aris_selective.py": {
+      "sha256": "ed1283fc09187e642174defb79f987e9a5ce05726fcc788e4ec395e620977240",
+      "baseline_sha256": "699d3eccec8a966c404e4dcfc829e5d05627feb63be7cc02850a4df062f499c6",
+      "reason": "Check the canonical installed repository pointer and actual directory identity; macOS /var and /private/var aliases must denote the same repository. All selective-install scenarios and pointer existence checks remain required.",
+      "upgrade_baseline_sha256": "699d3eccec8a966c404e4dcfc829e5d05627feb63be7cc02850a4df062f499c6"
     }
   }
 }

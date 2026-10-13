@@ -49,9 +49,16 @@ def selection_config(selector: str) -> list[str]:
     return settings + ["-c", 'plugins.' + json.dumps(selector) + '.enabled=true']
 
 
-def discover_variant(toolkit: Path, selector: str, codex: str) -> dict:
+def model_config(settings: dict | None) -> list[str]:
+    """Pin the recorded model choices instead of re-reading mutable defaults."""
+    return [part for key in ("model", "model_reasoning_effort", "model_provider")
+            if isinstance((settings or {}).get(key), str) and settings[key]
+            for part in ("-c", key + "=" + json.dumps(settings[key]))]
+
+
+def discover_variant(toolkit: Path, selector: str, codex: str, model_settings: dict | None = None) -> dict:
     """Reject an empty or mixed discovery context before running paid sessions."""
-    command = cli_command(codex) + ["app-server", "--listen", "stdio://"] + selection_config(selector)
+    command = cli_command(codex) + ["app-server", "--listen", "stdio://"] + selection_config(selector) + model_config(model_settings)
     proc = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                             stderr=subprocess.DEVNULL,
                             env=dict(os.environ, TOKIO_WORKER_THREADS="2"))
@@ -137,7 +144,7 @@ def discover_variant(toolkit: Path, selector: str, codex: str) -> dict:
             "support_resource_sha256": resource_hashes}
 
 
-def run_case(case: dict, fixture_root: Path, output: Path, toolkit: Path, codex: str, selector: str) -> dict:
+def run_case(case: dict, fixture_root: Path, output: Path, toolkit: Path, codex: str, selector: str, model_settings: dict | None = None) -> dict:
     destination = output / case["id"]
     if destination.exists():
         raise ValueError(f"Refusing to overwrite evaluation evidence: {destination}")
@@ -148,7 +155,7 @@ def run_case(case: dict, fixture_root: Path, output: Path, toolkit: Path, codex:
     (destination / "prompt.txt").write_text(case["prompt"] + "\n", encoding="utf-8")
     command = cli_command(codex) + ["-a", "never", "exec", "--ephemeral", "--json",
                "--skip-git-repo-check", "-s", "workspace-write", "-C", str(workspace),
-               "-o", str(destination / "answer.md")] + selection_config(selector) + ["-"]
+               "-o", str(destination / "answer.md")] + selection_config(selector) + model_config(model_settings) + ["-"]
     started = time.monotonic()
     with (destination / "events.jsonl").open("w") as stdout, (destination / "stderr.txt").open("w") as stderr:
         # Keep parallel CLI instances within thread limits on shared runners.
@@ -203,6 +210,7 @@ def run_case(case: dict, fixture_root: Path, output: Path, toolkit: Path, codex:
               "failure_kind": "runtime_startup" if startup_failure else None,
               "observed_cache_variants": cache_variants,
               "variant_mismatch": any(tuple(v) != expected_variant for v in cache_variants),
+              "model_settings": dict(model_settings or {}),
               "assessment": "UNASSESSED", "evidence": str(destination)}
     (destination / "run.json").write_text(json.dumps(result, indent=2) + "\n")
     return result
@@ -232,6 +240,8 @@ def main() -> None:
     parser.add_argument("--jobs", type=int, default=1, choices=range(1, 5),
                         help="Default serial runs avoid runtime startup resource contention")
     parser.add_argument("--timeout-seconds", type=int, help="Explicit equal runtime ceiling for both variants; retain earlier attempts")
+    parser.add_argument("--model", help="Pin this model for every session; otherwise snapshot the current configured model")
+    parser.add_argument("--reasoning-effort", help="Pin the reasoning setting; otherwise snapshot the current configured effort")
     args = parser.parse_args()
     manifest_path = args.manifest.resolve()
     manifest = json.loads(manifest_path.read_text())
@@ -248,12 +258,18 @@ def main() -> None:
     output.mkdir(parents=True, exist_ok=True)
     config_path = Path(os.environ.get("CODEX_HOME", str(Path.home() / ".codex"))) / "config.toml"
     config = tomllib.loads(config_path.read_text()) if config_path.exists() else {}
-    discovery = discover_variant(args.toolkit.resolve(), args.selector, args.codex)
+    model_settings = {key: config.get(key) for key in ("model", "model_reasoning_effort", "model_provider")}
+    if args.model is not None:
+        model_settings["model"] = args.model
+    if args.reasoning_effort is not None:
+        model_settings["model_reasoning_effort"] = args.reasoning_effort
+    discovery = discover_variant(args.toolkit.resolve(), args.selector, args.codex, model_settings)
     metadata = {"toolkit": str(args.toolkit.resolve()), "codex": subprocess.check_output([args.codex, "--version"], text=True).strip(),
                 "case_manifest_sha256": hashlib.sha256(manifest_path.read_bytes()).hexdigest(),
-                "settings": "Current user model/provider settings; same settings required for paired variants; TOKIO_WORKER_THREADS=2",
+                "settings": "Recorded model/provider/effort pinned as CLI overrides for every session; unspecified fields use Codex defaults; TOKIO_WORKER_THREADS=2",
                 "runtime_command_prefix": cli_command(args.codex),
-                "model_settings": {k: config.get(k) for k in ("model", "model_reasoning_effort", "model_provider")},
+                "model_settings": model_settings,
+                "model_override_arguments": model_config(model_settings),
                 "plugin_selector": args.selector,
                 "timeout_seconds_override": args.timeout_seconds,
                 "discovery": discovery,
@@ -261,7 +277,7 @@ def main() -> None:
     (output / "environment.json").write_text(json.dumps(metadata, indent=2) + "\n")
     results = []
     with ThreadPoolExecutor(max_workers=args.jobs) as executor:
-        futures = [executor.submit(run_case, c, manifest_path.parent, output, args.toolkit.resolve(), args.codex, args.selector) for c in cases]
+        futures = [executor.submit(run_case, c, manifest_path.parent, output, args.toolkit.resolve(), args.codex, args.selector, model_settings) for c in cases]
         for future in as_completed(futures):
             result = future.result()
             results.append(result)

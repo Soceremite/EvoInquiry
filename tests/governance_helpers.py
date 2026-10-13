@@ -6,7 +6,7 @@ import sys
 from tools.environment_registry import (EnvironmentRegistry, probe_environment,
                                         run_environment_check)
 from tools.execution_registry import register_spec, spec_digest
-from tools.registry_common import atomic_write, fixed_ref
+from tools.registry_common import atomic_write, fixed_ref, read_record, verify_ref
 
 
 def make_environment(root, env_id='cpu', revision='r001', *, fail_stage=None,
@@ -18,8 +18,9 @@ def make_environment(root, env_id='cpu', revision='r001', *, fail_stage=None,
         atomic_write(recipes / name, {'python': observed['python'], 'manager': 'existing-python', 'name': name})
     receipts = []
     for stage in ('metadata', 'imports', 'numerical', 'consumers'):
+        # Windows builds math into the interpreter, so it has no __file__.
         code = {'metadata': 'import sys; assert sys.version_info >= (3, 10); print(sys.version)',
-                'imports': 'import math; assert math.isfinite(math.pi); print(math.__file__)',
+                'imports': 'import math; assert math.isfinite(math.pi); print(math.__spec__.origin)',
                 'numerical': 'import math; assert math.fsum([0.1]*10)==1.; print("numeric-ok")',
                 'consumers': 'assert len(set([11,22,33]))==3; print("consumer-contract-ok")'}[stage]
         if stage == fail_stage:
@@ -38,6 +39,13 @@ def make_environment(root, env_id='cpu', revision='r001', *, fail_stage=None,
     candidate = registry.record_candidate(record, [], receipts, ['method-a', 'method-b'])
     if fail_stage:
         return candidate
+    for reference in receipts:
+        receipt = read_record(verify_ref(root, reference))
+        assert receipt['exit_code'] == 0, {
+            'stage': receipt['stage'], 'command': receipt['command'],
+            'exit_code': receipt['exit_code'],
+            'output': verify_ref(root, receipt['output_ref']).read_text(errors='replace'),
+        }
     approval = {'approved': True, 'candidate_ref': candidate,
                 'confirmed_by': 'test-maintainer', 'confirmed_at': '2026-10-12T00:00:00Z'}
     return registry.promote_candidate(candidate, approval, ['method-a', 'method-b'])
