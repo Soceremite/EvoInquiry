@@ -14,9 +14,9 @@ import sys
 import tokenize
 
 try:
-    from .registry_common import RegistryError, atomic_write, digest, file_digest, local_path, now, read_record
+    from .registry_common import RegistryError, configure_utf8_output, atomic_write, digest, file_digest, local_path, now, read_record
 except ImportError:
-    from registry_common import RegistryError, atomic_write, digest, file_digest, local_path, now, read_record
+    from registry_common import RegistryError, configure_utf8_output, atomic_write, digest, file_digest, local_path, now, read_record
 
 
 def _symbols(root, relative):
@@ -127,6 +127,7 @@ def resolve_symbol(mapping, qualified_symbol):
 
 
 def main():
+    configure_utf8_output()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--root', default='.')
     sub = parser.add_subparsers(dest='command', required=True)

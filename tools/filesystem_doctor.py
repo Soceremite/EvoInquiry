@@ -17,9 +17,9 @@ import sys
 import tempfile
 
 try:
-    from .registry_common import RegistryError, atomic_write, file_lock, file_digest, _regular_ancestors
+    from .registry_common import RegistryError, configure_utf8_output, atomic_write, file_lock, file_digest, _regular_ancestors
 except ImportError:
-    from registry_common import RegistryError, atomic_write, file_lock, file_digest, _regular_ancestors
+    from registry_common import RegistryError, configure_utf8_output, atomic_write, file_lock, file_digest, _regular_ancestors
 
 
 def inspect_directory(directory):
@@ -95,6 +95,7 @@ def probe_directory(directory):
 
 
 def main():
+    configure_utf8_output()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--directory', required=True)
     parser.add_argument('--probe', action='store_true',

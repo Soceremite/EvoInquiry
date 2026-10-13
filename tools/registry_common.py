@@ -24,6 +24,15 @@ class RegistryError(ValueError):
     """A record, reference, or recovery condition prevents the requested change."""
 
 
+def configure_utf8_output():
+    """CLI JSON and diagnostics have a portable encoding, including Windows pipes."""
+    import sys
+    for stream in (sys.stdout, sys.stderr):
+        reconfigure = getattr(stream, 'reconfigure', None)
+        if reconfigure is not None:
+            reconfigure(encoding='utf-8', errors='backslashreplace')
+
+
 def is_junction(path):
     """Recognize NTFS mount-point redirects on Python 3.10 and newer."""
     path = Path(path)

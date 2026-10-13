@@ -44,7 +44,7 @@
       "failed": 0,
       "warnings": 3,
       "seconds": 506.46,
-      "scope": "Complete suite on the actual host runtime with throwaway test HOME. Final UTF-8 probe streams, pinned validation-receipt entries and Unicode CI diagnostics have separate follow-ups; platform CI executes the final committed source.",
+      "scope": "Complete suite on the actual host runtime with throwaway test HOME before final stream/receipt/CLI changes. Later changes have separate affected checks; platform CI executes the final committed source.",
       "skipped_scopes": {
         "Windows_native": 25,
         "expect_interactive": 4,
@@ -82,6 +82,22 @@
       "failed": 0,
       "seconds": 1.1,
       "scope": "Actual Unicode failure annotation under PYTHONIOENCODING=ascii and the newline-neutral Chinese stdout/stderr import check. The earlier reporter UnicodeEncodeError reproduction is retained privately."
+    },
+    "final_CLI_and_execution_followup": {
+      "status": "PASS",
+      "passed": 52,
+      "skipped": 12,
+      "failed": 0,
+      "seconds": 81.18,
+      "scope": "Portability, Unicode CI annotation and existing actual execution checks after seven governance CLIs and the execution bootstrap emit UTF-8; case comparisons retain the logical interpreter entry. Three extra CLI fixtures were added afterward and checked separately."
+    },
+    "all_seven_CLI_output_coverage": {
+      "status": "PASS",
+      "passed": 6,
+      "deselected": 50,
+      "failed": 0,
+      "seconds": 2.56,
+      "scope": "Additional actual audit/doctor/state-root/code-map and artifact/execution error CLIs under ASCII output settings, including Chinese file paths and purpose text; the environment inspect CLI is covered by the preceding checks."
     }
   },
   "fingerprint_compatibility": {
@@ -114,7 +130,8 @@
       "complete local governance flow",
       "all portability regressions",
       "native NTFS Junction including Python 3.10/3.11 fallback",
-      "native case-collision protection"
+      "native case-collision protection",
+      "UTF-8 CLI/diagnostics/execution output and executable case identity"
     ],
     "publication_requires_all_platform_jobs_to_pass": true,
     "results_location": "GitHub Actions for the actual source commit/tag"

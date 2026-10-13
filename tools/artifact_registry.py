@@ -12,13 +12,13 @@ from pathlib import Path
 import sys
 
 try:
-    from .registry_common import (RegistryError, atomic_write, canonical, digest, file_digest,
+    from .registry_common import (RegistryError, configure_utf8_output, atomic_write, canonical, digest, file_digest,
                                   file_lock, identifier, local_path, now, read_record,
                                   validate_schema, verify_ref)
     from .state_paths import resolve_state_root, state_writer
     from .project_registry import discover_project
 except ImportError:
-    from registry_common import (RegistryError, atomic_write, canonical, digest, file_digest,
+    from registry_common import (RegistryError, configure_utf8_output, atomic_write, canonical, digest, file_digest,
                                  file_lock, identifier, local_path, now, read_record,
                                  validate_schema, verify_ref)
     from state_paths import resolve_state_root, state_writer
@@ -419,6 +419,7 @@ class ArtifactRegistry:
 
 
 def main():
+    configure_utf8_output()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--root', default='.')
     sub = parser.add_subparsers(dest='command', required=True)

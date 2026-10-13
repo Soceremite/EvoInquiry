@@ -17,11 +17,11 @@ import subprocess
 import sys
 
 try:
-    from .registry_common import (RegistryError, atomic_write, digest, file_lock, fixed_ref,
+    from .registry_common import (RegistryError, configure_utf8_output, atomic_write, digest, file_lock, fixed_ref,
                                   identifier, now, read_record, validate_schema, verify_ref)
     from .state_paths import resolve_state_root, state_writer
 except ImportError:
-    from registry_common import (RegistryError, atomic_write, digest, file_lock, fixed_ref,
+    from registry_common import (RegistryError, configure_utf8_output, atomic_write, digest, file_lock, fixed_ref,
                                  identifier, now, read_record, validate_schema, verify_ref)
     from state_paths import resolve_state_root, state_writer
 
@@ -529,6 +529,7 @@ class EnvironmentRegistry:
 
 
 def main():
+    configure_utf8_output()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--root', default='.')
     sub = parser.add_subparsers(dest='command', required=True)

@@ -15,13 +15,13 @@ import subprocess
 import sys
 
 try:
-    from .registry_common import (RegistryError, atomic_write, canonical, digest, file_lock,
+    from .registry_common import (RegistryError, configure_utf8_output, atomic_write, canonical, digest, file_lock,
                                   fixed_ref, identifier, local_path, now, read_record,
                                   validate_schema, verify_ref)
     from .state_paths import resolve_state_root, state_writer
     from .environment_registry import verify_environment
 except ImportError:
-    from registry_common import (RegistryError, atomic_write, canonical, digest, file_lock,
+    from registry_common import (RegistryError, configure_utf8_output, atomic_write, canonical, digest, file_lock,
                                  fixed_ref, identifier, local_path, now, read_record,
                                  validate_schema, verify_ref)
     from state_paths import resolve_state_root, state_writer
@@ -406,6 +406,8 @@ def launch_execution(root, execution_run_id, arguments=(), *, timeout=None):
         atomic_write(path, record)
     bootstrap = r'''
 import importlib.abc, importlib.machinery, json, pathlib, runpy, sys, sysconfig
+sys.stdout.reconfigure(encoding='utf-8', errors='backslashreplace')
+sys.stderr.reconfigure(encoding='utf-8', errors='backslashreplace')
 sys.dont_write_bytecode = True
 root, snapshot, entry, trace, *arguments = sys.argv[1:]
 root, snapshot = pathlib.Path(root).resolve(), pathlib.Path(snapshot).resolve()
@@ -520,6 +522,7 @@ def select_attempts(root, spec_ref, execution_refs):
 
 
 def main():
+    configure_utf8_output()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--root', default='.')
     sub = parser.add_subparsers(dest='command', required=True)

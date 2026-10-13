@@ -13,11 +13,11 @@ import shutil
 import sys
 
 try:
-    from .registry_common import (RegistryError, atomic_write, digest, file_digest,
+    from .registry_common import (RegistryError, configure_utf8_output, atomic_write, digest, file_digest,
                                   file_lock, fixed_ref, identifier, local_path, now, read_record, sync_directory, validate_schema)
     from .state_paths import resolve_state_root, state_writer, tree_inventory
 except ImportError:
-    from registry_common import (RegistryError, atomic_write, digest, file_digest,
+    from registry_common import (RegistryError, configure_utf8_output, atomic_write, digest, file_digest,
                                  file_lock, fixed_ref, identifier, local_path, now, read_record, sync_directory, validate_schema)
     from state_paths import resolve_state_root, state_writer, tree_inventory
 
@@ -392,6 +392,7 @@ def rollback_layout(root, transaction_id, approval):
 
 
 def main():
+    configure_utf8_output()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--root', default='.')
     sub = parser.add_subparsers(dest='command', required=True)

@@ -15,9 +15,9 @@ import sys
 import warnings
 
 try:
-    from .registry_common import RegistryError, atomic_write, digest, file_digest, file_lock, is_junction, is_redirect, local_path, read_record
+    from .registry_common import RegistryError, configure_utf8_output, atomic_write, digest, file_digest, file_lock, is_junction, is_redirect, local_path, read_record
 except ImportError:
-    from registry_common import RegistryError, atomic_write, digest, file_digest, file_lock, is_junction, is_redirect, local_path, read_record
+    from registry_common import RegistryError, configure_utf8_output, atomic_write, digest, file_digest, file_lock, is_junction, is_redirect, local_path, read_record
 
 
 def tree_inventory(path):
@@ -140,6 +140,7 @@ def state_writer(root):
 
 
 def main():
+    configure_utf8_output()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--root', default='.')
     parser.add_argument('--mode', choices=['read', 'write', 'legacy-read', 'migration'], default='write')

@@ -122,7 +122,7 @@ configuration = json.loads(pathlib.Path('configuration.json').read_text(encoding
 assert pathlib.Path(sys.prefix).samefile(configuration['expected_prefix'])
 assert sys.prefix != sys.base_prefix
 assert portability_dependency.VALUE == 37
-print('venv-entry-and-dependency-preserved')
+print('venv-entry-and-dependency-preserved: 中文日志')
 ''', encoding='utf-8')
     snapshot = freeze_snapshot(root, 'relative-run', make_spec(root), frozen, ['src/train.py'],
         {'variant': {'augmentation': 0}, 'seed': 11, 'expected_prefix': str(interpreter.parent.parent)},
@@ -135,6 +135,7 @@ print('venv-entry-and-dependency-preserved')
     result = launch_execution(root, 'relative-run', timeout=15)
     assert result['exit_code'] == 0, (root / 'runs/relative-run/process.log').read_text(errors='replace')
     assert 'venv-entry-and-dependency-preserved' in (root / 'runs/relative-run/process.log').read_text()
+    assert '中文日志' in (root / 'runs/relative-run/process.log').read_text(encoding='utf-8')
     assert verify_ref(root, frozen).read_bytes() == before
 
 
@@ -146,10 +147,12 @@ def test_path_alias_is_pinned_before_path_changes(tmp_path, isolated_python, mon
     registry, reference = candidate(tmp_path, interpreter.stem if omit_suffix else interpreter.name)
     frozen = promote(registry, reference)
     for check in read_record(verify_ref(tmp_path, frozen))['test_receipts']:
-        assert read_record(verify_ref(tmp_path, check))['command'][0] == str(interpreter.absolute())
+        command_entry = read_record(verify_ref(tmp_path, check))['command'][0]
+        assert Path(command_entry).is_absolute()
+        assert os.path.normcase(command_entry) == os.path.normcase(str(interpreter.absolute()))
     monkeypatch.setenv('PATH', '')
     assert Path(verify_environment(tmp_path, frozen)['interpreter']).samefile(interpreter)
-    assert read_record(verify_ref(tmp_path, frozen))['interpreter'] == str(interpreter.absolute())
+    assert os.path.normcase(read_record(verify_ref(tmp_path, frozen))['interpreter']) == os.path.normcase(str(interpreter.absolute()))
 
 
 def test_noisy_imports_have_a_separate_fingerprint_frame_and_diagnostics(tmp_path, isolated_python):
@@ -180,13 +183,60 @@ def test_inspect_cli_returns_noisy_diagnostics_without_initializing_project(tmp_
     tool = Path(__file__).resolve().parents[1] / 'tools/environment_registry.py'
     process = subprocess.run([sys.executable, '-B', str(tool), '--root', str(tmp_path),
         'inspect', '--interpreter', str(interpreter), '--imports', 'cli_dependency', '--diagnostics'],
-        capture_output=True)
+        capture_output=True, env=dict(os.environ, PYTHONIOENCODING='ascii'))
     assert process.returncode == 0, process.stderr
     result = json.loads(process.stdout.decode('utf-8'))
     assert result['fingerprint']['fingerprint_version'] == 2
     assert 'CLI import notice' in result['probe_diagnostics']['stdout']
     assert '中文' in result['probe_diagnostics']['stdout']
     assert result['probe_diagnostics']['exit_code'] == 0
+    assert not (tmp_path / '.ei').exists()
+
+
+@pytest.mark.parametrize('tool', ['project_registry', 'filesystem_doctor', 'state_paths'])
+def test_readonly_governance_cli_emits_unicode_under_ascii_output(tmp_path, tool):
+    root = tmp_path / '项目 with spaces'
+    root.mkdir()
+    script = Path(__file__).resolve().parents[1] / 'tools' / (tool + '.py')
+    arguments = (['--directory', str(root)] if tool == 'filesystem_doctor'
+                 else ['--root', str(root), '--mode', 'read'] if tool == 'state_paths'
+                 else ['--root', str(root), 'audit'])
+    process = subprocess.run([sys.executable, '-B', str(script), *arguments], capture_output=True,
+        env=dict(os.environ, PYTHONIOENCODING='ascii'))
+    assert process.returncode == 0, process.stderr
+    decoded = process.stdout.decode('utf-8')
+    if tool == 'state_paths':
+        assert '项目' in decoded
+    else:
+        result = json.loads(decoded)
+        assert Path(result['directory' if tool == 'filesystem_doctor' else 'root']).samefile(root)
+    assert not (root / '.ei').exists()
+
+
+@pytest.mark.parametrize('tool,command', [('artifact_registry', 'resolve'), ('execution_registry', 'verify-snapshot')])
+def test_governance_cli_keeps_unicode_errors_readable_under_ascii_output(tmp_path, tool, command):
+    script = Path(__file__).resolve().parents[1] / 'tools' / (tool + '.py')
+    process = subprocess.run([sys.executable, '-B', str(script), '--root', str(tmp_path),
+        command, '--ref', str(tmp_path / '缺失.json')], capture_output=True,
+        env=dict(os.environ, PYTHONIOENCODING='ascii'))
+    assert process.returncode == 2
+    assert '缺失.json' in process.stderr.decode('utf-8')
+    assert not process.stdout
+    assert not (tmp_path / '.ei').exists()
+
+
+def test_code_map_cli_preserves_unicode_purpose_and_path_under_ascii_output(tmp_path):
+    (tmp_path / 'src').mkdir()
+    (tmp_path / 'src/模型.py').write_text('def greeting():\n    """中文用途。"""\n    return 1\n', encoding='utf-8')
+    script = Path(__file__).resolve().parents[1] / 'tools/code_map.py'
+    process = subprocess.run([sys.executable, '-B', str(script), '--root', str(tmp_path),
+        'build', '--paths', 'src/模型.py', '--output', 'docs/code-map.json'], capture_output=True,
+        env=dict(os.environ, PYTHONIOENCODING='ascii'))
+    assert process.returncode == 0, process.stderr
+    result = json.loads(process.stdout.decode('utf-8'))
+    assert result['symbols'][0]['purpose'] == '中文用途。'
+    assert result['symbols'][0]['path'] == 'src/模型.py'
+    assert read_record(tmp_path / 'docs/code-map.json') == result
     assert not (tmp_path / '.ei').exists()
 
 
