@@ -1,6 +1,6 @@
 # Release validation scope
 
-> This document records the 1.0 release and earlier beta evaluations. For 1.1.0-beta.2, use [upgrade acceptance](UPGRADE_VALIDATION_CN.md) and the current [release-validation.json](../release-validation.json). Historical results below are not new-version executions.
+> This document records the 1.0 release and earlier beta evaluations. For 1.2.0, use [upgrade acceptance](UPGRADE_VALIDATION_CN.md) and the current [release-validation.json](../release-validation.json). Historical results below are not new-version executions.
 
 
 Release source: **1.0.0**, promoted from the locally validated beta.5 source.

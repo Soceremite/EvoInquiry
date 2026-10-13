@@ -4,15 +4,15 @@
 
 [English](README.md) · [完整 skill 清单](docs/SKILLS_CATALOG.md) · [版本下载](https://github.com/Soceremite/EvoInquiry/releases) · [参与贡献](CONTRIBUTING_CN.md)
 
-**1.1.0-beta.2 — 项目与环境治理兼容性改进**
+**1.2.0 正式版 — 科研工作流与证据治理**
 
 EvoInquiry 是面向 Codex 的科研工作流工具集，提供 **86 个 Codex skill**，
 帮助你从宽泛的研究方向出发，形成具体方案，实施和评估实验，审查证据，
 并准备论文与投稿材料。既可以按需使用单个 skill，也可以串联成完整科研流程。
 
-这个预发布版本新增项目治理、固定执行证据和环境维护能力；需要稳定版本时仍可选择 1.0.0。治理能力按任务需要启用，普通论文阅读和小型修改保持原有范围。修改范围见[实施计划](docs/UPGRADE_IMPLEMENTATION_CN.md)，具体使用见[治理使用指南](docs/GOVERNANCE_USAGE_CN.md)，实际测试与限制见[验收记录](docs/UPGRADE_VALIDATION_CN.md)。已有安装在升级前继续使用其安装版本。
+**1.2.0** 将 1.1.0-beta.2 已验收的项目治理、固定执行证据和环境维护能力正式发布，帮助课题在多组实验、方案修订和多人协作中持续推进。治理能力按任务需要启用。具体使用见[治理使用指南](docs/GOVERNANCE_USAGE_CN.md)，实际测试与适用范围见[验收记录](docs/UPGRADE_VALIDATION_CN.md)。已有安装在升级前继续使用其安装版本。
 
-本次更新加强方法验证覆盖、虚拟环境启动、导入探测和源码编码兼容，并补充目录别名及原生 Windows 路径验收。历史冻结记录按原格式核验，覆盖范围见[兼容性验收](docs/PORTABILITY_VALIDATION_CN.md)。
+正式版包含方法验证覆盖、虚拟环境启动、导入探测和源码编码兼容改进，以及目录别名和原生 Windows 路径保护。历史冻结记录按原格式核验，覆盖范围见[兼容性验收](docs/PORTABILITY_VALIDATION_CN.md)。
 
 <a id="capabilities"></a>
 
@@ -53,20 +53,20 @@ EvoInquiry 主要面向 ML、AI 与相关工程科研。
 请使用提供 `codex plugin` 命令的 Codex 版本。
 插件安装已在 Linux 上使用 Codex CLI **0.162.1** 验证。
 
-从 [1.1.0-beta.2 Release](https://github.com/Soceremite/EvoInquiry/releases/tag/v1.1.0-beta.2)
-下载并解压 `evo-inquiry-1.1.0-beta.2.tar.gz` 或 `.zip`，进入解压后的根目录，
+从 [1.2.0 Release](https://github.com/Soceremite/EvoInquiry/releases/tag/v1.2.0)
+下载并解压 `evo-inquiry-1.2.0.tar.gz` 或 `.zip`，进入解压后的根目录，
 执行下面两个插件命令安装。
 Codex CLI 0.162.1 会把安装来源目录复制到缓存，包括本地未跟踪文件；
 使用只含公开文件的源码包，可避免复制验证记录、构建目录和 Git 历史。
 
 ```sh
-cd /path/to/evo-inquiry-1.1.0-beta.2
+cd /path/to/evo-inquiry-1.2.0
 codex plugin marketplace add "$PWD"
 codex plugin add evo-inquiry@evo-inquiry
 ```
 
 需要查看和开发源码时，可以使用
-`git clone --branch v1.1.0-beta.2 https://github.com/Soceremite/EvoInquiry.git EvoInquiry`。
+`git clone --branch v1.2.0 https://github.com/Soceremite/EvoInquiry.git EvoInquiry`。
 安装插件时使用干净的 Release 解压目录。
 安装后启动新的 Codex 会话，skill 会以 `evo-inquiry:` 命名空间出现，
 例如 `evo-inquiry:research-refine`。
@@ -97,7 +97,7 @@ codex plugin add evo-inquiry@evo-inquiry
 > 保存比较表，完成分析后停止。
 
 需要端到端流程时，使用 `evo-inquiry:research-pipeline`，并说明研究方向、
-已有工作、目标产物和可用资源。开发版提供 86 个 skill 入口，
+已有工作、目标产物和可用资源。工具集提供 86 个 skill 入口，
 包括单步工具、课题协调、总流程和可选服务后端。
 
 如果需要项目级科研使用说明，可以将可选的
@@ -121,9 +121,9 @@ codex plugin add evo-inquiry@evo-inquiry
 本项目提供的 EvoInquiry 安装方式是上面的 Codex 插件。
 保留的后端与客户端兼容资源用于支持已有流程约定，按需启用并单独配置。
 
-已完成的检查及其适用范围见[验证范围与限制](docs/BETA_VALIDATION.md)。
+已完成的检查及其适用范围见[发布验收](docs/UPGRADE_VALIDATION_CN.md)及[兼容性验收](docs/PORTABILITY_VALIDATION_CN.md)。
 [离线行为评估](docs/SKILL_BEHAVIOR_EVAL.md)使用冻结案例和实际执行轨迹比较自然请求表现。
-下载包需要 Linux 和 macOS 完整 CI 均通过后发布。
+下载包需要 Linux、macOS 完整 CI，以及 `powershell.exe`、`pwsh` 两组 Windows 原生安装与治理验收全部通过后发布。
 真实服务与完整科研项目尚未在所有环境和学科中逐一验证。
 
 <a id="contributing"></a>

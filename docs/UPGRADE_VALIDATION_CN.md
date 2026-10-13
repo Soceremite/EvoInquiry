@@ -1,6 +1,12 @@
-# 1.1 项目与环境治理验收
+# 1.2.0 项目、环境与兼容性验收
 
-当前交付为 **1.1.0-beta.2**。本次兼容性更新保留 86 个入口、83 个原工作流主体和检查点工具摘要，辅助文件累计 34 项适配逐项登记；修复与实际回归详见[兼容性验收](PORTABILITY_VALIDATION_CN.md)及当前 [release-validation.json](../release-validation.json)。目录别名及真实解释器专项为 46 通过、12 个 Windows 用例在本机跳过（78.64 秒）；Windows 实际执行由主分支和发布的两组原生平台门槛负责，不将本机跳过算作通过。
+当前交付为 **1.2.0 正式版**，将已验收的 1.1.0-beta.2 运行时正式发布，仅更新版本标识及发布文档。86 个入口、83 个原工作流主体、34 项辅助文件适配及检查点工具字节保持原有契约；历史冻结记录继续按原格式核验。
+
+推广来源为 `b9d3436315d119f123d3e90871c1a85b0914f717`。该来源的 [main 四组检查](https://github.com/Soceremite/EvoInquiry/actions/runs/38359883402)及 [beta.2 发布五项检查](https://github.com/Soceremite/EvoInquiry/actions/runs/38360526301)均实际通过；公开 tar/zip 的 790 个文件与该提交逐字节一致，本地原生发现验证了 86 个唯一入口及完整安装字节。1.2.0 使用同一套 Linux/macOS 完整回归和两组 Windows 原生门禁；实际正式版结果以对应标签的 [发布流程](https://github.com/Soceremite/EvoInquiry/actions/workflows/release-beta.yml)及下载包的 `release-manifest.json` 为准。
+
+下面保留 **beta.2 来源的兼容性验收记录**，本地测试数字属于相应历史源码阶段，不改记为新的 1.2.0 执行；GPU、离线依赖和行为试点也继续保留其独立来源。
+
+前版交付为 **1.1.0-beta.2**。该兼容性更新保留 86 个入口、83 个原工作流主体和检查点工具摘要，辅助文件累计 34 项适配逐项登记；修复与实际回归详见[兼容性验收](PORTABILITY_VALIDATION_CN.md)及[该版本的固定记录](https://github.com/Soceremite/EvoInquiry/blob/v1.1.0-beta.2/release-validation.json)。目录别名及真实解释器专项为 46 通过、12 个 Windows 用例在本机跳过（78.64 秒）；Windows 实际执行由主分支和发布的两组原生平台门槛负责，不将本机跳过算作通过。
 
 本次宿主完整回归为 **955 通过、35 跳过、0 失败**（506.46 秒）。此前受限沙箱完整尝试有 9 项失败：3 项归档复制不能保留源文件所有者，6 项本地 HTTP/浏览器监听受限；实际 stderr 和失败 XML 原样保留，未修改这些原有功能来绕过检查。最后的 UTF-8 探测流及中文日志补强单独验收为 17 通过、1 个 Windows 用例跳过（13.76 秒）；最终提交由平台 CI 完整执行。Windows 25 项、expect 4 项、缺少凭据的 MiniMax 4 项及主管理解释器缺少 PyTorch 的 2 项在本机跳过；不把此前 GPU/CPU 检查点试点重复累加为本次执行。
 

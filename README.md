@@ -4,7 +4,7 @@
 
 [中文](README_CN.md) · [Skill inventory](docs/SKILLS_CATALOG.md) · [Releases](https://github.com/Soceremite/EvoInquiry/releases) · [Contributing](CONTRIBUTING.md)
 
-**1.1.0-beta.2 — portable project and environment governance**
+**1.2.0 — stable research workflows and evidence governance**
 
 EvoInquiry is a research workflow toolkit for Codex. It provides **86 Codex skills**
 that help you turn a broad research direction into a focused proposal, implement
@@ -12,7 +12,7 @@ and evaluate experiments, assess the evidence, and prepare a paper for
 submission. Use individual skills for a specific task or connect them into
 a longer research workflow.
 
-This prerelease adds project governance, fixed execution evidence and environment maintenance; 1.0.0 remains the stable option. Governance is selected when the task needs it, so paper reading and small edits keep their existing scope. See the [implementation plan](docs/UPGRADE_IMPLEMENTATION_CN.md), [governance usage guide](docs/GOVERNANCE_USAGE_CN.md), and [validation results and limits](docs/UPGRADE_VALIDATION_CN.md). Existing installations keep their installed version until upgraded. This update strengthens method-validation coverage, virtual-environment launches, import inspection and source decoding, with dedicated directory-alias and native Windows path checks. See the [portability validation](docs/PORTABILITY_VALIDATION_CN.md) for coverage and historical-record compatibility.
+Version **1.2.0** is the stable release of the project governance, fixed execution evidence and environment maintenance validated in 1.1.0-beta.2. These capabilities help research continue across experiments, revisions and collaborators. Governance is selected when the task needs it. See the [governance usage guide](docs/GOVERNANCE_USAGE_CN.md), [validation results and limits](docs/UPGRADE_VALIDATION_CN.md), and [portability coverage](docs/PORTABILITY_VALIDATION_CN.md). Existing installations keep their installed version until upgraded.
 
 <a id="capabilities"></a>
 
@@ -60,21 +60,21 @@ Domain-specific workflows and provider integrations are available in the
 Use a Codex installation that provides the `codex plugin` commands. Plugin
 installation has been checked with Codex CLI **0.162.1** on Linux.
 
-Download and extract `evo-inquiry-1.1.0-beta.2.tar.gz` or `.zip` from the
-[1.1.0-beta.2 release](https://github.com/Soceremite/EvoInquiry/releases/tag/v1.1.0-beta.2),
+Download and extract `evo-inquiry-1.2.0.tar.gz` or `.zip` from the
+[1.2.0 release](https://github.com/Soceremite/EvoInquiry/releases/tag/v1.2.0),
 then enter its root directory and run the two plugin commands below.
 Codex CLI 0.162.1 copies the installation directory into
 its cache, including local untracked files. Use an archive containing the public
 files to keep local validation records, build outputs and Git history out of it.
 
 ```sh
-cd /path/to/evo-inquiry-1.1.0-beta.2
+cd /path/to/evo-inquiry-1.2.0
 codex plugin marketplace add "$PWD"
 codex plugin add evo-inquiry@evo-inquiry
 ```
 
 For source development, use
-`git clone --branch v1.1.0-beta.2 https://github.com/Soceremite/EvoInquiry.git EvoInquiry`.
+`git clone --branch v1.2.0 https://github.com/Soceremite/EvoInquiry.git EvoInquiry`.
 Use a clean release archive for plugin installation. Start a new Codex session
 after installation. Skills appear under the `evo-inquiry:`
 namespace, for example `evo-inquiry:research-refine`.
@@ -109,7 +109,7 @@ requests retain their scope. You can still name any skill explicitly, for exampl
 
 For an end-to-end task, ask for `evo-inquiry:research-pipeline` and provide your
 research direction, existing work, target output, and available resources.
-The development toolkit provides 86 skill entrypoints, including individual steps,
+The toolkit provides 86 skill entrypoints, including individual steps,
 project coordination, pipeline orchestrators, and optional backends.
 
 For project-wide research guidance, merge the optional
@@ -137,10 +137,10 @@ The documented EvoInquiry installation route is the Codex plugin above.
 Retained backend and client compatibility resources support existing workflow
 contracts; they are optional and have separate setup requirements.
 
-Completed checks and their scope are recorded in [validation scope and limitations](docs/BETA_VALIDATION.md).
+Completed checks and their scope are recorded in [release validation](docs/UPGRADE_VALIDATION_CN.md) and [portability coverage](docs/PORTABILITY_VALIDATION_CN.md).
 The [offline behavior evaluation](docs/SKILL_BEHAVIOR_EVAL.md) compares natural
 requests using frozen fixtures and actual execution traces. Release archives
-require passing Linux and macOS CI suites.
+require passing Linux and macOS full CI suites and native Windows installer/governance checks with both `powershell.exe` and `pwsh`.
 Live providers and complete research projects have not been verified end to
 end across every environment or discipline.
 

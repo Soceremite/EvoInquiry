@@ -1,5 +1,28 @@
 # Changelog
 
+## 1.2.0 — 2026-10-13
+
+Promote the validated 1.1.0-beta.2 runtime to stable. Changes below are compared with the previous stable release, 1.0.0.
+
+### Added
+
+- Add project-governance and environment-maintenance, bringing the Codex inventory to 86 entrypoints. Track fixed project/report references, independent environment candidates, queued bindings, leases and reproduction pins.
+- Freeze source/config/data/evaluator/environment/launch inputs and preserve distinct failed, retry and restored execution identities with predeclared aggregation.
+- Add source/interface/documentation freshness checks, a deployment filesystem doctor and native Windows project-to-report acceptance.
+
+### Fixed
+
+- Count method coverage only from successful consumers-layer receipts. Bind inspection, validation and launch to one validated interpreter across cwd/PATH changes, preserving the virtual environment.
+- Separate import logs from the machine fingerprint; preserve Unicode CLI/execution output and diagnostics. Handle built-in/extension modules and record namespace locations and interpreter prefixes.
+- Decode Python source according to encoding declarations/BOM while hashing original bytes. Reject Junction traversal, reserved names, ambiguous Windows references and case-colliding consumer bindings.
+
+### Corrected
+
+- Compare canonical directory identities in installer assertions, including macOS aliases, and honor Windows executable path case without dereferencing venv entrypoints.
+- Preserve actual Unicode failure annotations and original failed receipts. Correct stable installation links, release labels and the provenance of validation results.
+
+All 83 original workflow bodies, historical frozen records, scientific review gates and checkpoint helper bytes are preserved. Stable publication requires Linux/macOS full suites and both native Windows PowerShell gates, and provides checksums plus a fixed-commit manifest. See RELEASE_NOTES.md for bilingual capabilities, benefits and installation guidance.
+
 ## 1.1.0-beta.2 — 2026-10-13
 
 - Count required consumer coverage only from successful consumers-layer receipts; preserve rejected candidates and prior frozen bindings.

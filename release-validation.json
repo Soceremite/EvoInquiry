@@ -1,8 +1,8 @@
 {
-  "version": "1.1.0-beta.2",
-  "release_kind": "prerelease",
-  "baseline_commit": "d99ec78a30970bff84f3aa5208f6b9d77e4765a4",
-  "historical_validation": "https://github.com/Soceremite/EvoInquiry/blob/v1.1.0-beta.1/release-validation.json",
+  "version": "1.2.0",
+  "release_kind": "stable",
+  "baseline_commit": "b9d3436315d119f123d3e90871c1a85b0914f717",
+  "historical_validation": "https://github.com/Soceremite/EvoInquiry/blob/v1.1.0-beta.2/release-validation.json",
   "preservation": {
     "Codex_entrypoints": 86,
     "retained_original_workflow_bodies": 83,
@@ -139,7 +139,8 @@
   "inherited_engineering_evidence": {
     "source_tag": "v1.1.0-beta.1",
     "new_GPU_or_behavior_runs_claimed": false,
-    "scope": "Earlier real H100 recovery, offline pip conflict, native plugin switching and scoped natural-language acceptance remain available at the historical validation link. This release does not relabel them as new executions."
+    "scope": "Earlier real H100 recovery, offline pip conflict, native plugin switching and scoped natural-language acceptance remain available at the historical validation link. This release does not relabel them as new executions.",
+    "validation_url": "https://github.com/Soceremite/EvoInquiry/blob/v1.1.0-beta.1/release-validation.json"
   },
   "filesystem": {
     "doctor_status": "PASS",
@@ -168,5 +169,23 @@
     "checksums": "SHA256SUMS",
     "source_identity": "Commit and inventory in release-manifest.json"
   },
-  "portability_details": "docs/PORTABILITY_VALIDATION_CN.md"
+  "portability_details": "docs/PORTABILITY_VALIDATION_CN.md",
+  "promotion": {
+    "source_version": "1.1.0-beta.2",
+    "source_commit": "b9d3436315d119f123d3e90871c1a85b0914f717",
+    "runtime_changed": false,
+    "source_main_CI": {
+      "status": "PASS",
+      "url": "https://github.com/Soceremite/EvoInquiry/actions/runs/38359883402"
+    },
+    "source_release_CI": {
+      "status": "PASS",
+      "url": "https://github.com/Soceremite/EvoInquiry/actions/runs/38360526301"
+    },
+    "source_public_assets_verified": true,
+    "source_public_files": 790,
+    "source_native_install_entrypoints": 86,
+    "scope": "Stable promotion changes release identity and documentation. Historical local checks below retain their original stages and scopes; stable publication requires all native platform gates on its own tag."
+  },
+  "local_checks_source": "Historical 1.1 beta acceptance stages; see each check scope. Not new 1.2.0 executions and not summed with CI or GPU results."
 }
