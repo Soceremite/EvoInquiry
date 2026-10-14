@@ -18,7 +18,7 @@ Comparison consolidation previously verified the surviving model without checkin
 
 Legacy comparison receipts remain inspectable. Further destructive cleanup requires binding complete evidence to the same recorded winner, rather than silently treating the older receipt as sufficient. Ordinary single-run completion, standalone single-file trainers and bounded active recovery retain their existing behaviour. Permanently stopped, evaluated winners remain eligible for retention; unstarted slots use cancellation records rather than fabricated attempts.
 
-Windows checkpoint saves now flush files through a writable, non-truncating handle, as required by the native file-sync API. File-flush failures preserve the previous recovery points and manifest. When a monitoring reader briefly holds the manifest, atomic replacement retries native sharing/access errors for at most one second while preserving the old manifest; persistent and unrelated errors still propagate. Both Windows shell gates additionally run the checkpoint-retention suite. Long public CI annotations preserve the test identity and final exception within a bounded UTF-8 excerpt, and expose actual JUnit counts without changing pytest's exit status.
+Windows checkpoint saves now flush files through a writable, non-truncating handle, as required by the native file-sync API. File-flush failures preserve the previous recovery points and manifest. Manifest reads and atomic replacement retry temporary native sharing/access errors for at most one second per operation, including CRT-backed read errors, while preserving the old manifest; persistent and unrelated errors and corruption still propagate. Both Windows shell gates additionally run the checkpoint-retention suite. Long public CI annotations preserve the test identity and final exception within a bounded UTF-8 excerpt, and expose actual JUnit counts without changing pytest's exit status.
 
 ## Corrected guidance
 
@@ -38,7 +38,7 @@ EvoInquiry 1.3.0 保留 **86 个 Codex skill** 和既有科研流程，重点提
 
 **修复问题：** 非最优权重归档前，新增对比证据检查。缺少实验或失败尝试、日志摘要发生变化、保留模型身份不匹配，或证据位于将被清理的断点目录中，都会阻止删除；中断清理后重试也会重新验证。旧归档记录仍可查看，但继续删除前必须补齐并绑定证据。后续实验需要的模型依赖继续受到保护。
 
-Windows 断点文件使用可写但不截断内容的句柄刷盘，兼容系统落盘要求；刷盘失败继续保留此前的恢复点和清单。监控读取短暂占用清单时，原子替换仅对系统共享或访问错误进行最多一秒的重试，期间保留旧清单，持续或其他错误照常上报。两种 Windows Shell 验收均加入完整断点保留测试。较长的 CI 失败注释保留测试身份与末尾异常，避免公开注释截断时丢失真正原因，同时展示原始 JUnit 统计，不改变测试退出状态。
+Windows 断点文件使用可写但不截断内容的句柄刷盘，兼容系统落盘要求；刷盘失败继续保留此前的恢复点和清单。清单读取与原子替换仅对系统临时共享或访问错误进行每次操作最多一秒的重试，兼容读取接口只提供 errno 的情况，期间保留旧清单，持续权限错误、其他错误及清单损坏照常上报。两种 Windows Shell 验收均加入完整断点保留测试。较长的 CI 失败注释保留测试身份与末尾异常，避免公开注释截断时丢失真正原因，同时展示原始 JUnit 统计，不改变测试退出状态。
 
 **修正规范：** 明确不以相同学习率、优化器或训练轮数作为通用公平标准；不把固定三个种子当成充分性保证；不以最优种子或最优重试替代完整比较。分析区分跨运行波动与效果不确定性，避免零基线或不适合比值的指标产生误导性相对提升。验证集决定模型与阈值，测试结果不能参与归档最优模型的选择。
 

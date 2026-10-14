@@ -27,7 +27,9 @@ The [first cross-platform run](https://github.com/Soceremite/EvoInquiry/actions/
 
 The [next native run](https://github.com/Soceremite/EvoInquiry/actions/runs/38518206170) passed file flushing and all comparison archival cases; its expanded checkpoint suite exposed a concurrent Windows reader denying manifest replacement. Atomic JSON publication now retries only native sharing/access errors for at most one second without removing the old manifest. File-backed tests cover successful transient retries, bounded persistent failure and unrelated errors.
 
-The corrected local checkpoint/evidence/archival/publication/annotation regression passed **133 tests**, with two native Windows cases skipped and no failures. It includes actual PyTorch CPU restoration. The earlier 1053-test local full-suite result is retained as earlier evidence, rather than claimed as a new whole-tree run after this correction. Native revalidation is tracked separately in the machine-readable report.
+The [write-retry run](https://github.com/Soceremite/EvoInquiry/actions/runs/38519005869) then exposed the matching read-side CRT permission error during replacement. The same bounded policy now covers manifest reads, including CRT errors with no Win32 code. New tests recover transient errors and verify that persistent permissions, POSIX permissions, unrelated errors and invalid JSON remain visible.
+
+The corrected local checkpoint/evidence/archival/publication/annotation regression passed **140 tests**, with two native Windows cases skipped and no failures. It includes actual PyTorch CPU restoration. The earlier 1053-test local full-suite result is retained as earlier evidence, rather than claimed as a new whole-tree run after this correction. Native revalidation is tracked separately in the machine-readable report.
 
 ## What the evidence gate establishes
 

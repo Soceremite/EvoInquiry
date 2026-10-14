@@ -199,6 +199,67 @@ def test_persistent_or_unrelated_manifest_replace_error_preserves_previous_bytes
         assert len(calls) == 1 and elapsed[0] == 0
 
 
+@pytest.mark.parametrize('winerror', [None, 5, 32])
+def test_temporary_windows_manifest_read_error_recovers_valid_snapshot(store, monkeypatch, winerror):
+    import tools.checkpoint_retention as module
+    save(store, 10)
+    expected = store.status()
+    real_read = Path.read_text
+    calls = []
+
+    def temporarily_busy(path, *args, **kwargs):
+        if path == store.root / MANIFEST:
+            calls.append(path)
+            if len(calls) <= 2:
+                error = PermissionError(errno.EACCES, 'Windows rename temporarily blocks manifest read')
+                if winerror is not None:
+                    error.winerror = winerror
+                raise error
+        return real_read(path, *args, **kwargs)
+
+    monkeypatch.setattr(module, '_WINDOWS_REPLACE_ERRORS', (5, 32))
+    monkeypatch.setattr(Path, 'read_text', temporarily_busy)
+    snapshot = store.status()
+    assert snapshot['generation'] == expected['generation']
+    assert snapshot['latest_step'] == 10
+    assert calls and len(calls) >= 3
+
+
+@pytest.mark.parametrize('case', ['persistent-windows', 'unrelated-windows', 'posix-permission', 'invalid-json'])
+def test_manifest_read_retries_do_not_hide_permanent_permissions_or_corruption(store, monkeypatch, case):
+    import tools.checkpoint_retention as module
+    previous = (store.root / MANIFEST).read_bytes()
+    real_read = Path.read_text
+    calls = []
+    elapsed = [0.0]
+
+    def sleep(seconds):
+        elapsed[0] += seconds
+
+    def failed_read(path, *args, **kwargs):
+        if path == store.root / MANIFEST:
+            calls.append(path)
+            if case == 'invalid-json':
+                return '{invalid manifest'
+            error = PermissionError(errno.EACCES, 'persistent manifest read failure')
+            if case == 'unrelated-windows':
+                error.winerror = 112
+            raise error
+        return real_read(path, *args, **kwargs)
+
+    monkeypatch.setattr(module, '_WINDOWS_REPLACE_ERRORS', () if case == 'posix-permission' else (5, 32))
+    monkeypatch.setattr(module, 'time', SimpleNamespace(monotonic=lambda: elapsed[0], sleep=sleep))
+    monkeypatch.setattr(Path, 'read_text', failed_read)
+    with pytest.raises(RetentionError, match='Invalid checkpoint manifest') as captured:
+        store.status()
+    assert (store.root / MANIFEST).read_bytes() == previous
+    if case == 'persistent-windows':
+        assert len(calls) > 1 and 1.0 <= elapsed[0] < 1.02
+        assert isinstance(captured.value.__cause__, PermissionError)
+    else:
+        assert len(calls) == 1 and elapsed[0] == 0
+
+
 def test_filesystem_reserve_is_checked_before_writer(store, monkeypatch):
     monkeypatch.setattr('tools.checkpoint_retention.shutil.disk_usage', lambda p: SimpleNamespace(free=50))
     with pytest.raises(RetentionError, match='filesystem space'):

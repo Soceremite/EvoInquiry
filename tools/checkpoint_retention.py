@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 from contextlib import contextmanager, ExitStack
+import errno
 import hashlib
 import json
 import os
@@ -37,6 +38,24 @@ def _integer(value: object, name: str, minimum: int = 0) -> int:
     return value
 
 
+def _manifest_io(operation: Callable, *, reading: bool = False):
+    """Bound native Windows reader/rename contention without hiding failures."""
+    deadline = time.monotonic() + 1.0
+    while True:
+        try:
+            return operation()
+        except PermissionError as error:
+            code = getattr(error, 'winerror', None)
+            # Python's CRT-backed open can expose only errno EACCES, unlike
+            # os.replace's Win32 error. Accept that fallback for reads only.
+            retryable = bool(_WINDOWS_REPLACE_ERRORS) and (
+                code in _WINDOWS_REPLACE_ERRORS
+                or (reading and code is None and error.errno == errno.EACCES))
+            if not retryable or time.monotonic() >= deadline:
+                raise
+            time.sleep(0.01)
+
+
 def _atomic_json(path: Path, data: dict) -> None:
     temporary = path.with_name(path.name + '.tmp-' + uuid.uuid4().hex)
     try:
@@ -48,16 +67,7 @@ def _atomic_json(path: Path, data: dict) -> None:
         # A short-lived monitoring handle can deny rename on Windows. Keep the
         # old manifest intact while retrying only native sharing/access errors;
         # persistent errors still fail, and the owning writer lock remains held.
-        deadline = time.monotonic() + 1.0
-        while True:
-            try:
-                os.replace(temporary, path)
-                break
-            except PermissionError as error:
-                if (getattr(error, 'winerror', None) not in _WINDOWS_REPLACE_ERRORS
-                        or time.monotonic() >= deadline):
-                    raise
-                time.sleep(0.01)
+        _manifest_io(lambda: os.replace(temporary, path))
         if hasattr(os, 'O_DIRECTORY'):
             descriptor = os.open(path.parent, os.O_RDONLY | os.O_DIRECTORY)
             try:
@@ -182,7 +192,7 @@ class CheckpointStore:
         if path.is_symlink():
             raise RetentionError('Refusing a symlinked manifest')
         try:
-            data = json.loads(path.read_text(encoding='utf-8'))
+            data = json.loads(_manifest_io(lambda: path.read_text(encoding='utf-8'), reading=True))
             if data['schema_version'] != 1 or not isinstance(data['run_id'], str):
                 raise ValueError('identity/schema')
             policy = data['policy']
