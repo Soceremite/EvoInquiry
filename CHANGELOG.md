@@ -1,5 +1,28 @@
 # Changelog
 
+## 1.3.0 — 2026-10-14
+
+### Added
+
+- Share comparative-experiment guidance across eight existing skills: controlled contributions, equal resource budgets and tuned-system performance, with data/split integrity, baseline quality, search cost, validation selection, seed coverage and uncertainty.
+- Add a file-backed comparison evidence index and validator, binding every declared run and recorded attempt to configurations, raw results or failure logs and the comparison summary.
+- Add opt-in project/global research routing with scoped managed instructions, override handling, preview/check/removal, idempotent updates and preservation of unrelated content.
+
+### Fixed
+
+- Require complete bound evidence before comparison weight consolidation; reject omitted runs/retries, changed references, mismatched winners and evidence inside disposable checkpoint artifacts.
+- Recheck the archived winner and bound evidence before interrupted cleanup resumes. Keep legacy comparison receipts readable and require evidence binding before further deletion; preserve dependency pins.
+- Preserve standalone checkpoint trainers by loading the evidence helper only for comparison archival. Represent unstarted slots with cancellation records and allow permanently stopped, evaluated winners with validated weights.
+- Verify new supporting resources are present in release source packages and include portable comparison/routing tests in both Windows shell gates.
+
+### Corrected
+
+- Qualify comparison fairness by the question rather than requiring universally identical training recipes. Treat the three-seed default as a starting estimate and expose failures, missing slots and protocol deviations.
+- Qualify relative gains for zero or unsuitable metric scales, distinguish variability from effect uncertainty, and require genuine pairing units rather than equal seed integers.
+- Separate file coverage/integrity from scientific review and record current validation independently of historical release results.
+
+Retain 86 Codex entrypoints and all 83 original workflow bodies. The optional checkpoint helper deliberately adds the comparison evidence gate; single-run completion retains its existing behaviour. See RELEASE_NOTES.md and docs/VALIDATION_1_3_0.md for capabilities, upgrade instructions and actual verification scope.
+
 ## 1.2.0 — 2026-10-13
 
 Promote the validated 1.1.0-beta.2 runtime to stable. Changes below are compared with the previous stable release, 1.0.0.

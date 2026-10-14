@@ -16,6 +16,7 @@ budgets, blocking checkpoints, and stopping conditions.
 Apply this formal gate when a claim-support verdict is requested or the active workflow requires it; ordinary analysis caveats alone do not trigger it. See [task-scope](../shared-references/task-scope.md). When required, all existing evidence, review, and routing rules below still apply.
 
 For this stage, read [project-governance](../shared-references/project-governance.md). Use fixed raw result/spec/execution/report refs and the actual digest-bound review receipt. Preserve independent/provisional judgments; file/registry/schema success does not establish claim support.
+For comparative claims, load [comparative-experiments](../shared-references/comparative-experiments.md) into the existing review brief. Match the claim to a controlled, resource-bound or tuned-system comparison; assess leakage, selection, seed/failure coverage and uncertainty from fixed raw evidence. Explain confounds and narrow unsupported conclusions. Keep the existing review gates and do not turn an ordinary analysis into an unsolicited formal verdict.
 <!-- EVO-INQUIRY:END -->
 
 

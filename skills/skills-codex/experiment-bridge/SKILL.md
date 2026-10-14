@@ -15,6 +15,7 @@ For artifact-producing runs, read [experiment storage](../shared-references/expe
 
 For this stage, read [project-governance](../shared-references/project-governance.md). Before implementation, inspect reusable interfaces and their real callers/tests; update public docs/examples and contract tests together. Bind a recipe revision and record smoke, recovery and scientific reviews separately.
 Use [code-reuse-and-docs](../shared-references/code-reuse-and-docs.md) for code changes and [environment-stewardship](../shared-references/environment-stewardship.md) for dependency changes.
+When implementing comparisons, load [comparative-experiments](../shared-references/comparative-experiments.md). Carry the fixed data/splits, permitted input access, selection/evaluator and method-specific configurations into executable checks. Persist effective configurations and every attempt; record deviations instead of silently repairing only one method.
 <!-- EVO-INQUIRY:END -->
 
 

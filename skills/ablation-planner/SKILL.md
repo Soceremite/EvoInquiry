@@ -10,6 +10,7 @@ Resolve runtime state through tools/state_paths.py before .ei operations. Use
 [project-governance](../shared-references/project-governance.md) for fixed evidence,
 profiles and controlled migration; missing profiles retain compat-v1.
 Keep declared comparison/seed/failure rules and fixed baseline/evaluator refs. Reuse shared interfaces without erasing method-specific interventions.
+For ablations, load [comparative-experiments](../shared-references/comparative-experiments.md). Distinguish controlled removal from a retuned alternative; isolate the contribution without imposing an unsuitable shared recipe. Declare coupled changes, resource/search budgets, validation selection and seed/failure accounting; preserve matched baseline identities.
 <!-- EI-GOVERNANCE:END -->
 
 

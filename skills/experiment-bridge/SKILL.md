@@ -11,6 +11,7 @@ Resolve runtime state through tools/state_paths.py before .ei operations. Use
 profiles and controlled migration; missing profiles retain compat-v1.
 Before implementation, inspect reusable interfaces and their real callers/tests; update public docs/examples and contract tests together. Bind a recipe revision and record smoke, recovery and scientific reviews separately.
 For code/dependency changes, read [code-reuse-and-docs](../shared-references/code-reuse-and-docs.md) and [environment-stewardship](../shared-references/environment-stewardship.md).
+When implementing comparisons, load [comparative-experiments](../shared-references/comparative-experiments.md). Carry the fixed data/splits, permitted input access, selection/evaluator and method-specific configurations into executable checks. Persist effective configurations and every attempt; record deviations instead of silently repairing only one method.
 <!-- EI-GOVERNANCE:END -->
 
 

@@ -13,6 +13,7 @@ from types import SimpleNamespace
 import pytest
 
 from tools.checkpoint_retention import CheckpointStore, MANIFEST, RetentionError
+from tests.comparison_helpers import make_evidence
 
 
 def save(store, step, *, kind='resume', roles=(), pins=(), payload=None):
@@ -37,6 +38,12 @@ def store(tmp_path):
 
 def active(store):
     return json.loads((store.root / MANIFEST).read_text())['entries']
+
+
+def comparison_evidence(store, winner):
+    return make_evidence(store.root.parent / 'comparison-evidence',
+                         source_run_id=json.loads((store.root / MANIFEST).read_text())['run_id'],
+                         winner_run_id=json.loads((winner.root / MANIFEST).read_text())['run_id'])
 
 
 def test_long_run_has_bounded_peak_and_two_resume_generations(tmp_path):
@@ -500,10 +507,12 @@ def test_comparison_archives_nonwinner_weights_only_after_preserving_finished_wi
     evidence.write_text('model,validation_score\nloser,0.76\n')
     survivor = (winner.root / best['id'] / 'state.json').read_bytes()
     before = {root: (root / MANIFEST).read_bytes() for root in (store.root, winner.root)}
-    preview = store.finish(outcome='completed', step=20, reason='shared validation metric selects the winner', archive_to=winner.root)
+    preview = store.finish(outcome='completed', step=20, reason='shared validation metric selects the winner',
+                           archive_to=winner.root, comparison_evidence=comparison_evidence(store, winner))
     assert preview['status']['remove'] and preview['released_roles']
     assert all((root / MANIFEST).read_bytes() == raw for root, raw in before.items())
-    result = store.finish(outcome='completed', step=20, reason='shared validation metric selects the winner', archive_to=winner.root, apply=True)
+    result = store.finish(outcome='completed', step=20, reason='shared validation metric selects the winner',
+                          archive_to=winner.root, comparison_evidence=comparison_evidence(store, winner), apply=True)
     assert loser_best['id'] in result['deleted']
     assert not active(store) and store.latest() is None
     assert evidence.read_text() == 'model,validation_score\nloser,0.76\n'
@@ -543,7 +552,8 @@ def test_completed_runs_can_later_consolidate_without_releasing_dependency_model
     dependent = save(store, 10, kind='weights', pins=('required by an approved ablation',))
     final = save(store, 20, kind='weights', roles=('best', 'final'))
     store.finish(outcome='completed', step=20, reason='done', apply=True)
-    store.finish(outcome='completed', step=20, reason='campaign keeps validation winner', archive_to=winner.root, apply=True)
+    store.finish(outcome='completed', step=20, reason='campaign keeps validation winner',
+                 archive_to=winner.root, comparison_evidence=comparison_evidence(store, winner), apply=True)
     assert [e['id'] for e in active(store)] == [dependent['id']]
     assert not (store.root / final['id']).exists()
 
@@ -556,7 +566,8 @@ def test_finish_pins_survivor_before_any_local_deletion_even_if_local_commit_fai
     before = (store.root / MANIFEST).read_bytes()
     monkeypatch.setattr(store, '_write', lambda data: (_ for _ in ()).throw(OSError('local manifest failed')))
     with pytest.raises(OSError, match='manifest failed'):
-        store.finish(outcome='completed', step=20, reason='winner selected', archive_to=winner.root, apply=True)
+        store.finish(outcome='completed', step=20, reason='winner selected',
+                     archive_to=winner.root, comparison_evidence=comparison_evidence(store, winner), apply=True)
     assert (store.root / MANIFEST).read_bytes() == before
     assert (store.root / saved['id']).exists()
     assert len(active(winner)[0]['pins']) == 1
@@ -598,7 +609,9 @@ def test_prune_retry_refuses_further_deletion_if_archived_survivor_is_damaged(st
     monkeypatch.setattr(store, '_prune', lambda data: (_ for _ in ()).throw(OSError('interrupted before cleanup')))
     with pytest.raises(OSError, match='interrupted before cleanup'):
         store.finish(outcome='completed', step=20, reason='done',
-                     archive_to=survivor_store.root if external else None, apply=True)
+                     archive_to=survivor_store.root if external else None,
+                     comparison_evidence=comparison_evidence(store, survivor_store) if external else None,
+                     apply=True)
     monkeypatch.setattr(store, '_prune', original_prune)
     path = survivor_store.root / survivor['id'] / 'state.json'
     original_bytes = path.read_bytes()
@@ -624,7 +637,8 @@ def test_journaled_retirement_requires_surviving_archive_on_retry(store, tmp_pat
     real_rmtree = module.shutil.rmtree
     monkeypatch.setattr(module.shutil, 'rmtree', lambda p: (_ for _ in ()).throw(OSError('before deletion')))
     with pytest.raises(OSError, match='before deletion'):
-        store.finish(outcome='completed', step=20, reason='winner chosen', archive_to=winner.root, apply=True)
+        store.finish(outcome='completed', step=20, reason='winner chosen',
+                     archive_to=winner.root, comparison_evidence=comparison_evidence(store, winner), apply=True)
     monkeypatch.setattr(module.shutil, 'rmtree', real_rmtree)
     assert source['id'] in store.status()['garbage_remove']
     (winner.root / best['id'] / 'state.json').write_text('corrupt winner')
@@ -656,7 +670,8 @@ def test_finished_store_can_be_relocated_before_comparison_archiving(store, tmp_
     save(winner, 20, kind='weights', roles=('best', 'final'))
     winner.finish(outcome='completed', step=20, reason='done', apply=True)
     reopened = CheckpointStore(moved)
-    reopened.finish(outcome='completed', step=20, reason='validation winner', archive_to=winner.root, apply=True)
+    reopened.finish(outcome='completed', step=20, reason='validation winner',
+                    archive_to=winner.root, comparison_evidence=comparison_evidence(reopened, winner), apply=True)
     assert not (moved / saved['id']).exists()
     assert reopened.status()['lifecycle']['archive']['scope'] == 'comparison'
 

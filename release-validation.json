@@ -1,191 +1,116 @@
 {
-  "version": "1.2.0",
+  "schema_version": 1,
+  "version": "1.3.0",
   "release_kind": "stable",
-  "baseline_commit": "b9d3436315d119f123d3e90871c1a85b0914f717",
-  "historical_validation": "https://github.com/Soceremite/EvoInquiry/blob/v1.1.0-beta.2/release-validation.json",
-  "preservation": {
-    "Codex_entrypoints": 86,
-    "retained_original_workflow_bodies": 83,
-    "protected_baseline_files": 450,
-    "reviewed_upgrade_adaptations": 34,
-    "status": "PASS",
-    "checkpoint_helper_sha256": "0ae5d3bcfb25dd6299e12fae6ca44907c30fe66081621ddd703cac1fb263e254",
-    "scientific_review_gates_preserved": true
+  "status": "local-validation-passed; cross-platform-CI-pending",
+  "source_base": {
+    "version": "1.2.0",
+    "commit": "4a05eed153de94c87d6506f4c6ae0b6c8f13db51"
   },
-  "local_checks": {
-    "portability_and_directory_aliases": {
+  "runtime_changed": true,
+  "inventory": {
+    "codex_entrypoints": 86,
+    "retained_workflow_bodies": 83,
+    "protected_resources": 450,
+    "previously_approved_adaptations": 34,
+    "mainline_shared_references": 35,
+    "codex_shared_references": 38
+  },
+  "runtime_sha256": {
+    "tools/checkpoint_retention.py": "6ea5c692c002610c21b294010bb03836f765882eb5c507f0b86a1e7e6ebbc0a2",
+    "tools/comparison_evidence.py": "2bef0b2315b828e60e55633f5d6141d25aac3461c3a35078f5f584cd2c7a19be",
+    "tools/configure_research_guidance.py": "11ba3b1efd3c7f6664951766f672cc8dfb5a803d32d899798d9f3e98e63a62c2"
+  },
+  "current_checks": {
+    "source_preservation": {
       "status": "PASS",
-      "date": "2026-10-13",
-      "passed": 46,
-      "skipped": 12,
-      "failed": 0,
-      "seconds": 78.64,
-      "scope": "Final core code: real venv entries and dependencies across cwd/PATH changes, legacy fingerprints, noisy/invalid/failed probes, namespace source drift, declared source encodings, portable path components, and eight original installer contracts through real directory aliases. Twelve skips require native Windows."
+      "scope": "current 1.3.0 source; retained-body and protected-resource digest contracts"
     },
-    "initial_governance_integration": {
-      "status": "PASS",
-      "passed": 57,
-      "failed": 0,
-      "seconds": 99.9,
-      "scope": "Environment/execution/project/filesystem integration and five directory-alias contracts before the diagnostics CLI and three additional alias cases; not added to the full suite count."
+    "inventory": {
+      "status": "PASS"
     },
-    "package_and_preservation": {
+    "focused": {
       "status": "PASS",
-      "Codex_entrypoints": 86,
-      "retained_workflow_bodies": 83,
-      "inventory_consistent": true,
-      "release_note_wrapping": "natural paragraphs"
+      "passed": 164,
+      "junit": "validation/upgrade-1.3.0/focused-closure-junit.xml",
+      "scope": "Linux Python 3.10; includes actual PyTorch CPU continuation witness; process-local protobuf workaround",
+      "skipped": 2
     },
-    "complete_host_suite": {
+    "packaging": {
       "status": "PASS",
-      "date": "2026-10-13",
-      "passed": 955,
+      "passed": 26,
+      "junit": "validation/upgrade-1.3.0/package-junit.xml"
+    },
+    "full_suite": {
+      "status": "PASS",
+      "scope": "Final immutable runtime source, Linux Python 3.12.14; existing real PyTorch CPU training/restoration pilot included; local test services and file-attribute operations permitted",
+      "junit": "validation/upgrade-1.3.0/full-closure-junit.xml",
+      "source_manifest": "validation/upgrade-1.3.0/final-runtime-source.json",
+      "passed": 1053,
       "skipped": 35,
       "failed": 0,
-      "warnings": 3,
-      "seconds": 506.46,
-      "scope": "Complete suite on the actual host runtime with throwaway test HOME before final stream/receipt/CLI changes. Later changes have separate affected checks; platform CI executes the final committed source.",
-      "skipped_scopes": {
-        "Windows_native": 25,
-        "expect_interactive": 4,
-        "optional_MiniMax_without_credentials": 4,
-        "PyTorch_unavailable_in_management_interpreter": 2
-      }
+      "errors": 0,
+      "duration_seconds": 936.031
     },
-    "restricted_sandbox_attempt": {
-      "passed": 946,
-      "failed": 9,
-      "skipped": 35,
-      "seconds": 533.57,
-      "scope": "Three archive-copy owner preservation failures and six local HTTP/browser-listener failures under the execution sandbox. Same complete suite passed on the host; original failure XML, stderr and command outputs retained privately."
-    },
-    "UTF8_probe_followup": {
+    "native_discovery": {
       "status": "PASS",
-      "passed": 17,
-      "skipped": 1,
-      "deselected": 32,
-      "failed": 0,
-      "seconds": 13.76,
-      "scope": "Final child stream encoding and Chinese stdout/stderr/CLI diagnostics, plus framed failures/timeouts, legacy/relative entries and namespace checks. One Windows suffix-omission case requires native CI."
+      "entrypoints": 86,
+      "source_files_matching": 801,
+      "scopes": [
+        "project directory",
+        "ordinary directory"
+      ],
+      "scope": "isolated final 1.3.0 source candidate; native metadata discovery only; no model completion or live installation change",
+      "evidence": "validation/upgrade-1.3.0/native/verification.json"
     },
-    "pinned_receipt_followup": {
-      "status": "PASS",
-      "passed": 47,
-      "skipped": 12,
-      "failed": 0,
-      "seconds": 70.62,
-      "scope": "All portability and existing environment-governance checks after binding four-layer processes to the probed interpreter. Metadata commands assert the actual executable and all receipts record its absolute entry; final newline-neutral diagnostics assertions have a separate follow-up."
+    "generic_skill_validator": {
+      "passed": 5,
+      "preexisting_argument_hint_rejections": 3,
+      "baseline_reproduced": true
     },
-    "Unicode_CI_diagnostics": {
+    "preliminary_full_suite": {
       "status": "PASS",
-      "passed": 2,
-      "failed": 0,
-      "seconds": 1.1,
-      "scope": "Actual Unicode failure annotation under PYTHONIOENCODING=ascii and the newline-neutral Chinese stdout/stderr import check. The earlier reporter UnicodeEncodeError reproduction is retained privately."
+      "passed": 1052,
+      "skipped": 33,
+      "scope": "Linux Python 3.12; before final NTFS-junction and record-size changes; not counted as final closure"
     },
-    "final_CLI_and_execution_followup": {
+    "governed_cpu_training": {
       "status": "PASS",
-      "passed": 52,
-      "skipped": 12,
-      "failed": 0,
-      "seconds": 81.18,
-      "scope": "Portability, Unicode CI annotation and existing actual execution checks after seven governance CLIs and the execution bootstrap emit UTF-8; case comparisons retain the logical interpreter entry. Three extra CLI fixtures were added afterward and checked separately."
-    },
-    "all_seven_CLI_output_coverage": {
-      "status": "PASS",
-      "passed": 6,
-      "deselected": 50,
-      "failed": 0,
-      "seconds": 2.56,
-      "scope": "Additional actual audit/doctor/state-root/code-map and artifact/execution error CLIs under ASCII output settings, including Chinese file paths and purpose text; the environment inspect CLI is covered by the preceding checks."
+      "device": "cpu",
+      "method_count": 2,
+      "seeds_per_method": 3,
+      "recorded_attempts": 7,
+      "included_attempts": 6,
+      "restoration_control": true,
+      "full_state_restoration_identical": true,
+      "scientific_verdict": "not-assessed"
     }
   },
-  "fingerprint_compatibility": {
-    "default_version": 2,
-    "historical_unversioned_records": 1,
-    "historical_records_rewritten": false,
-    "new_fields": [
-      "prefix",
-      "base_prefix",
-      "module kind",
-      "module origin",
-      "namespace search locations"
+  "ci": {
+    "status": "NOT_RUN_FOR_1.3.0",
+    "required": [
+      "ubuntu-latest full suite",
+      "macos-latest full suite",
+      "windows-latest powershell.exe portable gate",
+      "windows-latest pwsh portable gate"
     ],
-    "legacy_relative_entry": "Bound to the absolute validated executable without rewriting the fixed record; ambiguous entries require a new revision",
-    "venv_executable_symlink": "Preserved as a logical entry, never dereferenced to base Python",
-    "diagnostics": "Optional inspect --diagnostics retains captured import stdout/stderr and actual exit code",
-    "limits": [
-      "Legacy namespace coverage remains narrower",
-      "Module provenance metadata does not certify all third-party file contents",
-      "Consumer ID labels do not certify command semantics"
+    "windows_new_tests": [
+      "test_research_guidance.py",
+      "test_comparison_evidence.py",
+      "test_comparison_archive.py"
     ]
   },
-  "CI_required_gates": {
-    "Linux": "full suite including portability and alias tests, plus expect interactive tests",
-    "macOS": "full suite including portability and alias tests",
-    "Windows": [
-      "powershell.exe installer",
-      "pwsh installer",
-      "filesystem probe",
-      "complete local governance flow",
-      "all portability regressions",
-      "native NTFS Junction including Python 3.10/3.11 fallback",
-      "native case-collision protection",
-      "UTF-8 CLI/diagnostics/execution output and executable case identity"
-    ],
-    "publication_requires_all_platform_jobs_to_pass": true,
-    "results_location": "GitHub Actions for the actual source commit/tag"
+  "historical_evidence": {
+    "version": "1.2.0",
+    "reference": "https://github.com/Soceremite/EvoInquiry/blob/v1.2.0/release-validation.json",
+    "counted_as_current": false
   },
-  "inherited_engineering_evidence": {
-    "source_tag": "v1.1.0-beta.1",
-    "new_GPU_or_behavior_runs_claimed": false,
-    "scope": "Earlier real H100 recovery, offline pip conflict, native plugin switching and scoped natural-language acceptance remain available at the historical validation link. This release does not relabel them as new executions.",
-    "validation_url": "https://github.com/Soceremite/EvoInquiry/blob/v1.1.0-beta.1/release-validation.json"
-  },
-  "filesystem": {
-    "doctor_status": "PASS",
-    "deployment_scope": "single host, exact inspected directory",
-    "observed_quarkfs_lock_exclusion": "FAIL",
-    "observed_overlay_lock_replace_fsync": "PASS",
-    "observed_XFS_emptyDir_lock_replace_fsync": "PASS",
-    "host_XFS_bind": "read-only",
-    "durable_writable_volume_confirmed": false,
-    "unsafe_governance_writes_fail_before_state_creation": true,
-    "operator_persistence_and_backup_confirmation_required": true,
-    "multi_host_or_power_loss_certified": false
-  },
-  "unverified": [
-    "Durable production project deployment on this host",
-    "Multi-host or network filesystem concurrency",
-    "Power-loss behavior",
-    "Actual SSH/screen queue deployment",
-    "Windows directory fsync and POSIX checkpoint helper",
-    "Distributed/large-scale GPU training",
-    "Optional live external reviewer providers with missing credentials"
+  "limits": [
+    "coverage and fixed bytes do not certify scientific fairness, numerical correctness, preregistration or unrecorded jobs",
+    "no new implicit-skill invocation-rate or paid model evaluation",
+    "no new GPU, distributed training, object-store, network-filesystem or power-loss acceptance",
+    "native macOS and Windows checks await actual CI"
   ],
-  "public_package": {
-    "committed_files_only": true,
-    "private_plans_logs_credentials_builds_and_Git_excluded": true,
-    "checksums": "SHA256SUMS",
-    "source_identity": "Commit and inventory in release-manifest.json"
-  },
-  "portability_details": "docs/PORTABILITY_VALIDATION_CN.md",
-  "promotion": {
-    "source_version": "1.1.0-beta.2",
-    "source_commit": "b9d3436315d119f123d3e90871c1a85b0914f717",
-    "runtime_changed": false,
-    "source_main_CI": {
-      "status": "PASS",
-      "url": "https://github.com/Soceremite/EvoInquiry/actions/runs/38359883402"
-    },
-    "source_release_CI": {
-      "status": "PASS",
-      "url": "https://github.com/Soceremite/EvoInquiry/actions/runs/38360526301"
-    },
-    "source_public_assets_verified": true,
-    "source_public_files": 790,
-    "source_native_install_entrypoints": 86,
-    "scope": "Stable promotion changes release identity and documentation. Historical local checks below retain their original stages and scopes; stable publication requires all native platform gates on its own tag."
-  },
-  "local_checks_source": "Historical 1.1 beta acceptance stages; see each check scope. Not new 1.2.0 executions and not summed with CI or GPU results."
+  "private_evidence": "validation/upgrade-1.3.0; excluded from public source assets",
+  "report": "docs/VALIDATION_1_3_0.md"
 }

@@ -10,6 +10,7 @@ Resolve runtime state through tools/state_paths.py before .ei operations. Use
 [project-governance](../shared-references/project-governance.md) for fixed evidence,
 profiles and controlled migration; missing profiles retain compat-v1.
 Bind each queued job to a verified snapshot/environment and consumer lease before submission. Keep these bindings across scheduling; every actual OOM retry is a new execution identity. Release protection only after verified termination.
+For comparison queues, load [comparative-experiments](../shared-references/comparative-experiments.md). Bind jobs to declared method/seed slots and retain every attempt. OOM retries that change batch size, precision or resource allocation are protocol deviations; do not silently create independent seeds or choose a best retry. Shared storage accounting and evidence-preserving cleanup apply across the group.
 <!-- EI-GOVERNANCE:END -->
 
 

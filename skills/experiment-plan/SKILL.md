@@ -9,6 +9,7 @@ Resolve runtime state through tools/state_paths.py before .ei operations. Use
 [project-governance](../shared-references/project-governance.md) for fixed evidence,
 profiles and controlled migration; missing profiles retain compat-v1.
 Freeze a versioned experiment spec with declared variant/seed slots, protocol/data/split/evaluator refs, storage/compute budget and failure aggregation. A new spec revision does not grant execution resources.
+For comparative planning, load [comparative-experiments](../shared-references/comparative-experiments.md). State controlled, equal-budget or tuned comparison; freeze data/splits/evaluator, training and search accounting, validation selection, independent seed slots and failure rules. Use common settings plus justified method differences. Three seeds is a starting estimate; choose repetitions for precision and budget, and label unknowns.
 <!-- EI-GOVERNANCE:END -->
 
 

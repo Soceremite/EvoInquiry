@@ -1,6 +1,6 @@
 ---
 name: experiment-audit
-description: "Audit experiment integrity before making claims: inspect ground truth, metric manipulation, provenance, and scope. Use for an integrity check of completed runs."
+description: "Audit experiment integrity and comparative fairness before making claims: data leakage, baseline and budget differences, selection, evaluation, provenance and seed coverage. Use for completed-run integrity review."
 argument-hint: "[experiment-dir-or-results-path]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob
 ---
@@ -14,6 +14,7 @@ reviewer briefs. Continue authorized work through its necessary steps; honor
 budgets, blocking checkpoints, and stopping conditions.
 
 For this stage, read [project-governance](../shared-references/project-governance.md). Audit fixed input/content/review digests, declared execution inclusion and relevant interface freshness. Registry/schema PASS is integrity only and never upgrades scientific review or accepted/provisional.
+For comparative integrity, load [comparative-experiments](../shared-references/comparative-experiments.md) and include its protocol, comparison log, configurations, complete attempt ledger and raw outputs in the existing fresh-review brief. Check data leakage, baseline quality, training/search/input asymmetry, test-driven selection, missing seeds and evaluation changes. Hash/coverage PASS is not a scientific fairness verdict.
 <!-- EVO-INQUIRY:END -->
 
 

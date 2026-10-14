@@ -17,6 +17,14 @@ except ModuleNotFoundError:
 
 BLOCK = HOOK
 
+REQUIRED_COMPARISON_RESOURCES = (
+    'tools/comparison_evidence.py', 'tools/checkpoint_retention.py',
+    'tools/configure_research_guidance.py', 'templates/EVOINQUIRY_AGENTS_SNIPPET.md',
+    'docs/COMPARISON_EVIDENCE.md',
+    'skills/shared-references/comparative-experiments.md',
+    'skills/skills-codex/shared-references/comparative-experiments.md',
+)
+
 
 def verify(root: Path, baseline: Path | None = None) -> dict:
     errors: list[str] = []
@@ -71,6 +79,9 @@ def verify(root: Path, baseline: Path | None = None) -> dict:
     for required in ['tools/check_skills_inventory.py', 'tools/run_state.py', 'tools/research_wiki.py']:
         if not (root / required).is_file():
             errors.append(f'Missing upstream helper {required}')
+    for required in REQUIRED_COMPARISON_RESOURCES:
+        if not (root / required).is_file():
+            errors.append(f'Missing required comparison/routing resource {required}')
     if baseline is not None:
         # Retire only individually audited public materials. All retained skill
         # contracts and runtime helpers still receive byte-for-byte checks.

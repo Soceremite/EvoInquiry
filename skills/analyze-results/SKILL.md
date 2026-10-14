@@ -10,6 +10,7 @@ Resolve runtime state through tools/state_paths.py before .ei operations. Use
 [project-governance](../shared-references/project-governance.md) for fixed evidence,
 profiles and controlled migration; missing profiles retain compat-v1.
 Resolve fixed execution/spec/environment/evaluator refs once. List included and excluded attempts and apply the predeclared slot aggregation; show failed/missing seeds and protocol/environment differences. current is navigation only.
+For result comparisons, load [comparative-experiments](../shared-references/comparative-experiments.md). Reconstruct all declared seed slots and attempts; show counts, exclusions, failures and protocol differences. Separate run variability from effect uncertainty and name independent/paired units. Use absolute metric differences; compute relative gains only for meaningful scales with a valid nonzero baseline, otherwise report them undefined or inappropriate. This qualification governs the workflow's "always compute relative improvement" default. Do not invent confidence from best seeds or tiny samples.
 <!-- EI-GOVERNANCE:END -->
 
 

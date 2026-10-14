@@ -17,6 +17,7 @@ Apply [experiment storage](../shared-references/experiment-storage.md) before su
 After training ends, retire unused recovery states only after validated exports; consolidate comparable finished runs to the selected winner when the established policy permits, preserving downstream inputs and every run's evidence.
 
 For this stage, read [project-governance](../shared-references/project-governance.md). Bind each queued job to a verified snapshot/environment and consumer lease before submission. Keep these bindings across scheduling; every actual OOM retry is a new execution identity. Release protection only after verified termination.
+For comparison queues, load [comparative-experiments](../shared-references/comparative-experiments.md). Bind jobs to declared method/seed slots and retain every attempt. OOM retries that change batch size, precision or resource allocation are protocol deviations; do not silently create independent seeds or choose a best retry. Shared storage accounting and evidence-preserving cleanup apply across the group.
 <!-- EVO-INQUIRY:END -->
 
 

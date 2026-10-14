@@ -1,6 +1,6 @@
 ---
 name: ablation-planner
-description: "Plan and implement ablations for submission after result-to-claim reports claim_supported=yes or partial. Use to isolate contributions and test alternatives."
+description: "Plan and implement controlled or retuned ablations for submission after result-to-claim reports claim_supported=yes or partial. Use to isolate contributions and test alternatives."
 allowed-tools: Bash(*), Read, Grep, Glob, Write, Edit
 ---
 
@@ -13,6 +13,7 @@ reviewer briefs. Continue authorized work through its necessary steps; honor
 budgets, blocking checkpoints, and stopping conditions.
 
 For this stage, read [project-governance](../shared-references/project-governance.md). Keep declared comparison/seed/failure rules and fixed baseline/evaluator refs. Reuse shared interfaces without erasing method-specific interventions.
+For ablations, load [comparative-experiments](../shared-references/comparative-experiments.md). Distinguish controlled removal from a retuned alternative; isolate the contribution without imposing an unsuitable shared recipe. Declare coupled changes, resource/search budgets, validation selection and seed/failure accounting; preserve matched baseline identities.
 <!-- EVO-INQUIRY:END -->
 
 

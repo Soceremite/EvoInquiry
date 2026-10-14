@@ -4,15 +4,15 @@
 
 [English](README.md) · [完整 skill 清单](docs/SKILLS_CATALOG.md) · [版本下载](https://github.com/Soceremite/EvoInquiry/releases) · [参与贡献](CONTRIBUTING_CN.md)
 
-**1.2.0 正式版 — 科研工作流与证据治理**
+**1.3.0 — 公平对比与证据保全**
 
 EvoInquiry 是面向 Codex 的科研工作流工具集，提供 **86 个 Codex skill**，
 帮助你从宽泛的研究方向出发，形成具体方案，实施和评估实验，审查证据，
 并准备论文与投稿材料。既可以按需使用单个 skill，也可以串联成完整科研流程。
 
-**1.2.0** 将 1.1.0-beta.2 已验收的项目治理、固定执行证据和环境维护能力正式发布，帮助课题在多组实验、方案修订和多人协作中持续推进。治理能力按任务需要启用。具体使用见[治理使用指南](docs/GOVERNANCE_USAGE_CN.md)，实际测试与适用范围见[验收记录](docs/UPGRADE_VALIDATION_CN.md)。已有安装在升级前继续使用其安装版本。
+**1.3.0** 将公平比较规范接入实验规划、执行、分析和审查，增加对比权重归档前的证据检查，以及可选的持续科研路由设置。保留 1.2.0 的项目治理、固定执行证据和环境维护能力；已安装用户在升级前继续使用其安装版本。参见[公平比较规范](skills/shared-references/comparative-experiments.md)、[对比证据格式](docs/COMPARISON_EVIDENCE.md)和[1.3.0 验收记录](docs/VALIDATION_1_3_0.md)。
 
-正式版包含方法验证覆盖、虚拟环境启动、导入探测和源码编码兼容改进，以及目录别名和原生 Windows 路径保护。历史冻结记录按原格式核验，覆盖范围见[兼容性验收](docs/PORTABILITY_VALIDATION_CN.md)。
+继承 1.2.0 的方法验证覆盖、虚拟环境启动、导入探测和源码编码兼容改进，以及目录别名和原生 Windows 路径保护。历史冻结记录按原格式核验，覆盖范围见[兼容性验收](docs/PORTABILITY_VALIDATION_CN.md)。
 
 <a id="capabilities"></a>
 
@@ -26,7 +26,7 @@ EvoInquiry 是面向 Codex 的科研工作流工具集，提供 **86 个 Codex s
 | 文献与知识积累 | 检索论文、梳理相关工作、检查新颖性、维护科研知识库 | `research-lit`、`novelty-check`、`research-wiki` |
 | 选题与研究设计 | 探索方向、打磨方法、围绕可检验的主张制定实验方案 | `idea-discovery`、`research-refine`、`experiment-plan` |
 | 理论推导与证明 | 整理假设、推导公式、撰写证明、检查证明缺口 | `formula-derivation`、`proof-writer`、`proof-checker` |
-| 实验与结果分析 | 实现实验、启动任务、监控进度、分析结果、设计消融 | `experiment-bridge`、`run-experiment`、`analyze-results` |
+| 实验与结果分析 | 设计公平对比、实施与运行实验、记录种子和失败尝试、分析不确定性、设计消融 | `experiment-bridge`、`run-experiment`、`analyze-results` |
 | 证据审查与评审 | 检查实验完整性、判断结论支持程度、核对引用、质疑替代解释 | `experiment-audit`、`result-to-claim`、`research-review` |
 | 论文与图表 | 规划大纲、撰写 LaTeX、制作图表、编译论文 | `paper-plan`、`paper-writing`、`paper-figure` |
 | 展示与投稿 | 制作报告和海报、回应评审意见、准备改投材料 | `paper-talk`、`paper-poster-html`、`rebuttal` |
@@ -43,6 +43,8 @@ EvoInquiry 是面向 Codex 的科研工作流工具集，提供 **86 个 Codex s
 对比实验优先仅保留按验证指标选出的最优模型，同时保护计划中的模型依赖和所有实验记录。
 框架集成与可选的本地断点工具见[存储策略](skills/skills-codex/shared-references/experiment-storage.md)。
 
+对比实验区分机制贡献、相同资源预算与充分调优性能三类问题。公共数据和评测设置只写一次，允许有理由的方法差异；种子数量依据波动、精度和预算确定。可选本地工具在删除非最优权重前，检查声明的实验和尝试记录是否齐全，并保护按验证集选出的模型。文件检查通过只代表记录覆盖与完整性，科研公平性和结论仍需审查。
+
 EvoInquiry 主要面向 ML、AI 与相关工程科研。
 领域专用流程和后端集成见[完整清单](docs/SKILLS_CATALOG.md)，请按项目需要选择。
 
@@ -53,20 +55,20 @@ EvoInquiry 主要面向 ML、AI 与相关工程科研。
 请使用提供 `codex plugin` 命令的 Codex 版本。
 插件安装已在 Linux 上使用 Codex CLI **0.162.1** 验证。
 
-从 [1.2.0 Release](https://github.com/Soceremite/EvoInquiry/releases/tag/v1.2.0)
-下载并解压 `evo-inquiry-1.2.0.tar.gz` 或 `.zip`，进入解压后的根目录，
+从 [项目 Releases](https://github.com/Soceremite/EvoInquiry/releases)
+下载并解压 `evo-inquiry-1.3.0.tar.gz` 或 `.zip`，进入解压后的根目录，
 执行下面两个插件命令安装。
 Codex CLI 0.162.1 会把安装来源目录复制到缓存，包括本地未跟踪文件；
 使用只含公开文件的源码包，可避免复制验证记录、构建目录和 Git 历史。
 
 ```sh
-cd /path/to/evo-inquiry-1.2.0
+cd /path/to/evo-inquiry-1.3.0
 codex plugin marketplace add "$PWD"
 codex plugin add evo-inquiry@evo-inquiry
 ```
 
 需要查看和开发源码时，可以使用
-`git clone --branch v1.2.0 https://github.com/Soceremite/EvoInquiry.git EvoInquiry`。
+`git clone --branch v1.3.0 https://github.com/Soceremite/EvoInquiry.git EvoInquiry`。
 安装插件时使用干净的 Release 解压目录。
 安装后启动新的 Codex 会话，skill 会以 `evo-inquiry:` 命名空间出现，
 例如 `evo-inquiry:research-refine`。
@@ -100,10 +102,23 @@ codex plugin add evo-inquiry@evo-inquiry
 已有工作、目标产物和可用资源。工具集提供 86 个 skill 入口，
 包括单步工具、课题协调、总流程和可选服务后端。
 
-如果需要项目级科研使用说明，可以将可选的
-[AGENTS.md 片段](templates/EVOINQUIRY_AGENTS_SNIPPET.md)合并到实际科研项目的指令中，
-保留该项目已有规则与资源限制。安装插件不会自动把本仓库的 AGENT_GUIDE.md
-加载到其他项目中。
+如果希望每次科研请求都优先采用 EvoInquiry，需要加入常驻的路由规则。
+[AGENTS.md 片段](templates/EVOINQUIRY_AGENTS_SNIPPET.md)涵盖明确任务的直接调用、
+短句追问、任务切换，以及在建议和实际执行中应用科研原则。已读取且未变化的规范
+可以复用；后续对话继续使用 skill，不要求每次重新读取全文。
+
+在源码目录中，用以下命令为一个科研项目配置规则：
+
+```sh
+python tools/configure_research_guidance.py --project /path/to/project --dry-run
+python tools/configure_research_guidance.py --project /path/to/project
+```
+
+将 `--project /path/to/project` 换为 `--global`，可以让不同项目都采用这一科研偏好。
+工具会保留其他指令；已有生效的 AGENTS.override.md 时更新该文件，并提供
+`--check` 检查与 `--remove` 移除。修改后启动新的 Codex 会话。
+安装插件使技能可用，不会自动安装这些常驻偏好。自动选择仍取决于模型判断，
+用户明确指定的任务与 skill 优先。
 
 可以通过流程检查点设置选择监督方式。`AUTO_PROCEED=true` 时，报告选定路径后
 在同一轮继续执行已获授权的工作；显式阻塞的检查点需要用户回复。

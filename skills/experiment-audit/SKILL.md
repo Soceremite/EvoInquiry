@@ -10,6 +10,7 @@ Resolve runtime state through tools/state_paths.py before .ei operations. Use
 [project-governance](../shared-references/project-governance.md) for fixed evidence,
 profiles and controlled migration; missing profiles retain compat-v1.
 Audit fixed input/content/review digests, declared execution inclusion and relevant interface freshness. Registry/schema PASS is integrity only and never upgrades scientific review or accepted/provisional.
+For comparative integrity, load [comparative-experiments](../shared-references/comparative-experiments.md) and include its protocol, comparison log, configurations, complete attempt ledger and raw outputs in the existing fresh-review brief. Check data leakage, baseline quality, training/search/input asymmetry, test-driven selection, missing seeds and evaluation changes. Hash/coverage PASS is not a scientific fairness verdict.
 <!-- EI-GOVERNANCE:END -->
 
 

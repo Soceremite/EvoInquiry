@@ -224,6 +224,12 @@ class CheckpointStore:
                 if (not isinstance(archive['run_id'], str) or not archive['run_id']
                         or not isinstance(archive['files'], dict) or not archive['files']):
                     raise ValueError('archive identity/files')
+                evidence = archive.get('comparison_evidence')
+                if evidence is not None and (not isinstance(evidence, dict)
+                        or not isinstance(evidence.get('path'), str) or not evidence['path']
+                        or not isinstance(evidence.get('sha256'), str)
+                        or not re.fullmatch(r'[a-f0-9]{64}', evidence['sha256'])):
+                    raise ValueError('comparison evidence receipt')
             return data
         except (OSError, ValueError, TypeError, KeyError) as error:
             raise RetentionError(f'Invalid checkpoint manifest: {error}') from error
@@ -333,6 +339,40 @@ class CheckpointStore:
                 or archived_data['run_id'] != receipt['run_id']
                 or archived['files'] != receipt['files'] or not store._valid(archived)):
             raise RetentionError('Archived inference weights are unavailable or changed; cleanup retained')
+        if receipt.get('scope', 'local') == 'comparison':
+            self._comparison_receipt(data, store, archived_data)
+
+    def _comparison_receipt(self, data: dict, winner: 'CheckpointStore',
+                            winner_data: dict, evidence_path=None) -> dict:
+        bound = data['lifecycle'].get('archive', {}).get('comparison_evidence')
+        if evidence_path is None:
+            evidence_path = bound['path'] if bound else None
+        if evidence_path is None:
+            raise RetentionError('Comparison evidence is required before comparison cleanup; '
+                                 'provide a complete evidence index, including for legacy receipts')
+        if bound and Path(evidence_path).resolve() != Path(bound['path']).resolve():
+            raise RetentionError('Keep the bound comparison evidence index; archive evidence cannot change')
+        directories = [store.root / entry['id']
+                       for store, manifest in ((self, data), (winner, winner_data))
+                       for entry in manifest['entries'] + manifest['garbage']]
+        # Keep single-file trainers and frozen older launch recipes usable.
+        # Comparison consolidation alone needs the accompanying validator.
+        try:
+            if __package__:
+                from .comparison_evidence import ComparisonEvidenceError, validate_evidence
+            else:
+                from comparison_evidence import ComparisonEvidenceError, validate_evidence
+        except ImportError as error:
+            raise RetentionError('Comparison archiving requires the companion comparison_evidence.py; '
+                                 'include it in the frozen source snapshot. Cleanup retained') from error
+        try:
+            result = validate_evidence(evidence_path, source_run_id=data['run_id'],
+                                       winner_run_id=winner_data['run_id'],
+                                       forbidden_roots=directories,
+                                       expected_sha256=bound['sha256'] if bound else None)
+        except (ComparisonEvidenceError, OSError) as error:
+            raise RetentionError(f'Comparison evidence verification failed; cleanup retained: {error}') from error
+        return result['reference']
 
     def _prune(self, data: dict) -> dict:
         # A prior finish may have committed before deletion was interrupted.
@@ -365,14 +405,16 @@ class CheckpointStore:
         return {'applied': True, **result}
 
     def finish(self, *, outcome: str, step: int, reason: str,
-               archive_to: str | Path | None = None, apply: bool = False) -> dict:
+               archive_to: str | Path | None = None,
+               comparison_evidence: str | Path | None = None, apply: bool = False) -> dict:
         """End training after verified weight export; preview unless applied.
 
         Call only after the trainer has stopped and results are persisted.
         Completed/stopped runs no longer retain resume generations by default.
         Pins, unchanged best/final roles, and changed files remain protected.
         To archive a losing comparison run, explicitly choose a finished winner
-        store with validated best weights. Its model is pinned before any local
+        store with validated best weights and a complete comparison evidence
+        index. Its model is pinned before any local
         roles are released; this helper does not rank models or assess research
         dependencies. Both stores are locked in canonical order.
         """
@@ -383,6 +425,8 @@ class CheckpointStore:
             raise RetentionError('A training completion or explicit stop reason is required')
         archive_store = CheckpointStore(archive_to) if archive_to is not None else self
         external = archive_store.root != self.root
+        if comparison_evidence is not None and not external:
+            raise RetentionError('Comparison evidence applies to an explicit comparison winner store')
         with ExitStack() as locks:
             if apply:
                 for root in sorted({self.root, archive_store.root}, key=str):
@@ -404,13 +448,20 @@ class CheckpointStore:
                                     'run_id': archive_data['run_id'],
                                     'id': archived['id'], 'step': archived['step'],
                                     'files': archived['files'], 'validation': archived['validation']}}
+            if external:
+                proposed['archive']['comparison_evidence'] = self._comparison_receipt(
+                    data, archive_store, archive_data, comparison_evidence)
             previous = data['lifecycle']
             if previous['state'] != 'active' and previous != proposed:
                 # A completed run may later consolidate its models into the
                 # explicitly selected winner. Its training outcome cannot change.
                 if (not external or previous['state'] != outcome or previous['step'] != step):
                     raise RetentionError('This run is already finished; its training outcome cannot change')
-                if previous['archive'].get('scope', 'local') != 'local':
+                legacy_binding = (not previous['archive'].get('comparison_evidence')
+                                  and previous['archive'] == {
+                                      key: value for key, value in proposed['archive'].items()
+                                      if key != 'comparison_evidence'})
+                if previous['archive'].get('scope', 'local') != 'local' and not legacy_binding:
                     raise RetentionError('This run is already archived; keep its recorded winner and dependency pin')
             released_roles = dict(data['roles']) if external else {}
             data['lifecycle'] = proposed
@@ -544,6 +595,8 @@ def main() -> int:
             command.add_argument('--step', type=int, required=True)
             command.add_argument('--reason', required=True)
             command.add_argument('--archive-to', type=Path)
+            command.add_argument('--comparison-evidence', type=Path,
+                                 help='Fixed comparison evidence index required with --archive-to')
         if name in ('pin', 'unpin'):
             command.add_argument('identifier')
             command.add_argument('--reason', required=True)
@@ -560,7 +613,8 @@ def main() -> int:
                 result = store.prune(apply=args.apply)
             elif args.command == 'finish':
                 result = store.finish(outcome=args.outcome, step=args.step, reason=args.reason,
-                                      archive_to=args.archive_to, apply=args.apply)
+                                      archive_to=args.archive_to,
+                                      comparison_evidence=args.comparison_evidence, apply=args.apply)
             elif args.command in ('pin', 'unpin'):
                 store.pin(args.identifier, args.reason, remove=args.command == 'unpin')
                 result = store.status()

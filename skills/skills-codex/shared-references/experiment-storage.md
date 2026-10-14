@@ -124,7 +124,15 @@ inference weights. Publish weights-only best/final exports before finishing; a
 full resume checkpoint in a protected role still retains its full contents.
 Finished stores reject new publications; use a new run for later training.
 
-For a losing comparison run, add `--archive-to WINNER_ROOT`. This explicitly
+For a losing comparison run, add `--archive-to WINNER_ROOT` and
+`--comparison-evidence INDEX.json`. Apply the relevant
+[comparison evidence rules](comparative-experiments.md) before cleanup: persist
+the protocol, comparison log, configurations, every declared seed slot and every
+recorded attempt, including failures. Keep them outside checkpoint artifact
+directories. The helper verifies and binds their fixed references, then rechecks
+them before resuming interrupted cleanup. Existing comparison receipts remain
+readable but require evidence binding before further destructive cleanup.
+This explicitly
 releases its best/final roles and keeps a receipt of the winner's model. The
 winner must already be finished and have validated `best` inference weights;
 it is pinned before any local deletion. Both stores use ordered locks. Dependency

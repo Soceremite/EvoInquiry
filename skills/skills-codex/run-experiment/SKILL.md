@@ -16,6 +16,7 @@ On completed or explicitly ended training, validate required weights and persist
 
 For this stage, read [project-governance](../shared-references/project-governance.md). Before formal launch bind a frozen source/config snapshot, environment revision and distinct execution ID. Preserve actual imports/exit codes, failed attempts and retry/resume parents; outputs belong to that execution.
 Use [code-reuse-and-docs](../shared-references/code-reuse-and-docs.md) for code changes and [environment-stewardship](../shared-references/environment-stewardship.md) for dependency changes.
+When executing comparisons, load [comparative-experiments](../shared-references/comparative-experiments.md). Check effective configurations, data/split/evaluator identities, declared resource limits and validation selection. Preserve every seed and failed/retried attempt. Before winner-only cleanup, bind a complete comparison evidence index and keep logs outside checkpoint artifact directories.
 <!-- EVO-INQUIRY:END -->
 
 

@@ -1,6 +1,6 @@
 ---
 name: "experiment-plan"
-description: "Design a detailed experiment roadmap for a fixed research proposal: claims, controls, metrics, ablations, run order, and budget. Use for validation planning."
+description: "Design fair comparative experiments for a fixed research proposal: controls, data and training budgets, tuning, seeds, evaluation, ablations and run order. Use for an experiment roadmap or comparison design."
 ---
 
 <!-- EVO-INQUIRY:BEGIN -->
@@ -15,6 +15,7 @@ For planning, read [task-scope](../shared-references/task-scope.md): write commo
 Plan active recovery and end-of-training cleanup separately. Prefer the completed comparison group's validation-selected winner weights, identifying future model dependencies and when the user must choose retention scope.
 
 For this stage, read [project-governance](../shared-references/project-governance.md). Freeze a versioned experiment spec with declared variant/seed slots, protocol/data/split/evaluator refs, storage/compute budget and failure aggregation. A new spec revision does not grant execution resources.
+For comparative planning, load [comparative-experiments](../shared-references/comparative-experiments.md). State controlled, equal-budget or tuned comparison; freeze data/splits/evaluator, training and search accounting, validation selection, independent seed slots and failure rules. Use common settings plus justified method differences. Three seeds is a starting estimate; choose repetitions for precision and budget, and label unknowns.
 <!-- EVO-INQUIRY:END -->
 
 
