@@ -17,12 +17,14 @@ from pathlib import Path
 import re
 import shutil
 import stat
+import time
 from typing import Callable, Iterator
 import uuid
 
 MANIFEST = '.evo-checkpoints.json'
 LOCK = '.evo-checkpoints.lock'
 ID = re.compile(r'ckpt-[a-f0-9]{32}\Z')
+_WINDOWS_REPLACE_ERRORS = (5, 32) if os.name == 'nt' else ()
 
 
 class RetentionError(RuntimeError):
@@ -43,7 +45,19 @@ def _atomic_json(path: Path, data: dict) -> None:
             output.write('\n')
             output.flush()
             os.fsync(output.fileno())
-        os.replace(temporary, path)
+        # A short-lived monitoring handle can deny rename on Windows. Keep the
+        # old manifest intact while retrying only native sharing/access errors;
+        # persistent errors still fail, and the owning writer lock remains held.
+        deadline = time.monotonic() + 1.0
+        while True:
+            try:
+                os.replace(temporary, path)
+                break
+            except PermissionError as error:
+                if (getattr(error, 'winerror', None) not in _WINDOWS_REPLACE_ERRORS
+                        or time.monotonic() >= deadline):
+                    raise
+                time.sleep(0.01)
         if hasattr(os, 'O_DIRECTORY'):
             descriptor = os.open(path.parent, os.O_RDONLY | os.O_DIRECTORY)
             try:

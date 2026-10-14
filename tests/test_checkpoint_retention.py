@@ -139,6 +139,66 @@ def test_file_flush_failure_preserves_previous_recovery_and_manifest(store, monk
     assert not store.status()['unregistered']
 
 
+@pytest.mark.parametrize('winerror', [5, 32])
+def test_temporary_windows_manifest_sharing_error_retries_atomic_replacement(tmp_path, monkeypatch, winerror):
+    import tools.checkpoint_retention as module
+    path = tmp_path / MANIFEST
+    path.write_bytes(b'{"generation": 1}\n')
+    previous = path.read_bytes()
+    replacement = {'generation': 2, 'run_id': '中文-seed'}
+    real_replace = module.os.replace
+    calls = []
+
+    def temporarily_busy(source, target):
+        calls.append((source, target))
+        if len(calls) <= 2:
+            assert path.read_bytes() == previous
+            assert json.loads(Path(source).read_text(encoding='utf-8')) == replacement
+            error = PermissionError(errno.EACCES, 'Windows reader temporarily holds the manifest')
+            error.winerror = winerror
+            raise error
+        real_replace(source, target)
+
+    monkeypatch.setattr(module, '_WINDOWS_REPLACE_ERRORS', (5, 32))
+    monkeypatch.setattr(module.os, 'replace', temporarily_busy)
+    module._atomic_json(path, replacement)
+    assert len(calls) == 3
+    assert json.loads(path.read_text(encoding='utf-8')) == replacement
+    assert list(tmp_path.iterdir()) == [path]
+
+
+@pytest.mark.parametrize('winerror', [5, 112])
+def test_persistent_or_unrelated_manifest_replace_error_preserves_previous_bytes(tmp_path, monkeypatch, winerror):
+    import tools.checkpoint_retention as module
+    path = tmp_path / MANIFEST
+    path.write_bytes(b'{"generation": 1}\n')
+    previous = path.read_bytes()
+    calls = []
+    elapsed = [0.0]
+
+    def sleep(seconds):
+        elapsed[0] += seconds
+
+    def fail_replace(source, target):
+        calls.append((source, target))
+        assert path.read_bytes() == previous
+        error = PermissionError(errno.EACCES, 'persistent native replacement failure')
+        error.winerror = winerror
+        raise error
+
+    monkeypatch.setattr(module, '_WINDOWS_REPLACE_ERRORS', (5, 32))
+    monkeypatch.setattr(module, 'time', SimpleNamespace(monotonic=lambda: elapsed[0], sleep=sleep))
+    monkeypatch.setattr(module.os, 'replace', fail_replace)
+    with pytest.raises(PermissionError, match='persistent native replacement failure'):
+        module._atomic_json(path, {'generation': 2})
+    assert path.read_bytes() == previous
+    assert list(tmp_path.iterdir()) == [path]
+    if winerror == 5:
+        assert len(calls) > 1 and 1.0 <= elapsed[0] < 1.02
+    else:
+        assert len(calls) == 1 and elapsed[0] == 0
+
+
 def test_filesystem_reserve_is_checked_before_writer(store, monkeypatch):
     monkeypatch.setattr('tools.checkpoint_retention.shutil.disk_usage', lambda p: SimpleNamespace(free=50))
     with pytest.raises(RetentionError, match='filesystem space'):

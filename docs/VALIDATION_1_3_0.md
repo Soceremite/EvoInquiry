@@ -25,7 +25,9 @@ The generic skill-creator frontmatter validator passes five changed skill entrie
 
 The [first cross-platform run](https://github.com/Soceremite/EvoInquiry/actions/runs/38517081776) passed both full Linux/macOS suites and failed both Windows shell gates during checkpoint publication. Checkpoint flushing used a read-only handle, while the native Windows file-sync API requires write access. The helper now opens a non-truncating read/write handle on Windows. A file-flush failure test verifies that prior recovery points and the manifest survive; both Windows gates now include the checkpoint-retention suite. Public CI annotations retain the test identity and final exception within a UTF-8-safe excerpt instead of losing the cause to the public annotation limit.
 
-The corrected local checkpoint/evidence/archival/publication/annotation regression passed **129 tests**, with two native Windows cases skipped and no failures. It includes actual PyTorch CPU restoration. The earlier 1053-test local full-suite result is retained as earlier evidence, rather than claimed as a new whole-tree run after this correction. Native revalidation is tracked separately in the machine-readable report.
+The [next native run](https://github.com/Soceremite/EvoInquiry/actions/runs/38518206170) passed file flushing and all comparison archival cases; its expanded checkpoint suite exposed a concurrent Windows reader denying manifest replacement. Atomic JSON publication now retries only native sharing/access errors for at most one second without removing the old manifest. File-backed tests cover successful transient retries, bounded persistent failure and unrelated errors.
+
+The corrected local checkpoint/evidence/archival/publication/annotation regression passed **133 tests**, with two native Windows cases skipped and no failures. It includes actual PyTorch CPU restoration. The earlier 1053-test local full-suite result is retained as earlier evidence, rather than claimed as a new whole-tree run after this correction. Native revalidation is tracked separately in the machine-readable report.
 
 ## What the evidence gate establishes
 
