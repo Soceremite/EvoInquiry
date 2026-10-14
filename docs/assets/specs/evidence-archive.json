@@ -1,0 +1,208 @@
+{
+  "title": "EvoInquiry: preserve comparison evidence before consolidating model weights",
+  "canvas": {
+    "width": 1440,
+    "height": 800
+  },
+  "style": {
+    "font_family": "Arial, Helvetica, sans-serif",
+    "font_size": 22,
+    "bg_color": "#FFF8ED",
+    "palette": [
+      "#419579",
+      "#428EB0",
+      "#7862E8",
+      "#C7793A"
+    ]
+  },
+  "nodes": [
+    {
+      "id": "protocol",
+      "label": "Protocol & configurations",
+      "x": 280,
+      "y": 262,
+      "width": 370,
+      "height": 72,
+      "fill": "#E5F3FB",
+      "stroke": "#428EB0",
+      "text_color": "#34304B",
+      "font_size": 22
+    },
+    {
+      "id": "attempts",
+      "label": "All runs & attempts",
+      "x": 280,
+      "y": 364,
+      "width": 370,
+      "height": 72,
+      "fill": "#E5F3FB",
+      "stroke": "#428EB0",
+      "text_color": "#34304B",
+      "font_size": 24
+    },
+    {
+      "id": "results",
+      "label": "Raw results & comparison log",
+      "x": 280,
+      "y": 466,
+      "width": 370,
+      "height": 72,
+      "fill": "#E5F3FB",
+      "stroke": "#428EB0",
+      "text_color": "#34304B",
+      "font_size": 21
+    },
+    {
+      "id": "check",
+      "label": "Verify coverage\n& fixed file hashes",
+      "sublabel": "Optional local helper",
+      "x": 740,
+      "y": 364,
+      "width": 330,
+      "height": 196,
+      "fill": "#FFF0CE",
+      "stroke": "#C7793A",
+      "text_color": "#34304B",
+      "font_size": 26
+    },
+    {
+      "id": "model",
+      "label": "Selected model\n+ required dependencies",
+      "x": 1175,
+      "y": 274,
+      "width": 370,
+      "height": 128,
+      "fill": "#DDF5E9",
+      "stroke": "#419579",
+      "text_color": "#34304B",
+      "font_size": 25
+    },
+    {
+      "id": "records",
+      "label": "Every run's evidence",
+      "sublabel": "Including failed attempts",
+      "x": 1175,
+      "y": 454,
+      "width": 370,
+      "height": 128,
+      "fill": "#EDE5FF",
+      "stroke": "#7862E8",
+      "text_color": "#34304B",
+      "font_size": 25
+    },
+    {
+      "id": "scope",
+      "label": "Stop writers → inspect dependencies → preview → apply within scope",
+      "x": 720,
+      "y": 648,
+      "width": 1280,
+      "height": 82,
+      "fill": "#FFFFFF",
+      "stroke": "#D7C8B8",
+      "text_color": "#34304B",
+      "font_size": 24
+    }
+  ],
+  "groups": [
+    {
+      "id": "inputs",
+      "label": "COMPARISON EVIDENCE",
+      "node_ids": [
+        "protocol",
+        "attempts",
+        "results"
+      ],
+      "fill": "#FFFFFF",
+      "stroke": "#E0D5C6",
+      "padding": 26
+    }
+  ],
+  "edges": [
+    {
+      "from": "protocol",
+      "to": "check",
+      "color": "#428EB0",
+      "thickness": 2
+    },
+    {
+      "from": "attempts",
+      "to": "check",
+      "color": "#428EB0",
+      "thickness": 2
+    },
+    {
+      "from": "results",
+      "to": "check",
+      "color": "#428EB0",
+      "thickness": 2
+    },
+    {
+      "from": "check",
+      "to": "model",
+      "color": "#419579",
+      "thickness": 2
+    },
+    {
+      "from": "check",
+      "to": "records",
+      "color": "#7862E8",
+      "thickness": 2
+    }
+  ],
+  "labels": [
+    {
+      "text": "Keep the evidence. Release the excess.",
+      "x": 64,
+      "y": 66,
+      "font_size": 39,
+      "color": "#34304B",
+      "anchor": "start"
+    },
+    {
+      "text": "Comparison records survive model consolidation.",
+      "x": 64,
+      "y": 108,
+      "font_size": 22,
+      "color": "#6A637D",
+      "anchor": "start"
+    },
+    {
+      "text": "ARCHIVAL / 03",
+      "x": 1376,
+      "y": 64,
+      "font_size": 17,
+      "color": "#80758A",
+      "anchor": "end"
+    },
+    {
+      "text": "EVIDENCE CHECK",
+      "x": 740,
+      "y": 233,
+      "font_size": 18,
+      "color": "#C7793A"
+    },
+    {
+      "text": "Validation-selected weights",
+      "x": 1175,
+      "y": 186,
+      "font_size": 19,
+      "color": "#276D59"
+    },
+    {
+      "text": "Logs remain outside disposable checkpoint artifacts.",
+      "x": 80,
+      "y": 576,
+      "font_size": 20,
+      "color": "#6A637D",
+      "anchor": "start"
+    },
+    {
+      "text": "Integrity checks verify records. Research review assesses fairness and claims.",
+      "x": 80,
+      "y": 753,
+      "font_size": 22,
+      "color": "#6A637D",
+      "anchor": "start"
+    }
+  ]
+}

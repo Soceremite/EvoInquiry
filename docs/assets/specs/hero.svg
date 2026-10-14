@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="560" viewBox="0 0 1440 560" role="img" aria-labelledby="title description">
+  <title id="title">EvoInquiry — curious research, grounded in evidence</title>
+  <desc id="description">A playful cream and pastel banner. Tiny researchers read a paper, run an experiment and review the evidence in a looping research journey.</desc>
+  <defs>
+    <pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="#DDD2C5"/></pattern>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto"><path d="M0 0L8 4L0 8" fill="none" stroke="#7862E8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></marker>
+  </defs>
+  <rect width="1440" height="560" rx="28" fill="#FFF8ED"/>
+  <rect width="1440" height="560" rx="28" fill="url(#dots)" opacity=".55"/>
+  <path d="M1136 0H1440V375C1370 406 1279 356 1285 269C1291 176 1114 145 1136 0Z" fill="#DDF5E9"/>
+  <path d="M0 427C139 377 225 472 293 560H0Z" fill="#FFE4D7"/>
+  <g font-family="Arial, Helvetica, sans-serif">
+    <rect x="64" y="62" width="412" height="36" rx="18" fill="#EDE5FF"/>
+    <text x="84" y="86" fill="#6246BF" font-size="16" font-weight="700" letter-spacing="2">EVOLVING RESEARCH WORKFLOWS</text>
+    <text x="61" y="211" font-size="88" font-weight="700" letter-spacing="-3"><tspan fill="#7862E8">Evo</tspan><tspan fill="#34304B">Inquiry</tspan></text>
+    <path d="M66 231Q200 219 311 229" fill="none" stroke="#FF927E" stroke-width="7" stroke-linecap="round"/>
+    <text x="64" y="294" fill="#34304B" font-size="30">Research that evolves through evidence.</text>
+    <text x="64" y="335" fill="#6A637D" font-size="21">Explore the question. Test the claim. Keep the evidence.</text>
+    <g font-size="18" font-weight="700">
+      <rect x="64" y="386" width="185" height="46" rx="23" fill="#EDE5FF" stroke="#D3C6FA"/>
+      <text x="156.5" y="415" text-anchor="middle" fill="#6246BF">86 Codex skills</text>
+      <rect x="263" y="386" width="207" height="46" rx="23" fill="#DDF5E9" stroke="#B5E3CD"/>
+      <text x="366.5" y="415" text-anchor="middle" fill="#276D59">Fair comparisons</text>
+      <rect x="484" y="386" width="231" height="46" rx="23" fill="#FFE4D7" stroke="#F6C7B7"/>
+      <text x="599.5" y="415" text-anchor="middle" fill="#A04C3C">Traceable evidence</text>
+    </g>
+    <text x="64" y="500" fill="#6A637D" font-size="16" letter-spacing="1">LITERATURE / EXPERIMENTS / REVIEW / PAPERS</text>
+  </g>
+  <path d="M1011 107C1150 59 1338 117 1356 290C1375 461 1131 524 978 421C828 319 861 192 1011 107Z" fill="#EDE5FF"/>
+  <path d="M1050 178C1140 129 1249 162 1283 253M1288 302C1288 368 1228 422 1170 428M1078 417C1012 405 957 349 964 282" fill="none" stroke="#7862E8" stroke-width="3" stroke-dasharray="7 10" stroke-linecap="round" marker-end="url(#arrow)"/>
+  <g data-motion="float" data-phase="0" transform="translate(892 104) rotate(-6 96 86)">
+    <rect x="5" y="7" width="202" height="165" rx="22" fill="#DBCEF6"/>
+    <rect width="202" height="165" rx="22" fill="#FFFFFF" stroke="#C5B4EE" stroke-width="2"/>
+    <path d="M20 21H70V79H20Z" fill="#FFF0BC" stroke="#D9B953" stroke-width="2"/>
+    <path d="M30 36H60M30 47H60M30 58H51" stroke="#C2A044" stroke-width="3" stroke-linecap="round"/>
+    <g data-character="reader" transform="translate(104 22)"/>
+    <text x="24" y="138" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="700" fill="#6246BF">ASK</text>
+    <path d="M158 127L163 119L168 127L163 135Z" fill="#FF927E"/>
+  </g>
+  <g data-motion="float" data-phase="2.1" transform="translate(1177 206) rotate(7 95 83)">
+    <rect x="5" y="7" width="198" height="166" rx="22" fill="#C0E1D8"/>
+    <rect width="198" height="166" rx="22" fill="#DDF5E9" stroke="#91CDB9" stroke-width="2"/>
+    <rect x="17" y="28" width="74" height="61" rx="7" fill="#34304B"/>
+    <rect x="23" y="34" width="62" height="48" rx="3" fill="#BFEEDE"/>
+    <path d="M32 67L43 54L53 60L72 43" fill="none" stroke="#419579" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M44 89V99M31 100H78" stroke="#34304B" stroke-width="5" stroke-linecap="round"/>
+    <g data-character="runner" transform="translate(106 18)"/>
+    <text x="23" y="142" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="700" fill="#276D59">TEST</text>
+  </g>
+  <g data-motion="float" data-phase="4.2" transform="translate(1016 383) rotate(-4 111 68)">
+    <rect x="5" y="7" width="230" height="129" rx="22" fill="#EFC6B7"/>
+    <rect width="230" height="129" rx="22" fill="#FFE4D7" stroke="#E7B7A7" stroke-width="2"/>
+    <g data-character="reviewer" transform="translate(16 14)"/>
+    <circle cx="163" cy="40" r="22" fill="#FFF8ED"/>
+    <path d="M151 40L160 49L177 30" fill="none" stroke="#419579" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="110" y="97" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="700" fill="#A04C3C">LEARN</text>
+  </g>
+  <g data-motion="spark" data-phase="0">
+    <path d="M1120 283L1127 302L1146 309L1127 316L1120 335L1113 316L1094 309L1113 302Z" fill="#FFD95E" stroke="#D5B24A" stroke-width="2"/>
+  </g>
+  <g fill="none" stroke-linecap="round" stroke-width="3">
+    <path d="M835 110L845 91M855 119L873 112" stroke="#FF927E"/>
+    <path d="M1376 425L1382 439M1366 439L1380 446" stroke="#7862E8"/>
+    <path d="M877 449Q865 456 876 464Q888 472 878 481" stroke="#59C7A7"/>
+    <path d="M1340 75Q1355 60 1368 75" stroke="#7862E8"/>
+  </g>
+  <circle cx="828" cy="361" r="7" fill="#FFD95E"/>
+  <circle cx="1248" cy="94" r="7" fill="#FF927E"/>
+  <circle cx="1315" cy="486" r="6" fill="#59C7A7"/>
+</svg>

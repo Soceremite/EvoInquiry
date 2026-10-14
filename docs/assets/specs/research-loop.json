@@ -1,0 +1,261 @@
+{
+  "title": "EvoInquiry: research evolves through evidence",
+  "canvas": {
+    "width": 1440,
+    "height": 768
+  },
+  "style": {
+    "font_family": "Arial, Helvetica, sans-serif",
+    "font_size": 25,
+    "bg_color": "#FFF8ED",
+    "palette": [
+      "#419579",
+      "#428EB0",
+      "#7862E8",
+      "#C7793A"
+    ]
+  },
+  "nodes": [
+    {
+      "id": "discover",
+      "label": "Discover",
+      "sublabel": "Literature & open questions",
+      "x": 260,
+      "y": 226,
+      "width": 360,
+      "height": 132,
+      "fill": "#DDF5E9",
+      "stroke": "#419579",
+      "text_color": "#34304B",
+      "font_size": 27
+    },
+    {
+      "id": "refine",
+      "label": "Refine",
+      "sublabel": "A focused, testable method",
+      "x": 720,
+      "y": 226,
+      "width": 360,
+      "height": 132,
+      "fill": "#E5F3FB",
+      "stroke": "#428EB0",
+      "text_color": "#34304B",
+      "font_size": 27
+    },
+    {
+      "id": "plan",
+      "label": "Plan",
+      "sublabel": "Controls, metrics & budgets",
+      "x": 1180,
+      "y": 226,
+      "width": 360,
+      "height": 132,
+      "fill": "#EDE5FF",
+      "stroke": "#7862E8",
+      "text_color": "#34304B",
+      "font_size": 27
+    },
+    {
+      "id": "run",
+      "label": "Run",
+      "sublabel": "Recorded, bounded runs",
+      "x": 1180,
+      "y": 494,
+      "width": 360,
+      "height": 132,
+      "fill": "#E5F3FB",
+      "stroke": "#428EB0",
+      "text_color": "#34304B",
+      "font_size": 26
+    },
+    {
+      "id": "audit",
+      "label": "Audit & interpret",
+      "sublabel": "Results, uncertainty & limits",
+      "x": 720,
+      "y": 494,
+      "width": 360,
+      "height": 132,
+      "fill": "#FFF0CE",
+      "stroke": "#C7793A",
+      "text_color": "#34304B",
+      "font_size": 26
+    },
+    {
+      "id": "write",
+      "label": "Write & communicate",
+      "sublabel": "Claims grounded in evidence",
+      "x": 260,
+      "y": 494,
+      "width": 360,
+      "height": 132,
+      "fill": "#DDF5E9",
+      "stroke": "#419579",
+      "text_color": "#34304B",
+      "font_size": 26
+    },
+    {
+      "id": "resume",
+      "label": "Resume from verified project artifacts",
+      "x": 720,
+      "y": 666,
+      "width": 1280,
+      "height": 62,
+      "fill": "#FFFFFF",
+      "stroke": "#E0D5C6",
+      "text_color": "#6A637D",
+      "font_size": 23
+    }
+  ],
+  "edges": [
+    {
+      "from": "discover",
+      "to": "refine",
+      "color": "#419579",
+      "thickness": 2
+    },
+    {
+      "from": "refine",
+      "to": "plan",
+      "color": "#428EB0",
+      "thickness": 2
+    },
+    {
+      "from": "plan",
+      "to": "run",
+      "color": "#7862E8",
+      "thickness": 2
+    },
+    {
+      "from": "run",
+      "to": "audit",
+      "color": "#428EB0",
+      "thickness": 2
+    },
+    {
+      "from": "audit",
+      "to": "write",
+      "color": "#C7793A",
+      "thickness": 2
+    },
+    {
+      "from": "audit",
+      "to": "refine",
+      "color": "#7862E8",
+      "thickness": 2,
+      "style": "dashed"
+    },
+    {
+      "from": "write",
+      "to": "discover",
+      "color": "#419579",
+      "thickness": 2,
+      "style": "dashed"
+    }
+  ],
+  "labels": [
+    {
+      "text": "Research evolves through evidence.",
+      "x": 64,
+      "y": 66,
+      "font_size": 39,
+      "color": "#34304B",
+      "anchor": "start"
+    },
+    {
+      "text": "Choose the next step from what the evidence supports — and what is still unresolved.",
+      "x": 64,
+      "y": 108,
+      "font_size": 22,
+      "color": "#6A637D",
+      "anchor": "start"
+    },
+    {
+      "text": "WORKFLOW / 01",
+      "x": 1376,
+      "y": 64,
+      "font_size": 17,
+      "color": "#80758A",
+      "anchor": "end"
+    },
+    {
+      "text": "01 / QUESTION",
+      "x": 80,
+      "y": 147,
+      "font_size": 17,
+      "color": "#419579",
+      "anchor": "start"
+    },
+    {
+      "text": "02 / METHOD",
+      "x": 540,
+      "y": 147,
+      "font_size": 17,
+      "color": "#428EB0",
+      "anchor": "start"
+    },
+    {
+      "text": "03 / DESIGN",
+      "x": 1000,
+      "y": 147,
+      "font_size": 17,
+      "color": "#7862E8",
+      "anchor": "start"
+    },
+    {
+      "text": "04 / EXPERIMENT",
+      "x": 1000,
+      "y": 415,
+      "font_size": 17,
+      "color": "#428EB0",
+      "anchor": "start"
+    },
+    {
+      "text": "05 / EVIDENCE",
+      "x": 540,
+      "y": 415,
+      "font_size": 17,
+      "color": "#C7793A",
+      "anchor": "start"
+    },
+    {
+      "text": "06 / CLAIM",
+      "x": 80,
+      "y": 415,
+      "font_size": 17,
+      "color": "#419579",
+      "anchor": "start"
+    },
+    {
+      "text": "new questions",
+      "x": 282,
+      "y": 364,
+      "font_size": 20,
+      "color": "#276D59",
+      "anchor": "start"
+    },
+    {
+      "text": "revise & retest",
+      "x": 742,
+      "y": 364,
+      "font_size": 20,
+      "color": "#6246BF",
+      "anchor": "start"
+    },
+    {
+      "text": "implement",
+      "x": 1202,
+      "y": 364,
+      "font_size": 20,
+      "color": "#6246BF",
+      "anchor": "start"
+    },
+    {
+      "text": "Use one skill or a bounded workflow. Goals, review gates and resource limits stay in control.",
+      "x": 720,
+      "y": 738,
+      "font_size": 21,
+      "color": "#6A637D"
+    }
+  ]
+}

@@ -1,0 +1,141 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 768" width="1440" height="768" font-family="Arial, Helvetica, sans-serif" role="img" aria-labelledby="research-loop-title">
+  <title id="research-loop-title">EvoInquiry: research evolves through evidence</title>
+  <rect width="1440" height="768" fill="#FFF8ED" />
+  <defs>
+    <marker id="arrow-default" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="strokeWidth">
+      <polygon points="0 0, 8 4, 0 8" fill="#555555" />
+    </marker>
+    <marker id="arrow-c0" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="strokeWidth">
+      <polygon points="0 0, 8 4, 0 8" fill="#419579" />
+    </marker>
+    <marker id="arrow-c1" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="strokeWidth">
+      <polygon points="0 0, 8 4, 0 8" fill="#428EB0" />
+    </marker>
+    <marker id="arrow-c2" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="strokeWidth">
+      <polygon points="0 0, 8 4, 0 8" fill="#7862E8" />
+    </marker>
+    <marker id="arrow-c3" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="strokeWidth">
+      <polygon points="0 0, 8 4, 0 8" fill="#C7793A" />
+    </marker>
+  </defs>
+  <path d="M 440.0,226.0 L 540.0,226.0" stroke="#419579" stroke-width="2" fill="none" marker-end="url(#arrow-c0)" />
+  <path d="M 900.0,226.0 L 1000.0,226.0" stroke="#428EB0" stroke-width="2" fill="none" marker-end="url(#arrow-c1)" />
+  <path d="M 1180.0,292.0 L 1180.0,428.0" stroke="#7862E8" stroke-width="2" fill="none" marker-end="url(#arrow-c2)" />
+  <path d="M 1000.0,494.0 L 900.0,494.0" stroke="#428EB0" stroke-width="2" fill="none" marker-end="url(#arrow-c1)" />
+  <path d="M 540.0,494.0 L 440.0,494.0" stroke="#C7793A" stroke-width="2" fill="none" marker-end="url(#arrow-c3)" />
+  <path d="M 720.0,428.0 L 720.0,292.0" stroke="#7862E8" stroke-width="2" fill="none" marker-end="url(#arrow-c2)" stroke-dasharray="8,4" />
+  <path d="M 260.0,428.0 L 260.0,292.0" stroke="#419579" stroke-width="2" fill="none" marker-end="url(#arrow-c0)" stroke-dasharray="8,4" />
+  <rect x="80.0" y="160.0" width="360.0" height="132.0" fill="#DDF5E9" stroke="#419579" stroke-width="2" rx="20" />
+  <text x="260.0" y="220.9" font-size="27" fill="#34304B" text-anchor="middle" font-weight="bold">Discover</text>
+  <text x="260.0" y="249.9" font-size="24" fill="#6A637D" text-anchor="middle">Literature &amp; open questions</text>
+  <rect x="540.0" y="160.0" width="360.0" height="132.0" fill="#E5F3FB" stroke="#428EB0" stroke-width="2" rx="20" />
+  <text x="720.0" y="220.9" font-size="27" fill="#34304B" text-anchor="middle" font-weight="bold">Refine</text>
+  <text x="720.0" y="249.9" font-size="24" fill="#6A637D" text-anchor="middle">A focused, testable method</text>
+  <rect x="1000.0" y="160.0" width="360.0" height="132.0" fill="#EDE5FF" stroke="#7862E8" stroke-width="2" rx="20" />
+  <text x="1180.0" y="220.9" font-size="27" fill="#34304B" text-anchor="middle" font-weight="bold">Plan</text>
+  <text x="1180.0" y="249.9" font-size="24" fill="#6A637D" text-anchor="middle">Controls, metrics &amp; budgets</text>
+  <rect x="1000.0" y="428.0" width="360.0" height="132.0" fill="#E5F3FB" stroke="#428EB0" stroke-width="2" rx="20" />
+  <text x="1180.0" y="489.1" font-size="26" fill="#34304B" text-anchor="middle" font-weight="bold">Run</text>
+  <text x="1180.0" y="517.1" font-size="23" fill="#6A637D" text-anchor="middle">Recorded, bounded runs</text>
+  <rect x="540.0" y="428.0" width="360.0" height="132.0" fill="#FFF0CE" stroke="#C7793A" stroke-width="2" rx="20" />
+  <text x="720.0" y="489.1" font-size="26" fill="#34304B" text-anchor="middle" font-weight="bold">Audit &amp; interpret</text>
+  <text x="720.0" y="517.1" font-size="23" fill="#6A637D" text-anchor="middle">Results, uncertainty &amp; limits</text>
+  <rect x="80.0" y="428.0" width="360.0" height="132.0" fill="#DDF5E9" stroke="#419579" stroke-width="2" rx="20" />
+  <text x="260.0" y="489.1" font-size="26" fill="#34304B" text-anchor="middle" font-weight="bold">Write &amp; communicate</text>
+  <text x="260.0" y="517.1" font-size="23" fill="#6A637D" text-anchor="middle">Claims grounded in evidence</text>
+  <rect x="80.0" y="635.0" width="1280.0" height="62.0" fill="#FFFFFF" stroke="#E0D5C6" stroke-width="2" rx="20" />
+  <text x="720.0" y="674.0" font-size="23" fill="#6A637D" text-anchor="middle" font-weight="bold">Resume from verified project artifacts</text>
+  <text x="64.0" y="66.0" font-size="39" fill="#34304B" text-anchor="start">Research evolves through evidence.</text>
+  <text x="64.0" y="108.0" font-size="22" fill="#6A637D" text-anchor="start">Choose the next step from what the evidence supports — and what is still unresolved.</text>
+  <text x="1376.0" y="64.0" font-size="17" fill="#80758A" text-anchor="end">WORKFLOW / 01</text>
+  <text x="80.0" y="147.0" font-size="17" fill="#419579" text-anchor="start">01 / QUESTION</text>
+  <text x="540.0" y="147.0" font-size="17" fill="#428EB0" text-anchor="start">02 / METHOD</text>
+  <text x="1000.0" y="147.0" font-size="17" fill="#7862E8" text-anchor="start">03 / DESIGN</text>
+  <text x="1000.0" y="415.0" font-size="17" fill="#428EB0" text-anchor="start">04 / EXPERIMENT</text>
+  <text x="540.0" y="415.0" font-size="17" fill="#C7793A" text-anchor="start">05 / EVIDENCE</text>
+  <text x="80.0" y="415.0" font-size="17" fill="#419579" text-anchor="start">06 / CLAIM</text>
+  <text x="282.0" y="364.0" font-size="20" fill="#276D59" text-anchor="start">new questions</text>
+  <text x="742.0" y="364.0" font-size="20" fill="#6246BF" text-anchor="start">revise &amp; retest</text>
+  <text x="1202.0" y="364.0" font-size="20" fill="#6246BF" text-anchor="start">implement</text>
+  <text x="720.0" y="738.0" font-size="21" fill="#6A637D" text-anchor="middle">Use one skill or a bounded workflow. Goals, review gates and resource limits stay in control.</text>
+  <g transform="translate(112 573) scale(0.5)" aria-hidden="true">
+    <ellipse cx="35" cy="105" rx="40" ry="5" fill="#E5DCCB" />
+    <g id="reader" shape-rendering="crispEdges">
+      <g fill="#493A59">
+        <rect x="21" y="0" width="28" height="7" />
+        <rect x="14" y="7" width="42" height="7" />
+        <rect x="14" y="14" width="7" height="21" />
+        <rect x="49" y="14" width="7" height="14" />
+        <rect x="21" y="77" width="14" height="14" />
+        <rect x="42" y="77" width="14" height="14" />
+        <rect x="14" y="91" width="21" height="7" />
+        <rect x="42" y="91" width="21" height="7" />
+      </g>
+      <path d="M21 14H49V35H42V42H28V35H21Z" fill="#F4C4A7" />
+      <path d="M14 42H56V49H63V70H56V77H14V70H7V49H14Z" fill="#7862E8" />
+      <rect x="28" y="42" width="14" height="7" fill="#F4C4A7" />
+      <g class="eyes" fill="#493A59">
+        <rect x="28" y="21" width="7" height="7" />
+        <rect x="42" y="21" width="7" height="7" />
+      </g>
+      <rect x="35" y="35" width="7" height="7" fill="#493A59" />
+      <path d="M7 56H28V63H35V84H14V77H7ZM35 63H42V56H63V77H56V84H35Z" fill="#FFD95E" />
+      <rect x="28" y="63" width="7" height="21" fill="#493A59" />
+      <rect x="7" y="63" width="7" height="7" fill="#F4C4A7" />
+      <rect x="56" y="63" width="7" height="7" fill="#F4C4A7" />
+    </g>
+  </g>
+  <g transform="translate(680 573) scale(0.5)" aria-hidden="true">
+    <ellipse cx="35" cy="105" rx="40" ry="5" fill="#E5DCCB" />
+    <g id="reviewer" shape-rendering="crispEdges">
+      <path d="M21 0H49V7H56V28H49V14H21V28H14V7H21Z" fill="#493A59" />
+      <path d="M21 14H49V35H42V42H28V35H21Z" fill="#F1D1B8" />
+      <path d="M14 42H56V49H63V77H7V49H14Z" fill="#FF927E" />
+      <rect x="28" y="42" width="14" height="7" fill="#F1D1B8" />
+      <g class="eyes" fill="#493A59">
+        <rect x="28" y="21" width="7" height="7" />
+        <rect x="42" y="21" width="7" height="7" />
+      </g>
+      <rect x="35" y="35" width="7" height="7" fill="#493A59" />
+      <g fill="#493A59">
+        <rect x="14" y="77" width="14" height="14" />
+        <rect x="42" y="77" width="14" height="14" />
+        <rect x="7" y="91" width="21" height="7" />
+        <rect x="42" y="91" width="21" height="7" />
+      </g>
+      <rect x="0" y="49" width="7" height="21" fill="#F1D1B8" />
+      <rect x="49" y="49" width="28" height="35" fill="#493A59" />
+      <rect x="56" y="56" width="14" height="21" fill="#FFF8ED" />
+      <path d="M56 63H63V70H70V56" fill="none" stroke="#59C7A7" stroke-width="4" />
+    </g>
+  </g>
+  <g transform="translate(1275 573) scale(0.5)" aria-hidden="true">
+    <ellipse cx="35" cy="105" rx="40" ry="5" fill="#E5DCCB" />
+    <g id="runner" shape-rendering="crispEdges">
+      <g fill="#493A59">
+        <rect x="14" y="0" width="35" height="7" />
+        <rect x="7" y="7" width="49" height="14" />
+        <rect x="14" y="77" width="14" height="14" />
+        <rect x="42" y="77" width="14" height="14" />
+        <rect x="7" y="91" width="21" height="7" />
+        <rect x="42" y="91" width="21" height="7" />
+      </g>
+      <path d="M14 14H49V35H42V42H21V35H14Z" fill="#A66B52" />
+      <path d="M14 42H49V49H56V77H7V49H14Z" fill="#59C7A7" />
+      <rect x="21" y="42" width="21" height="7" fill="#A66B52" />
+      <g class="eyes" fill="#493A59">
+        <rect x="21" y="21" width="7" height="7" />
+        <rect x="42" y="21" width="7" height="7" />
+      </g>
+      <path d="M14 21H35V35H14ZM35 21H56V35H35Z" fill="none" stroke="#493A59" stroke-width="3" />
+      <rect x="28" y="35" width="7" height="7" fill="#493A59" />
+      <rect x="0" y="49" width="7" height="21" fill="#A66B52" />
+      <g class="waving-arm">
+        <path d="M49 42H63V35H70V21H77V42H70V56H56V49H49Z" fill="#59C7A7" />
+        <rect x="70" y="14" width="7" height="14" fill="#A66B52" />
+      </g>
+      <rect x="21" y="56" width="21" height="7" fill="#FFF8ED" />
+    </g>
+  </g>
+  <path d="M1337 105L1342 114L1351 119L1342 124L1337 133L1332 124L1323 119L1332 114Z" fill="#FFD95E" stroke="#D5B24A" stroke-width="1.5" aria-hidden="true" />
+</svg>

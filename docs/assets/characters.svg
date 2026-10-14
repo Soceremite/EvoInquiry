@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="336" height="140" viewBox="0 0 336 140" role="img" aria-labelledby="characters-title">
+  <title id="characters-title">EvoInquiry's tiny research team</title>
+  <defs>
+    <g id="reader" shape-rendering="crispEdges">
+      <g fill="#493A59">
+        <rect x="21" y="0" width="28" height="7"/><rect x="14" y="7" width="42" height="7"/>
+        <rect x="14" y="14" width="7" height="21"/><rect x="49" y="14" width="7" height="14"/>
+        <rect x="21" y="77" width="14" height="14"/><rect x="42" y="77" width="14" height="14"/>
+        <rect x="14" y="91" width="21" height="7"/><rect x="42" y="91" width="21" height="7"/>
+      </g>
+      <path d="M21 14H49V35H42V42H28V35H21Z" fill="#F4C4A7"/>
+      <path d="M14 42H56V49H63V70H56V77H14V70H7V49H14Z" fill="#7862E8"/>
+      <rect x="28" y="42" width="14" height="7" fill="#F4C4A7"/>
+      <g class="eyes" fill="#493A59"><rect x="28" y="21" width="7" height="7"/><rect x="42" y="21" width="7" height="7"/></g>
+      <rect x="35" y="35" width="7" height="7" fill="#493A59"/>
+      <path d="M7 56H28V63H35V84H14V77H7ZM35 63H42V56H63V77H56V84H35Z" fill="#FFD95E"/>
+      <rect x="28" y="63" width="7" height="21" fill="#493A59"/>
+      <rect x="7" y="63" width="7" height="7" fill="#F4C4A7"/><rect x="56" y="63" width="7" height="7" fill="#F4C4A7"/>
+    </g>
+    <g id="runner" shape-rendering="crispEdges">
+      <g fill="#493A59">
+        <rect x="14" y="0" width="35" height="7"/><rect x="7" y="7" width="49" height="14"/>
+        <rect x="14" y="77" width="14" height="14"/><rect x="42" y="77" width="14" height="14"/>
+        <rect x="7" y="91" width="21" height="7"/><rect x="42" y="91" width="21" height="7"/>
+      </g>
+      <path d="M14 14H49V35H42V42H21V35H14Z" fill="#A66B52"/>
+      <path d="M14 42H49V49H56V77H7V49H14Z" fill="#59C7A7"/>
+      <rect x="21" y="42" width="21" height="7" fill="#A66B52"/>
+      <g class="eyes" fill="#493A59"><rect x="21" y="21" width="7" height="7"/><rect x="42" y="21" width="7" height="7"/></g>
+      <path d="M14 21H35V35H14ZM35 21H56V35H35Z" fill="none" stroke="#493A59" stroke-width="3"/>
+      <rect x="28" y="35" width="7" height="7" fill="#493A59"/>
+      <rect x="0" y="49" width="7" height="21" fill="#A66B52"/>
+      <g class="waving-arm">
+        <path d="M49 42H63V35H70V21H77V42H70V56H56V49H49Z" fill="#59C7A7"/>
+        <rect x="70" y="14" width="7" height="14" fill="#A66B52"/>
+      </g>
+      <rect x="21" y="56" width="21" height="7" fill="#FFF8ED"/>
+    </g>
+    <g id="reviewer" shape-rendering="crispEdges">
+      <path d="M21 0H49V7H56V28H49V14H21V28H14V7H21Z" fill="#493A59"/>
+      <path d="M21 14H49V35H42V42H28V35H21Z" fill="#F1D1B8"/>
+      <path d="M14 42H56V49H63V77H7V49H14Z" fill="#FF927E"/>
+      <rect x="28" y="42" width="14" height="7" fill="#F1D1B8"/>
+      <g class="eyes" fill="#493A59"><rect x="28" y="21" width="7" height="7"/><rect x="42" y="21" width="7" height="7"/></g>
+      <rect x="35" y="35" width="7" height="7" fill="#493A59"/>
+      <g fill="#493A59"><rect x="14" y="77" width="14" height="14"/><rect x="42" y="77" width="14" height="14"/><rect x="7" y="91" width="21" height="7"/><rect x="42" y="91" width="21" height="7"/></g>
+      <rect x="0" y="49" width="7" height="21" fill="#F1D1B8"/>
+      <rect x="49" y="49" width="28" height="35" fill="#493A59"/>
+      <rect x="56" y="56" width="14" height="21" fill="#FFF8ED"/>
+      <path d="M56 63H63V70H70V56" fill="none" stroke="#59C7A7" stroke-width="4"/>
+    </g>
+  </defs>
+  <rect width="336" height="140" rx="20" fill="#FFF8ED"/>
+  <g transform="translate(32 21)"><use href="#reader"/></g>
+  <g transform="translate(133 21)"><use href="#runner"/></g>
+  <g transform="translate(234 21)"><use href="#reviewer"/></g>
+</svg>

@@ -1,0 +1,148 @@
+{
+  "title": "EvoInquiry: design fair comparisons around the research question",
+  "canvas": {
+    "width": 1440,
+    "height": 768
+  },
+  "style": {
+    "font_family": "Arial, Helvetica, sans-serif",
+    "font_size": 25,
+    "bg_color": "#FFF8ED",
+    "palette": [
+      "#419579",
+      "#428EB0",
+      "#7862E8"
+    ]
+  },
+  "nodes": [
+    {
+      "id": "shared",
+      "label": "Shared evidence boundary",
+      "sublabel": "Data splits · strong baselines · fixed metrics · held-out evaluation",
+      "x": 720,
+      "y": 208,
+      "width": 1280,
+      "height": 112,
+      "fill": "#FFFFFF",
+      "stroke": "#D7C8B8",
+      "text_color": "#34304B",
+      "font_size": 27
+    },
+    {
+      "id": "controlled",
+      "label": "Controlled\ncontribution",
+      "sublabel": "Isolate the mechanism",
+      "x": 265,
+      "y": 437,
+      "width": 365,
+      "height": 176,
+      "fill": "#DDF5E9",
+      "stroke": "#419579",
+      "text_color": "#34304B",
+      "font_size": 25
+    },
+    {
+      "id": "budget",
+      "label": "Equal resource\nbudget",
+      "sublabel": "Declare caps & account for cost",
+      "x": 720,
+      "y": 437,
+      "width": 365,
+      "height": 176,
+      "fill": "#E5F3FB",
+      "stroke": "#428EB0",
+      "text_color": "#34304B",
+      "font_size": 24
+    },
+    {
+      "id": "tuned",
+      "label": "Tuned system\nperformance",
+      "sublabel": "Disclose recipes & search costs",
+      "x": 1175,
+      "y": 437,
+      "width": 365,
+      "height": 176,
+      "fill": "#EDE5FF",
+      "stroke": "#7862E8",
+      "text_color": "#34304B",
+      "font_size": 24
+    },
+    {
+      "id": "report",
+      "label": "Report individual runs, uncertainty, failures and protocol deviations",
+      "sublabel": "Choose repetition from variability, useful precision and the available budget.",
+      "x": 720,
+      "y": 666,
+      "width": 1280,
+      "height": 108,
+      "fill": "#FFFFFF",
+      "stroke": "#D7C8B8",
+      "text_color": "#34304B",
+      "font_size": 24
+    }
+  ],
+  "edges": [
+    {
+      "from": "shared",
+      "to": "controlled",
+      "color": "#419579",
+      "thickness": 2
+    },
+    {
+      "from": "shared",
+      "to": "budget",
+      "color": "#428EB0",
+      "thickness": 2
+    },
+    {
+      "from": "shared",
+      "to": "tuned",
+      "color": "#7862E8",
+      "thickness": 2
+    },
+    {
+      "from": "controlled",
+      "to": "report",
+      "color": "#419579",
+      "thickness": 2
+    },
+    {
+      "from": "budget",
+      "to": "report",
+      "color": "#428EB0",
+      "thickness": 2
+    },
+    {
+      "from": "tuned",
+      "to": "report",
+      "color": "#7862E8",
+      "thickness": 2
+    }
+  ],
+  "labels": [
+    {
+      "text": "Fairness starts with the question.",
+      "x": 64,
+      "y": 66,
+      "font_size": 39,
+      "color": "#34304B",
+      "anchor": "start"
+    },
+    {
+      "text": "Match the design to the claim you want the comparison to support.",
+      "x": 64,
+      "y": 108,
+      "font_size": 22,
+      "color": "#6A637D",
+      "anchor": "start"
+    },
+    {
+      "text": "COMPARISON / 02",
+      "x": 1376,
+      "y": 64,
+      "font_size": 17,
+      "color": "#80758A",
+      "anchor": "end"
+    }
+  ]
+}
