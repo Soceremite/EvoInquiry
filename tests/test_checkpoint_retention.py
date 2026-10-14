@@ -109,6 +109,36 @@ def test_peak_preflight_includes_existing_artifacts_and_does_not_prune_first(tmp
     assert sorted(e['step'] for e in active(store)) == [10, 20]
 
 
+def test_file_flush_failure_preserves_previous_recovery_and_manifest(store, monkeypatch):
+    import os
+    import tools.checkpoint_retention as module
+    save(store, 10)
+    save(store, 20)
+    previous = (store.root / MANIFEST).read_bytes()
+    latest = store.latest()
+    artifact_inodes = set()
+    real_fsync = os.fsync
+
+    def writer(path):
+        target = path / 'state.json'
+        target.write_bytes(b'new checkpoint')
+        artifact_inodes.add(target.stat().st_ino)
+
+    def fail_artifact_flush(descriptor):
+        if os.fstat(descriptor).st_ino in artifact_inodes:
+            raise OSError(errno.EIO, 'simulated checkpoint file flush failure')
+        real_fsync(descriptor)
+
+    monkeypatch.setattr(module.os, 'fsync', fail_artifact_flush)
+    with pytest.raises(OSError, match='file flush failure'):
+        store.publish(step=30, kind='resume', expected_bytes=100, writer=writer,
+                      validator=lambda path: {'loaded': True}, validation_label='loader')
+    assert (store.root / MANIFEST).read_bytes() == previous
+    assert store.latest() == latest
+    assert sorted(e['step'] for e in active(store)) == [10, 20]
+    assert not store.status()['unregistered']
+
+
 def test_filesystem_reserve_is_checked_before_writer(store, monkeypatch):
     monkeypatch.setattr('tools.checkpoint_retention.shutil.disk_usage', lambda p: SimpleNamespace(free=50))
     with pytest.raises(RetentionError, match='filesystem space'):

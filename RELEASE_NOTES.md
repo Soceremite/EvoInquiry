@@ -18,6 +18,8 @@ Comparison consolidation previously verified the surviving model without checkin
 
 Legacy comparison receipts remain inspectable. Further destructive cleanup requires binding complete evidence to the same recorded winner, rather than silently treating the older receipt as sufficient. Ordinary single-run completion, standalone single-file trainers and bounded active recovery retain their existing behaviour. Permanently stopped, evaluated winners remain eligible for retention; unstarted slots use cancellation records rather than fabricated attempts.
 
+Windows checkpoint saves now flush files through a writable, non-truncating handle, as required by the native file-sync API. File-flush failures preserve the previous recovery points and manifest. Both Windows shell gates additionally run the checkpoint-retention suite. Long public CI annotations preserve the test identity and final exception within a bounded UTF-8 excerpt, and expose actual JUnit counts without changing pytest's exit status.
+
 ## Corrected guidance
 
 Fairness is expressed relative to the comparison question, with justified differences in learning rates, optimisers and epochs. Comparison analysis qualifies relative gains when a baseline is zero or the metric scale makes ratios inappropriate, distinguishes standard deviation from uncertainty of an effect, and prevents a best seed or retry from replacing the full comparison. OOM-related recipe changes are visible protocol deviations. Test scores cannot select the archived winner.
@@ -35,6 +37,8 @@ EvoInquiry 1.3.0 保留 **86 个 Codex skill** 和既有科研流程，重点提
 **新增功能：** 将公平比较规范接入八个现有实验 skill，覆盖数据集与划分、数据泄漏、强基线、训练与调参成本、输入权限、多种子、失败重试和统一评测。区分机制贡献、等资源预算和充分调优性能，允许有理由的方法差异。增加可选的全局或项目科研路由设置工具，让相关请求与短追问更容易继续采用合适的已安装 skill，保留原有指令与任务范围。
 
 **修复问题：** 非最优权重归档前，新增对比证据检查。缺少实验或失败尝试、日志摘要发生变化、保留模型身份不匹配，或证据位于将被清理的断点目录中，都会阻止删除；中断清理后重试也会重新验证。旧归档记录仍可查看，但继续删除前必须补齐并绑定证据。后续实验需要的模型依赖继续受到保护。
+
+Windows 断点文件使用可写但不截断内容的句柄刷盘，兼容系统落盘要求；刷盘失败继续保留此前的恢复点和清单。两种 Windows Shell 验收均加入完整断点保留测试。较长的 CI 失败注释保留测试身份与末尾异常，避免公开注释截断时丢失真正原因，同时展示原始 JUnit 统计，不改变测试退出状态。
 
 **修正规范：** 明确不以相同学习率、优化器或训练轮数作为通用公平标准；不把固定三个种子当成充分性保证；不以最优种子或最优重试替代完整比较。分析区分跨运行波动与效果不确定性，避免零基线或不适合比值的指标产生误导性相对提升。验证集决定模型与阈值，测试结果不能参与归档最优模型的选择。
 

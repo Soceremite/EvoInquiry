@@ -540,7 +540,9 @@ class CheckpointStore:
                 # Flush completed files before publishing their manifest. Parent
                 # metadata is flushed by the atomic manifest update below.
                 for name in files:
-                    with (staging / name).open('rb') as saved:
+                    # Windows _commit/FlushFileBuffers requires write access.
+                    # r+b permits the flush without truncating or rewriting bytes.
+                    with (staging / name).open('r+b' if os.name == 'nt' else 'rb') as saved:
                         os.fsync(saved.fileno())
                 _flush_directories(staging)
                 os.replace(staging, destination)

@@ -2,7 +2,7 @@
   "schema_version": 1,
   "version": "1.3.0",
   "release_kind": "stable",
-  "status": "local-validation-passed; cross-platform-CI-pending",
+  "status": "local-validation-passed; cross-platform-CI-revalidation-pending",
   "source_base": {
     "version": "1.2.0",
     "commit": "4a05eed153de94c87d6506f4c6ae0b6c8f13db51"
@@ -17,9 +17,10 @@
     "codex_shared_references": 38
   },
   "runtime_sha256": {
-    "tools/checkpoint_retention.py": "6ea5c692c002610c21b294010bb03836f765882eb5c507f0b86a1e7e6ebbc0a2",
+    "tools/checkpoint_retention.py": "bc945685c26c31b90290d496907cd38f05aa42533ea8c5026d5551cb72e21446",
     "tools/comparison_evidence.py": "2bef0b2315b828e60e55633f5d6141d25aac3461c3a35078f5f584cd2c7a19be",
-    "tools/configure_research_guidance.py": "11ba3b1efd3c7f6664951766f672cc8dfb5a803d32d899798d9f3e98e63a62c2"
+    "tools/configure_research_guidance.py": "11ba3b1efd3c7f6664951766f672cc8dfb5a803d32d899798d9f3e98e63a62c2",
+    "tools/report_ci_failures.py": "8c930754821b7dbc6bbbb725b2bb2fc7704f2eaa2fd949cc124d885474bf2c92"
   },
   "current_checks": {
     "source_preservation": {
@@ -43,7 +44,7 @@
     },
     "full_suite": {
       "status": "PASS",
-      "scope": "Final immutable runtime source, Linux Python 3.12.14; existing real PyTorch CPU training/restoration pilot included; local test services and file-attribute operations permitted",
+      "scope": "Linux Python 3.12.14 full regression before the release-CI Windows file-flush correction; actual PyTorch training/restoration included; not claimed as a rerun of the corrected tree",
       "junit": "validation/upgrade-1.3.0/full-closure-junit.xml",
       "source_manifest": "validation/upgrade-1.3.0/final-runtime-source.json",
       "passed": 1053,
@@ -60,7 +61,7 @@
         "project directory",
         "ordinary directory"
       ],
-      "scope": "isolated final 1.3.0 source candidate; native metadata discovery only; no model completion or live installation change",
+      "scope": "isolated 1.3.0 candidate before the release-CI Windows sync correction; unchanged skill metadata; no model completion or live installation change",
       "evidence": "validation/upgrade-1.3.0/native/verification.json"
     },
     "generic_skill_validator": {
@@ -84,10 +85,19 @@
       "restoration_control": true,
       "full_state_restoration_identical": true,
       "scientific_verdict": "not-assessed"
+    },
+    "release_ci_corrections": {
+      "status": "PASS",
+      "passed": 129,
+      "skipped": 2,
+      "failed": 0,
+      "errors": 0,
+      "junit": "validation/release-1.3.0/windows-fix-local.xml",
+      "scope": "Linux Python 3.10 checkpoint/evidence/archival/publication/CI-annotation regression after Windows sync correction; real PyTorch CPU restoration included"
     }
   },
   "ci": {
-    "status": "NOT_RUN_FOR_1.3.0",
+    "status": "CORRECTION_PENDING_NATIVE_REVALIDATION",
     "required": [
       "ubuntu-latest full suite",
       "macos-latest full suite",
@@ -98,6 +108,40 @@
       "test_research_guidance.py",
       "test_comparison_evidence.py",
       "test_comparison_archive.py"
+    ],
+    "prior_attempts": [
+      {
+        "commit": "d5f21e725bf92e92ef26db2f1506d5c9038e4f29",
+        "run_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/38517081776",
+        "conclusion": "failure",
+        "jobs": [
+          {
+            "name": "pytest (macos-latest)",
+            "conclusion": "success",
+            "html_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/38517081776/job/115698181670"
+          },
+          {
+            "name": "pytest (ubuntu-latest)",
+            "conclusion": "success",
+            "html_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/38517081776/job/115698181812"
+          },
+          {
+            "name": "windows (pwsh)",
+            "conclusion": "failure",
+            "html_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/38517081776/job/115698181830"
+          },
+          {
+            "name": "windows (powershell.exe)",
+            "conclusion": "failure",
+            "html_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/38517081776/job/115698181896"
+          }
+        ]
+      }
+    ],
+    "corrections": [
+      "Windows checkpoint flushing needs a writable, non-truncating descriptor",
+      "Keep the terminal exception in public CI annotation excerpts",
+      "Run the checkpoint-retention suite under both native Windows shells"
     ]
   },
   "historical_evidence": {

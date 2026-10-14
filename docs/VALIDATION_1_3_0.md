@@ -1,6 +1,6 @@
 # EvoInquiry 1.3.0 validation
 
-This report describes the 1.3.0 source changes and their current acceptance scope. It does not reuse the 1.2.0 release's test counts as results for the changed checkpoint helper. Final local Linux regression passes; native macOS and Windows CI remains pending. The machine-readable companion is [release-validation.json](../release-validation.json).
+This report describes the 1.3.0 source changes and their current acceptance scope. It does not reuse the 1.2.0 release's test counts as results for the changed checkpoint helper. The local Linux regression passed before a release-CI correction to Windows file flushing. The corrected runtime passes focused local checks; native cross-platform revalidation remains pending. The machine-readable companion is [release-validation.json](../release-validation.json).
 
 ## Implemented scope
 
@@ -14,12 +14,18 @@ The source retains 86 Codex entrypoints, 83 protected workflow bodies, 450 prote
 | --- | --- | --- |
 | Focused regression | 164 passed, 2 native Windows cases skipped | Real files, declared slots, attempts, selection, evidence hashes, archive preview/apply/retry, dependency pins, legacy binding, scoped routing and mirrors |
 | Packaging and release tests | 26 passed | Required new resources, version metadata, retained-source contracts and actual publication arguments without a network publication |
-| Full Python 3.12 regression | 1053 passed, 35 skipped; no failures | Final fixed Linux runtime; includes the real PyTorch training/restoration pilot |
-| Native Codex discovery | 86 unique enabled entries per scope; 801 source files matched | Isolated candidate installation and native skills/list, without a model completion or changes to the user's installed plugin |
+| Python 3.12 regression before the release-CI Windows sync correction | 1053 passed, 35 skipped; no failures | Pre-publication Linux runtime; includes the real PyTorch training/restoration pilot |
+| Native Codex discovery | 86 unique enabled entries per scope; 801 source files matched | Isolated pre-CI-correction candidate and native skills/list; skill metadata unchanged; no model completion or live plugin replacement |
 
 The focused run includes the existing real PyTorch CPU interrupted-versus-continuous training witness. The complete Python 3.12 run also passes the governed two-method, three-seed training/restoration pilot. It required local test services and file-attribute operations beyond the filesystem sandbox. The first sandboxed run failed ten cases: nine of them passed when those host operations were allowed; the remaining single-file helper dependency was a real implementation regression, repaired by lazy-loading the archive validator. A preliminary complete run then passed 1052 cases; the final immutable-source result above additionally covers bounded JSON records and configures the two new NTFS cases for native Windows. These counts describe separate runs and are not added together. Its system test environment needed the process-local protobuf Python implementation setting; no live training environment was modified. The dedicated full-suite runner uses Python 3.12 and existing compatible dependencies in an isolated temporary virtual environment. A Python 3.10 full-suite attempt stopped at collection because the harness imports the Python 3.11+ `tomllib` standard library; that attempt is not counted as a complete regression.
 
 The generic skill-creator frontmatter validator passes five changed skill entries and rejects an existing `argument-hint` field in experiment-queue, experiment-audit and result-to-claim. The same three failures are reproduced on the unchanged 1.2.0 entries. Their fields are preserved under the retained-source contract; native Codex discovery is the loader compatibility check.
+
+## Release-CI correction
+
+The [first cross-platform run](https://github.com/Soceremite/EvoInquiry/actions/runs/38517081776) passed both full Linux/macOS suites and failed both Windows shell gates during checkpoint publication. Checkpoint flushing used a read-only handle, while the native Windows file-sync API requires write access. The helper now opens a non-truncating read/write handle on Windows. A file-flush failure test verifies that prior recovery points and the manifest survive; both Windows gates now include the checkpoint-retention suite. Public CI annotations retain the test identity and final exception within a UTF-8-safe excerpt instead of losing the cause to the public annotation limit.
+
+The corrected local checkpoint/evidence/archival/publication/annotation regression passed **129 tests**, with two native Windows cases skipped and no failures. It includes actual PyTorch CPU restoration. The earlier 1053-test local full-suite result is retained as earlier evidence, rather than claimed as a new whole-tree run after this correction. Native revalidation is tracked separately in the machine-readable report.
 
 ## What the evidence gate establishes
 

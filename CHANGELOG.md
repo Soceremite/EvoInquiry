@@ -14,6 +14,8 @@
 - Recheck the archived winner and bound evidence before interrupted cleanup resumes. Keep legacy comparison receipts readable and require evidence binding before further deletion; preserve dependency pins.
 - Preserve standalone checkpoint trainers by loading the evidence helper only for comparison archival. Represent unstarted slots with cancellation records and allow permanently stopped, evaluated winners with validated weights.
 - Verify new supporting resources are present in release source packages and include portable comparison/routing tests in both Windows shell gates.
+- Flush checkpoint files using a non-truncating writable handle on Windows. Preserve previous recovery points when a file flush fails, and run the checkpoint-retention suite in both native Windows shell gates.
+- Keep the final exception and test identity inside bounded public CI annotations, with UTF-8-safe excerpts and actual JUnit counts.
 
 ### Corrected
 

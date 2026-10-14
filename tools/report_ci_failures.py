@@ -26,9 +26,22 @@ def main():
             for failure in case.findall(tag):
                 name = '.'.join(filter(None, (case.get('classname'), case.get('name'))))
                 detail = failure.text or failure.get('message', '')
-                if len(detail) > 24000:
-                    detail = detail[:8000] + '\n[receipt excerpt truncated]\n' + detail[-16000:]
-                print('::error::' + escape(name + '\n' + detail))
+                message = name + '\n' + detail
+                encoded = message.encode('utf-8')
+                # Public check annotations can expose only a 4 KiB excerpt.
+                # Keep the test identity and final exception in that excerpt.
+                if len(encoded) > 4000:
+                    message = (encoded[:1200].decode('utf-8', errors='ignore')
+                               + '\n[receipt excerpt truncated; final exception retained]\n'
+                               + encoded[-2600:].decode('utf-8', errors='ignore'))
+                print('::error::' + escape(message))
+    cases = list(document.iter('testcase'))
+    failures = sum(case.find('failure') is not None for case in cases)
+    errors = sum(case.find('error') is not None for case in cases)
+    skipped = sum(case.find('skipped') is not None for case in cases)
+    passed = len(cases) - failures - errors - skipped
+    print(f'::notice::Pytest JUnit receipt: {passed} passed, {skipped} skipped, '
+          f'{failures} failed, {errors} errors.')
     print('Pytest exit status remains the result of the original test step.')
 
 
