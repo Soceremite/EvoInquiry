@@ -5,6 +5,16 @@ argument-hint: "[experiment-description]"
 allowed-tools: Bash(*), Read, Grep, Glob, Edit, Write, Skill(serverless-modal)
 ---
 
+<!-- EVO-INQUIRY:BEGIN -->
+For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),
+or reuse it if already loaded and unchanged in this session. Apply relevant
+principles within the user's scope and this skill's existing outputs, review
+standards, and recovery contracts. Carry them into nested research tasks and
+reviewer briefs. Continue authorized work through its necessary steps; honor
+budgets, blocking checkpoints, and stopping conditions.
+<!-- EVO-INQUIRY:END -->
+
+
 <!-- EI-GOVERNANCE:BEGIN -->
 Resolve runtime state through tools/state_paths.py before .ei operations. Use
 [project-governance](../shared-references/project-governance.md) for fixed evidence,
@@ -12,6 +22,7 @@ profiles and controlled migration; missing profiles retain compat-v1.
 Before formal launch bind a frozen source/config snapshot, environment revision and distinct execution ID. Preserve actual imports/exit codes, failed attempts and retry/resume parents; outputs belong to that execution.
 For code/dependency changes, read [code-reuse-and-docs](../shared-references/code-reuse-and-docs.md) and [environment-stewardship](../shared-references/environment-stewardship.md).
 When executing comparisons, load [comparative-experiments](../shared-references/comparative-experiments.md). Check effective configurations, data/split/evaluator identities, declared resource limits and validation selection. Preserve every seed and failed/retried attempt. Before winner-only cleanup, bind a complete comparison evidence index and keep logs outside checkpoint artifact directories.
+When the evaluation produces sample evidence, persist its compact prediction/selection records and the planned small output subset with the run's results before temporary storage or weights are released. Apply [case-study-analysis](../shared-references/case-study-analysis.md) for the relevant identities and storage limits. Do not add evaluation runs, regenerate missing samples or copy whole datasets merely to fill a case panel.
 <!-- EI-GOVERNANCE:END -->
 
 

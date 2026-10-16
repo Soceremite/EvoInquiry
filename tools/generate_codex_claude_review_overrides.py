@@ -53,14 +53,18 @@ ARTIFACT_PROMPT_CUES = (
     "read the raw diff",
     "verbatim files",
     "/absolute/path/to/",
+    "read both the latex source",
+    "read the updated latex source",
 )
 
 OVERRIDE_NOTE = (
     "> Override for Codex users who want **Claude Code**, not a second Codex agent, "
     "to act as the reviewer. Install this package **after** `skills/skills-codex/*`.\n>\n"
-    "> This reviewer is a different model family from the Codex executor. Every "
-    "overlay trace/audit records:\n>\n> ```yaml\n> review_independence: cross-family\n"
-    "> acceptance_status: accepted\n> ```"
+    "> Verify the actual returned reviewer identity before recording "
+    "`review_independence: cross-family`. A phase receipt may record "
+    "`acceptance_status: accepted` only after a positive verdict and the required "
+    "evidence closure. Negative, unavailable and budget-stop outcomes grant no "
+    "phase acceptance; same-family responses retain the base provisional contract."
 )
 
 REVIEWER_LINE = (
@@ -210,17 +214,14 @@ def add_artifact_review_tools(text: str) -> str:
 
 
 def transform_body(text: str) -> str:
-    # EvoInquiry customizes the Codex entrypoints only. Do not export its
-    # entry hook into an unchanged Claude overlay with different references.
-    text = re.sub(
-        r"^<!-- EVO-INQUIRY:BEGIN -->\n.*?<!-- EVO-INQUIRY:END -->\n+",
-        "", text, count=1, flags=re.S,
-    )
+    # Overlays share the installed base references. Keep the research-principles
+    # hook while translating only the reviewer backend and its trace fields.
     text = re.sub(
         r"> \*\*Codex assurance:\*\*[\s\S]*?(?=\n\n)",
-        "> **Claude overlay assurance:** this route is a different model family "
-        "from the Codex executor and records `review_independence: cross-family` "
-        "plus `acceptance_status: accepted`.",
+        "> **Claude overlay assurance:** verify the actual different-family reviewer "
+        "before recording `review_independence: cross-family`; "
+        "`acceptance_status: accepted` requires a positive disposition and the "
+        "workflow's evidence closure. A stopped or unavailable review is not accepted.",
         text,
         count=1,
     )
@@ -254,9 +255,12 @@ def transform_body(text: str) -> str:
     text = text.replace("- **Save `agent_id` from Phase 2** and use `send_input` for later rounds.", "- **Save the completed `threadId` from Phase 2** and use `mcp__claude-review__review_reply_start` plus `mcp__claude-review__review_status` for later rounds.")
     text = text.replace("- **Use `send_input`** for Round 2 to maintain conversation context", "- **Use `mcp__claude-review__review_reply_start` plus `mcp__claude-review__review_status`** for Round 2 to maintain conversation context")
     text = text.replace("GPT-5.5 responses", "Claude reviewer responses")
-    text = text.replace("same-family provisional review", "cross-family accepted Claude review")
-    text = text.replace("same-family provisional", "cross-family accepted")
-    text = text.replace("A fresh Codex positive review", "A fresh Claude positive review")
+    text = text.replace("(same-family provisional by default)", "(verify actual reviewer family and evidence closure)")
+    text = text.replace("same-family provisional review", "Claude review with acceptance determined by its actual receipt")
+    text = text.replace("A fresh Codex positive review is same-family provisional.",
+                        "A fresh Claude positive review may be accepted only after verifying "
+                        "its different-family identity and the workflow's evidence closure.")
+    text = text.replace("same-family provisional", "Claude review subject to the recorded acceptance conditions")
     text = re.sub(
         r"^- \*\*REVIEWER_BACKEND = `codex`\*\*.*$",
         "- **REVIEWER_BACKEND = `claude-review`** — Cross-family Claude reviewer "

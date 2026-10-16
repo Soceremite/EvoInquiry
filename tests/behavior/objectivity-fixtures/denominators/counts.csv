@@ -1,0 +1,5 @@
+condition,seed,metric,correct,eligible
+corrupted,11,masked_token,90,100
+corrupted,22,masked_token,1,10
+clean,11,full_output_exact,100,100
+clean,22,full_output_exact,100,100

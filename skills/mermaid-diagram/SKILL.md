@@ -5,6 +5,16 @@ argument-hint: "[diagram description or requirements]"
 allowed-tools: Bash(*), Read, Write, Edit, Glob, Grep
 ---
 
+<!-- EVO-INQUIRY:BEGIN -->
+For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),
+or reuse it if already loaded and unchanged in this session. Apply relevant
+principles within the user's scope and this skill's existing outputs, review
+standards, and recovery contracts. Carry them into nested research tasks and
+reviewer briefs. Continue authorized work through its necessary steps; honor
+budgets, blocking checkpoints, and stopping conditions.
+<!-- EVO-INQUIRY:END -->
+
+
 # Mermaid Diagram Generator
 
 Generate high-quality Mermaid diagram code based on user requirements, with file output and verification.

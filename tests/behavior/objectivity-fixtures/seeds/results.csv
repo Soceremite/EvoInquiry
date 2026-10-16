@@ -1,0 +1,5 @@
+method,run_id,seed,accuracy_percent
+baseline,base_a,11,70.0
+baseline,base_b,22,72.0
+candidate,cand_a,11,74.0
+candidate,cand_b,22,69.0

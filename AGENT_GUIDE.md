@@ -1,11 +1,13 @@
 # EvoInquiry agent guide
 
-Full catalog: [skill catalog](docs/SKILLS_CATALOG.md) — **86 skills** in the development tree:
+Full catalog: [skill catalog](docs/SKILLS_CATALOG.md) — **88 skills** in the development tree:
 83 retained workflows, research-guide, project-governance and environment-maintenance.
 Install and invoke the Codex plugin using [README.md](README.md).
 
 The plugin discovers `skills/skills-codex/<name>/SKILL.md`. Read the selected
-skill and its linked references before running the task. Its frontmatter,
+skill at the exact discovered path and resolve linked references beside that
+Codex mirror. Do not substitute the sibling `skills/<name>/SKILL.md` tree,
+which belongs to another runtime surface. Its frontmatter,
 workflow inputs, artifact contracts, and checkpoints define that task.
 Project instructions and the user's authorization take precedence.
 

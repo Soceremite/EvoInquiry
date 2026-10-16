@@ -51,37 +51,24 @@ spawn_agent:
   reasoning_effort: ultra
   message: |
     [Full research context + specific questions]
-    Please act as a senior ML reviewer (NeurIPS/ICML level). Start from the
-    assumption that the work is broken somewhere — your job is to find where.
-    Be adversarial. Trust nothing the author tells you — verify everything
-    yourself. Identify:
+    Please review the work against its question, evidence and intended use.
+    Verify consequential claims against actual artifacts. Identify supported
+    strengths, material weaknesses, alternative explanations and missing evidence.
+    Apply the same evidential standard to favorable and unfavorable conclusions. Identify:
     1. Logical gaps or unjustified claims
     2. Missing experiments that would strengthen the story
     3. Narrative weaknesses
     4. Whether the contribution is sufficient for a top venue
 
-    === SCOPE LIMITS (these bound what you PROPOSE, never what you look for) ===
-    Report anything that is actually wrong here — including a rare-looking case, if
-    this repo actually produces it. Then keep the fix in scope:
-    1. This is a RESEARCH-WORKFLOW tool, not a security paper. Verification is
-       welcome; over-defense is not. Assume a cooperating operator on their own
-       machine — a malicious local user is NOT in the threat model.
-    2. Do NOT propose SHA / hash / content-fingerprint / digest-binding schemes.
-       Reporting a real defect in hashing code that already exists is fine.
-    3. NO speculative machinery: do not add feature flags, migration frameworks,
-       compat layers, wrappers, pins, or similar mechanisms unless evidence shows
-       a current repo defect they fix or an explicit existing invariant they must
-       preserve. "Load-bearing", "compatibility", and "not scaffolding" are labels,
-       not evidence. Point to the failing path/artifact or invariant, and check the
-       proposal's factual premises, such as whether a named package version exists.
-    4. NO corner-case obsession: exotic encodings, symlink races, RTL text and
-       millisecond races are out of scope unless you can show the case arises here.
-    5. Where a rubric or checklist is genuinely needed, do not over-mechanize
-       judgement. A clear sentence a human reads beats a scored table nobody
-       maintains.
-    Exception: code that runs remote commands, starts a network service, or installs
-    an MCP server runs on the user's machine with their credentials — trust-boundary
-    findings there are in scope and the default is strict.
+    === REVIEW SCOPE ===
+    Evaluate the actual research question, requested deliverable and applicable
+    disciplinary standards. Locate strengths and defects in the supplied evidence;
+    do not presume acceptance, rejection or a particular threat model. Distinguish
+    observed errors, unsupported claims and optional extensions. Propose the smallest
+    adequate correction, citing its failing path, evidence or preserved invariant.
+    Keep hypotheses, speculation and unperformed checks explicit. A real boundary
+    or reproducibility defect is in scope when it affects this work; unrelated
+    infrastructure and speculative redesign are not automatically required.
     Say plainly when something is correct. Do not manufacture findings.
     Be brutally honest. If, after genuinely trying to break it, the work
     holds up and is ready, say so clearly.
@@ -111,20 +98,17 @@ For each round:
 Key follow-up patterns:
 - "If we reframe X as Y, does that change your assessment?"
 - "What's the minimum experiment to satisfy concern Z?"
-- "Please design the minimal additional experiment package (highest acceptance lift per GPU week)"
+- "Please design the minimal additional experiment package (highest decision-relevant information per unit cost)"
 - "Please write a mock NeurIPS/ICML review with scores"
 - "Give me a results-to-claims matrix for possible experimental outcomes"
 
 ### Step 4: Convergence
-Stop iterating when:
-- Both sides agree on the core claims and their evidence requirements
-- A concrete experiment plan is established
-- The narrative structure is settled
+Stop when the requested review is complete, its bounded review rounds are exhausted, or further investigation needs unavailable evidence. Judge each material issue as resolved, unresolved or not substantiated, with evidence. Agreement and narrative consensus do not establish correctness. Unresolved issues remain in the final assessment; stopping is not acceptance.
 
 ### Step 5: Document Everything
 Save the full interaction and conclusions to a review document in the project root:
 - Round-by-round summary of criticisms and responses
-- Final consensus on claims, narrative, and experiments
+- Evidence-grounded conclusions, remaining disagreement and unresolved checks
 - Claims matrix (what claims are allowed under each possible outcome)
 - Prioritized TODO list with estimated compute costs
 - Paper outline if discussed
@@ -158,7 +142,7 @@ Save a trace for every `spawn_agent`, `send_input`, or `oracle-pro` review call 
 "I'm going to present a complete ML research project for your critical review. Please act as a senior ML reviewer (NeurIPS/ICML level)..."
 
 ### For experiment design:
-"Please design the minimal additional experiment package that gives the highest acceptance lift per GPU week. Our compute: [describe]. Be very specific about configurations."
+"Please design the minimal additional experiment package that gives the highest decision-relevant information per unit cost. Our compute: [describe]. Be very specific about configurations."
 
 ### For paper structure:
 "Please turn this into a concrete paper outline with section-by-section claims and figure plan."

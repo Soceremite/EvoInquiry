@@ -1,0 +1,171 @@
+{
+  "sources": [
+    {
+      "repository": "Orchestra-Research/AI-research-SKILLs",
+      "commit": "773a52944ba4747a18bd4ae9ade53fff041adcbc",
+      "prefixes": [
+        "21-research-ideation/brainstorming-research-ideas/",
+        "21-research-ideation/creative-thinking-for-research/",
+        "20-ml-paper-writing/academic-plotting/",
+        "22-agent-native-research-artifact/research-manager/",
+        "22-agent-native-research-artifact/rigor-reviewer/",
+        "22-agent-native-research-artifact/ara-compiler/",
+        "0-autoresearch-skill/"
+      ],
+      "files": [
+        {
+          "path": "0-autoresearch-skill/SKILL.md",
+          "sha256": "b7ca0d7a6e905da85a8b494d3fe398ac78eaa278854f67b50a34f2b37a9a2b78",
+          "bytes": 24945,
+          "git_blob": "cf2ef23d6f571624bc950d3b0de4797308cd9955"
+        },
+        {
+          "path": "20-ml-paper-writing/academic-plotting/SKILL.md",
+          "sha256": "6613653d8109dcae36596b37d7414d5ae394a18f81543365222286d04485fd83",
+          "bytes": 21149,
+          "git_blob": "ee4ff26d6db646baa106c2d516dc1451e9bb1a4d"
+        },
+        {
+          "path": "21-research-ideation/brainstorming-research-ideas/SKILL.md",
+          "sha256": "8422a1a6dc0a88d05f02b9fbe0f8c2ae06a77024856d18125efa13d19d855d46",
+          "bytes": 19150,
+          "git_blob": "f5427a507c009fe0a91e51e213b340987334adb4"
+        },
+        {
+          "path": "21-research-ideation/creative-thinking-for-research/SKILL.md",
+          "sha256": "ec111f9236d7f9d72c895cebbf0f534ac93f4249172607559ad4bf92aefc5310",
+          "bytes": 21962,
+          "git_blob": "a76b01c979bcaf6fd77e97826ac14444547c809d"
+        },
+        {
+          "path": "22-agent-native-research-artifact/research-manager/SKILL.md",
+          "sha256": "f78da7627ac09a4be398ea4363fc7b8753b2dcb22bc961c5059395e33ef3ef2c",
+          "bytes": 12625,
+          "git_blob": "64c7ceab1dc14cd8294463f973b47b0134256330"
+        },
+        {
+          "path": "22-agent-native-research-artifact/rigor-reviewer/SKILL.md",
+          "sha256": "5a8169a5d069caf36a30e0106e523503ffba685215c3cd0067a72aa64a7e2dbb",
+          "bytes": 17848,
+          "git_blob": "dd13ded1423352c47860f40c8b1df971b1259ba3"
+        },
+        {
+          "path": "LICENSE",
+          "sha256": "80b5899a9ab121a2d4aae63724f0c11defba7f23da487086932bb9abfb0f2a00",
+          "bytes": 1095,
+          "git_blob": "943d5753a5f02f9ef352ff8a1706f167004d6e6d"
+        }
+      ],
+      "errors": [],
+      "decision": "Methodology reference: alternative frames, evidence-discriminating inquiries, bounded review and reproducible data plots. No runtime or full collection bundled.",
+      "destinations": [
+        "skills/scientific-brainstorming/SKILL.md",
+        "skills/research-manager/SKILL.md",
+        "skills/paper-figure/SKILL.md"
+      ],
+      "license": "MIT",
+      "runtime_installed": false
+    },
+    {
+      "repository": "K-Dense-AI/scientific-agent-skills",
+      "commit": "a1043ef544e3a100c28e70a736b6cf32554d0677",
+      "prefixes": [
+        "skills/scientific-brainstorming/"
+      ],
+      "files": [
+        {
+          "path": "LICENSE.md",
+          "sha256": "09b02a3c9df3053c55531d503357a9c7cde275970e6c3ceaa1ddf5f0e90b40c1",
+          "bytes": 1068,
+          "git_blob": "eb246475fd5a66b9bb56176f3a718984632dd98d"
+        }
+      ],
+      "errors": [
+        {
+          "path": "skills/scientific-brainstorming/SKILL.md",
+          "error": "The read operation timed out",
+          "attempts": 3
+        }
+      ],
+      "decision": "Partial methodological review; selected reference material available, primary brainstorming SKILL retrieval timed out after three bounded attempts. New EvoInquiry skill is independently written; no third-party skill installed.",
+      "destinations": [
+        "skills/scientific-brainstorming/SKILL.md"
+      ],
+      "license": "MIT",
+      "runtime_installed": false
+    },
+    {
+      "repository": "wp-a/nature-academic-search",
+      "commit": "725c2ec894a2f40b7d3f811528b9cc7e4ebff6c8",
+      "prefixes": [
+        "SKILL.md",
+        "scripts/",
+        "src/",
+        "pyproject.toml",
+        "requirements.txt"
+      ],
+      "files": [
+        {
+          "path": "LICENSE",
+          "sha256": "19c109d0a12b72bc0df627b5902d0853235227e57de7f8754f73243af93dff7c",
+          "bytes": 1061,
+          "git_blob": "1dd6f14c142a006faaf483dff3b72c3ca223c06e"
+        },
+        {
+          "path": "SKILL.md",
+          "sha256": "68293f30edcec62791b45c5b1506bc13c2f2bf2b16db1fbf44d08c9a714f8376",
+          "bytes": 9028,
+          "git_blob": "bb7aea09568422ac5f8c929578bdb85eae67a831"
+        },
+        {
+          "path": "pyproject.toml",
+          "sha256": "6cbf53464896037a75a3a80e9215e23478ab639ea8d9cbe1e31c189512e4521a",
+          "bytes": 2426,
+          "git_blob": "6e7c8859cd19033cf5acea6c2331cbfbe6d2edea"
+        }
+      ],
+      "errors": [
+        {
+          "path": "src/nature_academic_search/citation.py",
+          "error": "The read operation timed out",
+          "attempts": 3
+        }
+      ],
+      "decision": "Source/interface/dependency audit only. Optional integration NOT enabled; citation.py unavailable after three bounded attempts; no live provider certification or remote relay enabled.",
+      "destinations": [
+        "skills/research-lit/SKILL.md"
+      ],
+      "license": "MIT",
+      "runtime_installed": false
+    },
+    {
+      "repository": "Imbad0202/academic-research-skills-codex",
+      "commit": "52228e8280dd1770e18ecfc3b1fdf16b13b58104",
+      "prefixes": [
+        "plugins/ars-codex/skills/academic-research-suite/SKILL.md"
+      ],
+      "files": [
+        {
+          "path": "LICENSE",
+          "sha256": "b3848009d12a173f549ef98d9ee486e64459e8eb5d9f895bff53782b4aa86d7c",
+          "bytes": 19584,
+          "git_blob": "dedfb8b7880e51fe623fa5ea7e27c118eed4e2b9"
+        },
+        {
+          "path": "plugins/ars-codex/skills/academic-research-suite/SKILL.md",
+          "sha256": "5a502f5c5d2655191812298f4e3126753fd281111ccc085cd1cd2dabbc02d7ca",
+          "bytes": 47309,
+          "git_blob": "f92fd4f88ff6a7f4d2632d98532f3adfed0be9f9"
+        }
+      ],
+      "errors": [],
+      "decision": "Router reference evaluated only. CC BY-NC 4.0 source is not copied or bundled. Existing EvoInquiry routing retained; no second suite installed.",
+      "destinations": [
+        "skills/skills-codex/research-guide/SKILL.md"
+      ],
+      "license": "CC-BY-NC-4.0",
+      "runtime_installed": false
+    }
+  ],
+  "scope": "Pinned, selective source audit. Not an inventory of bundled third-party skills or proof of runtime compatibility."
+}

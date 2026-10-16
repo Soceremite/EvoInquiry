@@ -1,9 +1,19 @@
 ---
 name: idea-creator
-description: Generate and rank research ideas given a broad direction. Use when user says "找idea", "brainstorm ideas", "generate research ideas", "what can we work on", or wants to explore a research area for publishable directions.
+description: "Generate and assess concrete research contributions within an established problem. Use for method candidates; scientific-brainstorming frames a vague direction and idea-discovery runs the complete workflow."
 argument-hint: "[research-direction]"
 allowed-tools: Bash(*), Read, Write, Grep, Glob, WebSearch, WebFetch, Agent, Skill, mcp__codex__codex, mcp__codex__codex-reply, mcp__manual_review__review, mcp__manual_review__review_reply
 ---
+
+<!-- EVO-INQUIRY:BEGIN -->
+For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),
+or reuse it if already loaded and unchanged in this session. Apply relevant
+principles within the user's scope and this skill's existing outputs, review
+standards, and recovery contracts. Carry them into nested research tasks and
+reviewer briefs. Continue authorized work through its necessary steps; honor
+budgets, blocking checkpoints, and stopping conditions.
+<!-- EVO-INQUIRY:END -->
+
 
 <!-- EI-GOVERNANCE:BEGIN -->
 Resolve runtime state through tools/state_paths.py before .ei operations. Use
@@ -21,6 +31,10 @@ Generate publishable research ideas for: $ARGUMENTS
 Given a broad research direction from the user, systematically generate, validate, and rank concrete research ideas. Standalone, Phase 1's landscape survey is **inline** (WebSearch — it does not invoke `/research-lit`); Phases 4-5 invoke `/novelty-check`, `/run-experiment`, and `/monitor-experiment` for validation and pilots. For the full sub-skill pipeline (`/research-lit` → idea generation → `/novelty-check` → `/research-review`), run `/idea-discovery` (Workflow 1), which orchestrates this skill.
 
 ## Constants
+
+Pilot limits below are ceilings, not authorization or evidence of available resources.
+Use the actual established compute/storage budget and requested scope; no pilot
+is launched by a request for ideas or planning alone.
 
 - **PILOT_MAX_HOURS = 2** — Skip any pilot estimated to take > 2 hours per GPU. Flag as "needs manual pilot".
 - **PILOT_TIMEOUT_HOURS = 3** — Hard timeout: kill pilots exceeding 3 hours. Collect partial results if available.
@@ -398,7 +412,7 @@ per-idea novelty search:
    - Rank by expected information and upside within the pilot budget — which results would matter most, whichever way they come out?
    - Which 2-3 would you actually work on, and why?
 
-   Rank; do not rewrite. An objection is answered or recorded as a named
+   Keep the original candidate traceable; revise a hypothesis explicitly when evidence warrants it. An objection is answered or recorded as a named
    risk on the idea — never absorbed by adding a module, a gate, or a
    qualifier. A bold idea with a named risk outranks a hedged idea with
    none, and complexity added since the brainstorm is a red flag, not

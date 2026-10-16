@@ -4,9 +4,9 @@ import shutil
 
 import pytest
 
-from tools.verify_evo_inquiry import verify
+from tools.verify_evo_inquiry import REQUIRED_COMPARISON_RESOURCES, REQUIRED_RESEARCH_RESOURCES, verify
 from tools import check_skills_inventory as inventory
-from tools.skill_contracts import contract_errors, load_contract
+from tools.skill_contracts import contract_errors, load_contract, normalize_namespace
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 def test_package_preserves_skill_inventory_and_resolves_shared_reference():
     report = verify(ROOT)
     assert report['status'] == 'PASS', report['errors']
-    assert report['skill_entrypoints'] == 86
+    assert report['skill_entrypoints'] == 88
 
 
 def test_missing_principles_are_detected(tmp_path):
@@ -77,7 +77,15 @@ def frozen_package(tmp_path_factory):
     """One real package, restored after each mutation; no mock checker outputs."""
     package = tmp_path_factory.mktemp('contract-package')
     contract = load_contract(ROOT)
-    paths = set(contract['protected_files']) | {'tools/skill-contracts.json'}
+    paths = set(contract['protected_files']) | {
+        'tools/skill-contracts.json', '.codex-plugin/plugin.json', 'VERSION', 'LICENSE',
+        'tools/check_skills_inventory.py', 'tools/run_state.py', 'tools/research_wiki.py',
+        'skills/skills-codex/shared-references/evo-inquiry.md',
+    } | set(REQUIRED_COMPARISON_RESOURCES) | set(REQUIRED_RESEARCH_RESOURCES)
+    paths.update(inventory_publication_references())
+    records = list(contract.get('workflow_adaptations', {}).values()) + list(contract.get('approved_upgrade_files', {}).values())
+    for record in records:
+        paths.update(ref.split('#', 1)[0] for ref in [record.get('review_ref')] + record.get('test_refs', []) if ref)
     paths |= {str(p.relative_to(ROOT)) for tree in ('skills', 'skills/skills-codex') for p in (ROOT / tree).glob('*/SKILL.md')}
     for rel in paths:
         destination = package / rel
@@ -85,6 +93,73 @@ def frozen_package(tmp_path_factory):
         shutil.copyfile(ROOT / rel, destination)
     assert not contract_errors(package)
     return package
+
+
+@pytest.fixture(scope='module')
+def namespace_baseline(tmp_path_factory, frozen_package):
+    baseline = tmp_path_factory.mktemp('namespace-baseline')
+    # A local baseline may use either historical namespace. It must not need
+    # network access or a Git object database for the comparison to work.
+    for path in (frozen_package / 'skills/skills-codex').glob('*/SKILL.md'):
+        target = baseline / path.relative_to(frozen_package)
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(normalize_namespace(path.read_text()), encoding='utf-8')
+    relative = 'skills/skills-codex/shared-references/assurance-contract.md'
+    target = baseline / relative
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(normalize_namespace((frozen_package / relative).read_text()), encoding='utf-8')
+    return baseline
+
+
+def test_baseline_comparison_accepts_registered_namespace_migration(frozen_package, namespace_baseline):
+    report = verify(frozen_package, namespace_baseline)
+    assert report['status'] == 'PASS', report['errors']
+
+
+@pytest.mark.parametrize('mutation', ['original', 'current', 'unregistered'])
+def test_baseline_comparison_still_rejects_unknown_changes(frozen_package, namespace_baseline, mutation):
+    relative = 'skills/skills-codex/shared-references/assurance-contract.md'
+    path = (frozen_package if mutation == 'current' else namespace_baseline) / relative
+    if mutation == 'unregistered':
+        path = namespace_baseline / 'unregistered-baseline.txt'
+    original = path.read_bytes() if path.exists() else None
+    try:
+        path.write_bytes((original or b'') + b'\nUnregistered semantic change.\n')
+        report = verify(frozen_package, namespace_baseline)
+        assert report['status'] == 'FAIL'
+        expected = 'protected baseline file changed' if mutation == 'current' else 'unrelated upstream content changed'
+        assert any(expected in error for error in report['errors']), report['errors']
+    finally:
+        if original is None:
+            path.unlink()
+        else:
+            path.write_bytes(original)
+
+
+@pytest.mark.parametrize('mutation', ['unregistered_body', 'original_digest', 'missing_review', 'missing_tests', 'bad_field'])
+def test_directed_workflow_adaptations_keep_frozen_baseline_and_review_refs(frozen_package, mutation):
+    import json
+    contract_path = frozen_package / 'tools/skill-contracts.json'
+    original = contract_path.read_bytes()
+    data = json.loads(original)
+    name = 'experiment-plan'
+    record = data['workflow_adaptations'][name]
+    if mutation == 'unregistered_body':
+        del data['workflow_adaptations'][name]
+    elif mutation == 'original_digest':
+        data['retained_skills'][name]['body_without_hook_sha256'] = '0' * 64
+        record['baseline_body_sha256'] = '0' * 64
+    elif mutation == 'missing_review':
+        record['review_ref'] = '../outside.md'
+    elif mutation == 'missing_tests':
+        record['test_refs'] = []
+    else:
+        record['reason'] = []
+    try:
+        contract_path.write_text(json.dumps(data), encoding='utf-8')
+        assert contract_errors(frozen_package)
+    finally:
+        contract_path.write_bytes(original)
 
 
 @pytest.mark.parametrize('mutation,expected', [

@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "searches": [
+    {
+      "id": "s1",
+      "source": "local",
+      "query": "memory",
+      "searched_at": "2026-10-15",
+      "status": "ok"
+    }
+  ],
+  "papers": [
+    {
+      "id": "p1",
+      "title": "Memory under shift",
+      "source": "local",
+      "search_id": "s1",
+      "url": "https://example.org/p1",
+      "reading_level": "abstract",
+      "arxiv_id": "2401.12345v1"
+    },
+    {
+      "id": "p2",
+      "title": "Revised memory under shift",
+      "source": "local",
+      "search_id": "s1",
+      "url": "https://example.org/p2",
+      "reading_level": "abstract",
+      "arxiv_id": "2401.12345v3",
+      "doi": "10.1234/formal"
+    },
+    {
+      "id": "p3",
+      "title": "Memory under shift",
+      "source": "local",
+      "search_id": "s1",
+      "url": "https://example.org/p3",
+      "reading_level": "abstract",
+      "doi": "10.9876/distinct"
+    }
+  ]
+}

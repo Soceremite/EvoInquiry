@@ -5,6 +5,16 @@ argument-hint: "[server-alias or screen-name]"
 allowed-tools: Bash(ssh *), Bash(echo *), Read, Write, Edit
 ---
 
+<!-- EVO-INQUIRY:BEGIN -->
+For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),
+or reuse it if already loaded and unchanged in this session. Apply relevant
+principles within the user's scope and this skill's existing outputs, review
+standards, and recovery contracts. Carry them into nested research tasks and
+reviewer briefs. Continue authorized work through its necessary steps; honor
+budgets, blocking checkpoints, and stopping conditions.
+<!-- EVO-INQUIRY:END -->
+
+
 # Monitor Experiment Results
 
 > ⏱ **External cadence is appropriate here.** This skill waits on an external

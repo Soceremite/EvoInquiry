@@ -1,0 +1,13 @@
+clip_id,timestamp_seconds,path
+v01,0,frames/v01-t0.png
+v01,1,frames/v01-t1.png
+v01,2,frames/v01-t2.png
+v02,0,frames/v02-t0.png
+v02,1,frames/v02-t1.png
+v02,2,frames/v02-t2.png
+v03,0,frames/v03-t0.png
+v03,1,frames/v03-t1.png
+v03,2,frames/v03-t2.png
+v04,0,frames/v04-t0.png
+v04,1,frames/v04-t1.png
+v04,2,frames/v04-t2.png

@@ -1,6 +1,6 @@
 ---
 name: "research-lit"
-description: "Find and synthesize research papers for a question, related-work review, or supplied-paper explanation. Use local materials and available search sources."
+description: "Find and synthesize research literature, including supplied local paper excerpts, reading levels, and evidence boundaries. Use for literature reviews and paper explanations."
 ---
 
 <!-- EVO-INQUIRY:BEGIN -->
@@ -24,7 +24,7 @@ Research topic: $ARGUMENTS
   2. `literature/` in the current project directory
   3. Custom path specified by user in `AGENTS.md` under `## Paper Library`
 - **MAX_LOCAL_PAPERS = 20** — Maximum number of local PDFs to scan (read first 3 pages each). If more are found, prioritize by filename relevance to the topic.
-- **SOURCES = `all`** — Which literature sources to search. Options: `zotero`, `obsidian`, `local`, `web`, `semantic-scholar`, `deepxiv`, `exa`, `gemini`, `openalex`, `all`. Full source table and selection rules: see `## Data Sources` below.
+- **SOURCES = `auto`** — Which literature sources to search. Options: `zotero`, `obsidian`, `local`, `web`, `semantic-scholar`, `deepxiv`, `exa`, `gemini`, `openalex`, `all`, `auto`. Full source table and selection rules: see `## Data Sources` below.
 - **ARXIV_DOWNLOAD = false** — When `true`, download top 3-5 most relevant arXiv PDFs to PAPER_LIBRARY after search. When `false` (default), only fetch metadata (title, abstract, authors) via arXiv API — no files are downloaded.
 - **ARXIV_MAX_DOWNLOAD = 5** — Maximum number of PDFs to download when `ARXIV_DOWNLOAD = true`.
 - **REVIEWER_BACKEND = `codex`** — Default reviewer route for optional literature synthesis cross-checks. Use `--reviewer: oracle-pro` only when explicitly requested; if Oracle is unavailable, warn and continue with Codex xhigh or local synthesis.
@@ -42,16 +42,26 @@ Research topic: $ARGUMENTS
 
 This skill checks multiple sources **in priority order**.
 
+### Optional external capabilities
+
+`nature-academic-search` was audited as an optional candidate. It is not bundled
+or enabled as a validated EvoInquiry provider in 1.4.0. Its dependencies and
+multi-index/remote-relay behavior are not required by this skill. Use an already
+available connector only after checking its actual interface and requested scope;
+otherwise use the existing providers and record unavailable coverage. Never
+claim that this audit establishes all providers working end to end.
+
 ### Source Selection
 
-Parse `$ARGUMENTS` for a `— sources:` directive:
-- **If `— sources:` is specified**: Only search the listed sources (comma-separated). Valid values: `zotero`, `obsidian`, `local`, `web`, `semantic-scholar`, `deepxiv`, `exa`, `gemini`, `openalex`, `all`.
-- **If not specified**: Default to `all` — search every available source in priority order (`semantic-scholar`, `deepxiv`, `exa`, `gemini`, and `openalex` are excluded from `all`; they must be explicitly listed).
+Parse `$ARGUMENTS` for a `— sources:` directive. For `auto`, resolve an explicit list of relevant available providers first; the conditional provider steps below apply to that resolved list as well as user-named lists:
+- **If `— sources:` is specified**: Only search the listed sources (comma-separated). Valid values: `zotero`, `obsidian`, `local`, `web`, `semantic-scholar`, `deepxiv`, `exa`, `gemini`, `openalex`, `all`, `auto`.
+- **If not specified**: Use `auto`: choose relevant available sources for the question, local materials and primary academic sources as appropriate. Record actual sources and limitations. Legacy `all` retains its local/Zotero/Obsidian/web bundle; optional named providers are not silently added to that alias. Explicit lists constrain the search. Load [literature-evidence](../shared-references/literature-evidence.md) for coverage, reading and identity records.
 
 Examples:
 ```
-/research-lit "diffusion models"                        → all (default)
-/research-lit "diffusion models" — sources: all         → all
+/research-lit "diffusion models"                        → auto (default)
+/research-lit "diffusion models" — sources: auto        → question-appropriate available sources
+/research-lit "diffusion models" — sources: all         → legacy local/Zotero/Obsidian/web bundle
 /research-lit "diffusion models" — sources: zotero      → Zotero only
 /research-lit "diffusion models" — sources: zotero, web → Zotero + web
 /research-lit "diffusion models" — sources: local       → local PDFs only
@@ -75,14 +85,14 @@ Examples:
 | 1 | **Zotero** (via MCP) | `zotero` | Try calling any `mcp__zotero__*` tool — if unavailable, skip | Collections, tags, annotations, PDF highlights, BibTeX, semantic search |
 | 2 | **Obsidian** (via MCP) | `obsidian` | Try calling any `mcp__obsidian-vault__*` tool — if unavailable, skip | Research notes, paper summaries, tagged references, wikilinks |
 | 3 | **Local PDFs** | `local` | `Glob: papers/**/*.pdf, literature/**/*.pdf` | Raw PDF content (first 3 pages) |
-| 4 | **Web search** | `web` | Always available (WebSearch) | arXiv, Semantic Scholar, Google Scholar |
-| 5 | **Semantic Scholar API** | `semantic-scholar` | `$S2_FETCHER` resolves (canonical name `semantic_scholar_fetch.py`, per integration-contract §2 Codex chain) | Published venue papers (IEEE, ACM, Springer) with structured metadata: citation counts, venue info, TLDR. **Only runs when explicitly requested** |
-| 6 | **DeepXiv CLI** | `deepxiv` | `$DEEPXIV_FETCHER` resolves (canonical name `deepxiv_fetch.py`, per integration-contract §2) **and** `deepxiv` CLI present | Progressive paper retrieval: search, brief, head, section, trending, web search. **Only runs when explicitly requested** |
-| 7 | **Exa Search** | `exa` | `$EXA_FETCHER` resolves (canonical name `exa_search.py`, per integration-contract §2); fetcher handles `exa-py` SDK + API key internally | AI-powered broad web search with content extraction (highlights, text, summaries). Covers blogs, docs, news, companies, and research papers beyond arXiv/S2. **Only runs when explicitly requested** |
-| 8 | **Gemini** (MCP / CLI) | `gemini` | `mcp__gemini-cli__ask-gemini` is available, or `gemini` CLI is installed | AI-powered broad literature discovery that decomposes topics into sub-problems, aliases, and variants. **Only runs when explicitly requested** |
-| 9 | **OpenAlex** | `openalex` | `$OPENALEX_FETCHER` resolves (canonical name `openalex_fetch.py`, per integration-contract §2 Codex chain) and Python `requests` is importable | Open citation graph with institutional affiliations, funding data, and broad work metadata. **Only runs when explicitly requested** |
+| 4 | **Web search** | `web` | Check available search/browse tooling; report unavailable access | arXiv, Semantic Scholar, Google Scholar |
+| 5 | **Semantic Scholar API** | `semantic-scholar` | `$S2_FETCHER` resolves (canonical name `semantic_scholar_fetch.py`, per integration-contract §2 Codex chain) | Published venue papers (IEEE, ACM, Springer) with structured metadata: citation counts, venue info, TLDR. **Runs when included in the resolved source list** |
+| 6 | **DeepXiv CLI** | `deepxiv` | `$DEEPXIV_FETCHER` resolves (canonical name `deepxiv_fetch.py`, per integration-contract §2) **and** `deepxiv` CLI present | Progressive paper retrieval: search, brief, head, section, trending, web search. **Runs when included in the resolved source list** |
+| 7 | **Exa Search** | `exa` | `$EXA_FETCHER` resolves (canonical name `exa_search.py`, per integration-contract §2); fetcher handles `exa-py` SDK + API key internally | AI-powered broad web search with content extraction (highlights, text, summaries). Covers blogs, docs, news, companies, and research papers beyond arXiv/S2. **Runs when included in the resolved source list** |
+| 8 | **Gemini** (MCP / CLI) | `gemini` | `mcp__gemini-cli__ask-gemini` is available, or `gemini` CLI is installed | AI-powered broad literature discovery that decomposes topics into sub-problems, aliases, and variants. **Runs when included in the resolved source list** |
+| 9 | **OpenAlex** | `openalex` | `$OPENALEX_FETCHER` resolves (canonical name `openalex_fetch.py`, per integration-contract §2 Codex chain) and Python `requests` is importable | Open citation graph with institutional affiliations, funding data, and broad work metadata. **Runs when included in the resolved source list** |
 
-> If the user explicitly requests Zotero or Obsidian and that source is not configured, stop and tell the user how to enable it. Only sources that were not requested may be skipped silently.
+> If the user explicitly requests Zotero or Obsidian and that source is not configured, report it as unavailable and explain setup; continue work independent of that source with coverage marked incomplete. Only sources that were not requested may be omitted when irrelevant; summarize material coverage limitations.
 
 ## Workflow
 
@@ -100,7 +110,7 @@ same-family provisional. See
 
 ### Step 0a: Search Zotero Library (if available)
 
-**If the user explicitly requested Zotero and the Zotero MCP is not configured, stop and ask the user to configure it. Otherwise skip this step entirely.**
+**Run only if Zotero is in the resolved source list. If unavailable, record the missing configuration and continue independent work; do not claim its library was searched.**
 
 Try calling a Zotero MCP tool (e.g., search). If it succeeds:
 
@@ -118,7 +128,7 @@ Try calling a Zotero MCP tool (e.g., search). If it succeeds:
 
 ### Step 0b: Search Obsidian Vault (if available)
 
-**If the user explicitly requested Obsidian and the Obsidian MCP is not configured, stop and ask the user to configure it. Otherwise skip this step entirely.**
+**Run only if Obsidian is in the resolved source list. If unavailable, record the missing configuration and continue independent work; do not claim its vault was searched.**
 
 Try calling an Obsidian MCP tool (e.g., search). If it succeeds:
 
@@ -168,7 +178,7 @@ Before searching online, check if the user already has relevant papers locally:
 - Focus on papers from last 2 years unless studying foundational work
 - **De-duplicate**: Skip papers already found in Zotero, Obsidian, or local library
 
-**arXiv API search** (always runs, no download by default):
+**arXiv API search** (only if web/arXiv retrieval is in the resolved source scope; no download by default):
 
 Resolve `$ARXIV_FETCHER` via the canonical strict-safe Codex chain
 (see [`shared-references/integration-contract.md`](../shared-references/integration-contract.md) §2):
@@ -200,7 +210,7 @@ The arXiv API returns structured metadata (title, abstract, full author list, ca
 
 **Semantic Scholar API search** (only when `semantic-scholar` is in sources):
 
-When the user explicitly requests `— sources: semantic-scholar` or `— sources: web, semantic-scholar`, search for published venue papers beyond arXiv:
+When the resolved source list includes the provider (for example `— sources: semantic-scholar` or `— sources: web, semantic-scholar`), search for published venue papers beyond arXiv:
 
 ```bash
 # Re-resolve $ARIS_REPO + $S2_FETCHER (SKILL bash blocks may run in separate shells).
@@ -226,13 +236,13 @@ fi
 Why use Semantic Scholar? Many IEEE/ACM journal papers are not on arXiv. S2 fills the gap for published venue-only papers with citation counts and venue metadata.
 
 De-duplication between arXiv and S2:
-- Match by arXiv ID first (`externalIds.ArXiv`), then normalized title.
+- Match by arXiv ID (`externalIds.ArXiv`) or DOI. Similar normalized titles only flag candidates; do not merge them automatically.
 - If a paper appears in both and S2 has venue / DOI / citation metadata, use S2 as authoritative metadata while keeping the arXiv PDF link.
 - S2 results without `externalIds.ArXiv` are venue-only papers and should be preserved as unique value.
 
 **DeepXiv search** (only when `deepxiv` is in sources):
 
-When the user explicitly requests `— sources: deepxiv` (or includes `deepxiv` in a combined source list), use the DeepXiv adapter for progressive retrieval:
+When the resolved source list includes the provider (for example `— sources: deepxiv` (or includes `deepxiv` in a combined source list)), use the DeepXiv adapter for progressive retrieval:
 
 ```bash
 # Re-resolve $ARIS_REPO + $DEEPXIV_FETCHER (SKILL bash blocks may run in separate shells).
@@ -264,16 +274,16 @@ else
 fi
 ```
 
-If `deepxiv_fetch.py` or the `deepxiv` CLI is unavailable, skip this source gracefully and continue with the remaining requested sources.
+If `deepxiv_fetch.py` or the `deepxiv` CLI is unavailable, report that this requested source is unavailable and continue independent work with incomplete coverage.
 
 **De-duplication against other sources**:
 - Match by arXiv ID first
-- Fall back to normalized title when needed
+- Flag similar normalized titles for manual identity review; do not automatically merge them
 - Keep one canonical paper entry and record `deepxiv` as an additional source when it overlaps with web/arXiv findings
 
 **Exa search** (only when `exa` is in sources):
 
-When the user explicitly requests `— sources: exa` (or includes `exa` in a combined source list), use the Exa tool for broad AI-powered web search with content extraction:
+When the resolved source list includes the provider (for example `— sources: exa` (or includes `exa` in a combined source list)), use the Exa tool for broad AI-powered web search with content extraction:
 
 ```bash
 # Re-resolve $ARIS_REPO + $EXA_FETCHER (SKILL bash blocks may run in separate shells).
@@ -305,16 +315,16 @@ else
 fi
 ```
 
-If `exa_search.py` or the `exa-py` SDK is unavailable, skip this source gracefully and continue with the remaining requested sources.
+If `exa_search.py` or the `exa-py` SDK is unavailable, report that this requested source is unavailable and continue independent work with incomplete coverage.
 
 **De-duplication against other sources**:
-- Match by URL first, then normalized title
+- Use a verified canonical paper URL or strong ID; similar titles only flag possible matches
 - If Exa returns an arXiv paper already found by other sources, prefer structured metadata from arXiv/S2
 - Exa results from non-academic domains (blogs, docs, news) are unique value not covered by other sources
 
 **Gemini search** (only when `gemini` is in sources):
 
-When the user explicitly requests `— sources: gemini` (or includes `gemini` in a combined source list), use Gemini for AI-powered broad literature discovery.
+When the resolved source list includes the provider (for example `— sources: gemini` (or includes `gemini` in a combined source list)), use Gemini for AI-powered broad literature discovery.
 
 **Priority 1 — Gemini MCP** (preferred): Call `mcp__gemini-cli__ask-gemini` with the search prompt:
 
@@ -326,7 +336,7 @@ IMPORTANT CONSTRAINTS:
 1. Search from MULTIPLE angles — decompose the topic into sub-problems, aliases, neighboring tasks, and common benchmark/settings variants.
 2. Prefer papers that are genuinely relevant, not merely keyword-adjacent.
 3. Include top venues, journals, surveys, recent preprints, and papers with code when available.
-4. Focus on papers from 2022 onward unless older foundational work is necessary.
+4. Choose a date range appropriate to the question and current date; include relevant foundational work.
 
 For EACH paper found, provide ALL of the following:
 - Title: [exact title]
@@ -338,26 +348,26 @@ For EACH paper found, provide ALL of the following:
 - Code URL: [GitHub/GitLab link if available, or "No code"]
 - Summary: [one-sentence core contribution]
 
-Find at least 15 papers.',
+Return relevant traceable candidates within the requested search budget; do not pad a fixed count.',
   model: 'auto-gemini-3'
 })
 ```
 
 **Priority 2 — Gemini CLI fallback** (if MCP unavailable): Use `gemini -p "...same prompt..." 2>/dev/null` via Bash (timeout: 120s).
 
-If both MCP and CLI are unavailable, skip this source gracefully and continue with the remaining requested sources.
+If both MCP and CLI are unavailable, report that this requested source is unavailable and continue independent work with incomplete coverage.
 
 **Why use Gemini?** Gemini provides AI-driven discovery that goes beyond keyword matching — it decomposes topics, explores naming variants, and surfaces papers that traditional API-based searches may miss. It fills a different retrieval niche from structured database queries.
 
 **De-duplication against other sources**:
-- Match by arXiv ID first, DOI second, normalized title third
+- Match by arXiv ID or DOI; title similarity only flags a possible match
 - If Gemini returns a paper already found by Semantic Scholar, prefer S2's citation count and venue metadata
 - If Gemini returns a paper already found by arXiv, prefer arXiv's structured metadata
 - Do not use Gemini-reported citation counts; they may be inaccurate
 
 **OpenAlex search** (only when `openalex` is in sources):
 
-When the user explicitly requests `— sources: openalex` (or includes `openalex` in a combined source list), use OpenAlex API for comprehensive academic metadata:
+When the resolved source list includes the provider (for example `— sources: openalex` (or includes `openalex` in a combined source list), use OpenAlex API for comprehensive academic metadata):
 
 ```bash
 # Re-resolve $ARIS_REPO + $OPENALEX_FETCHER (SKILL bash blocks may run in separate shells).
@@ -374,7 +384,6 @@ if [ -z "$OPENALEX_FETCHER" ] || ! python3 -c "import requests" >/dev/null 2>&1;
   echo "OpenAlex source not available (openalex_fetch.py unresolved or 'requests' module missing); skipping." >&2
 else
   if python3 "$OPENALEX_FETCHER" search "QUERY" --max 10 \
-      --year "2022-" \
       --type article \
       --sort relevance; then
     echo "D2 contribution: openalex (helper invocation exit 0)" >&2
@@ -384,12 +393,12 @@ else
 fi
 ```
 
-If `openalex_fetch.py` is not found or the `requests` module is missing, skip this source gracefully and continue with the remaining requested sources.
+If `openalex_fetch.py` is not found or the `requests` module is missing, report that this requested source is unavailable and continue independent work with incomplete coverage.
 
 **Why use OpenAlex?** OpenAlex provides an open citation graph, institutional affiliations, funding data, and broad work metadata across disciplines.
 
 **De-duplication against other sources**:
-- Match by DOI first, then arXiv ID, then normalized title
+- Match by DOI or arXiv ID; title similarity only flags a possible match
 - If OpenAlex and Semantic Scholar overlap, prefer S2 for citation counts and venue metadata
 - If OpenAlex and arXiv overlap, prefer arXiv's PDF link and metadata while retaining OpenAlex's citation and institution data
 
@@ -406,7 +415,7 @@ ARXIV_FETCHER=""
 [ -z "$ARXIV_FETCHER" ] && [ -f tools/arxiv_fetch.py ] && ARXIV_FETCHER="tools/arxiv_fetch.py"
 [ -z "$ARXIV_FETCHER" ] && [ -f ~/.codex/skills/arxiv/arxiv_fetch.py ] && ARXIV_FETCHER="$HOME/.codex/skills/arxiv/arxiv_fetch.py"
 
-# Download top N most relevant arXiv papers; skip silently if helper unresolved.
+# Download requested relevant arXiv papers; report unresolved helper and missing downloads.
 [ -n "$ARXIV_FETCHER" ] && python3 "$ARXIV_FETCHER" download ARXIV_ID --dir papers/
 ```
 - Only download papers ranked in the top ARXIV_MAX_DOWNLOAD by relevance
@@ -465,10 +474,10 @@ If the project has an active research wiki, update it after producing the litera
 If the wiki path or format is unclear, ask before writing. Do not invent a wiki location.
 
 ## Key Rules
-- Always include paper citations (authors, year, venue)
+- Cite verified paper identities and available metadata; do not invent missing authors, years or venues for synthetic or incomplete materials.
 - Distinguish between peer-reviewed and preprints
 - Be honest about limitations of each paper
 - Note if a paper directly competes with or supports our approach
-- If a user-requested Zotero or Obsidian source is unavailable, stop and report the missing configuration instead of silently degrading.
+- If a requested source is unavailable, report its status and incomplete coverage; continue useful work that does not depend on it.
 - Only unrequested optional sources may be skipped automatically.
 - Zotero/Obsidian tools may have different names depending on how the user configured the MCP server (e.g., `mcp__zotero__search` or `mcp__zotero-mcp__search_items`). Try the most common patterns and adapt.

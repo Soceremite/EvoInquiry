@@ -3,11 +3,22 @@ name: "paper-plan"
 description: "Generate a structured paper outline from review conclusions and experiment results. Use when user says \"写大纲\", \"paper outline\", \"plan the paper\", \"论文规划\", or wants to create a paper plan before writing."
 ---
 
+<!-- EVO-INQUIRY:BEGIN -->
+For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),
+or reuse it if already loaded and unchanged in this session. Apply relevant
+principles within the user's scope and this skill's existing outputs, review
+standards, and recovery contracts. Carry them into nested research tasks and
+reviewer briefs. Continue authorized work through its necessary steps; honor
+budgets, blocking checkpoints, and stopping conditions.
+
+For this stage, read [project-governance](../shared-references/project-governance.md). Plan the narrative from fixed report/evidence revisions and actual review status; retain these refs for drafting instead of re-reading a floating current report.
+<!-- EVO-INQUIRY:END -->
+
 > Override for Codex users who want **Gemini**, not a second Codex agent, to act as the reviewer. Install this package **after** `skills/skills-codex/*`.
 
 # Paper Plan: From Review Conclusions to Paper Outline
 
-> **Gemini overlay assurance:** `review_independence: cross-family` and `acceptance_status: accepted`.
+> **Gemini overlay assurance:** verify the actual different-family reviewer before recording `review_independence: cross-family`; `acceptance_status: accepted` requires a positive disposition and the workflow's evidence closure. Negative, unavailable and budget-stop outcomes grant no phase acceptance; same-family responses retain the base provisional contract.
 
 Generate a structured, section-by-section paper outline from: **$ARGUMENTS**
 
@@ -263,3 +274,13 @@ Save the final outline to `PAPER_PLAN.md` in the project root:
 ## Acknowledgements
 
 Outline methodology inspired by [Research-Paper-Writing-Skills](https://github.com/Master-cai/Research-Paper-Writing-Skills) (claim-evidence mapping), [claude-scholar](https://github.com/Galaxy-Dawn/claude-scholar) (citation verification), and [Imbad0202/academic-research-skills](https://github.com/Imbad0202/academic-research-skills) (claim verification protocol).
+
+## Evidence fidelity
+
+Keep the original research question and primary outcomes visible, including
+material null or negative findings beside the claim they qualify. An explicitly
+exploratory question may motivate a new narrative; record that change rather
+than presenting a selected favorable metric as the original objective. Scope
+claims to verified evidence and distinguish lack of support from disproof.
+
+For empirical papers, check whether the existing analysis includes sample-level diagnosis. When it helps answer the research question, allocate a compact case-study or error-analysis section using [case-study-analysis](../shared-references/case-study-analysis.md). Link its actual evidence and selection rule, including material regressions or shared failures. If artifacts are missing, record a collection need rather than inventing a panel or delaying an unrelated outline. Illustrative cases do not upgrade aggregate evidence or establish a mechanism.

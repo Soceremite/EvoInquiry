@@ -10,10 +10,10 @@ import sys
 
 try:
     from tools.publication_policy import load_policy, publication_errors
-    from tools.skill_contracts import HOOK, contract_errors, load_contract, normalize_namespace, skill_parts
+    from tools.skill_contracts import HOOK, contract_errors, digest, load_contract, normalize_namespace, skill_parts
 except ModuleNotFoundError:
     from publication_policy import load_policy, publication_errors
-    from skill_contracts import HOOK, contract_errors, load_contract, normalize_namespace, skill_parts
+    from skill_contracts import HOOK, contract_errors, digest, load_contract, normalize_namespace, skill_parts
 
 BLOCK = HOOK
 
@@ -23,6 +23,16 @@ REQUIRED_COMPARISON_RESOURCES = (
     'docs/COMPARISON_EVIDENCE.md',
     'skills/shared-references/comparative-experiments.md',
     'skills/skills-codex/shared-references/comparative-experiments.md',
+)
+
+REQUIRED_RESEARCH_RESOURCES = (
+    'tools/literature_records.py', 'tools/figure_evidence.py',
+    'skills/shared-references/literature-evidence.md',
+    'skills/skills-codex/shared-references/literature-evidence.md',
+    'skills/shared-references/research-decisions.md',
+    'skills/skills-codex/shared-references/research-decisions.md',
+    'skills/shared-references/case-study-analysis.md',
+    'skills/skills-codex/shared-references/case-study-analysis.md',
 )
 
 
@@ -40,8 +50,10 @@ def verify(root: Path, baseline: Path | None = None) -> dict:
         if len(re.findall(r'^## [1-6]\. ', principles, re.M)) != 6:
             errors.append('Expected six named principles')
     try:
-        retained = set(load_contract(root)['retained_skills'])
+        contract = load_contract(root)
+        retained = set(contract['retained_skills'])
     except (OSError, ValueError, TypeError):
+        contract = {}
         retained = set()
     for skill in skills:
         rel = skill.relative_to(root)
@@ -58,7 +70,16 @@ def verify(root: Path, baseline: Path | None = None) -> dict:
                 current_parts = skill_parts(body)[:2]
                 current_parts = (current_parts[0], normalize_namespace(current_parts[1]))
                 old_parts = skill_parts(old.read_text())[:2] if old.is_file() else None
+                if old_parts:
+                    old_parts = (old_parts[0], normalize_namespace(old_parts[1]))
                 equal = old.is_file() and current_parts == old_parts
+                adaptation = contract.get('workflow_adaptations', {}).get(skill.parent.name)
+                if not equal and old_parts and adaptation:
+                    # A recorded candidate can differ only from the retained
+                    # original body. Supplying an unrelated baseline still fails.
+                    equal = (current_parts[0] == old_parts[0]
+                             and digest(normalize_namespace(old_parts[1]).encode()) == adaptation['baseline_body_sha256']
+                             and digest(current_parts[1].encode()) == adaptation['body_sha256'])
             except (ValueError, TypeError):
                 equal = False
             if not equal:
@@ -82,9 +103,14 @@ def verify(root: Path, baseline: Path | None = None) -> dict:
     for required in REQUIRED_COMPARISON_RESOURCES:
         if not (root / required).is_file():
             errors.append(f'Missing required comparison/routing resource {required}')
+    if contract.get('schema_version') == 3:
+        for required in REQUIRED_RESEARCH_RESOURCES:
+            if not (root / required).is_file():
+                errors.append(f'Missing required research resource {required}')
     if baseline is not None:
-        # Retire only individually audited public materials. All retained skill
-        # contracts and runtime helpers still receive byte-for-byte checks.
+        # Retire only individually audited public materials. The frozen contract
+        # checks current protected bytes, including registered adaptations and
+        # the historical namespace migration; validate the supplied original too.
         policy = load_policy(root)
         retired = set(policy['retired_upstream_files'])
         permitted = {
@@ -114,6 +140,18 @@ def verify(root: Path, baseline: Path | None = None) -> dict:
                     errors.append(f'{rel}: audited retirement was not applied')
                 continue
             if original.is_file() and str(rel) not in permitted:
+                frozen_hash = contract.get('protected_files', {}).get(str(rel))
+                if frozen_hash:
+                    matches_frozen = digest(original.read_bytes()) == frozen_hash
+                    if not matches_frozen:
+                        try:
+                            matches_frozen = digest(normalize_namespace(original.read_text()).encode()) == frozen_hash
+                        except UnicodeError:
+                            pass
+                    if matches_frozen:
+                        # contract_errors above still rejects a missing or
+                        # tampered current file; this is no new exception.
+                        continue
                 current = root / rel
                 if not current.is_file() or current.read_bytes() != original.read_bytes():
                     errors.append(f'{rel}: unrelated upstream content changed')

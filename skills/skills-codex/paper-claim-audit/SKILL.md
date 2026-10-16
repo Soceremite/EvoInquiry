@@ -61,6 +61,14 @@ It does NOT receive:
 
 This is **stricter than reviewer-independence** — it's zero-context evidence audit.
 
+## Evidence calibration
+
+Keep `claim_supported: yes | partial | no` and existing review gates. Explain
+whether an unsupported claim has contrary evidence or simply lacks sufficient
+evidence; `no` is not automatically a refutation. File existence, number matching,
+review acceptance and scientific support are distinct judgments. Preserve gains,
+regressions, unknowns and the original primary metric in the reviewer brief.
+
 ## Workflow
 
 ### Step 1: Collect Files (Executor — Codex)

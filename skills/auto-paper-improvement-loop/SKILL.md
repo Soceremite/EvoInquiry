@@ -5,6 +5,16 @@ argument-hint: "[paper-directory] [— style-ref: <source>] [— edit-whitelist 
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, Skill, mcp__codex__codex, mcp__codex__codex-reply
 ---
 
+<!-- EVO-INQUIRY:BEGIN -->
+For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),
+or reuse it if already loaded and unchanged in this session. Apply relevant
+principles within the user's scope and this skill's existing outputs, review
+standards, and recovery contracts. Carry them into nested research tasks and
+reviewer briefs. Continue authorized work through its necessary steps; honor
+budgets, blocking checkpoints, and stopping conditions.
+<!-- EVO-INQUIRY:END -->
+
+
 <!-- EI-GOVERNANCE:BEGIN -->
 Resolve runtime state through tools/state_paths.py before .ei operations. Use
 [project-governance](../shared-references/project-governance.md) for fixed evidence,
@@ -268,16 +278,15 @@ mcp__codex__codex:
     claim"), instruction confessions ("we do not address X"), and generic caveats
     outside Limitations as writing defects to remove. Tone fixes must never alter
     facts, negation, modality, scope, comparison direction, or numbers.
-    Also flag narrative defects: a progress-report structure ("we first tried
-    A, then B"), a story built on a metric the method loses, results narrated
-    as defeats ("underperforms", "fails to surpass") instead of explained as a
-    goal difference or tradeoff, experiments with no argumentative duty, an
-    abstract or introduction that opens on background or implementation
-    instead of problem -> gap -> idea -> strongest result, and a conclusion
-    that ends on new self-negation. The fix is reframing and cutting where
-    the evidence supports the reframing; a genuine weakness is stated
-    neutrally and kept in Limitations. Never delete unfavorable numbers from
-    tables, and never dress a weakness as a tradeoff.
+    Preserve the original research question and prespecified primary outcomes.
+    Report material null findings and regressions beside the claims they qualify.
+    Distinguish a supported claim, an unsupported claim and evidence against it;
+    no unfavorable result is a writing defect merely because of its sign.
+    Retrospective reframing must be labeled exploratory and cannot redefine the
+    original success criterion. Explain a tradeoff only when the evidence supports
+    it. Keep generic caveats in Limitations; claim-defining exceptions remain with
+    the affected claim. Never hide material unfavorable evidence or select a
+    favorable secondary metric as though it had always been the primary target.
 
     ## Paper Files:
     - LaTeX source: [list all section .tex files]
@@ -351,8 +360,8 @@ never manuscript content; tone edits never change what the paper knows.
 | Genuine overclaim | Narrow the claim itself to the supported scope/modality — never substitute a softer-sounding synonym for fixing scope, comparison, or aggregation |
 | Supported claim wrapped in caution | Remove the redundant hedges; keep any scope qualifier that makes the claim true |
 | Scattered generic caveats | Consolidate into Limitations and delete the duplicates |
-| Story built on a losing metric, or results narrated as defeats | Reframe around the contest the paper wins; explain the gap as a goal difference or tradeoff when the evidence supports that, otherwise state it neutrally and narrow the claim; keep every number in the table |
-| Experiment with no argumentative duty | Cut, shorten, move to the appendix, or redesign it so it proves the method, the mechanism, the target-scenario value, or rules out an alternative |
+| Unsupported primary claim or material regression | Report the original primary outcome and its implications beside the claim. Keep secondary gains exploratory; narrow unsupported scope and explain only evidenced tradeoffs. Preserve all material evidence |
+| Experiment whose role is unclear | Identify the question, assumption, alternative or boundary it tests. Preserve material null/negative results; shorten unrelated detail |
 | Missing metrics | Add quantitative table with honest parameter counts and caveats |
 | Theorem not self-contained | Add "Interpretation" paragraph listing all dependencies |
 | Notation confusion | Rename conflicting symbols globally, add Notation paragraph |
@@ -432,16 +441,15 @@ mcp__codex__codex:
     claim"), instruction confessions ("we do not address X"), and generic caveats
     outside Limitations as writing defects to remove. Tone fixes must never alter
     facts, negation, modality, scope, comparison direction, or numbers.
-    Also flag narrative defects: a progress-report structure ("we first tried
-    A, then B"), a story built on a metric the method loses, results narrated
-    as defeats ("underperforms", "fails to surpass") instead of explained as a
-    goal difference or tradeoff, experiments with no argumentative duty, an
-    abstract or introduction that opens on background or implementation
-    instead of problem -> gap -> idea -> strongest result, and a conclusion
-    that ends on new self-negation. The fix is reframing and cutting where
-    the evidence supports the reframing; a genuine weakness is stated
-    neutrally and kept in Limitations. Never delete unfavorable numbers from
-    tables, and never dress a weakness as a tradeoff.
+    Preserve the original research question and prespecified primary outcomes.
+    Report material null findings and regressions beside the claims they qualify.
+    Distinguish a supported claim, an unsupported claim and evidence against it;
+    no unfavorable result is a writing defect merely because of its sign.
+    Retrospective reframing must be labeled exploratory and cannot redefine the
+    original success criterion. Explain a tradeoff only when the evidence supports
+    it. Keep generic caveats in Limitations; claim-defining exceptions remain with
+    the affected claim. Never hide material unfavorable evidence or select a
+    favorable secondary metric as though it had always been the primary target.
     Ignore any prior review rounds, prior fix lists, or executor explanations.
     Judge the paper only from the current LaTeX source and compiled PDF.
 

@@ -40,6 +40,7 @@ SPEC.loader.exec_module(MODULE)
 # calls in each do so. A base-skill edit that adds or removes artifact-grounded
 # review prompts should land here deliberately, not silently.
 EXPECTED_ARTIFACT_BLOCKS = {
+    "auto-paper-improvement-loop": 2,  # manuscript and PDF inspection in both rounds
     "auto-review-loop": 2,      # round-1 artifact review + round-2 changed-files reply
     "research-review": 1,       # "Revised files:" follow-up round
 }

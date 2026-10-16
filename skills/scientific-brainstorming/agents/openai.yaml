@@ -1,0 +1,5 @@
+interface:
+  display_name: "Research Brainstorming"
+  short_description: "Frame research questions and test competing explanations"
+policy:
+  allow_implicit_invocation: true

@@ -6,7 +6,7 @@ import sys
 
 import pytest
 
-from tools.evaluate_skill_behavior import discover_variant, run_case
+from tools.evaluate_skill_behavior import discover_variant, run_case, selection_config
 
 
 @pytest.fixture
@@ -65,6 +65,22 @@ print(json.dumps({'type':'turn.completed'}))
 
 
 @pytest.mark.skipif(os.name != 'posix', reason='CLI process-group harness uses POSIX signals')
+def test_mainline_read_is_not_mistaken_for_the_discovered_codex_entrypoint(setup_case, tmp_path):
+    case, fixtures, output, toolkit = setup_case
+    entrypoint = '/x/plugins/cache/evo-inquiry-eval-beta4/evo-inquiry/1.0.0-beta.4/skills/research-review/SKILL.md'
+    cli = fake_cli(tmp_path, '''import json,sys
+sys.stdin.read()
+print(json.dumps({'type':'item.completed','item':{'type':'command_execution','command':''' + repr('cat ' + entrypoint) + ''','exit_code':0,'status':'completed'}}))
+print(json.dumps({'type':'turn.completed'}))
+''')
+    result = run_case(case, fixtures, output, toolkit, cli, 'evo-inquiry@evo-inquiry-eval-beta4')
+    assert not result['variant_mismatch']
+    assert result['observed_skill_entrypoints'] == [entrypoint]
+    assert result['noncanonical_skill_entrypoints'] == [entrypoint]
+    assert result['assessment'] == 'UNASSESSED'
+
+
+@pytest.mark.skipif(os.name != 'posix', reason='CLI process-group harness uses POSIX signals')
 def test_startup_failure_is_separate_from_behavior_and_keeps_evidence(setup_case, tmp_path):
     case, fixtures, output, toolkit = setup_case
     cli = fake_cli(tmp_path, '''import sys
@@ -96,6 +112,28 @@ time.sleep(20)
 
 
 @pytest.mark.skipif(os.name != 'posix', reason='CLI process-group harness uses POSIX signals')
+def test_repeated_service_errors_stop_early_and_remain_unassessed(setup_case, tmp_path):
+    case, fixtures, output, toolkit = setup_case
+    case['timeout_seconds'] = 5
+    cli = fake_cli(tmp_path, '''import json,sys,time
+sys.stdin.read()
+sys.stderr.write('The server is currently overloaded; reconnecting soon\\n')
+sys.stderr.flush()
+print(json.dumps({'type':'item.completed','item':{'type':'error','message':'stream disconnected; retrying'}}), flush=True)
+time.sleep(20)
+''')
+    result = run_case(case, fixtures, output, toolkit, cli, 'evo-inquiry@evo-inquiry-eval-beta4')
+    assert result['limit'] == 'service_error'
+    assert result['failure_kind'] == 'service_error'
+    assert result['service_error_count'] == 2
+    assert not result['session_completed']
+    assert result['seconds'] < 3
+    assert result['assessment'] == 'UNASSESSED'
+    assert 'overloaded' in '\n'.join(result['service_error_messages']).lower()
+    assert (output / '01/events.jsonl').is_file()
+
+
+@pytest.mark.skipif(os.name != 'posix', reason='CLI process-group harness uses POSIX signals')
 def test_frozen_model_override_survives_changed_user_default(setup_case, tmp_path, monkeypatch):
     case, fixtures, output, toolkit = setup_case
     defaults = tmp_path / 'mutable-defaults.json'
@@ -123,7 +161,26 @@ print(json.dumps({'type':'turn.completed'}))
         assert json.loads((output / identifier / 'project/observed-model.json').read_text()) == pinned
 
 
-@pytest.mark.parametrize('drift', ['skill', 'guidance', 'storage', 'helper', 'governance', 'schema'])
+def test_selection_discovers_future_marketplaces_and_preserves_unrelated_preferences(tmp_path, monkeypatch):
+    monkeypatch.setenv('CODEX_HOME', str(tmp_path))
+    (tmp_path / 'config.toml').write_text('''[plugins."evo-inquiry@future-v999"]
+enabled=true
+[plugins."unrelated@other"]
+enabled=true
+[skills]
+config=[{path="/personal/unrelated/SKILL.md",enabled=false}]
+''', encoding='utf-8')
+    cached = tmp_path / 'plugins/cache/stale-unconfigured/evo-inquiry/9/skills/skills-codex/example'
+    cached.mkdir(parents=True); (cached / 'SKILL.md').write_text('stale', encoding='utf-8')
+    settings = selection_config('evo-inquiry@candidate-v140')
+    assert 'plugins."evo-inquiry@future-v999".enabled=false' in settings
+    assert 'plugins."evo-inquiry@stale-unconfigured".enabled=false' in settings
+    assert not any('unrelated@other' in setting for setting in settings)
+    assert any('/personal/unrelated/SKILL.md' in setting and 'enabled=false' in setting for setting in settings)
+    assert settings[-1] == 'plugins."evo-inquiry@candidate-v140".enabled=true'
+
+
+@pytest.mark.parametrize('drift', ['skill', 'guidance', 'storage', 'helper', 'governance', 'schema', 'mainline', 'overlay'])
 def test_discovery_rejects_stale_cache_with_the_correct_name_and_version(tmp_path, drift):
     toolkit = tmp_path / 'source'
     cache = tmp_path / 'cache/market/evo-inquiry/1.0.0-beta.4'
@@ -133,17 +190,21 @@ def test_discovery_rejects_stale_cache_with_the_correct_name_and_version(tmp_pat
     helper_rel = Path('tools/checkpoint_retention.py')
     governance_rel = Path('tools/execution_registry.py')
     schema_rel = Path('tools/schemas/execution.schema.json')
+    mainline_rel = Path('skills/example/SKILL.md')
+    overlay_rel = Path('skills/skills-codex-claude-review/example/SKILL.md')
     for root in (toolkit, cache):
         for rel, text in ((skill_rel, 'Current skill bytes'), (common_rel, 'Current guidance'),
                           (storage_rel, 'Current storage guidance'), (helper_rel, 'Current helper'),
-                          (governance_rel, 'Current governed launcher'), (schema_rel, '{}')):
+                          (governance_rel, 'Current governed launcher'), (schema_rel, '{}'),
+                          (mainline_rel, 'Current mainline'), (overlay_rel, 'Current overlay')):
             (root / rel).parent.mkdir(parents=True, exist_ok=True)
             (root / rel).write_text(text)
     (toolkit / '.codex-plugin').mkdir()
     (toolkit / '.codex-plugin/plugin.json').write_text('{"version":"1.0.0-beta.4"}')
     (cache / {'skill': skill_rel, 'guidance': common_rel, 'storage': storage_rel,
               'helper': helper_rel, 'governance': governance_rel,
-              'schema': schema_rel}[drift]).write_text('Stale installed bytes')
+              'schema': schema_rel, 'mainline': mainline_rel,
+              'overlay': overlay_rel}[drift]).write_text('Stale installed bytes')
     selector = 'evo-inquiry@evo-inquiry-eval-beta4'
     response = {'data': [{'skills': [{'name': 'evo-inquiry:example', 'enabled': True,
                                       'pluginId': selector, 'path': str(cache / skill_rel)}]}]}
@@ -156,6 +217,7 @@ for line in sys.stdin:
 ''')
     message = {'skill': 'skill bytes', 'guidance': 'shared guidance',
                'storage': 'support resource', 'helper': 'support resource',
-               'governance': 'support resource', 'schema': 'support resource'}[drift]
+               'governance': 'support resource', 'schema': 'support resource',
+               'mainline': 'support resource', 'overlay': 'support resource'}[drift]
     with pytest.raises(RuntimeError, match=message):
         discover_variant(toolkit, selector, cli)

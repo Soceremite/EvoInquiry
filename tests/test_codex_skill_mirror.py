@@ -35,14 +35,23 @@ def has_send_input_block(text: str) -> bool:
 def test_codex_skill_set_matches_mainline() -> None:
     main_names = skill_names(MAIN_SKILLS)
     codex_names = skill_names(CODEX_SKILLS)
-    assert len(main_names) == 85
+    assert len(main_names) == 87
     assert codex_names == main_names | {"research-guide"}
+
+
+def test_mainline_common_principles_are_reachable_without_codex_tree() -> None:
+    for path in MAIN_SKILLS.glob('*/SKILL.md'):
+        text = read(path)
+        assert text.count('<!-- EVO-INQUIRY:BEGIN -->') == 1, path
+        assert text.count('<!-- EVO-INQUIRY:END -->') == 1, path
+        assert '[EvoInquiry](../shared-references/evo-inquiry.md)' in text, path
+        assert (path.parent / '../shared-references/evo-inquiry.md').resolve().is_file()
 
 
 def test_codex_shared_reference_set_matches_mainline() -> None:
     main_refs = {p.name for p in (MAIN_SKILLS / "shared-references").glob("*.md")}
     codex_refs = {p.name for p in (CODEX_SKILLS / "shared-references").glob("*.md")}
-    assert len(main_refs) == 35
+    assert len(main_refs) == 41
     assert codex_refs == main_refs | {"evo-inquiry.md", "task-scope.md", "experiment-storage.md"}
 
 
@@ -225,6 +234,9 @@ def test_codex_review_assurance_is_explicit_and_honest() -> None:
     for overlay in (CLAUDE_OVERLAY, GEMINI_OVERLAY):
         for skill_file in overlay.glob("*/SKILL.md"):
             text = read(skill_file)
+            assert text.count('<!-- EVO-INQUIRY:BEGIN -->') == 1
+            assert text.count('<!-- EVO-INQUIRY:END -->') == 1
+            assert '[EvoInquiry](../shared-references/evo-inquiry.md)' in text
             assert "review_independence: cross-family" in text
             assert "acceptance_status: accepted" in text
             assert "acceptance_status: provisional" not in text
@@ -291,7 +303,7 @@ def test_overlay_boundaries_are_exact() -> None:
 def test_non_degrading_skill_rules_are_documented() -> None:
     checks = {
         "comm-lit-review": "Do not silently downgrade",
-        "research-lit": "stop and ask the user to configure",
+        "research-lit": "continue useful work that does not depend on it",
         "paper-poster-html": "Do not silently degrade",
         "pixel-art": "Do not silently downgrade",
     }

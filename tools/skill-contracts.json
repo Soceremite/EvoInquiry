@@ -1,8 +1,8 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "source_commit": "b9c7861fd22cd2f5471765d583c593f083fa12cc",
   "upstream_commit": "3b19a22dc5a64c983d2eafd6c2c94000fadc4f8d",
-  "allowed_edits": "Retained Codex descriptions and marked EvoInquiry hooks; .aris-to-.ei namespace-only normalization; individually SHA-pinned governance adaptations of runtime/docs. Other fields and workflows remain protected.",
+  "allowed_edits": "Original baseline hashes stay immutable. Retained descriptions and marked hooks, namespace normalization and individually digest-pinned directed adaptations with rationale and local review/test references are allowed; all other changes fail.",
   "retained_skills": {
     "ablation-planner": {
       "frontmatter_except_description_sha256": "7cfb5e8f38cf737bd5af5ce1b6d8c274b707857e424df62d177e3f66529d856b",
@@ -340,7 +340,9 @@
   "added_skills": [
     "research-guide",
     "project-governance",
-    "environment-maintenance"
+    "environment-maintenance",
+    "scientific-brainstorming",
+    "research-manager"
   ],
   "protected_files": {
     ".agents/plugins/marketplace.json": "ed27a3ee7750fe22a6202db14dbea9cc946672de325259c44089834222fcbb57",
@@ -806,7 +808,9 @@
   },
   "mainline_added_skills": [
     "project-governance",
-    "environment-maintenance"
+    "environment-maintenance",
+    "scientific-brainstorming",
+    "research-manager"
   ],
   "upgrade_source_commit": "69cfbc5dc5fc34c4d7e6146fe66f5520866f7dfe",
   "approved_upgrade_files": {
@@ -913,10 +917,25 @@
       "upgrade_baseline_sha256": "ec0dfb8b08de96c97b751968dd9b8e08bf323828cbf727e757a8bf2fc2d6ed76"
     },
     "tools/run_state.py": {
-      "sha256": "b3bfc9645764601df77369bd92f382deb3ea0ece1af3eaf46d965d4bf1583515",
+      "sha256": "1dc45ea2740118e4040d781f44503483d0a62220bd91b8ccd9171d1d3bda5466",
       "baseline_sha256": "5fc466462e2d4c26c6de078dcb04100bafa3a9c56df9a0dc4e38f316a33df5b5",
-      "reason": "Governance upgrade: reviewed resolver, publication, execution/queue integration, catalog or current-inventory regression adaptation",
-      "upgrade_baseline_sha256": "5fc466462e2d4c26c6de078dcb04100bafa3a9c56df9a0dc4e38f316a33df5b5"
+      "reason": "Directed 1.4.0 evidence, workflow, figure or distribution adaptation; see scoped implementation review.",
+      "upgrade_baseline_sha256": "5fc466462e2d4c26c6de078dcb04100bafa3a9c56df9a0dc4e38f316a33df5b5",
+      "previous_adaptations": [
+        {
+          "sha256": "b3bfc9645764601df77369bd92f382deb3ea0ece1af3eaf46d965d4bf1583515",
+          "reason": "Governance upgrade: reviewed resolver, publication, execution/queue integration, catalog or current-inventory regression adaptation"
+        }
+      ],
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_evo_inquiry.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_literature_records.py",
+        "tests/test_research_decisions.py",
+        "tests/test_figure_evidence.py"
+      ]
     },
     "tools/save_trace.sh": {
       "sha256": "f6222ec6df378707905c9824478040e92bf6f7c182ccea440481a89d22bdc752",
@@ -925,10 +944,25 @@
       "upgrade_baseline_sha256": "052896125aa6f655ff1b6c5f8262766fa6f3c3f758cb5b0ec142f46ee38a9de0"
     },
     "tools/skill-groups.tsv": {
-      "sha256": "e08822158015cb45f5df32e1956343a5a8f2555e7e4711fca87d338fc4ad0263",
+      "sha256": "2a9e7db67f36eacaa813437e8dc6820e9864da017bb9d45739373902ce0ef1c4",
       "baseline_sha256": "403397ba3d9c04a6c7698f40fdf130534f9eefe9c119f403ebdbe82496ae32e6",
-      "reason": "Governance upgrade: reviewed resolver, publication, execution/queue integration, catalog or current-inventory regression adaptation",
-      "upgrade_baseline_sha256": "403397ba3d9c04a6c7698f40fdf130534f9eefe9c119f403ebdbe82496ae32e6"
+      "reason": "Directed 1.4.0 evidence, workflow, figure or distribution adaptation; see scoped implementation review.",
+      "upgrade_baseline_sha256": "403397ba3d9c04a6c7698f40fdf130534f9eefe9c119f403ebdbe82496ae32e6",
+      "previous_adaptations": [
+        {
+          "sha256": "e08822158015cb45f5df32e1956343a5a8f2555e7e4711fca87d338fc4ad0263",
+          "reason": "Governance upgrade: reviewed resolver, publication, execution/queue integration, catalog or current-inventory regression adaptation"
+        }
+      ],
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_evo_inquiry.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_literature_records.py",
+        "tests/test_research_decisions.py",
+        "tests/test_figure_evidence.py"
+      ]
     },
     "tools/verify_paper_audits.sh": {
       "sha256": "bf37d78d065bfc1f3e08bcd18997088c5297301d0aa87e27ab4e4189d7397065",
@@ -1013,6 +1047,1802 @@
       "baseline_sha256": "77d4ae91cf3e396d867b99776b95a93deb16e8f4a496aa1f06172f53178a2832",
       "upgrade_baseline_sha256": "77d4ae91cf3e396d867b99776b95a93deb16e8f4a496aa1f06172f53178a2832",
       "reason": "Compare canonical directory identity on both sides of installer assertions; selection, reconcile, manifest ownership and exact-target deletion checks are preserved. Real directory-alias regressions exercise the original contracts."
+    },
+    "NOTICE": {
+      "baseline_sha256": "f3f91a31eac755d4f3446c55a1f4b62d22483093767b91ad17ce6f09cb2b58f8",
+      "sha256": "eb5eb252950c8ba2163b4d8e73e5b2c9ecf18f9a929791881c346266fab303bd",
+      "reason": "Refresh product description while preserving copyright and attribution.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "docs/VALIDATION_1_4_0.md"
+      ]
+    },
+    "skills/auto-review-loop-llm/SKILL.md": {
+      "baseline_sha256": "f46c40b1a3edcc63b07cf263253fc01e706d2335bd851d672d66099b29774cf8",
+      "sha256": "838c2826a85c5004bc4c7260cfbcb2c8490652cbabea679e65307da600c4d512",
+      "reason": "Directed 1.4.0 evidence, workflow, figure or distribution adaptation; see scoped implementation review. The existing common principles hook is now reachable from this mainline entrypoint; that hook itself changes no workflow body.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/auto-review-loop-minimax/SKILL.md": {
+      "baseline_sha256": "70f4952522747030f4ee8011c0e29c7670a289bd0bff73fffbcb9bac232a4102",
+      "sha256": "9d8335be5da4217a1707121ad8424a16f412923f2ec7df96d6191dc1523c312e",
+      "reason": "Directed 1.4.0 evidence, workflow, figure or distribution adaptation; see scoped implementation review. The existing common principles hook is now reachable from this mainline entrypoint; that hook itself changes no workflow body.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/auto-review-loop/SKILL.md": {
+      "baseline_sha256": "071a28ed4653dd20604b0933cee34eb1337e272ecbe6b93fc86ee698a327d298",
+      "sha256": "2a8e80aa7dc079781b2ae476e9c357575f31fb5a9af0cfcca4763d0d8c04be8c",
+      "reason": "Directed 1.4.0 follow-up: primary evidence fidelity, real reviewer access, common principles and conditional receipts, mechanical framing completion, literature discovery clarity and actual installed-path identity.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/citation-audit/SKILL.md": {
+      "baseline_sha256": "7f68355f009a93077c76ba8d999cc00df0a3a87fbe3e4cba1b5f5e0df0810c2e",
+      "sha256": "be8550cae4a63debc2d4e898f7b47529230cd1987282756824b9bf133710b836",
+      "reason": "Directed 1.4.0 evidence, workflow, figure or distribution adaptation; see scoped implementation review. The existing common principles hook is now reachable from this mainline entrypoint; that hook itself changes no workflow body.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/experiment-bridge/SKILL.md": {
+      "baseline_sha256": "595d41fee920c7dafb920e89d8e33c0c3967704f84457786432aaadc920767a0",
+      "sha256": "424a424711e26260123dafad47f1ae6836586e30ce393d40efdce47a20852e6c",
+      "reason": "Keep common research guidance and existing execution/review contracts; add bounded sample-evidence instrumentation of the authorized evaluation without inventing new experiments.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py",
+        "tests/behavior/evo-inquiry-case-study-cases.json",
+        "tests/test_comparison_packaging.py"
+      ]
+    },
+    "skills/experiment-plan/SKILL.md": {
+      "baseline_sha256": "c5b53692ff95b0b55e80702e33afc79d9fe8d4f55a69e2a39714013f97ac595e",
+      "sha256": "b7c87841c3925508f8f5c40a14a14acac34e07de9f38fd5b876a696cea7aa669",
+      "reason": "Test claims against alternatives with null branches and justified resources; plan compact paired sample evidence and reproducible selection before test inspection instead of leaving diagnosis only to final polish.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py",
+        "tests/behavior/evo-inquiry-case-study-cases.json",
+        "tests/test_comparison_packaging.py"
+      ]
+    },
+    "skills/figure-spec/SKILL.md": {
+      "baseline_sha256": "090a28a1b6464d3b88cf32b9bf59f6a1008e7e63d638801070f0b888c3ef9c5b",
+      "sha256": "e41af5b0ce25c92fb0b4ccb9a5bff35c08f3592ea831c389e4bdc63531de17e9",
+      "reason": "Directed 1.4.0 evidence, workflow, figure or distribution adaptation; see scoped implementation review. The existing common principles hook is now reachable from this mainline entrypoint; that hook itself changes no workflow body.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/figure-spec/scripts/figure_renderer.py": {
+      "baseline_sha256": "02b4e01e46b51aeca12722ddd7b21bb7da3c3b175bba5d129c45d671fb07a0bc",
+      "sha256": "3f45966aad4993a531822117dee5143ed7b21757706344abc792981d50ba602d",
+      "reason": "Directed 1.4.0 evidence, workflow, figure or distribution adaptation; see scoped implementation review.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_evo_inquiry.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_literature_records.py",
+        "tests/test_research_decisions.py",
+        "tests/test_figure_evidence.py"
+      ],
+      "previous_adaptations": []
+    },
+    "skills/idea-creator/SKILL.md": {
+      "baseline_sha256": "e78e20b2eff657953ba95134e89779954c77399779eee0134459b77d84efb602",
+      "sha256": "91df4e096519c03e6700abd1003867a69249411c8a151ea03fb38e10702d34ee",
+      "reason": "Directed 1.4.0 evidence, workflow, figure or distribution adaptation; see scoped implementation review. The existing common principles hook is now reachable from this mainline entrypoint; that hook itself changes no workflow body.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/idea-discovery/SKILL.md": {
+      "baseline_sha256": "ac2d06bde65bf7335d9e9a290cc1c10bbc813b6256480e7d1da9cf102a76fa23",
+      "sha256": "2be785b4934c9624f0eb20cd1851a413db7cf824bbae9320a741c9d7a4559ab0",
+      "reason": "Directed 1.4.0 evidence, workflow, figure or distribution adaptation; see scoped implementation review. The existing common principles hook is now reachable from this mainline entrypoint; that hook itself changes no workflow body.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/kill-argument/SKILL.md": {
+      "baseline_sha256": "7a222081ddd9548f7ce560a202c3888783cc34ee0fe81c35ee87c5a7b652aa59",
+      "sha256": "3db729afcafbafed5d3e42e06c24433307a9264ffc4394bb78da4ee5f3ccd0ce",
+      "reason": "Directed 1.4.0 evidence, workflow, figure or distribution adaptation; see scoped implementation review. The existing common principles hook is now reachable from this mainline entrypoint; that hook itself changes no workflow body.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/meta-optimize/SKILL.md": {
+      "baseline_sha256": "0599dcc7eec1b7204e67bb7960487c652b5034af8b2d18323f0a3ff057580fd2",
+      "sha256": "0763b4b87b45e088e89841bb5f87db3b9d90c4c068e1e4396834aabf15dab13c",
+      "reason": "Directed 1.4.0 evidence, workflow, figure or distribution adaptation; see scoped implementation review. The existing common principles hook is now reachable from this mainline entrypoint; that hook itself changes no workflow body.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/novelty-check/SKILL.md": {
+      "baseline_sha256": "7738e665e8a7ad358e016ea3fcfa0f994e1f064f3626fe2fa454217a2750f3a0",
+      "sha256": "00502d34241a47d9f66e7ebe17fc6aeb2f705ce9f386516726c586da3fcbc660",
+      "reason": "Directed 1.4.0 evidence, workflow, figure or distribution adaptation; see scoped implementation review. The existing common principles hook is now reachable from this mainline entrypoint; that hook itself changes no workflow body.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/paper-claim-audit/SKILL.md": {
+      "baseline_sha256": "9bc3eabfe3ec2d3125d4d94e8c6689ba4f0d6ed9021e3d86489a96086bba1a16",
+      "sha256": "c7e08e3f7d00bf0326cd269db4b3170a109aecb406e787aad0fc7945f0a87204",
+      "reason": "Directed 1.4.0 evidence, workflow, figure or distribution adaptation; see scoped implementation review. The existing common principles hook is now reachable from this mainline entrypoint; that hook itself changes no workflow body.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/paper-figure/SKILL.md": {
+      "baseline_sha256": "1bcc797faf94af2bb06b1627d686c110c04fc358fed97225776a8128eb1c0ac6",
+      "sha256": "57184e9f008f5b2d8869218278ac7af6d86c16240cb1cf448360e86a0e43e466",
+      "reason": "Route figures by purpose and retain real data, independent units, missing runs and source identities; arrange actual paired case assets with disclosed selection and transforms, preserving renderer and statistical boundaries.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py",
+        "tests/behavior/evo-inquiry-case-study-cases.json",
+        "tests/test_comparison_packaging.py"
+      ]
+    },
+    "skills/paper-plan/SKILL.md": {
+      "baseline_sha256": "3c51d646b575416f2b91da80f22ccf92e4bb08d299f1c136e74a9b9497772b46",
+      "sha256": "6e870bccf3a358fa65b92596161322fdb99ba5052a14ebaebc6015b332d72991",
+      "reason": "Keep primary and material negative evidence visible; allocate useful case diagnosis from actual artifacts without fabricating panels, overriding aggregate evidence or expanding the requested outline into experiments.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py",
+        "tests/behavior/evo-inquiry-case-study-cases.json",
+        "tests/test_comparison_packaging.py"
+      ]
+    },
+    "skills/paper-write/SKILL.md": {
+      "baseline_sha256": "dc4f4024d6cdcb639d8bf75b796132408f75d14a4b4b316f388c884e35a62366",
+      "sha256": "e7d95fbac553d41cc0b492d6929419cd71d7cee627c96341b4f11418f4b95ddb",
+      "reason": "Directed 1.4.0 evidence, workflow, figure or distribution adaptation; see scoped implementation review. The existing common principles hook is now reachable from this mainline entrypoint; that hook itself changes no workflow body.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/paper-writing/SKILL.md": {
+      "baseline_sha256": "310a9b29b6869eec0690f953095ffe57488e3ec60a23523fe83ea3ecff536dfd",
+      "sha256": "c0693f2581888985a51572a86d951800da02c792d8e91406524f40be4551012f",
+      "reason": "Directed 1.4.0 evidence, workflow, figure or distribution adaptation; see scoped implementation review. The existing common principles hook is now reachable from this mainline entrypoint; that hook itself changes no workflow body.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/research-implement-feature/SKILL.md": {
+      "baseline_sha256": "453416dee9d15117f950244115a22dce6ebb33f5fe4792374369d799b6a1a88f",
+      "sha256": "533411e9f6ff2b32461129a53c065df44a96a1a4338a368841d888cf0a156837",
+      "reason": "Directed 1.4.0 evidence, workflow, figure or distribution adaptation; see scoped implementation review. The existing common principles hook is now reachable from this mainline entrypoint; that hook itself changes no workflow body.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/research-lit/SKILL.md": {
+      "baseline_sha256": "00d9f549e4db72f3b02d55b9f6dcd61b20403f5a7e25cf3396160423140b9183",
+      "sha256": "5b6eeea5c2db59f0a6b260c8631a00151605f83495488b66d6856565a15dbcb0",
+      "reason": "Directed 1.4.0 follow-up: primary evidence fidelity, real reviewer access, common principles and conditional receipts, mechanical framing completion, literature discovery clarity and actual installed-path identity.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/research-pipeline/SKILL.md": {
+      "baseline_sha256": "3dd1f071770ffd700c55e607f8a6f641b7be5d4fbd3c2e0ab203bbfe22fd2d3b",
+      "sha256": "93a0c0836eb63fe12b26536e7e8ff3d8dae0b0e7c5bdd95f6b739491879380a2",
+      "reason": "Directed 1.4.0 evidence, workflow, figure or distribution adaptation; see scoped implementation review. The existing common principles hook is now reachable from this mainline entrypoint; that hook itself changes no workflow body.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/research-review/SKILL.md": {
+      "baseline_sha256": "85c75d2bef1f08e2e7d2e6a7f6bc0ae42faecf942d5314d25f17376e1292597f",
+      "sha256": "d6e321636abaf7476bad2228eae828845246e21eaee7094f7d1c17e79b2e6715",
+      "reason": "Directed 1.4.0 evidence, workflow, figure or distribution adaptation; see scoped implementation review. The existing common principles hook is now reachable from this mainline entrypoint; that hook itself changes no workflow body.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/research-wiki/SKILL.md": {
+      "baseline_sha256": "3bd314f83f2db97fcfafb74495f1ca23bebad37a69d355bc61aaea8cbb519552",
+      "sha256": "df8a98de09255b190780ab633430fdc4833b1d14d54d19bcacb5078ea82cf866",
+      "reason": "Directed 1.4.0 evidence, workflow, figure or distribution adaptation; see scoped implementation review. The existing common principles hook is now reachable from this mainline entrypoint; that hook itself changes no workflow body.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/result-to-claim/SKILL.md": {
+      "baseline_sha256": "ba53865e333fb05271ad116b94879d567d1e681f592dec2a7e8ae7eac6ef13d6",
+      "sha256": "110e46a6165e76bed8a87db68c59bc0efd6dc1ddfe69d3f256620366f612be13",
+      "reason": "Directed 1.4.0 evidence, workflow, figure or distribution adaptation; see scoped implementation review. The existing common principles hook is now reachable from this mainline entrypoint; that hook itself changes no workflow body.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/shared-references/review-scope-limits.md": {
+      "baseline_sha256": "e383dbaa57aed6f8fd2c2bb6bcaefc6806648126d11b21cb6c39eeeec76100f6",
+      "sha256": "9306f5cf341823a448201d63ed7ed011e2746e81e6061040a5934b5f0d1ec3fe",
+      "reason": "Adjudicated evidence-level clarification; preserve bounded findings and existing review gates.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "docs/VALIDATION_1_4_0.md"
+      ]
+    },
+    "skills/skills-codex-claude-review/auto-paper-improvement-loop/SKILL.md": {
+      "baseline_sha256": "b0a8a6a64f8ac0403bc75d25aaec2d8add7dfba987a11c52de95a581e231d4bf",
+      "sha256": "14beb2b9e2bd05524ff073ef28fa7859f7fe3cc420197bd11bfe8e62ddbfa101",
+      "reason": "Directed 1.4.0 follow-up: evidence fidelity in paper improvements, real read-only reviewer access, common principles and conditional review receipts across overlays, and mechanical v2 framing completion without semantic acceptance.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/skills-codex-claude-review/auto-review-loop/SKILL.md": {
+      "baseline_sha256": "cd2e877606a8b3eb2d636edff19f8ff068a2ef021928abcd17ece0fbfff2917b",
+      "sha256": "a500e2ff7a0f1556a13a20748331ba7bce8b15ba5de40a4adcd3ec3d4f9c04b4",
+      "reason": "Directed 1.4.0 follow-up: primary evidence fidelity, real reviewer access, common principles and conditional receipts, mechanical framing completion, literature discovery clarity and actual installed-path identity.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/skills-codex-claude-review/novelty-check/SKILL.md": {
+      "baseline_sha256": "6727fe56d02e44611a0a4a8be090532c223d0f753034544cbdd2d5c5ba9ec0fd",
+      "sha256": "b0d6407c48dd68b2ac6261b80b40775b7d9cf389baec0822996c8348c10a9873",
+      "reason": "Directed 1.4.0 follow-up: primary evidence fidelity, real reviewer access, common principles and conditional receipts, mechanical framing completion, literature discovery clarity and actual installed-path identity.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/skills-codex-claude-review/paper-figure/SKILL.md": {
+      "baseline_sha256": "1e2ec8dfeff340a6b42adac53a096b2f6b9ef628d579f94230e4b113cdebb1fe",
+      "sha256": "319e909ae8c604ed176530a7702549cd8aec525b66a9c6430b0a0f34679fd53c",
+      "reason": "Route figures by purpose and retain real data, independent units, missing runs and source identities; arrange actual paired case assets with disclosed selection and transforms, preserving renderer and statistical boundaries.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py",
+        "tests/behavior/evo-inquiry-case-study-cases.json",
+        "tests/test_comparison_packaging.py"
+      ]
+    },
+    "skills/skills-codex-claude-review/paper-plan/SKILL.md": {
+      "baseline_sha256": "273a99d453145e2da7c5361137c163c77034992d9d03d7f2499779e134a74d9e",
+      "sha256": "cd3fcf71c28b3b6d498413c21344367060086793a1e3d355a967225142d5aefe",
+      "reason": "Keep primary and material negative evidence visible; allocate useful case diagnosis from actual artifacts without fabricating panels, overriding aggregate evidence or expanding the requested outline into experiments.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py",
+        "tests/behavior/evo-inquiry-case-study-cases.json",
+        "tests/test_comparison_packaging.py"
+      ]
+    },
+    "skills/skills-codex-claude-review/paper-write/SKILL.md": {
+      "baseline_sha256": "f30d2b055883fcb9b34d7904c8690d1a1c8ecd2ee444e25b9ceaaa165833478f",
+      "sha256": "41d46857eb47084b53efd88104eae38143fa161364bec84fc757aef22c520ac8",
+      "reason": "Directed 1.4.0 follow-up: evidence fidelity in paper improvements, real read-only reviewer access, common principles and conditional review receipts across overlays, and mechanical v2 framing completion without semantic acceptance.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/skills-codex-claude-review/research-refine/SKILL.md": {
+      "baseline_sha256": "9cb8f40b527028e4dd71321f70f4a76e5e432dd140d4c7be582cc480ae8f2579",
+      "sha256": "80b1fc71edd631b80eebde93669c8168ca0ac3665daf9d592a4c273af0eedf5f",
+      "reason": "Directed 1.4.0 follow-up: primary evidence fidelity, real reviewer access, common principles and conditional receipts, mechanical framing completion, literature discovery clarity and actual installed-path identity.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/skills-codex-claude-review/research-review/SKILL.md": {
+      "baseline_sha256": "250861cd3cb6b1a650cfcd1fcdac0a468582b44f9b645f24670aae5fae0729c0",
+      "sha256": "b96d7e8f2dde564ba5e7e7fff58f384b8447ef9b034cdca2550fc22344265621",
+      "reason": "Directed 1.4.0 follow-up: evidence fidelity in paper improvements, real read-only reviewer access, common principles and conditional review receipts across overlays, and mechanical v2 framing completion without semantic acceptance.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/skills-codex/shared-references/review-scope-limits.md": {
+      "baseline_sha256": "e383dbaa57aed6f8fd2c2bb6bcaefc6806648126d11b21cb6c39eeeec76100f6",
+      "sha256": "9306f5cf341823a448201d63ed7ed011e2746e81e6061040a5934b5f0d1ec3fe",
+      "reason": "Adjudicated evidence-level clarification; preserve bounded findings and existing review gates.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "docs/VALIDATION_1_4_0.md"
+      ]
+    },
+    "tools/idea_discovery_gate.py": {
+      "baseline_sha256": "129662358d7d38bdc9cb3d20d0bb9d7e2e8bf75aad45d0228766e9637475133e",
+      "sha256": "cb20bc8a686980d37a39b706b298147833d94fcf24098dfb44c1a0c3a062d878",
+      "reason": "Directed 1.4.0 follow-up: evidence fidelity in paper improvements, real read-only reviewer access, common principles and conditional review receipts across overlays, and mechanical v2 framing completion without semantic acceptance.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "tools/research_wiki.py": {
+      "baseline_sha256": "73a46cbcde03f406cba5745c28c09fca3ef8f60b7c8df18167907b311cbe014f",
+      "sha256": "fe782c7656b7549409b0dc55eeffecc13cb91373483b8d179043c678b4a75776",
+      "reason": "Directed 1.4.0 evidence, workflow, figure or distribution adaptation; see scoped implementation review.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_evo_inquiry.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_literature_records.py",
+        "tests/test_research_decisions.py",
+        "tests/test_figure_evidence.py"
+      ],
+      "previous_adaptations": []
+    },
+    "skills/comm-lit-review/SKILL.md": {
+      "baseline_sha256": "9fefbc15dae68a19176f6d7e78c348979a23b2a2363291b7ef81081c6dfb770d",
+      "sha256": "b27d2dcd071d4bedb2667ea85ef8b5c199d853b0e144384233fd77b0188fd68d",
+      "reason": "Directed 1.4.0 evidence, workflow, figure or distribution adaptation; see scoped implementation review. The existing common principles hook is now reachable from this mainline entrypoint; that hook itself changes no workflow body.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/exa-search/SKILL.md": {
+      "baseline_sha256": "c9ffd1e95004f591d6bc17e1a5bf16864f0c0230f446d60c6fc2b3890afb71de",
+      "sha256": "06373a40a31594a92182d1d0b033994bc27ddb93fee9f28e66ceaa7c0e298363",
+      "reason": "Directed 1.4.0 evidence, workflow, figure or distribution adaptation; see scoped implementation review. The existing common principles hook is now reachable from this mainline entrypoint; that hook itself changes no workflow body.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/experiment-audit/SKILL.md": {
+      "baseline_sha256": "dd5c2405aaae472cf2020f16fbd1b02b431874d8353a65a8aa4c102a65f5aef2",
+      "sha256": "3662c3c2503d931e49387684d1e8498853488355e6325239fd2fe68e5a737d2f",
+      "reason": "Distinguish supplied-record support, execution verification and review assurance; include available case evidence and qualitative selection in the existing scope check without changing fresh-review requirements or acceptance gates.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "docs/VALIDATION_1_4_0.md",
+        "tests/behavior/evo-inquiry-case-study-cases.json",
+        "tests/test_comparison_packaging.py"
+      ]
+    },
+    "skills/gemini-search/SKILL.md": {
+      "baseline_sha256": "a8778e4e1dacae68691d13342a9a33200ade427beb777a4defbbb91dfcb030e3",
+      "sha256": "b52bf7ea6132dd8fb4a67d9f3ed4dbbc023fbc8c87f6a7bc6e34929e17b4fed6",
+      "reason": "Directed 1.4.0 evidence, workflow, figure or distribution adaptation; see scoped implementation review. The existing common principles hook is now reachable from this mainline entrypoint; that hook itself changes no workflow body.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/idea-discovery-robot/SKILL.md": {
+      "baseline_sha256": "945decb901aa5cf0780e996d1bbc6fb7aecb8c246a513b9fe6169f06196680dc",
+      "sha256": "22318519b8336667f71b265485f450634e97f909c9e519db0313878812b041fe",
+      "reason": "Directed 1.4.0 evidence, workflow, figure or distribution adaptation; see scoped implementation review. The existing common principles hook is now reachable from this mainline entrypoint; that hook itself changes no workflow body.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/auto-paper-improvement-loop/SKILL.md": {
+      "baseline_sha256": "e0179353625706ea567a1ecc849cbc84c2f41503cf8bfb71744a7b9078e2f938",
+      "sha256": "49de3c39c4fd6cda08f9ac8fcccafba447ef1c54569157812813bc95d86c9e7a",
+      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/skills-codex-gemini-review/auto-paper-improvement-loop/SKILL.md": {
+      "baseline_sha256": "418edbee8d6c61bff9ab871fd84a06f2ae37eb129df7b815b52f9778c2ee75b2",
+      "sha256": "326ba050c2aaa7cfefd1a4692e71548ba3a14a7e28dee705de96a3da1e4cd409",
+      "reason": "Directed 1.4.0 follow-up: evidence fidelity in paper improvements, real read-only reviewer access, common principles and conditional review receipts across overlays, and mechanical v2 framing completion without semantic acceptance.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/skills-codex-gemini-review/auto-review-loop/SKILL.md": {
+      "baseline_sha256": "b98a321c39d4285ff8383b76881077466ca2b45d6f4cc9cf4dddd8524e7d1771",
+      "sha256": "9b5c8fdfb660e82548465f6f4bc2b64ad5f222da716f86bb670355b8b6b84786",
+      "reason": "Directed 1.4.0 follow-up: evidence fidelity in paper improvements, real read-only reviewer access, common principles and conditional review receipts across overlays, and mechanical v2 framing completion without semantic acceptance.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/skills-codex-gemini-review/grant-proposal/SKILL.md": {
+      "baseline_sha256": "8e834ea2ce5fc82591140bf57d7a723a5e74b6232039fb793fe3d9f8a025a72c",
+      "sha256": "987a8c9a28e947eea813837b304dd155db91b3d3ea21fab328c023b4f987da72",
+      "reason": "Directed 1.4.0 follow-up: evidence fidelity in paper improvements, real read-only reviewer access, common principles and conditional review receipts across overlays, and mechanical v2 framing completion without semantic acceptance.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/skills-codex-gemini-review/idea-creator/SKILL.md": {
+      "baseline_sha256": "eabd84c6e6b0ad5d02cda0c24582d73417306a187530bf5c9b366019416ceeb2",
+      "sha256": "5a213a8149379a9d3e367aba93249860637ed535f93fd82f9480915bfec39ec1",
+      "reason": "Directed 1.4.0 follow-up: evidence fidelity in paper improvements, real read-only reviewer access, common principles and conditional review receipts across overlays, and mechanical v2 framing completion without semantic acceptance.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/skills-codex-gemini-review/idea-discovery-robot/SKILL.md": {
+      "baseline_sha256": "dd0e7f33bff7b7a16fd4fca3bca1b475e3acd7ce24de68af6fdd20ad778c7e29",
+      "sha256": "709bfe5d5ae71599081a58fd2e06b28ff7a5a98e5efe08bff73975434de81c27",
+      "reason": "Directed 1.4.0 follow-up: evidence fidelity in paper improvements, real read-only reviewer access, common principles and conditional review receipts across overlays, and mechanical v2 framing completion without semantic acceptance.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/skills-codex-gemini-review/idea-discovery/SKILL.md": {
+      "baseline_sha256": "618a9f8aa7ea804e162d8e1ab3b10ee1e393a966107401fcc661b2a1d8f7de78",
+      "sha256": "4812d8da634fdc3b1f69dfcea377dc61a09a51ee69131ce9475207d758257556",
+      "reason": "Directed 1.4.0 follow-up: evidence fidelity in paper improvements, real read-only reviewer access, common principles and conditional review receipts across overlays, and mechanical v2 framing completion without semantic acceptance.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/skills-codex-gemini-review/novelty-check/SKILL.md": {
+      "baseline_sha256": "5ef22b3605664b41a42ecaea22175e26aba19dda59eb701dca7ba602b8181e49",
+      "sha256": "df48067d454d09b126ff6576f0116fb5cce684373881a1fe259492d4c1264735",
+      "reason": "Directed 1.4.0 follow-up: evidence fidelity in paper improvements, real read-only reviewer access, common principles and conditional review receipts across overlays, and mechanical v2 framing completion without semantic acceptance.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/skills-codex-gemini-review/paper-figure/SKILL.md": {
+      "baseline_sha256": "5dc702aa809cf4a53f906167f292643fb76748ee66998aa4da3e1e945ee134d2",
+      "sha256": "fc7f3fdd146732895aab3839d6339fd755d04ee5e482a8bbd3b06f491051b553",
+      "reason": "Route figures by purpose and retain real data, independent units, missing runs and source identities; arrange actual paired case assets with disclosed selection and transforms, preserving renderer and statistical boundaries.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py",
+        "tests/behavior/evo-inquiry-case-study-cases.json",
+        "tests/test_comparison_packaging.py"
+      ]
+    },
+    "skills/skills-codex-gemini-review/paper-plan/SKILL.md": {
+      "baseline_sha256": "74cb50a2ca3f09611eb557af7d10b4511ecb6762535366178d8f925599e44a38",
+      "sha256": "4b40f0f4263366c2e39d94e73074c663dc37aa702bd0704ff31b384417573f0f",
+      "reason": "Keep primary and material negative evidence visible; allocate useful case diagnosis from actual artifacts without fabricating panels, overriding aggregate evidence or expanding the requested outline into experiments.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/behavior/evo-inquiry-case-study-cases.json",
+        "tests/test_comparison_packaging.py"
+      ]
+    },
+    "skills/skills-codex-gemini-review/paper-poster-html/SKILL.md": {
+      "baseline_sha256": "618fa29802098c59bcb3ad449b2db00b50f7f72bf09343b443809664e527bac3",
+      "sha256": "586735053fb2e36b5b6de24336ef14d6bed73b466a161e000490f5efb78087f4",
+      "reason": "Directed 1.4.0 follow-up: evidence fidelity in paper improvements, real read-only reviewer access, common principles and conditional review receipts across overlays, and mechanical v2 framing completion without semantic acceptance.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/skills-codex-gemini-review/paper-slides/SKILL.md": {
+      "baseline_sha256": "3cca23fa611bacd9c0838de2eed702a320163a429e90079227f6387bc5c8fdd4",
+      "sha256": "d2a6d50ad686ea8c521c85e02efb23079fe46edaa82561e3411d02ae4e87aeea",
+      "reason": "Directed 1.4.0 follow-up: evidence fidelity in paper improvements, real read-only reviewer access, common principles and conditional review receipts across overlays, and mechanical v2 framing completion without semantic acceptance.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/skills-codex-gemini-review/paper-write/SKILL.md": {
+      "baseline_sha256": "1b37c50aaa69fad1814e319911a7e65af3189586403e15016371a10e07a740c4",
+      "sha256": "a38d20c93bb02081923dc3191b07cfcf3984cf6c9fe38f13a9aa87fc13de6fc0",
+      "reason": "Directed 1.4.0 follow-up: evidence fidelity in paper improvements, real read-only reviewer access, common principles and conditional review receipts across overlays, and mechanical v2 framing completion without semantic acceptance.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/skills-codex-gemini-review/paper-writing/SKILL.md": {
+      "baseline_sha256": "dac8f71654be7fd575e968a701d1e6d821bfc7b0be0278becb6eb7fc63b4283f",
+      "sha256": "15d62ed72c9adfa6d8b12c7b47772a3dc083a1730b938f71cea826f3d9fe40e8",
+      "reason": "Directed 1.4.0 follow-up: evidence fidelity in paper improvements, real read-only reviewer access, common principles and conditional review receipts across overlays, and mechanical v2 framing completion without semantic acceptance.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/skills-codex-gemini-review/research-refine/SKILL.md": {
+      "baseline_sha256": "e70c912082ebe40709b3684e254e823e61536a992d50694ae1a7c7a6e8982772",
+      "sha256": "3897d9c6b2eb6cd4398e9809178c7002ccd3fd2a3fbe8e7e061fa463d50314bd",
+      "reason": "Directed 1.4.0 follow-up: evidence fidelity in paper improvements, real read-only reviewer access, common principles and conditional review receipts across overlays, and mechanical v2 framing completion without semantic acceptance.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/skills-codex-gemini-review/research-review/SKILL.md": {
+      "baseline_sha256": "098ddea8057fa492b7abcad890be4ce2d1fbd6b3d6f7c2383d1499480d88c04f",
+      "sha256": "b22af6248f07337c3c96f03e15f869479a446092a4cbfd5ed21f9f9d20d4582f",
+      "reason": "Directed 1.4.0 follow-up: evidence fidelity in paper improvements, real read-only reviewer access, common principles and conditional review receipts across overlays, and mechanical v2 framing completion without semantic acceptance.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "tools/generate_codex_claude_review_overrides.py": {
+      "baseline_sha256": "5d29ef95777af0bafea264182839926b0b6d429bb5362cb4104a27cb90d45f1c",
+      "sha256": "3841a20a65dd0da3e5b5bc6363a88e32656c9104cf9609dd2e17a95832fa06f4",
+      "reason": "Directed 1.4.0 follow-up: primary evidence fidelity, real reviewer access, common principles and conditional receipts, mechanical framing completion, literature discovery clarity and actual installed-path identity.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/ablation-planner/SKILL.md": {
+      "baseline_sha256": "ce51bfff265e5f0a6e8fd03333bfa8dee679e728e0d325830988ca5bd31307da",
+      "sha256": "d5fa7bea6c270ff52c6700d62f75b0cc10f0dd02057ee1aa1d82920bfbf608fa",
+      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/alphaxiv/SKILL.md": {
+      "baseline_sha256": "f313e596afbfc7e88a10def82c9438d0715942cc4e945480a27c809b099c3585",
+      "sha256": "e92d78620116a55ac81ca02210287cc7ba36db3bd46dec2c8db19d898634ebd4",
+      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/analyze-results/SKILL.md": {
+      "baseline_sha256": "2b97b8ae1a279ac8a7db14e7d7bea67934c88352d55c95e20fcfb681a8640930",
+      "sha256": "0d2defbf20cb9b3e46eb7d288ebb2c5d65d99074b82d0814f6340fae5001e32a",
+      "reason": "Preserve objective metric interpretation and original result outputs; proactively add traceable paired case diagnosis to substantive analysis while retaining narrow-request and evidence/resource limits. Followup guidance makes reference loading conditional, reports concise after a timed-out development attempt, binds Codex sessions to their exact discovered mirror, and records repeated service failures as incomplete infrastructure evidence. Reports explicitly reference rather than duplicate raw tables.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py",
+        "tests/behavior/evo-inquiry-case-study-cases.json",
+        "tests/test_comparison_packaging.py"
+      ]
+    },
+    "skills/arxiv/SKILL.md": {
+      "baseline_sha256": "474be36fb19d0dd99ddc8c6fa2d684836a45dca9d02051d98b5c79ac979307ed",
+      "sha256": "3e7008eeafc2b7f03ff4956094f66af46e3580610cd2e36934dad4a95b0c66f7",
+      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/claims-drafting/SKILL.md": {
+      "baseline_sha256": "28c5027ae12cb928df35a5e079263fd5680e1bf2816bf86c847f195ad456ac40",
+      "sha256": "6b722d4f135bb0b01e98b3ee1926c3a5466afd3ab9f437568016c2294dc3613c",
+      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/deepxiv/SKILL.md": {
+      "baseline_sha256": "19d6b9a334f56398be97f68727feaf7689134e5294f7d9507a2d071b1eeed148",
+      "sha256": "589cad66d8b2951a1f949ccdd368aa7715ba9ddb5d9b763d5235f8828442bc96",
+      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/dse-loop/SKILL.md": {
+      "baseline_sha256": "ae8e147011f7c1a6add208b6cecb218d03a83949fba0ef9b0b1936e4b0ee18bf",
+      "sha256": "a61cd50903e7dc8cd507426a8cf6580b27afa69d15f7e8549080143696d359ac",
+      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/embodiment-description/SKILL.md": {
+      "baseline_sha256": "8833b4569435077554d51ac59f79c8b4ceca64b777f129b1e8eaa328be9bb9a2",
+      "sha256": "388f8a2307db0efdb82a490abd341247fe52ea8c185917c636241a2e06e1bc64",
+      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/experiment-queue/SKILL.md": {
+      "baseline_sha256": "6da32285f905d77664334bba7f7bbc2c069814ff5c3bc266ecc00f6c77d77208",
+      "sha256": "384ff5d35a305f8bdb4e08431eeb52837955d7e5a6520e8c566bf0aa368fb1cb",
+      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/feishu-notify/SKILL.md": {
+      "baseline_sha256": "1a6c2e7a92b4f10c25cb7a9c647919a9dcc9b1fc9a6c99a86e73d757c8a6edbf",
+      "sha256": "3c261e9e9cca1802088c2aefb376e4df8a5717a85200420066e2cc4e6aca2fc3",
+      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/figure-description/SKILL.md": {
+      "baseline_sha256": "4c69bc650a67d1688f44c909c49be98ffe74ea427b3859edb3c3357ec5730136",
+      "sha256": "7845d655d58ba9da794040be3cd16b67cca17050b68e85295c6e3a249dc4972b",
+      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/formula-derivation/SKILL.md": {
+      "baseline_sha256": "2e5f5ce665023cdc460126c9c8403503c17961145a2b052d25200f9bbd9a9b4d",
+      "sha256": "7ab611e19ef5e4ef2d250c65969d5d2cbc486613f958ca7c4904f2b902eabac1",
+      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/grant-proposal/SKILL.md": {
+      "baseline_sha256": "b7870c8f02db4da3be64f77b4225818306ced16c771331143768c3f9b1fc46ac",
+      "sha256": "7d999e08cabaaa6c277e58d065cac3b3099a934cab3b1c1a5f9ff8ea04334c21",
+      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/integrity-forensics/SKILL.md": {
+      "baseline_sha256": "33cdf3f4fd2a8dea073a73e2cba870576c576b1d201efa3d0a4bde2e7e7256ed",
+      "sha256": "d9ad148a7f7b7793775a0f8d6a6caf7a585b503dbee54d001f30c5ba3dfe29be",
+      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/interview-cheatsheet/SKILL.md": {
+      "baseline_sha256": "37291536f9a4f70d6463df129e875eb0eb32102db6e2cfa92d3e22494f944ca2",
+      "sha256": "9432bb63d779880192aad7067cf9720898accfaa062529ca4809cc25ce7af6fe",
+      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/invention-structuring/SKILL.md": {
+      "baseline_sha256": "ced6627e44e96f57e92098018e158d79ac01420659e98dccf5edff53f25fd087",
+      "sha256": "972e77fe8181345774f81c74523a7b674d70273ab4ea8757f4f8a745da9fc5ad",
+      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/jurisdiction-format/SKILL.md": {
+      "baseline_sha256": "7683f58c4ad6465b4c4dd4f360876b12b0132777ca4ba40c1e48b777f4b40bb9",
+      "sha256": "25bf04c6cc4d7832b155bfe3f94a69c66e1b8ac2f3405c11f36ce8aafc888cc9",
+      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/mermaid-diagram/SKILL.md": {
+      "baseline_sha256": "b7cb4fb550b43be0c49224b608ff2a3a4a208997b8c8ce1d6a6310d165915f50",
+      "sha256": "8cf1de2fce2243580f430a611fd1f3f193fcfbb2f5f5c2ca00a750a7e3cb5456",
+      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/meta-apply/SKILL.md": {
+      "baseline_sha256": "0760749e7a26315d836f0ce52c94b2014f09b186f5de015cb3da5ead9875e629",
+      "sha256": "82583f57e50506902c1f26ae776ca1564b14bd00f49041dc681d9516b5bfdee3",
+      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/monitor-experiment/SKILL.md": {
+      "baseline_sha256": "0527977308bb7b26139ffb56cd2d45ecc72a9dd2961073ad51fac4aac106961d",
+      "sha256": "1a6ee39eb4e55163d40a8875c2392edbd1edfb76810404ce00b2f767b38dc9ed",
+      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/openalex/SKILL.md": {
+      "baseline_sha256": "4c853b646987c4472a8360e044ad232aa9731dcfb60c7183073e8e5f3e6ac9c1",
+      "sha256": "1f2866253597b5824b4f82d88ce2f3611c1c8e8244bd92a364929cce35773e3f",
+      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/overleaf-sync/SKILL.md": {
+      "baseline_sha256": "f3c1f35a77a81ebf902eb2e9434cb61e7494e0152b8d29fe337e75d2d7524557",
+      "sha256": "a33f94b0cad0b991e43f4464e06c4f609be8006ce5299d85d6b384880649cf44",
+      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/paper-compile/SKILL.md": {
+      "baseline_sha256": "ca064e9b7dffe80d9c3bcabb060f81c651e4926eb1c069a04c6416a8e58fed93",
+      "sha256": "b8ac2032bf9dd72429a9b353bc4a15b6ebc6c23ef6e820444cf16244de199904",
+      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/paper-illustration-image2/SKILL.md": {
+      "baseline_sha256": "178b200cd549e53dd1b02450a8bf086cfde7dbf4042613d8d87fe555b9411842",
+      "sha256": "fadfe9ece4d3f2f45d5c14a62d2029e7bfcd86e90e7ac6d68d1eaad8cb90a7dd",
+      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/paper-illustration/SKILL.md": {
+      "baseline_sha256": "af9307d178b8242c9a8d2e94c1264add91d5aa2bbc6444556b51b501c1918e65",
+      "sha256": "2d5aedeb1283d778b61b6f73fbbe47fe3220fa2246f272d4f6f7e3de122c8059",
+      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/paper-poster-html/SKILL.md": {
+      "baseline_sha256": "b3c55d212f5c0cbccc94ec62813ad8df9302467edd825c62959edb4ba2778f8e",
+      "sha256": "fd6ee4a88389aedc6841b878839317f59f5760abc4a6a685b91b942f45fd8d52",
+      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/paper-poster/SKILL.md": {
+      "baseline_sha256": "7dec9b7f9bc2d12df23148cd38f51ea344b0b23370051ef6e03779ed41e97260",
+      "sha256": "808ffadc190695e3cbf8cfe8eafd14d98d0c760a70231247bff7a12193df3d8a",
+      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/paper-slides/SKILL.md": {
+      "baseline_sha256": "e887b9b393753f9e8af1aabfc1ce93e9b01a500ebf2c2ace775b45a3f93fd3fc",
+      "sha256": "5d04abe9e590473c6567f181da8705ddf6cb04c0cf40e65eff51b85d3089aa38",
+      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/paper-talk/SKILL.md": {
+      "baseline_sha256": "0bd7722963e9dc721cff4d66fda72e5e4242a116370dfae2fc9669b408d2f199",
+      "sha256": "758b3fba291abb1958f9d1dbb2f73398617bc3ed7e51102a987c601c42a2e339",
+      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/patent-novelty-check/SKILL.md": {
+      "baseline_sha256": "895a084526fafaaa6d90504d0958b30a23b43ee006327af87aadceb0312268f4",
+      "sha256": "d317654f8379127f17269816c92e5ac624ec3acca61db709dd43a6c543266bcf",
+      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/patent-pipeline/SKILL.md": {
+      "baseline_sha256": "4c6a598de26fe5f8e4b78e16ce8d47ada9b3f63a2999c7c1ae2732f4abd11201",
+      "sha256": "821a175a527a1b3fdd61cf195c5ca86ea2424b35a73d2c93a94815195e6473f7",
+      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/patent-review/SKILL.md": {
+      "baseline_sha256": "8c02c3040f0f9db54fd22b6ecb33937677092de7e78c54b0494c953bc14874e9",
+      "sha256": "f19a00029ed724a035f3e3aae3f2b678279ae5e3049701bf4dd879eb2df64bff",
+      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/pixel-art/SKILL.md": {
+      "baseline_sha256": "e65d74863168eeefb0405c6da9db1858bd7940d4bda40af9d3e85acffba5dc8c",
+      "sha256": "f171ac4299fd14fd619b1cdd354151fe70cba84669c6de13f4a168ca352c180b",
+      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/prior-art-search/SKILL.md": {
+      "baseline_sha256": "8793fb26c522de4c44a64b68df81e5d12718a99866c639658261cea680bd58b2",
+      "sha256": "1635b4dd4880a4a0d2a583cd852d129116b679e18ab71c78cdf7c72a7c44ce4c",
+      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/proof-checker/SKILL.md": {
+      "baseline_sha256": "65900678dc8d68c5157971c087497094c8cc0e05b3c6d22e6a9351b88882657e",
+      "sha256": "6c3266f9cc5b7cdfc7c3c2569a4800f09ea10023e441fd1c06b2d6393c6049fe",
+      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/proof-orchestrator/SKILL.md": {
+      "baseline_sha256": "bde239fa93e051281a529fb436c9dc277b82221cffe0941e1aab54c203fbc9f5",
+      "sha256": "a0f506ce383f0eb3057dc3813cb4acfb7d102ff6ee62ecdd0fc811be5132166a",
+      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/proof-writer/SKILL.md": {
+      "baseline_sha256": "d59b1865ba06f060b40920ace4ff8f61dc729615387bb91b1eb22a5d5442f2fe",
+      "sha256": "c4b07c247b0aaa34556df7c5fc8c041f78737936e37bdda28aba5059d57f1fef",
+      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/qzcli/SKILL.md": {
+      "baseline_sha256": "328953e6e4a21f8a38e979f9729818721af387724b799cb7cc96e072d0012d2f",
+      "sha256": "7ab927e2a874af97db40727e32762485ac8499e1eb64d058af7c4f8656fe13e0",
+      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/rebuttal/SKILL.md": {
+      "baseline_sha256": "36b9f570181c5afcf4149e4a911613f421733d4f3fcb84579709c8097d514f02",
+      "sha256": "41ef60a321a476fb11265313876782a066f4e5d95e08f7c253316e5721ec7784",
+      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/render-html/SKILL.md": {
+      "baseline_sha256": "2d34c2a878194209e1d4679147cfa8eef47eaa75271d4abbee6721060bead97b",
+      "sha256": "75e4deec675a44320d33951ef571befe5bfa3c01033a7c76346dc9e53644fe27",
+      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/research-refine-pipeline/SKILL.md": {
+      "baseline_sha256": "d5091663645dae48b84ce273d0f774090aeb2c553ed064d2d4cfc17fad9c52e9",
+      "sha256": "3444afb0366db7d60741f7e726b2097e21f9f3a07631b8e8af76912060bb527a",
+      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/research-refine/SKILL.md": {
+      "baseline_sha256": "2888a5d78cce27851dc029240a76dd50fb8d8114f34e2041c67fb15651017837",
+      "sha256": "dafd044883e288aa971ba36bd141a3a5e19fd2ef50b56e3de3d93ec6d92e0feb",
+      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/resubmit-pipeline/SKILL.md": {
+      "baseline_sha256": "11d8c78dcb9fbdb4e9882b0d2d292f16e99b6bbd1fc2e0daee0b531e1e03251f",
+      "sha256": "305195f47432458fe31203785eb77555d6788416a7d1d949f1d51b7850aa0745",
+      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/run-experiment/SKILL.md": {
+      "baseline_sha256": "4d481ce95d8bcadb93b095c3dd9bda51d68b6edea6b710316d6c0c74bb5bcfa8",
+      "sha256": "03f264ba4f5ee500078debc542646aad8aa3c6763b1025a85aa07d2dc0fcf24d",
+      "reason": "Keep common research guidance and existing execution/review contracts; add bounded sample-evidence collection before temporary storage/weights are released, without extra inference or whole-dataset copies.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py",
+        "tests/behavior/evo-inquiry-case-study-cases.json",
+        "tests/test_comparison_packaging.py"
+      ]
+    },
+    "skills/semantic-scholar/SKILL.md": {
+      "baseline_sha256": "41be9cd7d08d2d795d4fe0c87d23288712febd2807b8d4d38a2ea9c54ebb31e8",
+      "sha256": "abad874ccfbefa6169ae8bf1f7fcbbb7a872b3780625d3a2cade942bfec7591b",
+      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/serverless-modal/SKILL.md": {
+      "baseline_sha256": "e8444d7c5e4cb53f400602a96bf9fbb8c682b85ffda8c24bcceb19cc3337e31f",
+      "sha256": "174ddb1a6721230cbe4ada998421247768a7b8a838fd780b8e1df1394ef42e4f",
+      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/slides-polish/SKILL.md": {
+      "baseline_sha256": "dbb0b8b507c45aae428562ba64ccbb328589210d75fc801eb25881efae5322f9",
+      "sha256": "7c082b3ccee80d28a0157b5ea949f86ed22a7b378cba0f48b9d58c2bd4ef94c6",
+      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/specification-writing/SKILL.md": {
+      "baseline_sha256": "69fdfc8a5d46a603881d3fa301d981e113b9897189703d96a5f289e6f9c04ac4",
+      "sha256": "657813096333f83681e61f10ab9d2e56dd7d540e0fc79121fa32566935b66074",
+      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/system-profile/SKILL.md": {
+      "baseline_sha256": "9d31e32d2a63cf2f27a843e171c652327596c3f9e911c265660618d4ba27c48e",
+      "sha256": "86ff95d016e08fe7a1b926d52ce2c61ff273fd617a6a3f818cf0da39129cb53c",
+      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/training-check/SKILL.md": {
+      "baseline_sha256": "b4f27bbc58aaae314d8c51fe309fb41e42f47dce4f69ba07fac1ce7f0080c789",
+      "sha256": "7ca2087efae01c5deead475aff24f3dc85e96c841ba31780492730b85e3feecf",
+      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/vast-gpu/SKILL.md": {
+      "baseline_sha256": "69aabce36540fd6fce55bf47b6f043166fc118fd708d03efddb57d168a99f4e5",
+      "sha256": "33c481d92f33f005827bcc15f95125be1ed2d00cb57be3bed41a374139c2e24a",
+      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/web-debug-search/SKILL.md": {
+      "baseline_sha256": "ffb5f3ccf61c45d90c41901c251263f945c67baba0f91cb300cc1d53dcd63d01",
+      "sha256": "aebbc6f0489cc956079e837e6eb344b4f7a12d31797f4a6267947ef149256026",
+      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/wiki-enrich/SKILL.md": {
+      "baseline_sha256": "9e6f00ddec22c71377cdc0cabaf3ba1ccc50632d477e3dcd9efe784207bad454",
+      "sha256": "f1fb3ae2a147d672989ed5f3af998a9a6ca562383de6f2d3680ba7357983b436",
+      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    },
+    "skills/writing-systems-papers/SKILL.md": {
+      "baseline_sha256": "385fcf41742514b4aa9ecf93a0582a1bfd3452cacd12a54c87cf5bd82adccf7f",
+      "sha256": "3d67584f270507e8ebb4c641112503ebf27607c9cc39fdb047a06dcd41dfd1c6",
+      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/test_idea_discovery_gate.py"
+      ]
+    }
+  },
+  "workflow_adaptations": {
+    "auto-review-loop-llm": {
+      "baseline_body_sha256": "c3ae350a727daf707b640808e6532ebe2f03fba897567c3ab990897d8cc473c6",
+      "body_sha256": "8233f088df5dc6b38de207fc61e364f1a0ef924a46aca8b233460542c57f8388",
+      "reason": "Evidence-calibrated, scoped review or writing; retain original inputs, outputs, enums, independence and resource boundaries.",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/behavior/evo-inquiry-v140-development-cases.json",
+        "tests/test_evo_inquiry.py"
+      ]
+    },
+    "auto-review-loop-minimax": {
+      "baseline_body_sha256": "5627f765f5b3c74c472fb2dee67a4bf6e02bfebedf88cc6da391c7c6848f4644",
+      "body_sha256": "fc6437882d11f7477d33d0d889c86379c133d8be6355cf1add3989a6d0950952",
+      "reason": "Evidence-calibrated, scoped review or writing; retain original inputs, outputs, enums, independence and resource boundaries.",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/behavior/evo-inquiry-v140-development-cases.json",
+        "tests/test_evo_inquiry.py"
+      ]
+    },
+    "auto-review-loop": {
+      "baseline_body_sha256": "fc4f79364d869e0c8e91a35aa00d621e4e3ed9ca4a4b13ad13a25f779fb56512",
+      "body_sha256": "525c06959a44dde3e8f860094639dd2bb789d1ee5e3b42fdc5201d095e01323a",
+      "reason": "HTML rendering preserves actual review receipts, including blocked or incomplete review; it grants no acceptance.",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/behavior/evo-inquiry-v140-development-cases.json"
+      ]
+    },
+    "citation-audit": {
+      "baseline_body_sha256": "69d870b26a3c44b07252984af52f9269632f72435715ab601856387b64f0b917",
+      "body_sha256": "5bfb4aa6cac613b4b5f720174afe6c6815fc9161064ce93e4ea283e3ce7d7dfb",
+      "reason": "Evidence-calibrated, scoped review or writing; retain original inputs, outputs, enums, independence and resource boundaries.",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/behavior/evo-inquiry-v140-development-cases.json",
+        "tests/test_evo_inquiry.py"
+      ]
+    },
+    "experiment-bridge": {
+      "baseline_body_sha256": "b399da10c24b39f203f5f574ecdf00b89ed64bbf1c729126efc3516c8e14ee76",
+      "body_sha256": "23a090205fef4807437bf7232b2dd0d611acc3e10e40dd13347cdb72e7433722",
+      "reason": "Evidence-calibrated, scoped review or writing; retain original inputs, outputs, enums, independence and resource boundaries.",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/behavior/evo-inquiry-v140-development-cases.json",
+        "tests/test_evo_inquiry.py"
+      ]
+    },
+    "experiment-plan": {
+      "baseline_body_sha256": "aa1c87c9c2836d7276a3e19932916f2eb6157705a45e1a16f7f3cc2b70c5687f",
+      "body_sha256": "6ad7e074b2a5ca56652faf446c5aacb70724f1aec09081a5b502d1942910a231",
+      "reason": "Test claims against alternatives with null branches and justified resources; plan compact paired sample evidence and reproducible selection before test inspection instead of leaving diagnosis only to final polish.",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/behavior/evo-inquiry-v140-development-cases.json",
+        "tests/test_evo_inquiry.py",
+        "tests/behavior/evo-inquiry-case-study-cases.json",
+        "tests/test_comparison_packaging.py"
+      ]
+    },
+    "figure-spec": {
+      "baseline_body_sha256": "2426de32a23ba21cfbde3eb94f6ca53e2431eda73b95df267a65f7ee9a460d89",
+      "body_sha256": "0ab88f7b27a8f827105a193eef227e60007901ed46ec361923ce1f468398ceb8",
+      "reason": "Editable structure and evidence scope; no implied causal or empirical claims from diagram arrows.",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_figure_evidence.py"
+      ]
+    },
+    "idea-creator": {
+      "baseline_body_sha256": "1332cc28285d17e410bfa71fd6d5c3c9de246155a25c43ad215ccf64fdcdbe78",
+      "body_sha256": "6e2a539357bc1d1d861a27397c49e79f0b7c7eb72d61abd9bf1bf78a9201deba",
+      "reason": "Generate candidates for bounded questions; preserve useful null findings and actual authorized resources.",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/behavior/evo-inquiry-v140-development-cases.json",
+        "tests/test_evo_inquiry.py"
+      ]
+    },
+    "idea-discovery": {
+      "baseline_body_sha256": "ce3cf409b6b113353161d2621811c15843d549db2488ba6240f2465c5d65fb13",
+      "body_sha256": "68af6b83ccd53c1784c9b0079bbe5effe36b9a4aa5e9f95f0113fbdf053c532c",
+      "reason": "Versioned question framing has explicit deterministic artifact completion; scientific review and legacy run semantics remain unchanged.",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/behavior/evo-inquiry-v140-development-cases.json"
+      ]
+    },
+    "kill-argument": {
+      "baseline_body_sha256": "8a7905483411a1b2638e8a4d8c52634107cb72fcab76be43629f1f6100d1b81e",
+      "body_sha256": "9e86c41d7516f6596abaedbc32655fbb51cb0370bfadcdeb8aa4cc78435cbb8e",
+      "reason": "Evidence-calibrated, scoped review or writing; retain original inputs, outputs, enums, independence and resource boundaries.",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/behavior/evo-inquiry-v140-development-cases.json",
+        "tests/test_evo_inquiry.py"
+      ]
+    },
+    "meta-optimize": {
+      "baseline_body_sha256": "5f0a95da7608326df7d180cd4fb188b03c2407c240a3ed1f5e53adc1872c4648",
+      "body_sha256": "d565f62b114ea9290bb21be04c1f35a720a11a5053b98544fe2234fd7ad8b87a",
+      "reason": "Evidence-calibrated, scoped review or writing; retain original inputs, outputs, enums, independence and resource boundaries.",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/behavior/evo-inquiry-v140-development-cases.json",
+        "tests/test_evo_inquiry.py"
+      ]
+    },
+    "novelty-check": {
+      "baseline_body_sha256": "f95e5d60298ceb187e4fc1108a48e0aae3f34dee2c184e0879edbd589e7d431d",
+      "body_sha256": "2d13de7f651eac826376d46966bee4d1acd4c4122bb0f75d0cdafc7d7802c8fc",
+      "reason": "Separate search coverage, located overlap and continuation from verified novelty.",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/behavior/evo-inquiry-v140-development-cases.json",
+        "tests/test_evo_inquiry.py"
+      ]
+    },
+    "paper-claim-audit": {
+      "baseline_body_sha256": "c69c88acd7609b3bb5c9796c32e2a56957330ffd1afc4c1a022c4463f20af3cf",
+      "body_sha256": "dd10270eda94ec42a75efb86f10a9f2c0b76e340640dde7ff9aba3da3e745b90",
+      "reason": "Evidence-calibrated, scoped review or writing; retain original inputs, outputs, enums, independence and resource boundaries.",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/behavior/evo-inquiry-v140-development-cases.json",
+        "tests/test_evo_inquiry.py"
+      ]
+    },
+    "paper-figure": {
+      "baseline_body_sha256": "91da2a566ef03cb68ef399ca0e101afdf55320a65da44da52f38e3e1d733fb1a",
+      "body_sha256": "d00573ac94a2e73f378f2837af685ee9f03c43fe62e5305a8804828a00a95ed4",
+      "reason": "Route figures by purpose and retain real data, independent units, missing runs and source identities; arrange actual paired case assets with disclosed selection and transforms, preserving renderer and statistical boundaries.",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_figure_evidence.py",
+        "tests/behavior/evo-inquiry-v140-development-cases.json",
+        "tests/behavior/evo-inquiry-case-study-cases.json",
+        "tests/test_comparison_packaging.py"
+      ]
+    },
+    "paper-plan": {
+      "baseline_body_sha256": "38dbe0056163ef74c16e4bfc80dcdcfe7f6e013305396e72185bf0de27db353a",
+      "body_sha256": "8ffc8b96dbf4237a4d817f5c0abfee852d35f594fde4a99f0ca5e59fd90332e9",
+      "reason": "Keep primary and material negative evidence visible; allocate useful case diagnosis from actual artifacts without fabricating panels, overriding aggregate evidence or expanding the requested outline into experiments.",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/behavior/evo-inquiry-v140-development-cases.json",
+        "tests/test_evo_inquiry.py",
+        "tests/behavior/evo-inquiry-case-study-cases.json",
+        "tests/test_comparison_packaging.py"
+      ]
+    },
+    "paper-write": {
+      "baseline_body_sha256": "d6bfa9e0b0c2664c48d29e461384e415cf67bea4c3bf62fa895dbb5344728023",
+      "body_sha256": "fb4085d2987d45d9518aa9b25b0bc33efad8f4ecc9f49b0ebf9ff9a3b9f13f32",
+      "reason": "Evidence-calibrated, scoped review or writing; retain original inputs, outputs, enums, independence and resource boundaries.",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/behavior/evo-inquiry-v140-development-cases.json",
+        "tests/test_evo_inquiry.py"
+      ]
+    },
+    "paper-writing": {
+      "baseline_body_sha256": "4bec73fbe664c0420f04d0c8d129358c688c1ef81d0b1323b6689facdc2f7d2e",
+      "body_sha256": "e5a7da19f1338699c6e1e384ba619aea3f52d06f0bf0b5cda24e95c8dbe32183",
+      "reason": "Evidence-calibrated, scoped review or writing; retain original inputs, outputs, enums, independence and resource boundaries.",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/behavior/evo-inquiry-v140-development-cases.json",
+        "tests/test_evo_inquiry.py"
+      ]
+    },
+    "research-implement-feature": {
+      "baseline_body_sha256": "19da3e65515962e7e472b509e46eecbdd314538745012714e5cc8cf12e34c4be",
+      "body_sha256": "e9b916c9ef905ae03e6b6bf8b9864c7b7fc5527df58c4ef52630e4a6e7465bf0",
+      "reason": "Evidence-calibrated, scoped review or writing; retain original inputs, outputs, enums, independence and resource boundaries.",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/behavior/evo-inquiry-v140-development-cases.json",
+        "tests/test_evo_inquiry.py"
+      ]
+    },
+    "research-lit": {
+      "baseline_body_sha256": "0a237ff7588876810c996dfe72133b3de3707906e398afd14629ae1932019b2d",
+      "body_sha256": "52e7e6cae43a99fe8fa5b8fdc1f4dce76a88eeb639303841b8cc845e771904f0",
+      "reason": "Question-dependent auto source planning, source failures, reading scope and traceable offline literature records; legacy all preserved.",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_literature_records.py",
+        "tests/behavior/evo-inquiry-v140-development-cases.json"
+      ]
+    },
+    "research-pipeline": {
+      "baseline_body_sha256": "fd923d4b77b6a23b5f4627a7bd0a95f7f1dca7892037298173a4d43877043485",
+      "body_sha256": "72bc9ec345b048d6dd24cda610448da68a11978f24e7376b52848e25ea39e298",
+      "reason": "Evidence-calibrated, scoped review or writing; retain original inputs, outputs, enums, independence and resource boundaries.",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/behavior/evo-inquiry-v140-development-cases.json",
+        "tests/test_evo_inquiry.py"
+      ]
+    },
+    "research-review": {
+      "baseline_body_sha256": "0ccbc315d33966e1d24b39b684afbe5bad51df263d84c05ffa306922a3930195",
+      "body_sha256": "1d07a6416f74d6b2e919fd6f22ae2b1e26fefe23c0eaf1b63452bb92b6c3a74e",
+      "reason": "Evidence-calibrated, scoped review or writing; retain original inputs, outputs, enums, independence and resource boundaries.",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/behavior/evo-inquiry-v140-development-cases.json",
+        "tests/test_evo_inquiry.py"
+      ]
+    },
+    "research-wiki": {
+      "baseline_body_sha256": "042013b19823e4e9df6da9432c8b63699361eb8ced1085ecc8764eb630f847bd",
+      "body_sha256": "5dff328b00875cdd02e18833080d90aebf981ad2d24adcb26fb06072cfbc2112",
+      "reason": "Wire stable, source-labeled decision recording into the existing wiki without owning runtime acceptance.",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_research_decisions.py"
+      ]
+    },
+    "result-to-claim": {
+      "baseline_body_sha256": "37d6ace3816c2a8b2796d9d870243b4dd31cf4417552add2efaec8b765fd2616",
+      "body_sha256": "3cdb7e48b275948483cdeb70818510feada949a3b6f1506116e3c60c66dc2754",
+      "reason": "Evidence-calibrated, scoped review or writing; retain original inputs, outputs, enums, independence and resource boundaries.",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/behavior/evo-inquiry-v140-development-cases.json",
+        "tests/test_evo_inquiry.py"
+      ]
+    },
+    "comm-lit-review": {
+      "baseline_body_sha256": "0c2ca36bbe14b53b6af9d791795d6691422065a446b3f470052b96ca5230e453",
+      "body_sha256": "b9a84d378c1a35de3996b8103de17a5efeca88255199f2fe8f34cd94b38b4f97",
+      "reason": "Evidence-calibrated, scoped review or writing; retain original inputs, outputs, enums, independence and resource boundaries.",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/behavior/evo-inquiry-v140-development-cases.json",
+        "tests/test_evo_inquiry.py"
+      ]
+    },
+    "exa-search": {
+      "baseline_body_sha256": "8ac6511746bce7cb45b29e49bdfe6951a6fdc5ed7746c03e1ec8e2f565854651",
+      "body_sha256": "6e72c82003777f81621c3d22856808c8c9d5e96a921e5037c22e77eb1f7426cc",
+      "reason": "Evidence-calibrated, scoped review or writing; retain original inputs, outputs, enums, independence and resource boundaries.",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/behavior/evo-inquiry-v140-development-cases.json",
+        "tests/test_evo_inquiry.py"
+      ]
+    },
+    "experiment-audit": {
+      "baseline_body_sha256": "40952da15da09b8d1d97f01382894c3fa77f9e7aa2d5af2233b5cda5e3aed316",
+      "body_sha256": "be2e8a5abb71163d5dc934d2e5dbef20a16778aea12e4113236df8d87205fc6c",
+      "reason": "Distinguish supplied-record support, execution verification and review assurance; include available case evidence and qualitative selection in the existing scope check without changing fresh-review requirements or acceptance gates.",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "docs/VALIDATION_1_4_0.md",
+        "tests/behavior/evo-inquiry-case-study-cases.json",
+        "tests/test_comparison_packaging.py"
+      ]
+    },
+    "gemini-search": {
+      "baseline_body_sha256": "492a947cabe446b09be1d6e8d2060066fef659aac66d9a223e918c668291fe44",
+      "body_sha256": "12632fff1f22619285e26512fdca1299ab4cfa249b708c421775944ef3ed4e28",
+      "reason": "Evidence-calibrated, scoped review or writing; retain original inputs, outputs, enums, independence and resource boundaries.",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/behavior/evo-inquiry-v140-development-cases.json",
+        "tests/test_evo_inquiry.py"
+      ]
+    },
+    "idea-discovery-robot": {
+      "baseline_body_sha256": "0358d4367fcac479d8b78d2cd3118388af5843fc6f643087aaa1fe6d6c7272c1",
+      "body_sha256": "86358fdeeb4017ccc44d21aad1b5f7ed9371ee419a01c1649bdb7f1fddb02172",
+      "reason": "Evidence-calibrated, scoped review or writing; retain original inputs, outputs, enums, independence and resource boundaries.",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/behavior/evo-inquiry-v140-development-cases.json",
+        "tests/test_evo_inquiry.py"
+      ]
+    },
+    "auto-paper-improvement-loop": {
+      "baseline_body_sha256": "d8464d7d1f31bda3ba7b96eb5624e6d5bbf30049f8e85d8a920a59b3a67e412d",
+      "body_sha256": "1262ad5459d56ee7136483fa3f3a4df5deb1098b47e3b6df5f5ecdf16cc86cbf",
+      "reason": "Retain primary outcomes and material negative findings through paper revisions, with actual read-only reviewer access.",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_workflow_contract_versions.py",
+        "tests/behavior/evo-inquiry-v140-development-cases.json"
+      ]
+    },
+    "analyze-results": {
+      "baseline_body_sha256": "a51bcf45953fe6b539d9c7dd7d54083b2c3916de95505b134a20e3eb2087e48d",
+      "body_sha256": "980fe8d817b9ba9e032e5ddb9681d988c7407822c19178a29283e14e420ea4c7",
+      "reason": "Preserve objective metric interpretation and original result outputs; proactively add traceable paired case diagnosis to substantive analysis while retaining narrow-request and evidence/resource limits.",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/behavior/evo-inquiry-case-study-cases.json",
+        "tests/test_comparison_packaging.py"
+      ]
     }
   }
 }

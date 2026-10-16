@@ -1,0 +1,4 @@
+run_seed,baseline_accuracy,candidate_accuracy
+1,0.8,0.83
+2,0.81,0.82
+3,0.79,0.81

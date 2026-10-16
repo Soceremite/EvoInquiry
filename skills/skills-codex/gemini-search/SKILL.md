@@ -33,10 +33,18 @@ This skill uses Gemini as a **broad literature discovery** source:
 
 Use Gemini when you want AI-driven discovery that goes beyond keyword matching — Gemini decomposes topics into sub-problems, explores naming variants, and surfaces papers that traditional API searches may miss.
 
+## Evidence boundaries
+
+Use the configured available backend; model aliases below are compatibility
+examples, not a promise of current availability. Respect an explicit choice and
+record the actual responding model when available. Verify discovered identities
+and material claims against primary sources before citing. Gemini output alone
+does not establish literature coverage or verified novelty.
+
 ## Constants
 
-- **MAX_RESULTS = 15** — Target number of papers Gemini should find.
-- **MIN_YEAR = 2022** — Default minimum publication year. Override with `— year: 2020-`.
+- **MAX_RESULTS = 15** — Default retrieval ceiling, not a minimum or quality target; respect the actual task budget.
+- **MIN_YEAR = question-dependent** — Choose from the requested scope and current date; include relevant foundational work. An explicit `— year: 2020-` remains supported.
 - **DEFAULT_MODEL = auto-gemini-3** — Auto-routes within the Gemini 3 family (Pro / Flash) by server-side capacity. Required by `mcp__gemini-cli__ask-gemini` and `gemini-cli` v0.40+; explicit `gemini-3-pro-preview` can be silently downgraded to `gemini-2.5-pro` on OAuth-personal / Google One AI Pro accounts when capacity is exhausted. Override with `— model: gemini-3-flash-preview` (Gemini 3 Flash explicit, faster, higher quota), or `— model: gemini-2.5-pro` / `gemini-2.5-flash` (legacy, only for users on older `gemini-cli` < v0.40). The MCP tool accepts all of these verbatim.
 
 > Overrides (append to arguments):

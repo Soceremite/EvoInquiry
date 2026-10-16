@@ -1,5 +1,38 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- Add `scientific-brainstorming` and `research-manager`, bringing the working-tree inventory to 88 Codex and 87 mainline skills. Frame testable questions and preserve evidence-linked decisions within existing project records.
+- Add offline literature identity/source/reading records and figure input/source/output identity receipts alongside existing fetchers and renderers.
+- Add versioned framing for new idea-discovery runs, preserving old run contracts and scientific review gates.
+- Add proactive case studies to substantive result analysis, with task-specific diagnosis for classification, regression, image generation and video understanding. Reuse existing sample outputs and record selection, paired evidence, regressions and missing coverage.
+
+### Fixed
+
+- Keep result analysis proportionate to the question: narrow numerical requests
+  remain concise, substantive reports lead with the observed comparison, and
+  repeated case findings are consolidated. Conditional reference loading reduces
+  unnecessary routing work while preserving sample-level evidence, regressions,
+  missing coverage and review gates. Codex runs now stay on the exact discovered
+  mirror, finish after one verified report, and classify repeated service
+  overload/reconnect failures as incomplete infrastructure evidence.
+- Keep primary and material negative results visible through paper improvement; mark secondary reframing exploratory. Give generated Claude reviewers actual read-only artifact access.
+- Complete mechanical framing against a nonempty fixed artifact so sessions resume at the next phase, without granting scientific acceptance.
+- Reject figure path aliases and invalid geometry; preserve interrupted decision history, Unicode output and stable literature export ordering.
+- Expose common principles from mainline and reviewer overlays; pin reachable installed variants and record noncanonical reads and infrastructure errors separately.
+- Recognize the recorded historical namespace migration in optional original-baseline comparisons while continuing to reject unregistered content changes.
+
+### Changed
+
+- Separate observed ranking, effect size, uncertainty and practical value. Preserve gains and regressions, verify populations and denominators, and recheck challenges without automatic agreement or criticism.
+- Judge reviews by evidence and issue closure; stopped, unavailable and incomplete reviews grant no acceptance. Keep depth proportional to the requested decision.
+- Choose relevant available literature sources with `sources: auto`; retain legacy explicit `all` and user source constraints. Distinguish metadata, abstracts and inspected sections, including contrary evidence and identity conflicts.
+- Plan compact sample-level evidence before analysis, reuse its selection record in figure panels and paper outlines, and audit qualitative claims against the actual pool. Narrow numerical requests remain narrow; missing outputs do not trigger automatic inference.
+
+These changes are under validation for 1.4.0. See `docs/VALIDATION_1_4_0.md` for observed results and outstanding gates; optional external adapters are not advertised as validated integrations.
+
 ## 1.3.0 — 2026-10-14
 
 ### Added

@@ -4,6 +4,16 @@ description: 'Turn a refined research proposal or method idea into a detailed, c
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, WebSearch, WebFetch
 ---
 
+<!-- EVO-INQUIRY:BEGIN -->
+For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),
+or reuse it if already loaded and unchanged in this session. Apply relevant
+principles within the user's scope and this skill's existing outputs, review
+standards, and recovery contracts. Carry them into nested research tasks and
+reviewer briefs. Continue authorized work through its necessary steps; honor
+budgets, blocking checkpoints, and stopping conditions.
+<!-- EVO-INQUIRY:END -->
+
+
 <!-- EI-GOVERNANCE:BEGIN -->
 Resolve runtime state through tools/state_paths.py before .ei operations. Use
 [project-governance](../shared-references/project-governance.md) for fixed evidence,
@@ -19,7 +29,7 @@ Refine and concretize: **$ARGUMENTS**
 
 ## Overview
 
-Use this skill after the method is stable enough that the next question becomes: **what exact experiments should we run, in what order, to defend the paper?** If the user wants the full chain in one request, prefer `/research-refine-pipeline`.
+Use this skill after the method is stable enough that the next question becomes: **what exact experiments should we run, in what order, to test the proposal and distinguish alternative explanations?** If the user wants the full chain in one request, prefer `/research-refine-pipeline`.
 
 The goal is not to generate a giant benchmark wishlist. The goal is to turn a proposal into a **claim -> evidence -> run order** roadmap that supports four things:
 
@@ -34,7 +44,7 @@ The goal is not to generate a giant benchmark wishlist. The goal is to turn a pr
 - **MAX_PRIMARY_CLAIMS = 2** — Prefer one dominant claim plus one supporting claim.
 - **MAX_CORE_BLOCKS = 5** — Keep the must-run experimental story compact.
 - **MAX_BASELINE_FAMILIES = 3** — Prefer a few strong baselines over many weak ones.
-- **DEFAULT_SEEDS = 3** — Use 3 seeds when stochastic variance matters and budget allows.
+- **DEFAULT_SEEDS = 3** — A planning starting point, not a sufficiency rule. Justify independent repetitions using variability, desired precision and budget; preserve failed and missing seed slots.
 
 ## Workflow
 
@@ -59,7 +69,7 @@ If these files do not exist, derive the same information from the user's prompt.
 
 ### Phase 1: Freeze the Paper Claims
 
-Before proposing experiments, write down the claims that must be defended.
+Before proposing experiments, write down the claims to test, together with results that would support, weaken or fail to distinguish them.
 
 Use this structure:
 
@@ -78,11 +88,11 @@ Design the paper around a compact set of experiment blocks. Default to the follo
 2. **Novelty isolation** — does the dominant contribution itself matter?
 3. **Simplicity / elegance check** — can a bigger or more fragmented version be avoided?
 4. **Frontier necessity check** — if an LLM / VLM / Diffusion / RL-era component is central, is it actually the right tool?
-5. **Failure analysis or qualitative diagnosis** — what does the method still miss?
+5. **Case studies and failure diagnosis** — where does the method improve, regress or still fail?
 
 For each block, decide whether it belongs in:
 
-- **Main paper** — essential to defend the core claims
+- **Main paper** — essential to test the primary claims and competing explanations
 - **Appendix** — useful but non-blocking
 - **Cut** — interesting, but not worth the paper budget
 
@@ -101,12 +111,15 @@ For every kept block, fully specify:
 - **Success criterion**: what outcome would count as convincing evidence?
 - **Failure interpretation**: if the result is negative, what does it mean?
 - **Table / figure target**: where this result should appear in the paper
+- **Sample-level evidence, when relevant**: stable IDs, targets, paired predictions/output references and relevant run/draw/timestamp settings; budget a small retained diagnostic subset using [case-study-analysis](../shared-references/case-study-analysis.md)
 
 Special rules:
 
 - A **simplicity check** should usually compare the final method against either an overbuilt variant or a tempting extra component that the paper intentionally rejects.
 - A **frontier necessity check** should usually compare the chosen modern primitive against the strongest plausible simpler or older alternative.
 - If the proposal is intentionally non-frontier, say so explicitly and skip the frontier block instead of forcing one.
+
+Plan the case-selection population, outcome-independent sample and diagnostic contrasts before inspecting test outputs where feasible. Record any later exploratory selection. Include both successful and failed outcomes when present, without requiring arbitrary quotas or storing every generated asset. Start diagnosis as baseline/main results become available; final presentation may wait for polish.
 
 ### Phase 4: Turn the Plan Into an Execution Order
 
@@ -118,7 +131,7 @@ Use this milestone structure:
 2. **Baseline stage** — reproduce the strongest baseline(s)
 3. **Main method stage** — run the final method on the primary setting
 4. **Decision stage** — run the decisive ablations for novelty, simplicity, and frontier necessity
-5. **Polish stage** — robustness, qualitative figures, appendix extras
+5. **Polish stage** — robustness, final case panels and appendix extras
 
 For each milestone, estimate:
 
@@ -238,10 +251,10 @@ Tracker file: refine-logs/EXPERIMENT_TRACKER.md
 
 - **Large file handling**: If the Write tool fails due to file size, immediately retry using Bash (`cat << 'EOF' > file`) to write in chunks. Do NOT ask the user for permission — just do it silently.
 
-- **Every experiment must defend a claim.** If it does not change a reviewer belief, cut it.
-- **Prefer a compact paper story.** Design the main table first, then add only the ablations that defend it.
+- **Every experiment must test a claim or distinguish an explanation.** If it does not change a reviewer belief, cut it.
+- **Prefer a compact paper story.** Design the primary comparison first, then include ablations that can distinguish explanations.
 - **Defend simplicity explicitly.** If complexity is a concern, include a deletion study or a stronger-but-bloated variant comparison.
-- **Defend frontier choices explicitly.** If a modern primitive is central, prove why it is better than the strongest simpler alternative.
+- **Defend frontier choices explicitly.** If a modern primitive is central, test it against the strongest relevant simpler alternative; specify outcomes under which it offers no advantage.
 - **Prefer strong baselines over long baseline lists.** A short, credible comparison set is better than a padded one.
 - **Separate must-run from nice-to-have.** Do not let appendix ideas delay the core paper evidence.
 - **Reuse proposal constraints.** Do not invent unrealistic budgets or data assumptions.

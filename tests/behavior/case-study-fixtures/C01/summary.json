@@ -1,0 +1,10 @@
+{
+  "baseline": {
+    "correct": 6,
+    "total": 12
+  },
+  "candidate": {
+    "correct": 8,
+    "total": 12
+  }
+}

@@ -5,6 +5,16 @@ argument-hint: "[topic-or-narrative-doc] [— style-ref: <source>]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, WebSearch, WebFetch, Skill, mcp__codex__codex, mcp__codex__codex-reply
 ---
 
+<!-- EVO-INQUIRY:BEGIN -->
+For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),
+or reuse it if already loaded and unchanged in this session. Apply relevant
+principles within the user's scope and this skill's existing outputs, review
+standards, and recovery contracts. Carry them into nested research tasks and
+reviewer briefs. Continue authorized work through its necessary steps; honor
+budgets, blocking checkpoints, and stopping conditions.
+<!-- EVO-INQUIRY:END -->
+
+
 <!-- EI-GOVERNANCE:BEGIN -->
 Resolve runtime state through tools/state_paths.py before .ei operations. Use
 [project-governance](../shared-references/project-governance.md) for fixed evidence,
@@ -16,6 +26,18 @@ Plan the narrative from fixed report/evidence revisions and actual review status
 # Paper Plan: From Review Conclusions to Paper Outline
 
 Generate a structured, section-by-section paper outline from: **$ARGUMENTS**
+
+
+## Evidence fidelity
+
+Keep the original research question and primary outcomes visible, including
+material null or negative findings beside the claim they qualify. An explicitly
+exploratory question may motivate a new narrative; record that change rather
+than presenting a selected favorable metric as the original objective. Scope
+claims to verified evidence and distinguish lack of support from disproof.
+
+For empirical papers, check whether the existing analysis includes sample-level diagnosis. When it helps answer the research question, allocate a compact case-study or error-analysis section using [case-study-analysis](../shared-references/case-study-analysis.md). Link its actual evidence and selection rule, including material regressions or shared failures. If artifacts are missing, record a collection need rather than inventing a panel or delaying an unrelated outline. Illustrative cases do not upgrade aggregate evidence or establish a mechanism.
+
 
 ## Constants
 

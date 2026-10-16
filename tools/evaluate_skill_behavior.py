@@ -7,6 +7,7 @@ fixture, not the routing rubric. A completed CLI process is not a passed case.
 from __future__ import annotations
 
 import argparse
+from datetime import datetime, timezone
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import hashlib
 import json
@@ -15,12 +16,68 @@ from pathlib import Path
 import shutil
 import signal
 import subprocess
+import tempfile
 import time
 import tomllib
 import re
 import selectors
 
 ROOT = Path(__file__).resolve().parents[1]
+
+# A transient transport error should remain visible in the trace, but a
+# repeated overload/reconnect failure cannot be useful evidence of skill
+# behaviour.  Stop after two observed occurrences so the harness does not
+# spend the whole case budget waiting for a service that is already failing.
+SERVICE_ERROR_RE = re.compile(
+    r"(?:servers?\s+(?:(?:is|are)\s+)?(?:currently\s+)?overloaded|"
+    r"service\s+overloaded|overloaded\s+server|"
+    r"reconnect(?:ing|ed)?|stream\s+(?:disconnected|disconnect|closed|reset)|"
+    r"connection\s+(?:reset|closed|lost)|upstream\s+(?:disconnect|unavailable|error)|"
+    r"temporarily\s+unavailable)",
+    re.IGNORECASE,
+)
+SERVICE_ERROR_THRESHOLD = 2
+
+
+def _error_texts(events: list[dict]) -> list[tuple[str, str]]:
+    """Return error-bearing event fields without treating normal output as errors."""
+    texts = []
+    for index, event in enumerate(events):
+        if event.get("type") == "error" and isinstance(event.get("message"), str):
+            texts.append((f"event:{index}", event["message"]))
+        item = event.get("item")
+        if isinstance(item, dict) and item.get("type") == "error":
+            for field in ("message", "text"):
+                if isinstance(item.get(field), str):
+                    texts.append((f"event:{index}:{field}", item[field]))
+    return texts
+
+
+def _new_service_errors(events: list[dict], stderr_text: str,
+                        seen: set[tuple[str, int, str]]) -> list[str]:
+    """Find new service failures in the JSON error events and stderr stream.
+
+    The position-based keys make polling an append-only stderr file idempotent,
+    while still counting two identical messages emitted at different positions.
+    """
+    sources = _error_texts(events)
+    if stderr_text:
+        sources.append(("stderr", stderr_text))
+    found = []
+    for source, text in sources:
+        offset = 0
+        for line in text.splitlines(keepends=True):
+            content = line.strip()
+            if content and SERVICE_ERROR_RE.search(content):
+                # Count one incident per error-bearing line.  A single client
+                # message often contains both "overloaded" and "reconnecting";
+                # those two words must not be mistaken for two failures.
+                key = (source, offset, "service-error")
+                if key not in seen:
+                    seen.add(key)
+                    found.append(content[:300])
+            offset += len(line)
+    return found
 
 
 def cli_command(codex: str) -> list[str]:
@@ -34,17 +91,31 @@ def cli_command(codex: str) -> list[str]:
 
 def selection_config(selector: str) -> list[str]:
     settings = []
-    for name in ("evo-inquiry@evo-inquiry", "evo-inquiry@evo-inquiry-eval-beta3", "evo-inquiry@evo-inquiry-eval-beta4", "evo-inquiry@evo-inquiry-eval-beta5"):
-        settings += ["-c", 'plugins.' + json.dumps(name) + '.enabled=false']
+    if not selector.startswith('evo-inquiry@') or not selector.partition('@')[2]:
+        raise ValueError('Expected an EvoInquiry plugin@marketplace selector')
+    codex_root = Path(os.environ.get('CODEX_HOME', str(Path.home() / '.codex')))
+    config_file = codex_root / 'config.toml'
+    config = tomllib.loads(config_file.read_text(encoding='utf-8')) if config_file.is_file() else {}
     # skills/list includes skills from installed but disabled plugins in this
     # CLI version. Disable other variants by their exact skill paths as well,
     # so their descriptions cannot enter selection context or shadow an alias.
-    cache = Path(os.environ.get("CODEX_HOME", str(Path.home() / ".codex"))) / "plugins/cache"
+    cache = codex_root / 'plugins/cache'
     marketplace = selector.split("@", 1)[1]
+    variants = {'evo-inquiry@evo-inquiry', selector}
+    variants.update(name for name in config.get('plugins', {}) if name.startswith('evo-inquiry@'))
+    variants.update('evo-inquiry@' + path.parent.name for path in cache.glob('*/evo-inquiry') if path.is_dir())
+    for name in sorted(variants - {selector}):
+        settings += ['-c', 'plugins.' + json.dumps(name) + '.enabled=false']
     excluded = sorted(p for p in cache.glob("*/evo-inquiry/*/skills/skills-codex/*/SKILL.md")
                       if p.parents[5].name != marketplace)
-    if excluded:
-        entries = ",".join("{path=" + json.dumps(str(p)) + ",enabled=false}" for p in excluded)
+    original = config.get('skills', {}).get('config', [])
+    preserved = [entry for entry in original if isinstance(entry, dict)
+                 and isinstance(entry.get('path'), str)
+                 and not str(entry['path']).startswith(str(cache) + os.sep)]
+    entries_list = preserved + [{'path': str(p), 'enabled': False} for p in excluded]
+    if entries_list:
+        entries = ','.join('{path=' + json.dumps(v['path']) + ',enabled=' +
+                           ('true' if v.get('enabled', True) else 'false') + '}' for v in entries_list)
         settings += ["-c", "skills.config=[" + entries + "]"]
     return settings + ["-c", 'plugins.' + json.dumps(selector) + '.enabled=true']
 
@@ -56,11 +127,13 @@ def model_config(settings: dict | None) -> list[str]:
             for part in ("-c", key + "=" + json.dumps(settings[key]))]
 
 
-def discover_variant(toolkit: Path, selector: str, codex: str, model_settings: dict | None = None) -> dict:
+def discover_variant(toolkit: Path, selector: str, codex: str, model_settings: dict | None = None,
+                     diagnostic_path: Path | None = None) -> dict:
     """Reject an empty or mixed discovery context before running paid sessions."""
     command = cli_command(codex) + ["app-server", "--listen", "stdio://"] + selection_config(selector) + model_config(model_settings)
+    diagnostics = tempfile.TemporaryFile()
     proc = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-                            stderr=subprocess.DEVNULL,
+                            stderr=diagnostics,
                             env=dict(os.environ, TOKIO_WORKER_THREADS="2"))
     pending = bytearray()
     def send(data: dict) -> None:
@@ -102,6 +175,10 @@ def discover_variant(toolkit: Path, selector: str, codex: str, model_settings: d
         except subprocess.TimeoutExpired:
             proc.kill()
             proc.wait()
+        diagnostics.seek(0)
+        if diagnostic_path is not None:
+            diagnostic_path.write_bytes(diagnostics.read())
+        diagnostics.close()
     skills = [s for row in response.get("data", []) for s in row.get("skills", [])
               if s["name"].startswith("evo-inquiry:") and s["enabled"]]
     expected = {"evo-inquiry:" + p.parent.name for p in (toolkit / "skills/skills-codex").glob("*/SKILL.md")}
@@ -121,20 +198,26 @@ def discover_variant(toolkit: Path, selector: str, codex: str, model_settings: d
     if cached_common_hashes != {common_hash}:
         raise RuntimeError("Installed shared guidance differs from the evaluation source; refresh the selected plugin cache")
     resources = sorted((toolkit / 'skills/skills-codex/shared-references').glob('*.md'))
-    helper = toolkit / 'tools/checkpoint_retention.py'
-    if helper.is_file():
-        resources.append(helper)
-    resources.extend(p for name in ('state_paths', 'registry_common', 'project_registry',
-                                    'artifact_registry', 'environment_registry',
-                                    'execution_registry', 'code_map', 'filesystem_doctor')
-                     if (p := toolkit / 'tools' / (name + '.py')).is_file())
+    # All entrypoint trees are physically reachable inside a native package.
+    # A model can read a mainline/overlay path instead of the discovered Codex
+    # path, so pin those bytes too and report path deviations separately.
+    resources.extend(sorted((toolkit / 'skills/shared-references').glob('*.md')))
+    resources.extend(sorted((toolkit / 'skills').glob('*/SKILL.md')))
+    for overlay in ('skills-codex-claude-review', 'skills-codex-gemini-review'):
+        resources.extend(sorted((toolkit / 'skills' / overlay).glob('*/SKILL.md')))
+    resources.extend(sorted((toolkit / 'tools').glob('*.py')))
+    resources.extend(p for p in (toolkit / 'skills/figure-spec/scripts').glob('*') if p.is_file())
+    resources.extend(p for relative in ('VERSION', '.codex-plugin/plugin.json', 'tools/skill-contracts.json',
+                                        'tools/skill-groups.tsv', 'templates/EVOINQUIRY_AGENTS_SNIPPET.md')
+                     if (p := toolkit / relative).is_file())
     resources.extend(sorted((toolkit / 'tools/schemas').glob('*.schema.json')))
     resource_hashes = {}
-    for resource in resources:
+    installed_roots = {Path(skill['path']).parents[3] for skill in skills}
+    for resource in sorted(set(resources)):
         relative = resource.relative_to(toolkit)
         expected_hash = hashlib.sha256(resource.read_bytes()).hexdigest()
-        for skill in skills:
-            installed = Path(skill['path']).parents[3] / relative
+        for installed_root in installed_roots:
+            installed = installed_root / relative
             if not installed.is_file() or hashlib.sha256(installed.read_bytes()).hexdigest() != expected_hash:
                 raise RuntimeError(f'Installed support resource differs from the evaluation source: {relative}')
         resource_hashes[str(relative)] = expected_hash
@@ -157,6 +240,12 @@ def run_case(case: dict, fixture_root: Path, output: Path, toolkit: Path, codex:
                "--skip-git-repo-check", "-s", "workspace-write", "-C", str(workspace),
                "-o", str(destination / "answer.md")] + selection_config(selector) + model_config(model_settings) + ["-"]
     started = time.monotonic()
+    started_at = datetime.now(timezone.utc).isoformat()
+    progress = []
+    previous_count = -1
+    service_errors = []
+    seen_service_errors: set[tuple[str, int, str]] = set()
+    stderr_path = destination / "stderr.txt"
     with (destination / "events.jsonl").open("w") as stdout, (destination / "stderr.txt").open("w") as stderr:
         # Keep parallel CLI instances within thread limits on shared runners.
         environment = dict(os.environ, TOKIO_WORKER_THREADS="2")
@@ -167,10 +256,20 @@ def run_case(case: dict, fixture_root: Path, output: Path, toolkit: Path, codex:
         proc.stdin.close()
         limit = None
         while proc.poll() is None:
+            events = read_events(destination / "events.jsonl")
+            service_errors.extend(_new_service_errors(
+                events, stderr_path.read_text(encoding="utf-8", errors="replace"), seen_service_errors))
+            if len(events) != previous_count:
+                progress.append({'seconds': round(time.monotonic() - started, 2),
+                                 'events': len(events),
+                                 'last_event': events[-1].get('type') if events else None})
+                previous_count = len(events)
+            if len(service_errors) >= SERVICE_ERROR_THRESHOLD:
+                limit = "service_error"
+                break
             if time.monotonic() - started > case["timeout_seconds"]:
                 limit = "time_limit"
                 break
-            events = read_events(destination / "events.jsonl")
             actions = [e for e in events if e.get("type") == "item.started"
                        and e.get("item", {}).get("type") not in ("agent_message", "reasoning", "error")]
             if len(actions) > case["max_tool_actions"]:
@@ -185,6 +284,9 @@ def run_case(case: dict, fixture_root: Path, output: Path, toolkit: Path, codex:
                 os.killpg(proc.pid, signal.SIGKILL)
         proc.wait()
     events = read_events(destination / "events.jsonl")
+    service_errors.extend(_new_service_errors(
+        events, stderr_path.read_text(encoding="utf-8", errors="replace"), seen_service_errors))
+    (destination / 'progress.json').write_text(json.dumps(progress, indent=2) + '\n', encoding='utf-8')
     startup_failure = (proc.returncode != 0 and not events and
                        'failed to initialize in-process app-server client' in
                        (destination / 'stderr.txt').read_text(errors='replace'))
@@ -192,24 +294,35 @@ def run_case(case: dict, fixture_root: Path, output: Path, toolkit: Path, codex:
                        e.get("item", {}).get("type") not in ("agent_message", "reasoning", "error") for e in events)
     if limit is None and action_count > case["max_tool_actions"]:
         limit = "tool_limit"
+    if limit is None and len(service_errors) >= SERVICE_ERROR_THRESHOLD:
+        limit = "service_error"
     commands = [e["item"] for e in events if e.get("type") == "item.completed"
                 and e.get("item", {}).get("type") == "command_execution"]
     cache_variants = sorted({match for c in commands for match in
                              re.findall(r'/plugins/cache/([^/]+)/evo-inquiry/([^/\s\"\']+)', c.get("command", ""))})
     expected_version = json.loads((toolkit / ".codex-plugin/plugin.json").read_text())["version"]
     expected_variant = (selector.split("@", 1)[1], expected_version)
+    entrypoints = sorted({path for c in commands for path in re.findall(
+        r'/[^\s\"\'\\]+/plugins/cache/[^\s\"\'\\]+/SKILL\.md', c.get('command', ''))})
+    noncanonical = [path for path in entrypoints
+                    if not re.search(r'/skills/skills-codex/[^/]+/SKILL\.md$', path)]
     after = {str(p.relative_to(workspace)): hashlib.sha256(p.read_bytes()).hexdigest()
              for p in workspace.rglob("*") if p.is_file()}
     result = {"case": case["id"], "exit_code": proc.returncode, "limit": limit,
               "seconds": round(time.monotonic() - started, 2),
+              "started_at": started_at, "finished_at": datetime.now(timezone.utc).isoformat(),
               "tool_actions": action_count,
               "commands": [{k: c.get(k) for k in ("command", "exit_code", "status")} for c in commands],
               "changed_or_created_files": sorted(k for k, v in after.items() if before.get(k) != v),
               "deleted_files": sorted(before.keys() - after.keys()),
               "session_completed": any(e.get("type") == "turn.completed" for e in events),
-              "failure_kind": "runtime_startup" if startup_failure else None,
+              "failure_kind": "runtime_startup" if startup_failure else limit,
+              "service_error_count": len(service_errors),
+              "service_error_messages": service_errors,
               "observed_cache_variants": cache_variants,
               "variant_mismatch": any(tuple(v) != expected_variant for v in cache_variants),
+              "observed_skill_entrypoints": entrypoints,
+              "noncanonical_skill_entrypoints": noncanonical,
               "model_settings": dict(model_settings or {}),
               "assessment": "UNASSESSED", "evidence": str(destination)}
     (destination / "run.json").write_text(json.dumps(result, indent=2) + "\n")
@@ -263,8 +376,10 @@ def main() -> None:
         model_settings["model"] = args.model
     if args.reasoning_effort is not None:
         model_settings["model_reasoning_effort"] = args.reasoning_effort
-    discovery = discover_variant(args.toolkit.resolve(), args.selector, args.codex, model_settings)
+    discovery = discover_variant(args.toolkit.resolve(), args.selector, args.codex, model_settings,
+                                 output / 'discovery-stderr.txt')
     metadata = {"toolkit": str(args.toolkit.resolve()), "codex": subprocess.check_output([args.codex, "--version"], text=True).strip(),
+                "harness_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
                 "case_manifest_sha256": hashlib.sha256(manifest_path.read_bytes()).hexdigest(),
                 "settings": "Recorded model/provider/effort pinned as CLI overrides for every session; unspecified fields use Codex defaults; TOKIO_WORKER_THREADS=2",
                 "runtime_command_prefix": cli_command(args.codex),

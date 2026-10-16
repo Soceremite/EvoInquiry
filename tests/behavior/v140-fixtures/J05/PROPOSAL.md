@@ -1,0 +1,2 @@
+# Synthetic fixed proposal
+Claim under test: retrieval improves answer accuracy because it supplies relevant evidence. Alternative: the extra inference compute alone explains the gain. Existing baseline has no retrieval and half the inference-token budget. Dataset has a reserved untouched test split and a validation set. Available: 2 GPU-hours total maximum, no external rental. There are no pilot variance estimates yet.

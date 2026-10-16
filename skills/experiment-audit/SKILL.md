@@ -5,6 +5,16 @@ argument-hint: "[experiment-dir-or-results-path]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, mcp__codex__codex, mcp__codex__codex-reply, mcp__manual_review__review, mcp__manual_review__review_reply
 ---
 
+<!-- EVO-INQUIRY:BEGIN -->
+For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),
+or reuse it if already loaded and unchanged in this session. Apply relevant
+principles within the user's scope and this skill's existing outputs, review
+standards, and recovery contracts. Carry them into nested research tasks and
+reviewer briefs. Continue authorized work through its necessary steps; honor
+budgets, blocking checkpoints, and stopping conditions.
+<!-- EVO-INQUIRY:END -->
+
+
 <!-- EI-GOVERNANCE:BEGIN -->
 Resolve runtime state through tools/state_paths.py before .ei operations. Use
 [project-governance](../shared-references/project-governance.md) for fixed evidence,
@@ -24,6 +34,11 @@ For comparative integrity, load [comparative-experiments](../shared-references/c
 > [`shared-references/external-cadence.md`](../shared-references/external-cadence.md).
 
 Audit experiment integrity for: **$ARGUMENTS**
+
+Keep the audit's status separate from what the supplied records support. Report
+an unavailable review or unauditable execution as that specific limitation;
+neither establishes a failed method or false result. A bounded assessment can
+state a reported outcome without certifying execution or granting acceptance.
 
 ## Why This Exists
 
@@ -80,6 +95,7 @@ Scan project directory for:
 4. Experiment tracker:    EXPERIMENT_TRACKER.md, EXPERIMENT_LOG.md
 5. Paper claims:          NARRATIVE_REPORT.md, paper/sections/*.tex, PAPER_PLAN.md
 6. Config files:          *.yaml, *.toml, *.json configs with metric definitions
+7. Case evidence, if used: selection records, sample IDs, paired predictions/assets and panel scripts
 ```
   A verdict-bearing manual response MUST begin with
   `Reviewer-Model: <exact-model-id>` — pass the model THIS session is actually
@@ -111,11 +127,11 @@ Manual review cannot use Codex-only `model`, `sandbox`, or `cwd`; include the sa
 Use this exact prompt for both backends:
 
 ```
-You are an experiment integrity auditor. Start from the assumption that the
-    evaluation is compromised somewhere — your job is to find where. Be
-    adversarial. Trust nothing the author tells you — verify everything
-    yourself. Read ALL files listed below and check for the following fraud
-    patterns.
+You are an experiment integrity auditor. Verify the comparison against the
+    actual protocol, implementation and raw evidence. Identify substantiated
+    strengths, defects and unresolved checks without presuming compromise or
+    correctness. Distinguish missing evidence from demonstrated errors. Read
+    the relevant files below and investigate these integrity patterns.
 
     Files to read:
     - Evaluation scripts: [list paths]
@@ -123,6 +139,8 @@ You are an experiment integrity auditor. Start from the assumption that the
     - Experiment tracker: [list paths]
     - Paper claims: [list paths]
     - Config files: [list paths]
+    - Case evidence and selection records: [paths, if used]
+    - Case-study guidance when applicable: [resolved ../shared-references/case-study-analysis.md]
 
     ## Audit Checklist
 
@@ -160,6 +178,12 @@ You are an experiment integrity auditor. Start from the assumption that the
     2. How many seeds/runs per configuration?
     3. Does the paper use words like "comprehensive", "extensive", "robust"?
     4. Is the actual scope sufficient for those claims?
+    When a case study or qualitative claim is supplied, inspect its actual
+    selection pool/rule, sample/run/draw identities and paired outputs. Check
+    omitted regressions/shared failures, missing outputs, asymmetric crops or
+    timestamps, and whether a panel-only rate is presented as population-wide.
+    Distinguish inspected media from annotations and hypotheses from mechanisms.
+    Absence of a panel alone is not an integrity failure.
     WARN if: Scope language exceeds actual evidence.
 
     ### F. Evaluation Type Classification

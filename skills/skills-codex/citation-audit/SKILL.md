@@ -30,6 +30,17 @@ Verify every `\cite{...}` in a paper against three independent layers:
 
 This skill is the fourth layer of \aris{}'s evidence-and-claim assurance, complementing `experiment-audit` (code), `result-to-claim` (science verdict), and `paper-claim-audit` (numerical claims). Together they form a bottom-up integrity stack from raw evaluation code to manuscript bibliography.
 
+
+## Reading and attribution scope
+
+For each material citation distinguish metadata, abstract, full text and the
+specific sections actually checked. Separate what authors claim, what their
+results demonstrate and this project's inference. Preserve relevant conditions,
+credible contrary findings and unresolved identity/version conflicts. A valid
+DOI or matching title does not validate the cited claim; unavailable text limits
+this audit and is not evidence that the claim is false.
+
+
 ## When to Use This Skill
 
 **Run before submission.** The right gating point is:

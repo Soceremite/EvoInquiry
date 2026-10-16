@@ -5,6 +5,16 @@ argument-hint: "[search-query-or-url]"
 allowed-tools: Bash(*), Read, Write
 ---
 
+<!-- EVO-INQUIRY:BEGIN -->
+For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),
+or reuse it if already loaded and unchanged in this session. Apply relevant
+principles within the user's scope and this skill's existing outputs, review
+standards, and recovery contracts. Carry them into nested research tasks and
+reviewer briefs. Continue authorized work through its necessary steps; honor
+budgets, blocking checkpoints, and stopping conditions.
+<!-- EVO-INQUIRY:END -->
+
+
 <!-- EI-GOVERNANCE:BEGIN -->
 Resolve runtime state through tools/state_paths.py before .ei operations. Use
 [project-governance](../shared-references/project-governance.md) for fixed evidence,
@@ -40,7 +50,7 @@ Use Exa when you need results beyond academic databases, or when you want conten
 > Overrides (append to arguments):
 > - `/exa-search "RAG pipelines" — max: 5` — top 5 results
 > - `/exa-search "diffusion models" — category: research paper` — research papers only
-> - `/exa-search "startup funding" — category: news, start date: 2025-01-01` — recent news
+> - `/exa-search "startup funding" — category: news, start date: 2025-01-01` — news since that explicit historical date
 > - `/exa-search "transformer" — content: text, max chars: 8000` — full text mode
 > - `/exa-search "transformer" — content: summary` — LLM-generated summaries
 > - `/exa-search "transformer" — domains: arxiv.org,huggingface.co` — domain filter
@@ -120,7 +130,6 @@ python3 "$EXA_FETCHER" search "QUERY" --max 10 --content highlights
 ```bash
 python3 "$EXA_FETCHER" search "QUERY" --max 10 \
   --category "research paper" \
-  --start-date 2025-01-01 \
   --content text --max-chars 8000
 ```
 

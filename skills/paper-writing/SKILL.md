@@ -5,6 +5,16 @@ argument-hint: "[narrative-report-path-or-topic] [— style-ref: <source>]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, Skill, mcp__codex__codex, mcp__codex__codex-reply
 ---
 
+<!-- EVO-INQUIRY:BEGIN -->
+For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),
+or reuse it if already loaded and unchanged in this session. Apply relevant
+principles within the user's scope and this skill's existing outputs, review
+standards, and recovery contracts. Carry them into nested research tasks and
+reviewer briefs. Continue authorized work through its necessary steps; honor
+budgets, blocking checkpoints, and stopping conditions.
+<!-- EVO-INQUIRY:END -->
+
+
 <!-- EI-GOVERNANCE:BEGIN -->
 Resolve runtime state through tools/state_paths.py before .ei operations. Use
 [project-governance](../shared-references/project-governance.md) for fixed evidence,
@@ -224,28 +234,15 @@ contract is what gets graded.)
        CONTRACT_ACCEPTED: yes    or    CONTRACT_ACCEPTED: no
        followed by your numbered revision demands if no.
 
-       === SCOPE LIMITS (these bound what you PROPOSE, never what you look for) ===
-       Report anything that is actually wrong here — including a rare-looking case, if
-       this repo actually produces it. Then keep the fix in scope:
-       1. This is a RESEARCH-WORKFLOW tool, not a security paper. Verification is
-          welcome; over-defense is not. Assume a cooperating operator on their own
-          machine — a malicious local user is NOT in the threat model.
-       2. Do NOT propose SHA / hash / content-fingerprint / digest-binding schemes.
-          Reporting a real defect in hashing code that already exists is fine.
-       3. NO speculative machinery: do not add feature flags, migration frameworks,
-          compat layers, wrappers, pins, or similar mechanisms unless evidence shows
-          a current repo defect they fix or an explicit existing invariant they must
-          preserve. "Load-bearing", "compatibility", and "not scaffolding" are labels,
-          not evidence. Point to the failing path/artifact or invariant, and check the
-          proposal's factual premises, such as whether a named package version exists.
-       4. NO corner-case obsession: exotic encodings, symlink races, RTL text and
-          millisecond races are out of scope unless you can show the case arises here.
-       5. Where a rubric or checklist is genuinely needed, do not over-mechanize
-          judgement. A clear sentence a human reads beats a scored table nobody
-          maintains.
-       Exception: code that runs remote commands, starts a network service, or installs
-       an MCP server runs on the user's machine with their credentials — trust-boundary
-       findings there are in scope and the default is strict.
+       === REVIEW SCOPE ===
+       Evaluate the actual research question, requested deliverable and applicable
+       disciplinary standards. Locate strengths and defects in the supplied evidence;
+       do not presume acceptance, rejection or a particular threat model. Distinguish
+       observed errors, unsupported claims and optional extensions. Propose the smallest
+       adequate correction, citing its failing path, evidence or preserved invariant.
+       Keep hypotheses, speculation and unperformed checks explicit. A real boundary
+       or reproducibility defect is in scope when it affects this work; unrelated
+       infrastructure and speculative redesign are not automatically required.
        Say plainly when something is correct. Do not manufacture findings.
    ```
 
@@ -371,11 +368,10 @@ These are complementary, not mutually exclusive: you can run multiple generators
 > claim to its evidence and state it directly; generic caveats live in the
 > Limitations section only; writing instructions are never manuscript content
 > ("do not mention X" means omit X, not "we do not address X"); tone edits
-> never change what the paper knows; the paper is a launch, not a progress
-> report — organize around the strongest advantage, give every experiment an
-> argumentative duty, keep unfavorable numbers in the tables and explain them
-> as tradeoffs only where the evidence supports that, never narrating
-> defeats. `/paper-write` carries the full CONFIDENT PROSE, HONEST LIMITS
+> never change what the paper knows; preserve the primary question and metrics, report favorable and unfavorable
+> findings beside the affected claims, and label retrospective reframing as
+> exploratory. Explain tradeoffs only when supported; generic caveats and
+> claim-defining limitations are different. `/paper-write` carries the full CONFIDENT PROSE, HONEST LIMITS
 > contract.
 
 ### Phase 3: LaTeX Writing

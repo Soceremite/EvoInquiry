@@ -1,10 +1,17 @@
-EvoInquiry 1.0 beta is derived from ARIS / Auto-claude-code-research-in-sleep.
+EvoInquiry is derived from ARIS / Auto-claude-code-research-in-sleep.
 Upstream: https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep
 Upstream snapshot: 3b19a22dc5a64c983d2eafd6c2c94000fadc4f8d
 Upstream copyright (c) 2026 wanshuiyin. See LICENSE (MIT).
 
-EvoInquiry customization copyright (c) 2026 lyd, distributed under MIT.
-The customization adds six shared research principles, Codex entrypoint hooks,
-targeted backend compatibility guidance, packaging checks, and beta release docs.
+EvoInquiry contributions copyright (c) 2026 lyd, distributed under MIT.
+Contributions include research judgment and workflow guidance, evidence and
+resource management, client compatibility, packaging, and documentation.
 Retained upstream client packages and reviewer overlays preserve their original
-identities; their presence does not imply they apply EvoInquiry principles.
+identities. EvoInquiry guidance is applied through their documented entrypoints.
+
+EvoInquiry 1.4.0 methodology references (no external runtime collection bundled):
+- Orchestra-Research/AI-research-SKILLs at 773a52944ba4747a18bd4ae9ade53fff041adcbc; MIT, copyright (c) 2025 Claude AI Research Skills Contributors. Research framing, bounded review and plotting practices were consulted.
+- K-Dense-AI/scientific-agent-skills at a1043ef544e3a100c28e70a736b6cf32554d0677; MIT, copyright (c) 2025 K-Dense Inc. Partial methodology review only.
+- wp-a/nature-academic-search at 725c2ec894a2f40b7d3f811528b9cc7e4ebff6c8; MIT, copyright (c) 2026 wp-a. Interface audit only; optional integration not enabled.
+- Imbad0202/academic-research-skills-codex at 52228e8280dd1770e18ecfc3b1fdf16b13b58104; CC BY-NC 4.0, copyright (c) 2026 Cheng-I Wu. Routing reference evaluated only, no source copied or bundled.
+See docs/UPSTREAM_ADOPTION_1_4_0.json for exact selected sources and decisions.

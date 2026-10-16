@@ -5,6 +5,16 @@ argument-hint: "[method-or-idea-description]"
 allowed-tools: WebSearch, WebFetch, Grep, Read, Glob, mcp__codex__codex
 ---
 
+<!-- EVO-INQUIRY:BEGIN -->
+For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),
+or reuse it if already loaded and unchanged in this session. Apply relevant
+principles within the user's scope and this skill's existing outputs, review
+standards, and recovery contracts. Carry them into nested research tasks and
+reviewer briefs. Continue authorized work through its necessary steps; honor
+budgets, blocking checkpoints, and stopping conditions.
+<!-- EVO-INQUIRY:END -->
+
+
 <!-- EI-GOVERNANCE:BEGIN -->
 Resolve runtime state through tools/state_paths.py before .ei operations. Use
 [project-governance](../shared-references/project-governance.md) for fixed evidence,
@@ -33,17 +43,17 @@ Given a method description, systematically verify its novelty:
    - What makes it different from obvious baselines?
 
 ### Phase B: Multi-Source Literature Search
-For EACH core claim, search using ALL available sources:
+For each core claim, choose sources and search variants appropriate to its discipline and required coverage. Use the literature-evidence reference and record actual coverage:
 
 1. **Web Search** (via `WebSearch`):
    - Search arXiv, Google Scholar, Semantic Scholar
    - Use specific technical terms from the claim
    - Try at least 3 different query formulations per claim
-   - Include year filters for 2024-2026
+   - Use a current, question-appropriate time window and include relevant foundational work
 
 2. **Known paper databases**: Check against:
-   - ICLR 2025/2026, NeurIPS 2025, ICML 2025/2026
-   - Recent arXiv preprints (2025-2026)
+   - Relevant journals, conference proceedings and primary-source archives for this field
+   - Recent preprints and subsequent versions or corrections where relevant
 
 3. **Read abstracts**: For each potentially overlapping paper, WebFetch its abstract and related work section
 
@@ -75,27 +85,22 @@ Phase D is judged under it too.
 
 ```
 === NOVELTY VERDICT LIMITS (these bound how you judge, never how widely you search) ===
-Search exhaustively; judge calibrated. Two failures waste months equally:
-passing an idea a published paper already contains, and killing a viable idea
-because the territory has neighbors.
-1. Proximity is information, not a verdict. Someone working nearby goes in the
-   report; it is not by itself a reason to reject.
-2. ABANDON has exactly one qualification: a specific published paper already
-   contains this result — name that paper. No named paper, no ABANDON.
-3. Crowded-but-deltaed is PROCEED: state the delta in one sentence a reviewer
-   could verify. Thin or contested delta is PROCEED WITH CAUTION — say what
-   would make it carry, not why it should die. CAUTION is not a safe middle:
-   if you cannot name the specific thing that makes the delta thin, the
-   verdict is PROCEED.
-4. Concurrent or competing work is not a veto. That is a race — report it and
-   let the user decide whether to run it.
-5. A direct attack on a central problem is legitimate novelty when nobody has
-   executed it well. "This area is hot" does not mean "this area is taken."
-6. This check is an early gate, never the last one — more triage, pilots, or
-   external review still stand between any idea and a paper, whatever order
-   this run uses. A wrongly passed idea dies cheaply at one of them; a wrongly
-   killed idea is never seen again. When torn between two verdicts, choose the
-   more permissive one.
+Search within the question and declared resource boundary; report coverage.
+1. Assess closest work and the concrete difference using verified sources.
+   Proximity is not duplication; unfamiliarity is not novelty.
+2. Report search_coverage: adequate | partial | unavailable and
+   overlap_assessment: direct | partial | none_located | unknown.
+3. ABANDON for duplication requires a named, checked work containing the
+   claimed contribution. Explain the actual overlap, not only similar keywords.
+4. PROCEED means an evidenced difference warrants further investigation;
+   it is not proof of novelty or validity. If search or the difference is
+   unresolved, use PROCEED WITH CAUTION and identify the missing check.
+5. Keep the evidence assessment separate from the decision to spend resources.
+   A limited next search can be worthwhile with novelty unknown. Do not mark
+   incomplete coverage as an affirmative novelty verification.
+6. Do not invent overlap or a favorable difference to satisfy a gate. Preserve
+   the actual review source and unresolved issues; continuing exploration is
+   not scientific acceptance.
 Say plainly when an idea clears the check. Do not manufacture overlap.
 ```
 
@@ -121,7 +126,7 @@ Output a structured report:
 - Score: X/10 (anchor: 5/10 = has clear neighbors but a defensible delta worth
   a pilot; reserve 1-3 for results a named published paper already contains)
 - Recommendation: PROCEED / PROCEED WITH CAUTION / ABANDON (per the verdict
-  limits: crowded-but-deltaed ground is PROCEED; ABANDON must name the paper)
+  limits: PROCEED requires a checked difference; uncertain coverage is CAUTION; duplication requires a checked paper)
 - Key differentiator: [what makes this unique, if anything]
 - Risk: [what a reviewer would cite as prior work]
 
@@ -135,7 +140,7 @@ Output a structured report:
   directions — and when an idea clears the check, say so plainly.
 - Novelty can live in the combination or the finding even when every
   individual claim rates LOW — judge the idea, not each claim in isolation.
-  Known parts arranged to reveal something unknown are novel.
+  Known parts may yield a novel finding only when that finding and its difference from checked prior work are verified; a new arrangement alone is insufficient.
 - "Applying X to Y" earns novelty by what the application reveals — a
   non-obvious interaction, failure mode, or insight. Judge the revelation, not
   the template.

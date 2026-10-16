@@ -1,0 +1,2 @@
+# Synthetic evaluation record
+Methods A/B used identical held-out examples, prompt format and output limits. Labels were randomized and hidden from raters. Selection used validation data before the test set was opened. Raters evaluated every output, including failures, with the same rubric. Raw per-rater records and a preregistered protocol are available in the described local record; this excerpt does not provide rater agreement statistics. The claim is limited to this evaluation protocol.

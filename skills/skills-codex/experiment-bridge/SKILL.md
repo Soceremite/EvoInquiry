@@ -16,6 +16,7 @@ For artifact-producing runs, read [experiment storage](../shared-references/expe
 For this stage, read [project-governance](../shared-references/project-governance.md). Before implementation, inspect reusable interfaces and their real callers/tests; update public docs/examples and contract tests together. Bind a recipe revision and record smoke, recovery and scientific reviews separately.
 Use [code-reuse-and-docs](../shared-references/code-reuse-and-docs.md) for code changes and [environment-stewardship](../shared-references/environment-stewardship.md) for dependency changes.
 When implementing comparisons, load [comparative-experiments](../shared-references/comparative-experiments.md). Carry the fixed data/splits, permitted input access, selection/evaluator and method-specific configurations into executable checks. Persist effective configurations and every attempt; record deviations instead of silently repairing only one method.
+For empirical evaluations, proactively implement economical sample evidence alongside the planned metrics, unless the user or plan explicitly limits it: stable IDs, target/output references, relevant run/draw/settings and compact per-example scores where affordable. Use [case-study-analysis](../shared-references/case-study-analysis.md) to plan a bounded diagnostic export; retain selected real outputs without copying every image, video or dataset. Reuse the existing evaluator and record omitted coverage. This is instrumentation of the authorized evaluation, not a new experiment or inference budget.
 <!-- EVO-INQUIRY:END -->
 
 
@@ -157,28 +158,15 @@ spawn_agent:
     - NON-BLOCKING issues that can wait
     - Suggested patches or checks
 
-    === SCOPE LIMITS (these bound what you PROPOSE, never what you look for) ===
-    Report anything that is actually wrong here — including a rare-looking case, if
-    this repo actually produces it. Then keep the fix in scope:
-    1. This is a RESEARCH-WORKFLOW tool, not a security paper. Verification is
-       welcome; over-defense is not. Assume a cooperating operator on their own
-       machine — a malicious local user is NOT in the threat model.
-    2. Do NOT propose SHA / hash / content-fingerprint / digest-binding schemes.
-       Reporting a real defect in hashing code that already exists is fine.
-    3. NO speculative machinery: do not add feature flags, migration frameworks,
-       compat layers, wrappers, pins, or similar mechanisms unless evidence shows
-       a current repo defect they fix or an explicit existing invariant they must
-       preserve. "Load-bearing", "compatibility", and "not scaffolding" are labels,
-       not evidence. Point to the failing path/artifact or invariant, and check the
-       proposal's factual premises, such as whether a named package version exists.
-    4. NO corner-case obsession: exotic encodings, symlink races, RTL text and
-       millisecond races are out of scope unless you can show the case arises here.
-    5. Where a rubric or checklist is genuinely needed, do not over-mechanize
-       judgement. A clear sentence a human reads beats a scored table nobody
-       maintains.
-    Exception: code that runs remote commands, starts a network service, or installs
-    an MCP server runs on the user's machine with their credentials — trust-boundary
-    findings there are in scope and the default is strict.
+    === REVIEW SCOPE ===
+    Evaluate the actual research question, requested deliverable and applicable
+    disciplinary standards. Locate strengths and defects in the supplied evidence;
+    do not presume acceptance, rejection or a particular threat model. Distinguish
+    observed errors, unsupported claims and optional extensions. Propose the smallest
+    adequate correction, citing its failing path, evidence or preserved invariant.
+    Keep hypotheses, speculation and unperformed checks explicit. A real boundary
+    or reproducibility defect is in scope when it affects this work; unrelated
+    infrastructure and speculative redesign are not automatically required.
     Say plainly when something is correct. Do not manufacture findings.
 ```
 
