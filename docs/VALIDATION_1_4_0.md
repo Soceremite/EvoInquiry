@@ -182,9 +182,10 @@ independent review. No input file changed and no source evidence was deleted.
 The two reconnects are recorded separately from case retries. Overload was
 observed during C05 but does not establish the cause of every delay. Correct
 content and a correct number do not erase timing or guidance deviations. No
-complete behavior pass is claimed. C02/C03/C04/C07/C08 remain unstarted because
-the initial gate has unresolved issues; no timeout extension or automatic retry
-was used.
+complete behavior pass is claimed. At the end of that dev.4 batch,
+C02/C03/C04/C07/C08 remained unstarted because the initial gate had unresolved
+issues; no timeout extension or automatic retry was used in that batch. Later
+dev.5 attempts are recorded separately below.
 
 The classification report repeats several findings. Local source guidance now
 makes reference loading conditional on the task, leads with the observed
@@ -348,12 +349,13 @@ insufficient. It did not start any model session. The user later authorized only
 the distinct eight-case supplement above; the historical 116-session inventory
 has not been resumed under that narrower authorization. Evidence, hashes,
 unchanged inputs and separate attempt histories remain in the ignored validation
-directory. Six valid baseline outputs are reusable; only 22 of the 138 primary
-slots have substantive terminal artifacts so far, including one timed-out
+directory. At that historical checkpoint, six valid baseline outputs were
+reusable and only 22 of the 138 primary slots had substantive terminal artifacts,
+including one timed-out
 baseline. Content support, successful timed execution and release acceptance
 are separate outcomes.
 
-Final source changes after the dev.3 freeze are validation documentation, a
+Source changes recorded at that checkpoint after the dev.3 freeze were validation documentation, a
 whitespace-only Gemini overlay cleanup with its exact candidate digest update,
 and the optional original-baseline comparator correction and regression tests.
 All original baseline hash maps remain intact. Existing native findings remain
@@ -363,12 +365,112 @@ attributed to dev.3; they are not asserted to certify byte-identical final sourc
 and [harness-aware evaluation guidance](https://developers.openai.com/cookbook/examples/partners/harness_aware_plugin_evals/harness_aware_plugin_evals)
 were consulted on 2026-10-15. Results apply to the actual CLI and settings.
 
+### Later dev.5 bounded checks on 2026-10-16
+
+The later candidate was packaged as `1.4.0-dev.5` from source commit `7fa8255`.
+Native discovery verified 88 Codex entrypoints and 250 support resources; the
+common-guidance SHA-256 was
+`bb58ecba76775a8694d38b2e7a5e78e67f78039e2b659a3221646a719956f2f0`.
+The released baseline exposed 86 entrypoints and 237 support resources. These
+runs used `gpt-6.1-sol`, high reasoning, one job, and a 300-second ceiling unless
+explicitly labeled as a separate diagnostic. Their harness SHA-256 was
+`c5d0356357d8a12b91f11b5d2a99f05686b1b26f7c3adf6fa0d4789578709a36`.
+Every batch retains its discovery metadata, manifest identity, raw events,
+stderr, artifacts and terminal run records in the private validation directory.
+
+All eight C development cases now have a completed bounded candidate attempt:
+
+| Case | Completed attempt, seconds | Required output observed |
+| --- | --- | --- |
+| C01 classification | 152.06 | `ANALYSIS.md` |
+| C02 regression | 141.55 | `ANALYSIS.md` |
+| C03 image generation | 169.31 | `ANALYSIS.md` |
+| C04 video | 152.27 | `ANALYSIS.md` |
+| C05 aggregate-only evidence | 174.53 | `ANALYSIS.md` |
+| C06 narrow arithmetic | 40.39 | Concise answer, no new files |
+| C07 selected-panel claim | 123.36 | `REVIEW.md` |
+| C08 incomplete pairs and storage limit | 225.75 | `ANALYSIS.md` |
+
+These completed attempts have no recorded service errors, variant mismatches or
+noncanonical entrypoint reads. Implementer inspection found that the reports
+retain regressions, tail failures, full-pool denominators and missing-evidence
+limits. For the synthetic generation census, both methods meet the prompt in
+2/4 outputs; individual improvements and regressions do not establish a higher
+overall prompt-success rate. C06 answers the requested 16.7-percentage-point
+calculation without starting a report workflow.
+
+The table indexes completed attempts, not eight first-attempt successes.
+Earlier timeouts, reconnects and a tool-execution failure remain preserved.
+The separate C03 900-second diagnostic is not used as a 300-second result.
+These are implementer-reviewed development outputs; the C baseline comparison
+and independent acceptance are still outstanding.
+
+The six focus cases O03/J01/J07/R01/L01/F03 also have completed candidate
+attempts within 300 seconds, taking 129.74/118.90/243.90/234.30/85.30/170.37
+seconds respectively. Their completed baseline counterparts took
+287.70/207.91/116.52/168.10/221.60/213.97 seconds. Baseline O03, J07 and F03
+needed separately retained bounded retries after service errors; J01 completed
+despite one service-error event. These results cannot be presented as a
+first-attempt robustness advantage or as proof of general improvement. The
+interrupted baseline attempt without a terminal record remains incomplete.
+Figure outputs retain their actual preview limitations.
+
+The original candidate cases 01–08 then produced four completed sessions
+(01/02/05/08) and four timeouts. The timeout assessment is:
+
+| Case | Observed state at the 300-second stop | Remaining issue |
+| --- | --- | --- |
+| 03 method refinement | Proposal and provisional, review-blocked records saved near the deadline | No completed CLI turn |
+| 04 experiment planning | Sixteen tool actions, including repeated reference reads | Neither requested plan nor tracker saved |
+| 06 claim assessment | One reconnect; three evidence-helper invocations while correcting input shape and literal values; mainline rather than discovered Codex entrypoint read | Requested assessment file absent; guidance deviation retained |
+| 07 paper-number audit | One reconnect; audit identifies the 0.860/0.840 mismatch, training-budget confound and unsupported domain scope | No completed CLI turn or independent reviewer acceptance |
+
+No service error was observed for 03 or 04. The errors observed for 06 and 07
+do not establish the cause of their entire delay. Saved files do not convert
+timeouts into completed sessions. The initial empty legacy batch contained no
+model runs because its launcher built an empty case selection; it is an
+invocation error, not a passed batch. Raw evidence and implementer triage are
+retained in `current-legacy-execution-status.json` and
+`current-legacy-timeout-triage.json`.
+
+### Evaluation cancellation and local API configuration
+
+The evaluation harness now rejects an empty selection before discovery, stops
+its isolated CLI process group when inspection raises, and propagates SIGINT or
+SIGTERM cancellation to active sessions. Queued cases do not launch after
+cancellation. Canceled runs retain their traces and an unassessed cancellation
+record; the batch exits unsuccessfully and records cases without terminal
+results. Cleanup also stops group members that ignore SIGTERM after the CLI has
+already exited. The initial focused harness regression returned **21 passed**
+in 11.32 seconds. After adding that surviving-process regression, the combined
+harness, packaging, Codex-mirror and skill-group checks returned **72 passed**
+in 32.37 seconds (`harness-followup-final-regression.xml`), including actual
+signal and process-group checks. Package preservation and skill inventory
+checks also passed. This changes evaluator lifecycle handling, not the frozen
+research rubrics or previous results. Future batches must record the updated
+harness identity:
+`32a185d31091e3ea1943212e8ead53b26559bcb8f9544022fa52d77d2fdc864d`.
+
+The user also configured a local, Git-ignored `.env`. A bounded canary against
+that configured gateway returned HTTP 200 and `READY` for
+`deepseek-v4.1-flash` in 2.21 seconds and `mimo-v2.6-flash` in 1.87 seconds.
+`glm-5.3-flash` reached the 45-second timeout without a response. Each model
+received one request, with no automatic retries. The local fallback was then
+changed to MiMo at the user's request. The credential is not included in
+validation receipts or release files. These checks establish minimal generation
+through that configured account and endpoint; they do not authenticate the
+upstream implementation or replace the frozen Codex behavior matrix. Earlier
+401 responses from different endpoint/account combinations remain historical
+diagnostics, not a current blanket claim that these models are unavailable.
+
 ## Remaining release gates
 
 The complete native behavior matrix and cross-session handoffs remain
 incomplete. Local coverage includes the full sandbox run and separate
 permission-related rechecks described above; the native platform CI gate passed
-on the recorded candidate commit. The authorized case-study supplement stopped
-after its initial three attempts with timing and guidance issues; its five
-remaining cases have not run. Release metadata must record actual outcomes
-rather than inherit old-version passes.
+on the recorded older candidate commit. Later C development attempts and the
+six focus pairs have completed execution records, but do not replace the full
+matrix, remaining original/resource cases, critical repeats, fresh holdouts or
+handoffs. The four original-case timeouts above remain unresolved; full program
+and native platform checks must cover the final changed candidate. Release
+metadata must record actual outcomes rather than inherit old-version passes.

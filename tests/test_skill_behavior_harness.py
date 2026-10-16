@@ -2,11 +2,15 @@
 from pathlib import Path
 import json
 import os
+import signal
+import subprocess
 import sys
+import time
 
 import pytest
 
 from tools.evaluate_skill_behavior import discover_variant, run_case, selection_config
+from tools import evaluate_skill_behavior as harness
 
 
 @pytest.fixture
@@ -109,6 +113,141 @@ time.sleep(20)
     assert not result['session_completed']
     assert result['seconds'] < 3
     assert (output / '01/events.jsonl').is_file()
+
+
+@pytest.mark.parametrize('selection,has_case', [('all', False), ('smoke', True)])
+def test_empty_case_selection_fails_before_discovery_or_output(tmp_path, monkeypatch, selection, has_case):
+    manifest = tmp_path / 'manifest.json'
+    manifest.write_text(json.dumps({'cases': [{'id': '01'}] if has_case else [], 'smoke_cases': []}))
+    output = tmp_path / 'evidence'
+    monkeypatch.setattr(sys, 'argv', ['evaluate_skill_behavior', '--toolkit', str(tmp_path / 'source'),
+                                    '--output', str(output), '--manifest', str(manifest), '--cases', selection])
+    monkeypatch.setattr(harness, 'discover_variant', lambda *a, **kw: pytest.fail('Empty invocation must not start discovery'))
+    with pytest.raises(SystemExit) as error:
+        harness.main()
+    assert error.value.code == 2
+    assert not output.exists()
+
+
+@pytest.mark.skipif(os.name != 'posix', reason='CLI process-group harness uses POSIX signals')
+def test_cleanup_stops_a_group_member_that_outlives_the_cli(tmp_path):
+    cli = subprocess.Popen([sys.executable, '-c', 'import time; time.sleep(30)'], process_group=0)
+    survivor = None
+    try:
+        ready = tmp_path / 'ready'
+        survivor = subprocess.Popen([sys.executable, '-c', '''import signal,sys,time
+from pathlib import Path
+signal.signal(signal.SIGTERM, signal.SIG_IGN)
+Path(sys.argv[1]).touch()
+time.sleep(30)
+''', str(ready)], process_group=cli.pid)
+        deadline = time.monotonic() + 10
+        while not ready.exists() and survivor.poll() is None and time.monotonic() < deadline:
+            time.sleep(0.025)
+        assert ready.is_file(), 'Group member did not install its signal handler'
+        harness._terminate_session(cli)
+        assert cli.returncode == -signal.SIGTERM
+        assert survivor.wait(timeout=3) == -signal.SIGKILL
+    finally:
+        for proc in (survivor, cli):
+            if proc is not None:
+                if proc.poll() is None:
+                    proc.kill()
+                proc.wait()
+
+
+@pytest.mark.skipif(os.name != 'posix', reason='CLI process-group harness uses POSIX signals')
+def test_inspection_exception_stops_the_running_cli(setup_case, tmp_path, monkeypatch):
+    case, fixtures, output, toolkit = setup_case
+    cli = fake_cli(tmp_path, 'import sys,time\nsys.stdin.read()\ntime.sleep(30)\n')
+    processes = []
+    original_popen = subprocess.Popen
+
+    def capture_process(*args, **kwargs):
+        proc = original_popen(*args, **kwargs)
+        processes.append(proc)
+        return proc
+
+    def fail_inspection(*args):
+        raise OSError('Simulated trace-read failure')
+
+    monkeypatch.setattr(harness.subprocess, 'Popen', capture_process)
+    monkeypatch.setattr(harness, 'read_events', fail_inspection)
+    with pytest.raises(OSError, match='Simulated trace-read failure'):
+        run_case(case, fixtures, output, toolkit, cli, 'evo-inquiry@evo-inquiry-eval-beta4')
+    assert len(processes) == 1
+    assert processes[0].poll() is not None
+    assert (output / '01/events.jsonl').is_file()
+
+
+@pytest.mark.skipif(os.name != 'posix', reason='CLI process-group harness uses POSIX signals')
+@pytest.mark.parametrize('stop_signal', [signal.SIGINT, signal.SIGTERM])
+def test_cli_cancellation_stops_children_preserves_trace_and_skips_queued_cases(setup_case, tmp_path, stop_signal):
+    case, fixtures, output, toolkit = setup_case
+    case = dict(case, fixture=str(fixtures / '01'), timeout_seconds=30)
+    manifest = tmp_path / 'manifest.json'
+    manifest.write_text(json.dumps({'cases': [case, dict(case, id='02')], 'smoke_cases': ['01', '02']}))
+    cli = fake_cli(tmp_path, '''import json,os,signal,subprocess,sys,time
+from pathlib import Path
+if '--version' in sys.argv:
+    print('codex-cli test fixture')
+    raise SystemExit(0)
+sys.stdin.read()
+child = subprocess.Popen([sys.executable, '-c', 'import time; time.sleep(30)'])
+def stop(signum, frame):
+    child.wait(timeout=3)
+    raise SystemExit(128 + signum)
+signal.signal(signal.SIGTERM, stop)
+Path('processes.tmp').write_text(json.dumps([os.getpid(), child.pid]))
+Path('processes.tmp').replace('processes.json')
+print(json.dumps({'type':'turn.started'}), flush=True)
+time.sleep(30)
+''')
+    command = '''import sys
+from tools import evaluate_skill_behavior as harness
+harness.discover_variant = lambda *args, **kwargs: {'entrypoints': 1}
+harness.main()
+'''
+    env = dict(os.environ, CODEX_HOME=str(tmp_path / 'codex-home'))
+    proc = subprocess.Popen([sys.executable, '-c', command, '--toolkit', str(toolkit),
+                             '--output', str(output), '--manifest', str(manifest),
+                             '--cases', 'all', '--codex', cli, '--jobs', '1'],
+                            cwd=Path(__file__).resolve().parents[1], env=env,
+                            stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
+                            start_new_session=True)
+    pids = []
+    try:
+        path = output / '01/project/processes.json'
+        deadline = time.monotonic() + 10
+        while not path.exists() and proc.poll() is None and time.monotonic() < deadline:
+            time.sleep(0.025)
+        assert path.is_file(), 'Fixture CLI did not start'
+        pids = json.loads(path.read_text())
+        proc.send_signal(stop_signal)
+        stdout, stderr = proc.communicate(timeout=10)
+        assert proc.returncode == 128 + stop_signal, (stdout, stderr)
+        run = json.loads((output / '01/run.json').read_text())
+        assert run['limit'] == run['failure_kind'] == 'cancelled'
+        assert not run['session_completed']
+        assert run['assessment'] == 'UNASSESSED'
+        assert (output / '01/events.jsonl').is_file()
+        assert not (output / '02').exists()
+        assert [row['case'] for row in json.loads((output / 'runs.json').read_text())] == ['01']
+        metadata = json.loads((output / 'environment.json').read_text())
+        assert metadata['interrupted_signal'] == stop_signal
+        assert metadata['unrecorded_cases'] == ['02']
+        for pid in pids:
+            with pytest.raises(ProcessLookupError):
+                os.kill(pid, 0)
+    finally:
+        if proc.poll() is None:
+            proc.kill()
+        proc.communicate()
+        for pid in pids:
+            try:
+                os.kill(pid, signal.SIGKILL)
+            except ProcessLookupError:
+                pass
 
 
 @pytest.mark.skipif(os.name != 'posix', reason='CLI process-group harness uses POSIX signals')

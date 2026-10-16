@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import argparse
 from datetime import datetime, timezone
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from concurrent.futures import CancelledError, ThreadPoolExecutor, as_completed
 import hashlib
 import json
 import os
@@ -21,6 +21,7 @@ import time
 import tomllib
 import re
 import selectors
+import threading
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -227,7 +228,29 @@ def discover_variant(toolkit: Path, selector: str, codex: str, model_settings: d
             "support_resource_sha256": resource_hashes}
 
 
-def run_case(case: dict, fixture_root: Path, output: Path, toolkit: Path, codex: str, selector: str, model_settings: dict | None = None) -> dict:
+def _terminate_session(proc: subprocess.Popen) -> None:
+    """Stop the isolated CLI process group and reap its direct child."""
+    try:
+        os.killpg(proc.pid, signal.SIGTERM)
+    except ProcessLookupError:
+        pass
+    try:
+        proc.wait(timeout=5)
+    except subprocess.TimeoutExpired:
+        pass
+    finally:
+        # The CLI may exit before a descendant that ignores SIGTERM.
+        try:
+            os.killpg(proc.pid, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
+        proc.wait()
+
+
+def run_case(case: dict, fixture_root: Path, output: Path, toolkit: Path, codex: str, selector: str, model_settings: dict | None = None,
+             cancel_event: threading.Event | None = None) -> dict:
+    if cancel_event is not None and cancel_event.is_set():
+        raise CancelledError('Evaluation stopped before this case started')
     destination = output / case["id"]
     if destination.exists():
         raise ValueError(f"Refusing to overwrite evaluation evidence: {destination}")
@@ -251,38 +274,41 @@ def run_case(case: dict, fixture_root: Path, output: Path, toolkit: Path, codex:
         environment = dict(os.environ, TOKIO_WORKER_THREADS="2")
         proc = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=stdout, stderr=stderr,
                                 text=True, start_new_session=True, env=environment, cwd=workspace)
-        assert proc.stdin is not None
-        proc.stdin.write(case["prompt"] + "\n")
-        proc.stdin.close()
         limit = None
-        while proc.poll() is None:
-            events = read_events(destination / "events.jsonl")
-            service_errors.extend(_new_service_errors(
-                events, stderr_path.read_text(encoding="utf-8", errors="replace"), seen_service_errors))
-            if len(events) != previous_count:
-                progress.append({'seconds': round(time.monotonic() - started, 2),
-                                 'events': len(events),
-                                 'last_event': events[-1].get('type') if events else None})
-                previous_count = len(events)
-            if len(service_errors) >= SERVICE_ERROR_THRESHOLD:
-                limit = "service_error"
-                break
-            if time.monotonic() - started > case["timeout_seconds"]:
-                limit = "time_limit"
-                break
-            actions = [e for e in events if e.get("type") == "item.started"
-                       and e.get("item", {}).get("type") not in ("agent_message", "reasoning", "error")]
-            if len(actions) > case["max_tool_actions"]:
-                limit = "tool_limit"
-                break
-            time.sleep(0.5)
-        if limit:
-            os.killpg(proc.pid, signal.SIGTERM)
-            try:
-                proc.wait(timeout=5)
-            except subprocess.TimeoutExpired:
-                os.killpg(proc.pid, signal.SIGKILL)
-        proc.wait()
+        try:
+            assert proc.stdin is not None
+            proc.stdin.write(case["prompt"] + "\n")
+            proc.stdin.close()
+            while proc.poll() is None:
+                if cancel_event is not None and cancel_event.is_set():
+                    limit = "cancelled"
+                    break
+                events = read_events(destination / "events.jsonl")
+                service_errors.extend(_new_service_errors(
+                    events, stderr_path.read_text(encoding="utf-8", errors="replace"), seen_service_errors))
+                if len(events) != previous_count:
+                    progress.append({'seconds': round(time.monotonic() - started, 2),
+                                     'events': len(events),
+                                     'last_event': events[-1].get('type') if events else None})
+                    previous_count = len(events)
+                if len(service_errors) >= SERVICE_ERROR_THRESHOLD:
+                    limit = "service_error"
+                    break
+                if time.monotonic() - started > case["timeout_seconds"]:
+                    limit = "time_limit"
+                    break
+                actions = [e for e in events if e.get("type") == "item.started"
+                           and e.get("item", {}).get("type") not in ("agent_message", "reasoning", "error")]
+                if len(actions) > case["max_tool_actions"]:
+                    limit = "tool_limit"
+                    break
+                time.sleep(0.5)
+        finally:
+            if proc.poll() is None:
+                _terminate_session(proc)
+            if proc.stdin is not None and not proc.stdin.closed:
+                proc.stdin.close()
+            proc.wait()
     events = read_events(destination / "events.jsonl")
     service_errors.extend(_new_service_errors(
         events, stderr_path.read_text(encoding="utf-8", errors="replace"), seen_service_errors))
@@ -367,6 +393,8 @@ def main() -> None:
         cases = [dict(c, timeout_seconds=args.timeout_seconds) for c in cases]
     if selected != {c["id"] for c in cases}:
         parser.error("Unknown case ID")
+    if not cases:
+        parser.error("No cases selected; check the manifest and case filter")
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=True)
     config_path = Path(os.environ.get("CODEX_HOME", str(Path.home() / ".codex"))) / "config.toml"
@@ -391,13 +419,42 @@ def main() -> None:
                 "cases": sorted(selected), "grading": "Manual trace and artifact assessment against frozen rubric"}
     (output / "environment.json").write_text(json.dumps(metadata, indent=2) + "\n")
     results = []
-    with ThreadPoolExecutor(max_workers=args.jobs) as executor:
-        futures = [executor.submit(run_case, c, manifest_path.parent, output, args.toolkit.resolve(), args.codex, args.selector, model_settings) for c in cases]
-        for future in as_completed(futures):
-            result = future.result()
-            results.append(result)
-            print(json.dumps({k: result[k] for k in ("case", "exit_code", "limit", "seconds", "session_completed")}), flush=True)
-    (output / "runs.json").write_text(json.dumps(sorted(results, key=lambda r: r["case"]), indent=2) + "\n")
+    cancel_event = threading.Event()
+    received_signals = []
+    previous_handlers = {}
+
+    def cancel(signum, _frame):
+        received_signals.append(signum)
+        cancel_event.set()
+
+    try:
+        for signum in (signal.SIGINT, signal.SIGTERM):
+            previous_handlers[signum] = signal.signal(signum, cancel)
+        with ThreadPoolExecutor(max_workers=args.jobs) as executor:
+            futures = [executor.submit(run_case, c, manifest_path.parent, output, args.toolkit.resolve(), args.codex, args.selector, model_settings, cancel_event) for c in cases]
+            try:
+                for future in as_completed(futures):
+                    try:
+                        result = future.result()
+                    except CancelledError:
+                        continue
+                    results.append(result)
+                    print(json.dumps({k: result[k] for k in ("case", "exit_code", "limit", "seconds", "session_completed")}), flush=True)
+            except BaseException:
+                cancel_event.set()
+                for future in futures:
+                    future.cancel()
+                raise
+    finally:
+        for signum, handler in previous_handlers.items():
+            signal.signal(signum, handler)
+        (output / "runs.json").write_text(json.dumps(sorted(results, key=lambda r: r["case"]), indent=2) + "\n")
+        if received_signals:
+            metadata['interrupted_signal'] = received_signals[0]
+            metadata['unrecorded_cases'] = sorted(selected - {r['case'] for r in results})
+            (output / 'environment.json').write_text(json.dumps(metadata, indent=2) + '\n')
+    if received_signals:
+        raise SystemExit(128 + received_signals[0])
 
 
 if __name__ == "__main__":
