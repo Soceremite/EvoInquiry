@@ -745,14 +745,167 @@ without recorded service errors, but incidental command/helper failures remain
 in the evidence. This block supports task-specific parity, not a general
 candidate advantage.
 
+The first two independently authored unseen J replacements completed for both
+variants under their original request-only limits. All four outputs pass their
+frozen substantive criteria, with no confirmed critical integrity failure. The
+implementer received category/status summaries, not the private task inputs or
+judging criteria. The remaining six unseen replacements were executed later and
+are reported below.
+
+Candidate `fresh_01` retains a **separate runtime-entrypoint deviation**: native
+discovery advertises the Codex entrypoint, but the captured first tool reads the
+retained mainline skill and subsequently follows mainline references. That file
+explicitly directs Codex to the correct discovered path; no later canonical read
+is recorded. The harness correctly flags the noncanonical entrypoint. Package
+identity is correct and the substantive outcome passes, but canonical-runtime
+acceptance fails for this attempt. The cause of its initial path choice is
+unknown; no mislinked helper or deterministic source defect is demonstrated.
+Candidate `fresh_02` uses its discovered Codex entrypoint. This deviation is
+neither erased by the content pass nor promoted into an unsupported critical
+data/review fabrication finding. No source changes were made from these unseen
+case contents, and the build remains frozen for subsequent execution.
+
+During the next public block, candidate J05 saved its requested experiment plan,
+tracker, matching timestamped revisions and valid output manifest. Independent
+review passes every substantive behavior and artifact criterion. The native
+session nevertheless reached its 300-second ceiling at 300.50 seconds, with no
+completed turn or final answer and no recorded service errors. The user explicitly
+accepted **J05 as PASS** on the completed artifacts. This case-specific human
+disposition closes J05 for acceptance; its original execution remains recorded
+as time-limited and incomplete. No retry or implementation change is required
+solely for that timeout. This does not waive other cases, alter raw evidence,
+establish budget compliance or accept an unavailable scientific review.
+
+The next two unseen R replacements have separate content and execution results.
+Both variants chose adequate first entrypoints for both cases. In `fresh_03`,
+neither saved the required deliverable before its original 300-second limit:
+candidate 300.36 seconds with no recorded service error; baseline 300.28 seconds
+with one overloaded-server/reconnection error. Both attempts fail bounded
+completion. Baseline `fresh_04` passes at 236.20 seconds. Candidate `fresh_04`'s
+saved artifacts pass independent checks, but the parent user interruption left
+no terminal receipt; session completion remains inconclusive, not a timeout.
+The implementer received only status and public-runtime diagnostics. Loaded
+resources match the frozen packages; these observations establish neither a
+general source defect nor a candidate runtime advantage.
+
+The first storage attempt remains unaccepted because S01 timed out at 600.23
+seconds: two patch-validation errors left the script unchanged, without its
+implementation report or recovery checks. S02's original partial attempt was
+user-interrupted and remains ungraded. Separate, later recovery attempts are
+reported independently: S01 recovery met all public storage requirements, and
+the first S03/S04 recovery attempts met their public required outcomes,
+including cumulative storage infeasibility, corrupt-latest/valid-fallback
+recovery, and blocking an over-budget save peak. No supplied evidence was
+removed and no experiment was launched. Independent methods review corrected
+an overly strict S03 reporting judgment: its saved-point, unsaved logged
+progress and recovery recommendation already communicate the loss; an exact
+1,300-step calculation is optional.
+
+Qualifications remain visible. S02 incorrectly says a weights-only export size
+was unspecified although the input gives 2 GiB; its resume-only lower-bound
+infeasibility calculation still holds. It also omits the selected planning
+skill's tracker. S04 uses the mainline surface from the correctly pinned
+candidate package rather than the discovered Codex surface. Its resource
+blocker is correct, while runtime conformance fails; this does not demonstrate
+a different version or identify the cause of the initial path choice. Original
+reviews and the narrower methods correction are both retained.
+
+An external temporary evaluation home was absent after the user interruption.
+One baseline launch failed preflight without a model call. The same isolated
+path was rebuilt from matching configuration/guidance and the frozen plugins;
+native discovery passed for both variants before the separately registered
+recovery executions. The formal installed 1.3.0 was not changed.
+
+The candidate and baseline routing block then completed all eight cases. The
+candidate had seven substantive PASS and one PARTIAL (J09); J09 correctly
+identified the evidence boundary but framed the missing audit material as a
+broad certification/auditability failure and loaded the mainline experiment
+audit path. The baseline had six PASS, the same J09 PARTIAL, and R06 was
+INCONCLUSIVE because its recorded runtime loaded the dev.8 candidate package
+under a baseline launch. These are retained as runtime/calibration findings,
+not candidate integrity violations or comparison advantages.
+
+The literature/figure block met all six public outcomes on each side. Candidate
+sessions were ordinary completed runs with canonical paths. Baseline F02 saved
+the required material but reached its 300.50-second time boundary; the
+time-limit deviation remains visible. F01/F02/F04 visual or external review
+gates were unavailable/provisional, so mechanical artifacts do not establish
+visual quality or a scientific advantage.
+
+The eight critical repeats met their public outcomes on both variants and
+supported key-category stability in all eight pairs, with no service errors or
+critical integrity failures. J02 used an alternate result-to-claim route on
+both sides and candidate J03 used research-manager outside the registered list;
+the public outcomes still met their criteria, but the route deviations remain
+separate evidence. Repeat results are additive and do not replace first runs.
+
+Candidate lifecycle/governance cases met four of six public outcomes. L02
+correctly stopped on a missing comparison-evidence ledger and G02 correctly
+stopped after a filesystem-lock exclusion failure; both are valid dependency
+handling, not completed research verification. S01's second, separately
+registered recovery attempt met all public storage requirements in 337.37
+seconds. Its first 600.23-second timeout and failed patch attempts remain a
+distinct incomplete attempt. S02–S04 met their public blockers/recovery checks,
+with S02 documentation omissions and S04 mainline-surface loading retained.
+
+Candidate legacy cases 09–24 produced 15/16 public outcomes. Case 22 reached
+the 300.45-second limit with only partial preparation and no final answer; it
+is INCONCLUSIVE/partial, not a pass. Case 20 used a noncanonical entrypoint
+while its substantive artifact met the case requirement. The original 01–08
+records and all first attempts remain preserved.
+
+The remaining fresh L/F replacements completed for both variants within their
+registered budgets (fresh_05–08). The safe independent review reports **4/4
+public outcomes MET for each variant**, four paired matches, zero service
+errors, zero variant mismatches and zero critical-integrity findings. Three
+cases per variant retain blocked or unavailable visual/independent-review
+gates; fresh_05 had no formal gate in its public task. The selected task
+content and criteria remain withheld from the implementer, and no comparative
+advantage or aggregate scientific verdict is inferred from terminal execution
+or these mechanical outcomes. The detailed receipts remain private; the
+public summary is preserved at
+`validation/upgrade-1.4.0/fresh-05-08-candidate-baseline-safe-summary-20261016.json`.
+
+A separately registered third attempt for the fresh R pair preserved the prior
+failures and interruptions. Candidate `fresh_03` completed in 140.74 seconds
+with no service error or variant mismatch; candidate `fresh_04` again reached
+the 300-second limit at 300.46 seconds without a completed session. Baseline
+`fresh_03` completed in 176.36 seconds and baseline `fresh_04` in 42.50
+seconds; both had no service error or variant mismatch. These are runtime-only
+facts pending the authorized independent selected-case review; they do not by
+themselves establish the private public outcomes or a candidate advantage.
+The runtime-only receipt is
+`validation/upgrade-1.4.0/fresh-R-third-attempt-runtime-only-20261016.json`
+(SHA-256 `fd810e8487c3c112cab6b7e1aca96e6e96c05518acb94ac6c2a29787223159ac`);
+it assigns no scientific outcome or holdout release.
+
+The baseline R06 routing mismatch was also rerun in a fresh home containing
+only the pinned 1.3.0 plugin. The independent public review recorded a
+64.09-second completed session, zero service errors, `variant_mismatch=false`
+and no critical-integrity finding. The original mismatch remains preserved;
+this is a separate prospective baseline recovery record, not a rewrite of the
+first comparison.
+
+The third-wave public-safe progress report consolidates the routing,
+literature/figure, repeat, lifecycle/governance, storage-recovery, legacy and
+fresh-holdout evidence without double-crediting attempts. It records the exact
+CI result separately from native acceptance and keeps public outcomes,
+runtime/route deviations, review-gate availability and integrity findings as
+separate axes. Its conclusion remains **release OPEN**: no aggregate clean
+pass, comparative advantage or release-ready claim is made. The report is
+`validation/upgrade-1.4.0/acceptance-progress-third-wave-20261016.{json,md}`;
+the JSON SHA-256 is
+`f3923fd011b8f5b9ad4fd55c5af432f8e2328412091f1374d16e104a8ee59fe0`.
+
 ## Remaining release gates
 
 The complete native behavior matrix remains incomplete. The dev.8 full local
 suite and exact-source platform CI pass, and all four cross-session projects
-have the qualified independent assessment above. The eight completed C attempts now have independent-context
-provisional assessment, while their baseline comparison remains outstanding.
-Those attempts and the six focus pairs do not replace the full matrix,
-remaining original/resource cases, critical repeats or fresh holdouts.
+have the qualified independent assessment above. The eight completed C attempts
+have independent-context provisional assessment, while their baseline
+comparison remains outstanding. The completed blocks above do not erase the
+unavailable reviewer gates, runtime deviations, incomplete attempts or missing
+scientific acceptance.
 Original request-only 03 and 06 attempts remain incomplete; the new explicit-budget
 03/04/06 diagnostic passes separately and verifies case 04's path repair. Case 07's
 substantive criteria pass with its required review gate still BLOCKED.
