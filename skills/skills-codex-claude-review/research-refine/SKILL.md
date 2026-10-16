@@ -1,16 +1,21 @@
 ---
 name: "research-refine"
-description: "Turn a vague research direction into a problem-anchored, elegant, frontier-aware, implementation-oriented method plan via iterative Claude review. Use when the user says \"refine my approach\", \"帮我细化方案\", \"decompose this problem\", \"打磨idea\", \"refine research plan\", \"细化研究方案\", or wants a concrete research method that stays simple, focused, and top-venue ready instead of a vague or overbuilt idea."
+description: "Refine a vague research idea into a focused, implementable method proposal using prior work and critical review. Use for method design; experiment-plan designs its tests."
 ---
 
 > Override for Codex users who want **Claude Code**, not a second Codex agent, to act as the reviewer. Install this package **after** `skills/skills-codex/*`.
 >
-> This reviewer is a different model family from the Codex executor. Every overlay trace/audit records:
->
-> ```yaml
-> review_independence: cross-family
-> acceptance_status: accepted
-> ```
+> Verify the actual returned reviewer identity before recording `review_independence: cross-family`. A phase receipt may record `acceptance_status: accepted` only after a positive verdict and the required evidence closure. Negative, unavailable and budget-stop outcomes grant no phase acceptance; same-family responses retain the base provisional contract.
+
+<!-- EVO-INQUIRY:BEGIN -->
+For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),
+or reuse it if already loaded and unchanged in this session. Apply relevant
+principles within the user's scope and this skill's existing outputs, review
+standards, and recovery contracts. Carry them into nested research tasks and
+reviewer briefs. Continue authorized work through its necessary steps; honor
+budgets, blocking checkpoints, and stopping conditions.
+<!-- EVO-INQUIRY:END -->
+
 
 # Research Refine: Problem-Anchored, Elegant, Frontier-Aware Plan Refinement
 
@@ -350,7 +355,7 @@ mcp__claude-review__review_start:
     available, score 3 of each on these axes FIRST to anchor the scale, and
     name in the review which anchor the proposal sits closest to.)
     Emit `CALIBRATION: anchored|none`, the weighted composite, and a GAP
-    paragraph. A fresh Claude positive review is cross-family accepted.
+    paragraph. A fresh Claude positive review may be accepted only after verifying its different-family identity and the workflow's evidence closure.
 
     For each dimension scoring < 7, provide:
     - The specific weakness

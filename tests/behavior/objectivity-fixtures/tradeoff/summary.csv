@@ -1,0 +1,5 @@
+metric,direction,unit,A,B
+validation_loss,lower,loss,1.20,1.10
+validation_accuracy,higher,percent,88.0,89.0
+latency,lower,milliseconds,20.0,40.0
+peak_memory,lower,GiB,4.0,8.0

@@ -411,3 +411,5 @@ After each `spawn_agent` reviewer call, save the trace following `shared-referen
 ## Notes
 
 This skill was extracted as a standalone primitive from `/auto-paper-improvement-loop` Step 5.5 in May 2026, after the protocol proved valuable in surfacing headline-vs-body scope gaps that score-based reviews missed.  The attack-then-defense pattern was kept exactly because of empirical evidence that asking one model to "write the rejection memo" produces qualitatively different feedback than asking it to "review and grade" — the former forces commitment, the latter encourages hedging.
+
+The attack memo is a deliberately one-sided intermediate artifact. Ground attacks in actual evidence, and adjudicate each against the defense before presenting a final verdict. An unsubstantiated attack is not a discovered defect.

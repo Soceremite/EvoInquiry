@@ -84,6 +84,17 @@ python3 "$FIGURE_RENDERER" validate <spec.json>
 python3 "$FIGURE_RENDERER" schema
 ```
 
+## Evidence and delivery
+
+Represent proposed mechanisms as hypotheses and verified structure as observed.
+An arrow expresses the stated relationship, not evidence of a causal effect.
+Do not invent measurements or add unverified result labels to a method diagram.
+Keep the JSON source, render deterministic SVG, and inspect the actual output
+for labels, direction, clipping and readability at the intended size. If preview
+conversion is unavailable, deliver the editable SVG and disclose that limitation.
+For a finalized figure, `tools/figure_evidence.py` can bind the source, referenced
+inputs, output and caption; its identity check does not certify scientific claims.
+
 ## Workflow
 
 ### Step 1: Understand the Diagram Goal

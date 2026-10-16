@@ -1,0 +1,10 @@
+{
+  "baseline": {
+    "mae_kwh": 2.5,
+    "mse_kwh2": 7.0
+  },
+  "candidate": {
+    "mae_kwh": 2.0,
+    "mse_kwh2": 16.0
+  }
+}

@@ -37,6 +37,14 @@ Experiments produce numbers; this gate decides what those numbers *mean*. Collec
 - Before committing to claims in a paper or review response
 - When results are ambiguous and you need an objective second opinion
 
+## Evidence calibration
+
+Keep `claim_supported: yes | partial | no` and existing review gates. Explain
+whether an unsupported claim has contrary evidence or simply lacks sufficient
+evidence; `no` is not automatically a refutation. File existence, number matching,
+review acceptance and scientific support are distinct judgments. Preserve gains,
+regressions, unknowns and the original primary metric in the reviewer brief.
+
 ## Workflow
 
 ### Step 1: Collect Results

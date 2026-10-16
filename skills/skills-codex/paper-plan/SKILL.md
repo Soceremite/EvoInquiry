@@ -19,6 +19,18 @@ For this stage, read [project-governance](../shared-references/project-governanc
 
 Generate a structured, section-by-section paper outline from: **$ARGUMENTS**
 
+
+## Evidence fidelity
+
+Keep the original research question and primary outcomes visible, including
+material null or negative findings beside the claim they qualify. An explicitly
+exploratory question may motivate a new narrative; record that change rather
+than presenting a selected favorable metric as the original objective. Scope
+claims to verified evidence and distinguish lack of support from disproof.
+
+For empirical papers, check whether the existing analysis includes sample-level diagnosis. When it helps answer the research question, allocate a compact case-study or error-analysis section using [case-study-analysis](../shared-references/case-study-analysis.md). Link its actual evidence and selection rule, including material regressions or shared failures. If artifacts are missing, record a collection need rather than inventing a panel or delaying an unrelated outline. Illustrative cases do not upgrade aggregate evidence or establish a mechanism.
+
+
 ## Constants
 
 - **REVIEWER_MODEL = `gpt-6-astra`** — Model used via a secondary Codex agent for outline review. Must be an OpenAI model.

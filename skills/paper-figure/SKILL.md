@@ -1,9 +1,19 @@
 ---
 name: paper-figure
-description: "Generate publication-quality figures and tables from experiment results. Use when user says \"画图\", \"作图\", \"generate figures\", \"paper figures\", or needs plots for a paper."
+description: "Create publication-quality data plots, tables and qualitative case panels from real experiment outputs. Use for paper result figures, visual comparisons or statistical displays."
 argument-hint: "[figure-plan-or-data-path]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, mcp__codex__codex, mcp__codex__codex-reply
 ---
+
+<!-- EVO-INQUIRY:BEGIN -->
+For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),
+or reuse it if already loaded and unchanged in this session. Apply relevant
+principles within the user's scope and this skill's existing outputs, review
+standards, and recovery contracts. Carry them into nested research tasks and
+reviewer briefs. Continue authorized work through its necessary steps; honor
+budgets, blocking checkpoints, and stopping conditions.
+<!-- EVO-INQUIRY:END -->
+
 
 <!-- EI-GOVERNANCE:BEGIN -->
 Resolve runtime state through tools/state_paths.py before .ei operations. Use
@@ -17,24 +27,59 @@ Pin the included result files, execution list and aggregation protocol. Do not r
 
 Generate all figures and tables for a paper based on: **$ARGUMENTS**
 
-## Scope: What This Skill Can and Cannot Do
+## Scope and routing
 
-| Category | Can auto-generate? | Examples |
-|----------|-------------------|----------|
-| **Data-driven plots** | ✅ Yes | Line plots (training curves), bar charts (method comparison), scatter plots, heatmaps, box/violin plots |
-| **Comparison tables** | ✅ Yes | LaTeX tables comparing prior bounds, method features, ablation results |
-| **Multi-panel figures** | ✅ Yes | Subfigure grids combining multiple plots (e.g., 3×3 dataset × method) |
-| **Architecture/pipeline diagrams** | ❌ No — manual | Model architecture, data flow diagrams, system overviews. At best can generate a rough TikZ skeleton, but **expect to draw these yourself** using tools like draw.io, Figma, or TikZ |
-| **Generated image grids** | ❌ No — manual | Grids of generated samples (e.g., GAN/diffusion outputs). These come from running your model, not from this skill |
-| **Photographs / screenshots** | ❌ No — manual | Real-world images, UI screenshots, qualitative examples |
+Use this skill directly for a requested data plot or table, including a single
+figure without a paper outline. Choose a chart that answers the question.
 
-**In practice:** For a typical ML paper, this skill handles ~60% of figures (all data plots + tables). The remaining ~40% (hero figure, architecture diagram, qualitative results) need to be created manually and placed in `figures/` before running `/paper-write`. The skill will detect these as "existing figures" and preserve them.
+| Input | Route and deliverable |
+| --- | --- |
+| Numerical observations, curves or comparisons | This skill: traceable data, editable script, requested vector/raster exports and caption |
+| Exact architecture or workflow | `figure-spec`: structured definition and editable SVG |
+| Small flow, sequence or relationship diagram | `mermaid-diagram`: editable Mermaid source |
+| Conceptual illustration | An available illustration tool; label it as schematic |
+| Actual generated samples, photographs or screenshots | Arrange supplied or genuinely produced assets; retain their source |
+
+Read supplied data before choosing the layout. If evidence is missing, provide
+an editable plotting script or clearly labeled empty template, and state what
+is needed to populate it. Example numbers below are synthetic demonstrations;
+never reuse them as project results. Preserve existing figures.
+
+## Evidence and statistical display
+
+- Identify the comparison, metric direction, units, denominator, data subset and
+  independent experimental unit. Keep relevant baselines, regressions, failed
+  runs and missing observations visible. Missing is not zero.
+- Calculate uncertainty from actual independent units and name it in the
+  caption (SD, SEM, interval, or range). Means alone cannot supply error bars;
+  do not treat tokens or correlated samples as independent training repeats.
+- Preserve the planned primary metric. A favorable secondary plot does not
+  rescue a failed primary claim. Trace exploratory selections and transforms.
+- Mark truncated axes and smoothing; retain raw curves when smoothing could
+  affect the interpretation. Use facets or resource/quality trade-offs when
+  one ranking would hide a relevant exception.
+- Save a standalone script and the exact input selection. A finalized figure
+  can use `tools/figure_evidence.py create recipe.json --root PROJECT --output
+  figure.manifest.json` to bind inputs, editable source, outputs, transforms and
+  caption; `check` detects changed files. This is an identity receipt, not a
+  statistical or semantic certificate. Reuse `evidence_check.py` for supported
+  literal numeric checks; assess the actual scientific conclusion separately.
+- Inspect the rendered artifact at its intended column width for font support,
+  clipping, overlaps, distinguishable series, grayscale and accessible colors.
+  Record unverified visual checks honestly. Missing fonts/backends call for a
+  bounded alternative (SVG, source plus table), not repeated blind generation.
+
+## Case-study panels
+
+For qualitative result figures, read [case-study-analysis](../shared-references/case-study-analysis.md) and reuse the analysis report's selection record. If selection is missing, establish and disclose a reproducible rule before arranging actual assets. Show relevant successes, regressions and shared failures when available; label an explicitly selected illustrative panel and keep its claims within that scope. Do not replace an unfavorable aggregate with favorable examples.
+
+Keep the same sample, conditioning, scale, crop and temporal window across methods, or disclose necessary differences. Include targets/references when they exist, plus sample/run/draw IDs or timestamps. Use genuine outputs; conceptual illustrations cannot stand in for experimental samples. A storyboard supports only its inspected frames and annotations. Save the small panel, editable layout script and selection/source references; reuse the existing figure receipt when binding these files.
 
 ## Constants
 
 - **STYLE = `publication`** — Visual style preset. Options: `publication` (default, clean for print), `poster` (larger fonts), `slide` (bold colors)
 - **DPI = 300** — Output resolution
-- **FORMAT = `pdf`** — Output format. Options: `pdf` (vector, best for LaTeX), `png` (raster fallback)
+- **FORMAT = `pdf`** — Output format. Options: `pdf` or `svg` (vector), `png` (raster fallback)
 - **COLOR_PALETTE = `tab10`** — Default matplotlib color cycle. Options: `tab10`, `Set2`, `colorblind` (deuteranopia-safe)
 - **FONT_SIZE = 10** — Base font size (matches typical conference body text)
 - **FIG_DIR = `figures/`** — Output directory for generated figures
@@ -42,17 +87,17 @@ Generate all figures and tables for a paper based on: **$ARGUMENTS**
 
 ## Inputs
 
-1. **PAPER_PLAN.md** — figure plan table (from `/paper-plan`)
+1. **Requested figure or PAPER_PLAN.md** — use the actual request; an existing outline can supply its figure plan
 2. **Experiment data** — JSON files, CSV files, or screen logs in `figures/` or project root
 3. **Existing figures** — any manually created figures to preserve
 
-If no PAPER_PLAN.md exists, scan for data files and ask the user which figures to generate.
+If the figure request is clear, proceed with its relevant data. Ask only for missing information that materially changes the output; do not require a paper outline for a standalone plot.
 
 ## Workflow
 
 ### Step 1: Read Figure Plan
 
-Parse the Figure Plan table from PAPER_PLAN.md:
+Use the requested figure, or parse an existing Figure Plan table from PAPER_PLAN.md:
 
 ```markdown
 | ID | Type | Description | Data Source | Priority |
@@ -63,7 +108,7 @@ Parse the Figure Plan table from PAPER_PLAN.md:
 
 Identify:
 - Which figures can be auto-generated from data
-- Which need manual creation (architecture diagrams, etc.)
+- Which need `figure-spec`, Mermaid or supplied qualitative assets
 - Which are comparison tables (generate as LaTeX)
 
 ### Step 2: Set Up Plotting Environment
@@ -111,7 +156,7 @@ Use this decision tree for data-driven figures (inspired by Imbad0202/academic-r
 |-------------|-----------------|------|
 | X=time/steps, Y=metric | Line plot | 0.48\textwidth |
 | Methods × 1 metric | Bar chart | 0.48\textwidth |
-| Methods × multiple metrics | Grouped bar / radar | 0.95\textwidth |
+| Methods × multiple metrics | Facets / aligned dot plots with explicit units | 0.95\textwidth |
 | Two continuous variables | Scatter plot | 0.48\textwidth |
 | Matrix / grid values | Heatmap | 0.48\textwidth |
 | Distribution comparison | Box/violin plot | 0.48\textwidth |
@@ -172,11 +217,13 @@ Method & Rate & Depends on $D$? & Multi-modal? \\
 \end{table}
 ```
 
-**Architecture/pipeline diagrams** (MANUAL — outside this skill's scope):
-- These require manual creation using draw.io, Figma, Keynote, or TikZ
-- This skill can generate a rough TikZ skeleton as a starting point, but **do not expect publication-quality results**
-- If the figure already exists in `figures/`, preserve it and generate only the LaTeX `\includegraphics` snippet
-- Flag as `[MANUAL]` in the figure plan and `latex_includes.tex`
+**Architecture/pipeline diagrams**:
+- Use `figure-spec` for precise editable component/edge diagrams, or
+  `mermaid-diagram` for small flows. Keep their source and actual rendered output.
+- Preserve supplied figures and include them in LaTeX when they already satisfy
+  the request. Missing external illustration services do not block local SVG.
+- Inspect labels and relationships; method structure alone is not empirical
+  evidence. Record unavailable rendering checks instead of marking them passed.
 
 ### Step 5: Run All Scripts
 

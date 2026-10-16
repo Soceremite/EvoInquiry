@@ -4,6 +4,16 @@ description: "Communications-domain literature review with Claude-style knowledg
 allowed-tools: Bash(*), Read, Glob, Grep, WebSearch, WebFetch, Write, mcp__zotero__*, mcp__obsidian-vault__*
 ---
 
+<!-- EVO-INQUIRY:BEGIN -->
+For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),
+or reuse it if already loaded and unchanged in this session. Apply relevant
+principles within the user's scope and this skill's existing outputs, review
+standards, and recovery contracts. Carry them into nested research tasks and
+reviewer briefs. Continue authorized work through its necessary steps; honor
+budgets, blocking checkpoints, and stopping conditions.
+<!-- EVO-INQUIRY:END -->
+
+
 # Comm Lit Review Claude Single
 
 Research topic: $ARGUMENTS
@@ -95,9 +105,7 @@ Publication policy:
 Time-window policy:
 
 - if the user does not specify a year range, include both a short foundational set and a recent set
-- recommended split:
-  - `foundational`: before 2022
-  - `recent`: 2022 to present
+- choose the recent window relative to the current date and subfield; retain relevant foundational work without a fixed universal cutoff
 
 ## Venue Priority
 

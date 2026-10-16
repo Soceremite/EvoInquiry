@@ -188,6 +188,36 @@ def validate_spec(spec: dict) -> list:
     if any(i.startswith("CRITICAL: '") for i in issues):
         return issues
 
+    # Reject invalid geometry before arithmetic, set membership and XML output.
+    # NaN/Infinity are accepted by Python's JSON reader but are not SVG lengths.
+    def finite(value):
+        try:
+            return not isinstance(value, bool) and isinstance(value, (int, float)) and math.isfinite(value)
+        except OverflowError:
+            return False
+
+    for field in ('width', 'height'):
+        if field in canvas and not finite(canvas[field]):
+            issues.append(f'CRITICAL: canvas.{field} must be finite')
+    for collection in ('nodes', 'edges', 'groups', 'labels'):
+        for i, item in enumerate(spec.get(collection, [])):
+            if not isinstance(item, dict):
+                issues.append(f'CRITICAL: {collection}[{i}] must be an object')
+                continue
+            for field in ('x', 'y', 'width', 'height', 'font_size', 'thickness', 'padding'):
+                if field in item and not finite(item[field]):
+                    issues.append(f'CRITICAL: {collection}[{i}].{field} must be finite')
+            for field in ('id', 'from', 'to', 'shape', 'style', 'anchor'):
+                if field in item and not isinstance(item[field], str):
+                    issues.append(f'CRITICAL: {collection}[{i}].{field} must be text')
+            if 'node_ids' in item and (not isinstance(item['node_ids'], list)
+                                      or any(not isinstance(v, str) for v in item['node_ids'])):
+                issues.append(f'CRITICAL: {collection}[{i}].node_ids must be text IDs')
+    if 'font_size' in st_raw and not finite(st_raw['font_size']):
+        issues.append('CRITICAL: style.font_size must be finite')
+    if any(i.startswith('CRITICAL:') for i in issues):
+        return issues
+
     # Canvas validation
     for dim in ("width", "height"):
         val = canvas.get(dim)
@@ -306,6 +336,9 @@ def validate_spec(spec: dict) -> list:
         nfs = node.get("font_size")
         if nfs is not None and (isinstance(nfs, bool) or not isinstance(nfs, (int, float)) or nfs <= 0):
             issues.append(f"WARN: node '{nid}' font_size must be a positive number")
+
+    if any(i.startswith('CRITICAL:') for i in issues):
+        return issues
 
     # Overlap detection (shape-aware bounding for circles)
     def _effective_bounds(n):

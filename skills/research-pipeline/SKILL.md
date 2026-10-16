@@ -5,6 +5,16 @@ argument-hint: "[research-direction] [— resume <run_id>]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, WebSearch, WebFetch, Skill, mcp__codex__codex, mcp__codex__codex-reply
 ---
 
+<!-- EVO-INQUIRY:BEGIN -->
+For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),
+or reuse it if already loaded and unchanged in this session. Apply relevant
+principles within the user's scope and this skill's existing outputs, review
+standards, and recovery contracts. Carry them into nested research tasks and
+reviewer briefs. Continue authorized work through its necessary steps; honor
+budgets, blocking checkpoints, and stopping conditions.
+<!-- EVO-INQUIRY:END -->
+
+
 <!-- EI-GOVERNANCE:BEGIN -->
 Resolve runtime state through tools/state_paths.py before .ei operations. Use
 [project-governance](../shared-references/project-governance.md) for fixed evidence,
@@ -77,6 +87,12 @@ gate rather than treating it as a silence timeout. Feishu off/push-only modes
 remain non-blocking under `AUTO_PROCEED=true`.
 
 ## Overview
+
+For a vague direction, the idea-discovery v2 framing step can call
+[scientific-brainstorming](../scientific-brainstorming/SKILL.md). Reuse a fixed
+question rather than restarting ideation. Preserve meaningful decisions and
+pivots through [research-manager](../research-manager/SKILL.md) in existing
+records; it does not replace this coordinator or certify its phases.
 
 This skill chains the entire research lifecycle into a single pipeline:
 
@@ -192,9 +208,9 @@ immediately in the same turn. Do not phrase the update as a question:
 ```
 📋 Idea Discovery complete. Top ideas:
 
-1. [Idea 1 title] — Pilot: POSITIVE (+X%), Novelty: CONFIRMED
-2. [Idea 2 title] — Pilot: WEAK POSITIVE (+Y%), Novelty: CONFIRMED
-3. [Idea 3 title] — Pilot: NEGATIVE, eliminated
+1. [Idea 1 title] — Pilot: [observed finding or not run], Novelty: [checked delta or unknown]
+2. [Idea 2 title] — Pilot: [valid null or other finding], Next inquiry: [what it distinguishes]
+3. [Idea 3 title] — [paused / retained / rejected], with evidence-based reason
 
 AUTO_PROCEED: selected Idea 1 — [title]. Continuing to Stage 2.
 ```

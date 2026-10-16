@@ -1,0 +1,5 @@
+method,run_id,accuracy_percent
+reference,ref_a,3.10
+reference,ref_b,3.30
+candidate,cand_a,3.90
+candidate,cand_b,4.30

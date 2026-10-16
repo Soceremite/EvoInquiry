@@ -1,81 +1,48 @@
-# Review Scope Limits — what a reviewer may propose
+# Review scope and evidence
 
-ARIS is a research-workflow tool. Its reviewers exist to find what is **actually
-wrong**, not to harden a codebase against what is not happening.
-
-This contract is about what a reviewer may **propose**. It never limits what a
-reviewer may **look for** — see *Find vs propose* below.
+Use the actual research question, artifacts, user scope and applicable standards.
+The reviewer may find both strengths and material defects. A proposal to change
+the work needs an observed problem, missing evidence or an existing invariant;
+unrelated redesign is optional.
 
 ## The block
 
-Every reviewer prompt that can result in a proposed change to code, prompts, or
-mechanism carries this verbatim:
+Carry this scope into reviewer prompts that can propose changes:
 
-```
-=== SCOPE LIMITS (these bound what you PROPOSE, never what you look for) ===
-Report anything that is actually wrong here — including a rare-looking case, if
-this repo actually produces it. Then keep the fix in scope:
-1. This is a RESEARCH-WORKFLOW tool, not a security paper. Verification is
-   welcome; over-defense is not. Assume a cooperating operator on their own
-   machine — a malicious local user is NOT in the threat model.
-2. Do NOT propose SHA / hash / content-fingerprint / digest-binding schemes.
-   Reporting a real defect in hashing code that already exists is fine.
-3. NO speculative machinery: do not add feature flags, migration frameworks,
-   compat layers, wrappers, pins, or similar mechanisms unless evidence shows
-   a current repo defect they fix or an explicit existing invariant they must
-   preserve. "Load-bearing", "compatibility", and "not scaffolding" are labels,
-   not evidence. Point to the failing path/artifact or invariant, and check the
-   proposal's factual premises, such as whether a named package version exists.
-4. NO corner-case obsession: exotic encodings, symlink races, RTL text and
-   millisecond races are out of scope unless you can show the case arises here.
-5. Where a rubric or checklist is genuinely needed, do not over-mechanize
-   judgement. A clear sentence a human reads beats a scored table nobody
-   maintains.
-Exception: code that runs remote commands, starts a network service, or installs
-an MCP server runs on the user's machine with their credentials — trust-boundary
-findings there are in scope and the default is strict.
+```text
+=== REVIEW SCOPE ===
+Evaluate the actual research question, requested deliverable and applicable
+disciplinary standards. Locate strengths and defects in the supplied evidence;
+do not presume acceptance, rejection or a particular threat model. Distinguish
+observed errors, unsupported claims and optional extensions. Propose the smallest
+adequate correction, citing its failing path, evidence or preserved invariant.
+Keep hypotheses, speculation and unperformed checks explicit. A real boundary
+or reproducibility defect is in scope when it affects this work; unrelated
+infrastructure and speculative redesign are not automatically required.
 Say plainly when something is correct. Do not manufacture findings.
 ```
 
-## Find vs propose
+## Apply proportionately
 
-These limits bound the **fix**, never the **search**. A reviewer should still
-report:
+Report real measurement, implementation, reproducibility and trust-boundary
+problems when they affect the work. Do not assume a toolkit-specific threat
+model or prohibit a class of correction regardless of the research question.
+Distinguish a demonstrated defect from a hypothetical concern. Verify factual
+premises and cite the affected evidence.
 
-- a bug that only fires on an unusual input, **if that input actually occurs**
-  here (a documented example that produces it counts as occurring);
-- a real defect in existing hash/fingerprint code — the ban is on *proposing new*
-  binding, not on reading what exists;
-- a case where the code and its own documentation disagree.
+Attach each limitation to the conclusion it actually limits. Missing raw
+artifacts prevent independent execution verification; an unavailable required
+review prevents that review's completion. Preserve narrower conclusions
+supported by supplied records without certifying unperformed checks or turning
+an unknown into a demonstrated failure.
 
-Worded the wrong way, "no corner cases" would suppress real findings. The test is
-not *how rare does this sound*, it is **does this happen here**.
-
-## The one exception
-
-Code that **executes remote commands, starts a network service, or installs an
-MCP server** is different. Trust-boundary findings there are in scope and the
-default is strict — that code runs on a user's GPU box with their credentials.
-`/experiment-queue`, `/run-experiment`, `/vast-gpu`, `/serverless-modal`,
-`mcp-servers/*` and the installers are the surfaces this covers.
-
-## Why this exists
-
-Not a style preference. Measured over one day of real maintenance review
-(2026-08-10, ~10 rounds of gpt-6-astra at xhigh/ultra), every discarded proposal
-fell in these categories: adding hash binding to a gate that already had four
-layers, adding a lint to mechanize a rule the corpus deliberately keeps as prose,
-adding a dual-spelling compatibility layer for what was a typo, and hardening a
-race that closes in milliseconds. None was self-limiting; each had to be refused
-by hand.
-
-The same reviewer, in the same rounds, found five genuine defects that had shipped
-— including one that killed every job in the experiment queue at 60 seconds. The
-reviewer is worth its cost. This contract is how that value arrives without the
-tax.
+A single requested review can finish with unresolved issues and a bounded
+next step. Agreement, publication scores and the absence of newly found defects
+are not proof that a research claim is true. Specialized adversarial reviews
+retain their role, with a separate evidence-grounded final judgment.
 
 ## Related
 
-- [`acceptance-gate.md`](acceptance-gate.md) — what a reviewer verdict may and may not settle.
-- [`reviewer-independence.md`](reviewer-independence.md) — what the reviewer is allowed to see.
-- [`reviewer-routing.md`](reviewer-routing.md) — which backend, which effort tier.
+- [acceptance-gate](acceptance-gate.md)
+- [reviewer-independence](reviewer-independence.md)
+- [reviewer-routing](reviewer-routing.md)

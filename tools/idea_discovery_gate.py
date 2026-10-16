@@ -28,6 +28,7 @@ REQUIRED_PHASES = (
 # obligation: the run state must contain the receipt written by ``accept`` or
 # ``mark-provisional``.
 REVIEW_REQUIRED_PHASES = frozenset({"novelty-check", "research-review"})
+V2_PHASES = ('problem-framing',) + REQUIRED_PHASES
 START_MARKER = "<!-- ARIS_IDEA_DISCOVERY_EVIDENCE_GATE:START -->"
 END_MARKER = "<!-- ARIS_IDEA_DISCOVERY_EVIDENCE_GATE:END -->"
 
@@ -130,16 +131,70 @@ def _review_provenance_reason(name: str, phase: dict, state: dict) -> str | None
     return None
 
 
+def _framing_reasons(root: Path, phase: dict) -> list[str]:
+    """Check the v2 artifact obligation, without judging its scientific merit."""
+    if phase.get('status') not in {'done', 'accepted'}:
+        return ['problem-framing evidence missing (phase must be done)']
+    try:
+        artifact = phase.get('artifact')
+        if not isinstance(artifact, str) or not artifact:
+            raise ValueError('artifact not recorded')
+        target, anchor = _artifact_target(root, artifact)
+        if not target.read_text(encoding='utf-8').strip():
+            raise ValueError('empty artifact')
+        if anchor:
+            exists, content = _section_has_content(target, anchor)
+            if not exists or not content:
+                raise ValueError('framing section absent or empty')
+    except (OSError, UnicodeError, ValueError) as error:
+        return [f'problem-framing evidence missing ({error})']
+    return []
+
+
+def complete_framing(root: str | Path, run_id: str) -> GateResult:
+    """Close only the new mechanical framing obligation, retaining review gates."""
+    state = run_state.load_run(str(root), run_id)
+    if (state.get('workflow_contract') != 'idea-discovery/v2'
+            or [phase['phase'] for phase in state['phases']] != list(V2_PHASES)):
+        return GateResult('BLOCKED', ('framing completion requires the ordered v2 contract',))
+    phase = state['phases'][0]
+    reasons = _framing_reasons(Path(root), phase)
+    result = GateResult('BLOCKED' if reasons else 'PASS', tuple(reasons))
+    run_state.record_gate_result(str(root), run_id, 'idea-discovery-framing', result.verdict, reasons)
+    if not reasons:
+        try:
+            from registry_common import fixed_ref
+        except ImportError:
+            from tools.registry_common import fixed_ref
+        target, anchor = _artifact_target(Path(root), phase['artifact'])
+        reference = fixed_ref(Path(root).resolve(), target.relative_to(Path(root).resolve()).as_posix())
+        verdict_id = f"{reference['path']}@{reference['sha256']}"
+        if anchor:
+            verdict_id += '#' + anchor
+        run_state.accept(str(root), run_id, 'problem-framing', verdict_id, 'deterministic')
+    return result
+
+
 def evaluate(root: str | Path, state: dict) -> GateResult:
     """Check that every required stage has completed, durable evidence."""
     project_root = Path(root).resolve()
     phases = {phase["phase"]: phase for phase in state.get("phases", [])}
     reasons: list[str] = []
 
-    for name in REQUIRED_PHASES:
+    contract = state.get('workflow_contract', 'idea-discovery/v1')
+    if contract not in ('idea-discovery/v1', 'idea-discovery/v2'):
+        return GateResult('BLOCKED', ('unknown idea-discovery workflow contract',))
+    required = V2_PHASES if contract == 'idea-discovery/v2' else REQUIRED_PHASES
+    ordered = [phase['phase'] for phase in state.get('phases', [])]
+    if contract == 'idea-discovery/v2' and ordered != list(V2_PHASES):
+        reasons.append('idea-discovery/v2 phase order or inventory differs from its contract')
+    for name in required:
         phase = phases.get(name)
         if phase is None:
             reasons.append(f"{name} evidence missing (phase not recorded)")
+            continue
+        if name == 'problem-framing':
+            reasons.extend(_framing_reasons(project_root, phase))
             continue
         if phase.get("status") not in {"done", "accepted", "provisional"}:
             reasons.append(
@@ -237,11 +292,14 @@ def main() -> int:
     parser.add_argument("root")
     parser.add_argument("run_id")
     parser.add_argument("--report", default="idea-stage/IDEA_REPORT.md")
+    parser.add_argument('--framing-only', action='store_true',
+                        help='Validate and mechanically complete only the v2 framing artifact')
     args = parser.parse_args()
 
     try:
-        result = run(args.root, args.run_id, args.report)
-    except ValueError as exc:
+        result = (complete_framing(args.root, args.run_id) if args.framing_only
+                  else run(args.root, args.run_id, args.report))
+    except (OSError, ValueError) as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         return 2
     for reason in result.reasons:

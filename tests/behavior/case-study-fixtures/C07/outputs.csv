@@ -1,0 +1,5 @@
+sample_id,prompt,generation_seed,baseline_path,candidate_path,baseline_adheres,candidate_adheres
+p01,A red disk to the left of a blue square,17,assets/p01-baseline.png,assets/p01-candidate.png,false,true
+p02,Exactly two green squares,17,assets/p02-baseline.png,assets/p02-candidate.png,true,false
+p03,A yellow disk above a purple square,17,assets/p03-baseline.png,assets/p03-candidate.png,false,false
+p04,A blue square below a red disk,17,assets/p04-baseline.png,assets/p04-candidate.png,true,true

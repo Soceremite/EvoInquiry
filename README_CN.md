@@ -9,7 +9,7 @@
 
 <p align="center">
   <a href="https://github.com/Soceremite/EvoInquiry/releases/tag/v1.3.0"><img src="https://img.shields.io/badge/release-1.3.0-FF927E?style=flat&amp;labelColor=7862E8" alt="正式版 1.3.0"></a>
-  <a href="docs/SKILLS_CATALOG.md"><img src="https://img.shields.io/badge/Codex_skills-86-59C7A7?style=flat&amp;labelColor=7862E8" alt="86 个 Codex skill"></a>
+  <a href="docs/SKILLS_CATALOG.md"><img src="https://img.shields.io/badge/Codex_skills-88-59C7A7?style=flat&amp;labelColor=7862E8" alt="88 个 Codex skill"></a>
   <a href="https://github.com/Soceremite/EvoInquiry/actions/workflows/test-suite.yml"><img src="https://github.com/Soceremite/EvoInquiry/actions/workflows/test-suite.yml/badge.svg" alt="回归测试状态"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-FFD95E?style=flat&amp;labelColor=7862E8" alt="MIT 许可证"></a>
 </p>
@@ -19,12 +19,24 @@
   <a href="README.md">English</a> · <a href="#installation">快速开始</a> · <a href="#capabilities">技能清单</a> · <a href="https://github.com/Soceremite/EvoInquiry/releases">版本下载</a> · <a href="CONTRIBUTING_CN.md">参与贡献</a>
 </p>
 
-EvoInquiry 是面向 Codex 的科研工作流工具集。**86 个 Codex skill** 衔接文献、方法设计、
+EvoInquiry 是面向 Codex 的科研工作流工具集。**88 个 Codex skill** 衔接文献、方法设计、
 实验、批判性评审与论文准备。既可以按需完成一个具体任务，也可以组成更长的科研流程。
 下一步由研究问题、已有证据与项目约束共同决定。
 
 **[1.3.0 新增](https://github.com/Soceremite/EvoInquiry/releases/tag/v1.3.0)：**
 贯穿实验全过程的公平比较规范、对比权重归档前的证据检查，以及可选的持续科研路由。
+
+## 1.4.0 开发进展
+
+当前工作树新增模糊方向的问题界定、带证据的科研决策与交接，并将客观判断
+落实到选题、审阅和写作。文献记录保留身份、版本和阅读层级；图件记录关联
+真实输入、可编辑源文件与图注。已有公平比较、权重保留和审阅门槛继续使用。
+候选验证期间，下方最新正式版下载仍为 1.3.0；实际进展见
+[1.4.0 验证记录](docs/VALIDATION_1_4_0.md)。
+
+可以直接说：“探索低成本记忆的研究问题，先不训练”“检查这些均值能支持
+什么结论”“把CSV画成图，保留脚本、失败运行和误差定义”。明确需要时再运行
+完整科研流程。
 
 ## EvoInquiry 的特色
 
@@ -133,6 +145,12 @@ skill 使用 `evo-inquiry:` 命名空间。安装插件使技能可用；
 
 主要面向 ML、AI 与相关工程科研。
 领域专用流程、总流程和可选后端见[完整 skill 清单](docs/SKILLS_CATALOG.md)。
+
+1.4.0 候选版还将[案例分析](skills/skills-codex/shared-references/case-study-analysis.md)
+纳入完整结果分析：主动检查已有逐样本输出，说明具体改善、退化和失败，保留可追溯、
+公平配对的案例。分类看错分，回归看残差，生成任务看真实输出，视频理解看带时间位置的
+证据。简短指标问题保持简短；没有样本输出时说明缺口，不编造案例。
+这项能力仍在验证，尚不属于当前安装的 1.3.0 正式版。
 
 <a id="usage"></a>
 

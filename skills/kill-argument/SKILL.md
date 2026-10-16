@@ -5,6 +5,16 @@ argument-hint: "[paper-directory]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, mcp__codex__codex
 ---
 
+<!-- EVO-INQUIRY:BEGIN -->
+For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),
+or reuse it if already loaded and unchanged in this session. Apply relevant
+principles within the user's scope and this skill's existing outputs, review
+standards, and recovery contracts. Carry them into nested research tasks and
+reviewer briefs. Continue authorized work through its necessary steps; honor
+budgets, blocking checkpoints, and stopping conditions.
+<!-- EVO-INQUIRY:END -->
+
+
 <!-- EI-GOVERNANCE:BEGIN -->
 Resolve runtime state through tools/state_paths.py before .ei operations. Use
 [project-governance](../shared-references/project-governance.md) for fixed evidence,
@@ -442,3 +452,5 @@ After each `mcp__codex__codex` reviewer call, save the trace following `shared-r
 ## Notes
 
 This skill was extracted as a standalone primitive from `/auto-paper-improvement-loop` Step 5.5 in May 2026, after the protocol proved valuable in surfacing headline-vs-body scope gaps that score-based reviews missed.  The attack-then-defense pattern was kept exactly because of empirical evidence that asking one model to "write the rejection memo" produces qualitatively different feedback than asking it to "review and grade" — the former forces commitment, the latter encourages hedging.
+
+The attack memo is a deliberately one-sided intermediate artifact. Ground attacks in actual evidence, and adjudicate each against the defense before presenting a final verdict. An unsubstantiated attack is not a discovered defect.

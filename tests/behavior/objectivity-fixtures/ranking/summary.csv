@@ -1,0 +1,7 @@
+metric,direction,unit,config_2,config_4,config_16
+english_masked_token,higher,percent,12.11,12.63,13.39
+chinese_masked_token,higher,percent,13.30,13.08,13.38
+english_masked_exact,higher,percent,4.21,4.58,4.79
+chinese_masked_exact,higher,percent,4.63,4.71,4.74
+english_full_exact,higher,percent,3.44,3.57,4.10
+chinese_full_exact,higher,percent,4.16,4.36,4.07

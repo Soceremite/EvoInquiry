@@ -1512,6 +1512,73 @@ def append_log(wiki_root: str, message: str):
         log_path.write_text(f"# Research Wiki Log\n\n{entry}", encoding="utf-8")
 
 
+def record_decision(wiki_root, record, *, project_root):
+    """Append one idempotent decision without accepting phases or changing history."""
+    try:
+        from .registry_common import atomic_write, file_lock, fixed_ref, identifier, local_path
+    except ImportError:
+        from registry_common import atomic_write, file_lock, fixed_ref, identifier, local_path
+    root = Path(wiki_root).resolve()
+    project = Path(project_root).resolve()
+    if not (root / 'index.md').is_file() or not (root / 'graph/edges.jsonl').is_file():
+        raise ValueError('Decision recording requires an existing initialized wiki')
+    if not isinstance(record, dict):
+        raise ValueError('Decision must be an object')
+    allowed = {'id', 'question', 'alternatives', 'choice', 'reason', 'provenance',
+               'evidence', 'uncertainties', 'revisit_when', 'supersedes'}
+    if set(record) - allowed:
+        raise ValueError('Unknown decision fields; runtime status is owned by run_state')
+    payload = dict(record)
+    identifier(payload.get('id'), path_component_required=False)
+    for key in ('question', 'choice', 'reason', 'revisit_when'):
+        if not isinstance(payload.get(key), str) or not payload[key].strip():
+            raise ValueError(f'Decision {key} must be nonempty')
+    for key in ('alternatives', 'evidence', 'uncertainties'):
+        if not isinstance(payload.get(key), list) or any(not isinstance(v, str) or not v.strip() for v in payload[key]):
+            raise ValueError(f'Decision {key} must be a list of nonempty strings')
+    if not payload['alternatives']:
+        raise ValueError('Record alternatives, including a status-quo option when relevant')
+    if payload.get('provenance') not in {'user_instruction', 'user_decision', 'verified_observation', 'agent_proposal', 'agent_action'}:
+        raise ValueError('Unknown decision provenance')
+    if payload['provenance'] == 'verified_observation' and not payload['evidence']:
+        raise ValueError('A verified observation needs evidence')
+    if 'supersedes' in payload:
+        identifier(payload['supersedes'], path_component_required=False)
+    # Decisions are data that will later be read into a research context. Reject
+    # instruction-bearing text without modifying either the input or history.
+    if scan_for_threats is not None:
+        fields = ('question', 'alternatives', 'choice', 'reason', 'uncertainties', 'revisit_when')
+        text = '\n'.join(item for key in fields for item in
+                         (payload[key] if isinstance(payload[key], list) else [payload[key]]))
+        if scan_for_threats(text, scope='strict'):
+            raise ValueError('Decision text contains instruction patterns; review the input before recording')
+    payload['evidence_refs'] = [fixed_ref(project, p) for p in payload['evidence']]
+    ledger = local_path(root, 'decisions.jsonl')
+    with file_lock(local_path(root, '.decisions.lock')):
+        raw = ledger.read_bytes() if ledger.exists() else b''
+        if raw and not raw.endswith(b'\n'):
+            raise ValueError('Interrupted decisions ledger; preserve it for recovery')
+        try:
+            entries = [json.loads(line) for line in raw.splitlines() if line.strip()]
+            if any(not isinstance(v, dict) or 'id' not in v for v in entries):
+                raise ValueError('Invalid decision entry')
+            if len({v['id'] for v in entries}) != len(entries):
+                raise ValueError('Duplicate IDs in decision history')
+        except (ValueError, TypeError) as error:
+            raise ValueError('Invalid decisions ledger; preserve it for recovery') from error
+        for existing in entries:
+            if existing['id'] == payload['id']:
+                if {k: v for k, v in existing.items() if k != 'recorded_at'} != payload:
+                    raise ValueError('Decision ID already records different content or changed evidence')
+                return existing
+        if 'supersedes' in payload and payload['supersedes'] not in {v['id'] for v in entries}:
+            raise ValueError('supersedes must reference an existing decision')
+        payload['recorded_at'] = datetime.now(timezone.utc).isoformat()
+        rendered = json.dumps(payload, ensure_ascii=False, sort_keys=True, allow_nan=False).encode('utf-8') + b'\n'
+        atomic_write(ledger, raw + rendered)
+        return payload
+
+
 def main():
     parser = argparse.ArgumentParser(description="ARIS Research Wiki utilities")
     subparsers = parser.add_subparsers(dest="command")
@@ -1657,9 +1724,23 @@ def main():
                         help="Path to a newline-delimited file of arXiv IDs (# comments ok)")
     p_sync.add_argument("--update-on-exist", action="store_true")
 
+    p_decision = subparsers.add_parser('record_decision', help='Record a research decision in an existing wiki')
+    p_decision.add_argument('wiki_root')
+    p_decision.add_argument('--input', required=True)
+    p_decision.add_argument('--project-root', required=True)
+
     args = parser.parse_args()
 
-    if args.command == "init":
+    if args.command == 'record_decision':
+        from registry_common import configure_utf8_output
+        configure_utf8_output()
+        try:
+            record = json.loads(Path(args.input).read_text(encoding='utf-8'))
+            result = record_decision(args.wiki_root, record, project_root=args.project_root)
+            print(json.dumps(result, ensure_ascii=False))
+        except (OSError, ValueError, TypeError) as error:
+            parser.exit(2, f'Decision record error: {error}\n')
+    elif args.command == "init":
         init_wiki(args.wiki_root)
     elif args.command == "slug":
         print(slugify(args.title, args.author, args.year))

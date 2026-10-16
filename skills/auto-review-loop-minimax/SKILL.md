@@ -5,6 +5,16 @@ argument-hint: "[topic-or-scope]"
 allowed-tools: Bash(*), Read, Grep, Glob, Write, Edit, Skill
 ---
 
+<!-- EVO-INQUIRY:BEGIN -->
+For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),
+or reuse it if already loaded and unchanged in this session. Apply relevant
+principles within the user's scope and this skill's existing outputs, review
+standards, and recovery contracts. Carry them into nested research tasks and
+reviewer briefs. Continue authorized work through its necessary steps; honor
+budgets, blocking checkpoints, and stopping conditions.
+<!-- EVO-INQUIRY:END -->
+
+
 # Auto Review Loop (MiniMax Version): Autonomous Research Improvement
 
 > 🔒 **Do not wrap this skill in `/loop`, `/schedule`, or `CronCreate`.** Like
@@ -20,6 +30,27 @@ allowed-tools: Bash(*), Read, Grep, Glob, Write, Edit, Skill
 Autonomously iterate: review → implement fixes → re-review, until the external reviewer gives a positive assessment or MAX_ROUNDS is reached.
 
 ## Context: $ARGUMENTS
+
+## Evidence closure and bounded stopping
+
+Scores and verdicts remain required interface fields. A positive threshold is
+necessary, and every material issue must also have a checked disposition: fixed
+with evidence, or excluded with a specific, evidenced scope reason. Reviewer
+agreement alone does not resolve an issue. Keep strengths that the evidence
+supports; do not invent objections to make another round appear useful.
+
+Apply this closure condition at every positive stop and acquittal append below.
+An unresolved critical issue prevents a positive receipt even when the score is
+high. Preserve existing independent-review requirements and same-family
+provisional status. File checks do not establish scientific support.
+
+Before iterating, use the authorized round, time, experiment and cost budgets.
+Track which decision-relevant uncertainty each action can resolve. Stop when a
+budget is reached or successive rounds produce no new evidence or actionable
+change; record the reason and remaining unknowns. A budget/stall/user stop is
+completion of the loop, not research acceptance, and grants no acquittal.
+Never hide an unfavorable primary result by adding a favorable metric or by
+renaming the original hypothesis. Label any exploratory reframing explicitly.
 
 ## Constants
 
@@ -168,7 +199,7 @@ Prioritization rules:
 - Skip fixes requiring excessive compute (flag for manual follow-up)
 - Skip fixes requiring external data/models not available
 - Prefer reframing/analysis over new experiments when both address the concern
-- Always implement metric additions (cheap, high impact)
+- Add metrics only to resolve a material question within authorized budget; preserve primary outcomes
 
 #### Phase D: Wait for Results
 
@@ -214,12 +245,12 @@ Increment round counter → back to Phase A.
 
 ### Termination
 
-When loop ends (positive assessment or max rounds):
+When the loop ends (evidence-backed positive assessment, budget, stall or user stop):
 
 1. Update `review-stage/REVIEW_STATE.json` with `"status": "completed"`
 2. Write final summary to `review-stage/AUTO_REVIEW.md`
 3. Update project notes with conclusions
-4. If stopped at max rounds without positive assessment:
+4. If stopped for budget, stall or user instruction without evidence closure:
    - List remaining blockers
    - Estimate effort needed for each
    - Suggest whether to continue manually or pivot

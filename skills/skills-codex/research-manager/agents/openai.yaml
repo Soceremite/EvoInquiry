@@ -1,0 +1,5 @@
+interface:
+  display_name: "Research Decisions and Handoffs"
+  short_description: "Preserve research decisions, evidence and pivot history"
+policy:
+  allow_implicit_invocation: true

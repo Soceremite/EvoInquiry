@@ -25,6 +25,11 @@ For comparative integrity, load [comparative-experiments](../shared-references/c
 > Deterministic evidence checks may be accepted; unavailable reviewer calls emit
 > BLOCKED/ERROR rather than a provisional PASS.
 
+Keep the audit's status separate from what the supplied records support. Report
+an unavailable review or unauditable execution as that specific limitation;
+neither establishes a failed method or false result. A bounded assessment can
+state a reported outcome without certifying execution or granting acceptance.
+
 Audit experiment integrity for: **$ARGUMENTS**
 
 ## Why This Exists
@@ -61,6 +66,7 @@ Scan project directory for:
 4. Experiment tracker:    EXPERIMENT_TRACKER.md, EXPERIMENT_LOG.md
 5. Paper claims:          NARRATIVE_REPORT.md, paper/sections/*.tex, PAPER_PLAN.md
 6. Config files:          *.yaml, *.toml, *.json configs with metric definitions
+7. Case evidence, if used: selection records, sample IDs, paired predictions/assets and panel scripts
 ```
 
 **DO NOT summarize, interpret, or explain any file content.** Only collect paths.
@@ -74,11 +80,11 @@ spawn_agent:
   model: gpt-6-astra
   reasoning_effort: ultra
   message: |
-    You are an experiment integrity auditor. Start from the assumption that the
-    evaluation is compromised somewhere — your job is to find where. Be
-    adversarial. Trust nothing the author tells you — verify everything
-    yourself. Read ALL files listed below and check for the following fraud
-    patterns.
+    You are an experiment integrity auditor. Verify the comparison against the
+    actual protocol, implementation and raw evidence. Identify substantiated
+    strengths, defects and unresolved checks without presuming compromise or
+    correctness. Distinguish missing evidence from demonstrated errors. Read
+    the relevant files below and investigate these integrity patterns.
 
     Files to read:
     - Evaluation scripts: [list paths]
@@ -86,6 +92,8 @@ spawn_agent:
     - Experiment tracker: [list paths]
     - Paper claims: [list paths]
     - Config files: [list paths]
+    - Case evidence and selection records: [paths, if used]
+    - Case-study guidance when applicable: [resolved ../shared-references/case-study-analysis.md]
 
     ## Audit Checklist
 
@@ -123,6 +131,12 @@ spawn_agent:
     2. How many seeds/runs per configuration?
     3. Does the paper use words like "comprehensive", "extensive", "robust"?
     4. Is the actual scope sufficient for those claims?
+    When a case study or qualitative claim is supplied, inspect its actual
+    selection pool/rule, sample/run/draw identities and paired outputs. Check
+    omitted regressions/shared failures, missing outputs, asymmetric crops or
+    timestamps, and whether a panel-only rate is presented as population-wide.
+    Distinguish inspected media from annotations and hypotheses from mechanisms.
+    Absence of a panel alone is not an integrity failure.
     WARN if: Scope language exceeds actual evidence.
 
     ### F. Evaluation Type Classification

@@ -9,6 +9,8 @@ import re
 
 SOURCE_COMMIT = "b9c7861fd22cd2f5471765d583c593f083fa12cc"
 UPGRADE_SOURCE_COMMIT = '69cfbc5dc5fc34c4d7e6146fe66f5520866f7dfe'
+FROZEN_RETAINED_SHA256 = '547ce394cd26d88642e890edffa7fb9ed941d14e21902859441da3a2439e5271'
+FROZEN_PROTECTED_SHA256 = 'a1a2d20192f2dd5fab167c07f435d42a96a2d4308c0d0cbbf3954dae66dbf1b3'
 HOOK = re.compile(r"\n<!-- EVO-INQUIRY:BEGIN -->\n.*?<!-- EVO-INQUIRY:END -->\n\n", re.S)
 FRONTMATTER = re.compile(r"\A---\n(.*?)\n---\n", re.S)
 GOVERNANCE_HOOK = re.compile(r'\n<!-- EI-GOVERNANCE:BEGIN -->\n.*?<!-- EI-GOVERNANCE:END -->\n\n', re.S)
@@ -57,14 +59,60 @@ def skill_parts(text: str) -> tuple[str, str, str]:
 
 def load_contract(root: Path) -> dict:
     data = json.loads((root / "tools/skill-contracts.json").read_text(encoding="utf-8"))
-    if data.get("source_commit") != SOURCE_COMMIT or data.get("schema_version") != 2:
+    version = data.get('schema_version')
+    if data.get("source_commit") != SOURCE_COMMIT or version not in (2, 3):
         raise ValueError("contract source or schema differs from the frozen beta.3 baseline")
     retained = data.get("retained_skills", {})
-    if (len(retained) != 83 or data.get('added_skills') != ['research-guide', 'project-governance', 'environment-maintenance']
-            or data.get('mainline_added_skills') != ['project-governance', 'environment-maintenance']
+    for records, expected in ((retained, FROZEN_RETAINED_SHA256),
+                              (data.get('protected_files'), FROZEN_PROTECTED_SHA256)):
+        if digest(json.dumps(records, sort_keys=True, separators=(',', ':')).encode()) != expected:
+            raise ValueError('Frozen original digests changed; adaptations must not replace the baseline')
+    additions = ['research-guide', 'project-governance', 'environment-maintenance']
+    mainline_additions = ['project-governance', 'environment-maintenance']
+    if version == 3:
+        additions += ['scientific-brainstorming', 'research-manager']
+        mainline_additions += ['scientific-brainstorming', 'research-manager']
+    if (len(retained) != 83 or data.get('added_skills') != additions
+            or data.get('mainline_added_skills') != mainline_additions
             or data.get('upgrade_source_commit') != UPGRADE_SOURCE_COMMIT):
-        raise ValueError('expected 83 retained skills and three registered governance/coordinator extensions')
+        raise ValueError('expected the frozen 83 retained skills and registered extensions')
+    adaptations = data.get('workflow_adaptations', {})
+    if not isinstance(adaptations, dict) or set(adaptations) - set(retained):
+        raise ValueError('workflow adaptation refers to an unretained skill')
+    for name, record in adaptations.items():
+        if version != 3 or not isinstance(record, dict):
+            raise ValueError(f'{name}: invalid workflow adaptation')
+        if record.get('baseline_body_sha256') != retained[name]['body_without_hook_sha256']:
+            raise ValueError(f'{name}: adaptation baseline differs from the frozen body')
+        candidate_hash, reason = record.get('body_sha256'), record.get('reason')
+        if (not isinstance(candidate_hash, str) or not re.fullmatch(r'[a-f0-9]{64}', candidate_hash)
+                or not isinstance(reason, str) or not reason.strip()):
+            raise ValueError(f'{name}: adaptation needs an exact digest and reason')
+        tests = record.get('test_refs')
+        if not isinstance(tests, list) or not tests:
+            raise ValueError(f'{name}: adaptation needs test references')
+        references = [record.get('review_ref', '')] + tests
+        if not all(_local_reference(root, ref) for ref in references):
+            raise ValueError(f'{name}: adaptation review/test references missing or outside package')
+    for relative, record in data.get('approved_upgrade_files', {}).items():
+        if not isinstance(record, dict) or relative not in data['protected_files']:
+            raise ValueError(f'{relative}: invalid protected-file adaptation')
+        if record.get('baseline_sha256') != data['protected_files'][relative]:
+            raise ValueError(f'{relative}: protected-file baseline mismatch')
+        if record.get('adaptation_version') == '1.4.0':
+            refs = record.get('test_refs')
+            if (not isinstance(refs, list) or not refs
+                    or not all(_local_reference(root, ref) for ref in [record.get('review_ref')] + refs)):
+                raise ValueError(f'{relative}: protected-file review/test references missing')
     return data
+
+
+def _local_reference(root: Path, reference: str) -> bool:
+    if not isinstance(reference, str) or not reference:
+        return False
+    relative = Path(reference.split('#', 1)[0])
+    target = (root / relative).resolve()
+    return not relative.is_absolute() and target.is_relative_to(root.resolve()) and target.is_file()
 
 
 def contract_errors(root: Path) -> list[str]:
@@ -100,7 +148,9 @@ def contract_errors(root: Path) -> list[str]:
             if digest(frontmatter.encode()) != frozen["frontmatter_except_description_sha256"]:
                 errors.append(f"{name}: protected frontmatter changed")
             normalized = normalize_namespace(body)
-            if digest(normalized.encode()) != frozen["body_without_hook_sha256"]:
+            adapted = contract.get('workflow_adaptations', {}).get(name, {})
+            expected_body = adapted.get('body_sha256', frozen['body_without_hook_sha256'])
+            if digest(normalized.encode()) != expected_body:
                 errors.append(f"{name}: protected workflow body changed")
     for rel, expected_hash in contract["protected_files"].items():
         path = root / rel

@@ -118,3 +118,5 @@ skill	meta-optimize	meta-utils	-	skill 语料自优化提案
 skill	meta-apply	meta-utils	meta-optimize	落地已批准的语料补丁
 skill	feishu-notify	meta-utils	-	飞书通知
 skill	interview-cheatsheet	meta-utils	-	ML/LLM 面试速查手册生成
+skill	scientific-brainstorming	ideation	-	模糊方向的问题界定、替代解释与可检验候选
+skill	research-manager	ideation	-	整理有证据的科研决策、转向理由与跨会话交接

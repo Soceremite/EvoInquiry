@@ -5,6 +5,16 @@ argument-hint: "[problem-goal-current-formulas-or-notes]"
 allowed-tools: Read, Write, Edit, Grep, Glob
 ---
 
+<!-- EVO-INQUIRY:BEGIN -->
+For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),
+or reuse it if already loaded and unchanged in this session. Apply relevant
+principles within the user's scope and this skill's existing outputs, review
+standards, and recovery contracts. Carry them into nested research tasks and
+reviewer briefs. Continue authorized work through its necessary steps; honor
+budgets, blocking checkpoints, and stopping conditions.
+<!-- EVO-INQUIRY:END -->
+
+
 # Formula Derivation: Research Theory Line Construction
 
 Build an honest derivation package, not a fake polished theorem story.

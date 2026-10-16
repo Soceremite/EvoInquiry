@@ -150,7 +150,7 @@ def _save(root: str, run_id: str, state: dict) -> None:
 
 
 def start_run(root: str, run_id: str, phases: list[str], executor: Optional[str] = "claude",
-              provisional_advances: bool = False) -> dict:
+              provisional_advances: bool = False, workflow_contract: Optional[str] = None) -> dict:
     """Create a run with ordered phases, all `pending` (idempotent: won't clobber).
 
     ``claude`` is the historical mainline executor default. Codex-native callers
@@ -160,9 +160,18 @@ def start_run(root: str, run_id: str, phases: list[str], executor: Optional[str]
     provisional verdict close a phase for RESUME purposes (Codex-native mirror:
     true; mainline default: false — only cross-family acceptance advances).
     """
+    if workflow_contract not in (None, 'idea-discovery/v1', 'idea-discovery/v2'):
+        raise ValueError('Unknown workflow contract')
+    if workflow_contract == 'idea-discovery/v2':
+        required = ['problem-framing', 'research-lit', 'idea-creator', 'novelty-check', 'research-review', 'research-refine-pipeline']
+        if phases != required:
+            raise ValueError('idea-discovery/v2 requires its ordered phase contract')
     with _lock(root, run_id):
         if _run_path(root, run_id).exists():
-            return _load(root, run_id)
+            existing = _load(root, run_id)
+            if workflow_contract is not None and existing.get('workflow_contract', 'idea-discovery/v1') != workflow_contract:
+                raise ValueError('Existing run keeps its original workflow contract; do not migrate by restarting')
+            return existing
         state = {
             "run_id": run_id,
             "executor_model": executor,
@@ -178,6 +187,8 @@ def start_run(root: str, run_id: str, phases: list[str], executor: Optional[str]
                         "executor_family": model_family(executor) if executor else None,
                         "updated": _now()} for ph in phases],
         }
+        if workflow_contract is not None:
+            state['workflow_contract'] = workflow_contract
         _save(root, run_id, state)
         return state
 
@@ -391,6 +402,7 @@ def main() -> int:
     ap = argparse.ArgumentParser(description="ARIS resumable run-state (done vs accepted).")
     sub = ap.add_subparsers(dest="cmd", required=True)
     s = sub.add_parser("start"); s.add_argument("root"); s.add_argument("run_id"); s.add_argument("--phases", required=True, help="comma-separated phase names"); s.add_argument("--executor", default="claude"); s.add_argument("--provisional-advances", action="store_true", help="per-run policy: let a same-family provisional verdict close a phase for resume (Codex-native mirror only; mainline default keeps cross-family-only advance)")
+    s.add_argument('--workflow-contract', choices=['idea-discovery/v1', 'idea-discovery/v2'])
     s = sub.add_parser("set"); s.add_argument("root"); s.add_argument("run_id"); s.add_argument("phase"); s.add_argument("status", choices=sorted(EXECUTOR_STATUSES)); s.add_argument("--artifact")
     s = sub.add_parser("accept"); s.add_argument("root"); s.add_argument("run_id"); s.add_argument("phase"); s.add_argument("--verdict-id", required=True); s.add_argument("--reviewer", required=True); s.add_argument("--force", action="store_true")
     s = sub.add_parser("mark-provisional"); s.add_argument("root"); s.add_argument("run_id"); s.add_argument("phase"); s.add_argument("--verdict-id", required=True); s.add_argument("--reviewer", required=True); s.add_argument("--executor")
@@ -402,7 +414,7 @@ def main() -> int:
 
     try:
         if a.cmd == "start":
-            _print_status(start_run(a.root, a.run_id, [p.strip() for p in a.phases.split(",") if p.strip()], executor=a.executor, provisional_advances=a.provisional_advances))
+            _print_status(start_run(a.root, a.run_id, [p.strip() for p in a.phases.split(",") if p.strip()], executor=a.executor, provisional_advances=a.provisional_advances, workflow_contract=a.workflow_contract))
         elif a.cmd == "set":
             _print_status(set_status(a.root, a.run_id, a.phase, a.status, a.artifact))
         elif a.cmd == "accept":

@@ -1,0 +1,7 @@
+method,seed,status,accuracy_percent,evaluation_examples
+A,1,success,80,1000
+A,2,success,82,1000
+A,3,success,81,1000
+B,1,success,83,1000
+B,2,success,79,1000
+B,3,failed,,1000

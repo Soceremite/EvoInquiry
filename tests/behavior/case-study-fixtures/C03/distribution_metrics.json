@@ -1,0 +1,7 @@
+{
+  "scope": "separate reported 1000-output pool; raw assets unavailable",
+  "metric": "FID",
+  "direction": "lower",
+  "baseline": 12.0,
+  "candidate": 9.0
+}

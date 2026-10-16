@@ -63,6 +63,8 @@ adequate investigation and state what its result will change. Useful routes:
 
 | Current need | Execution skill |
 | --- | --- |
+| Vague direction, problem framing or a research pivot | [scientific-brainstorming](../scientific-brainstorming/SKILL.md) |
+| Record decisions, pivots or a research handoff | [research-manager](../research-manager/SKILL.md) |
 | Related work or understanding supplied papers | [research-lit](../research-lit/SKILL.md) |
 | Focused method proposal | [research-refine](../research-refine/SKILL.md) |
 | Evidence design for a fixed method | [experiment-plan](../experiment-plan/SKILL.md) |

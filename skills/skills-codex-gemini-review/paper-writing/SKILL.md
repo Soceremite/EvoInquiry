@@ -3,11 +3,22 @@ name: "paper-writing"
 description: "Workflow 3: Full paper writing pipeline. Orchestrates paper-plan \u2192 paper-figure \u2192 paper-write \u2192 paper-compile \u2192 auto-paper-improvement-loop to go from a narrative report to a polished, submission-ready PDF. Use when user says \\\"\u5199\u8bba\u6587\u5168\u6d41\u7a0b\\\", \\\"write paper pipeline\\\", \\\"\u4ece\u62a5\u544a\u5230PDF\\\", \\\"paper writing\\\", or wants the complete paper generation workflow."
 ---
 
+<!-- EVO-INQUIRY:BEGIN -->
+For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),
+or reuse it if already loaded and unchanged in this session. Apply relevant
+principles within the user's scope and this skill's existing outputs, review
+standards, and recovery contracts. Carry them into nested research tasks and
+reviewer briefs. Continue authorized work through its necessary steps; honor
+budgets, blocking checkpoints, and stopping conditions.
+
+For this stage, read [project-governance](../shared-references/project-governance.md). Pin report revision, exact evidence/spec/evaluator/execution inputs and verdict receipt. Add reproduction consumer pins when needed; a current alias change cannot revise historical paper evidence.
+<!-- EVO-INQUIRY:END -->
+
 > Override for Codex users who want **Gemini**, not a second Codex agent, to act as the reviewer. Install this package **after** `skills/skills-codex/*`.
 
 # Workflow 3: Paper Writing Pipeline
 
-> **Gemini overlay assurance:** `review_independence: cross-family` and `acceptance_status: accepted`.
+> **Gemini overlay assurance:** verify the actual different-family reviewer before recording `review_independence: cross-family`; `acceptance_status: accepted` requires a positive disposition and the workflow's evidence closure. Negative, unavailable and budget-stop outcomes grant no phase acceptance; same-family responses retain the base provisional contract.
 
 Orchestrate a complete paper writing workflow for: **$ARGUMENTS**
 
@@ -128,11 +139,10 @@ If the paper plan includes architecture diagrams, pipeline figures, or method il
 > claim to its evidence and state it directly; generic caveats live in the
 > Limitations section only; writing instructions are never manuscript content
 > ("do not mention X" means omit X, not "we do not address X"); tone edits
-> never change what the paper knows; the paper is a launch, not a progress
-> report — organize around the strongest advantage, give every experiment an
-> argumentative duty, keep unfavorable numbers in the tables and explain them
-> as tradeoffs only where the evidence supports that, never narrating
-> defeats. `/paper-write` carries the full CONFIDENT PROSE, HONEST LIMITS
+> never change what the paper knows; preserve the primary question and metrics, report favorable and unfavorable
+> findings beside the affected claims, and label retrospective reframing as
+> exploratory. Explain tradeoffs only when supported; generic caveats and
+> claim-defining limitations are different. `/paper-write` carries the full CONFIDENT PROSE, HONEST LIMITS
 > contract.
 
 ### Phase 3: LaTeX Writing

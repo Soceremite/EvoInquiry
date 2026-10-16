@@ -145,3 +145,37 @@ python tools/evaluate_skill_behavior.py \
 ```
 
 Discovery compares the enabled skill entries, shared guidance, checkpoint helper, governance modules and schemas with the exact selected source. Input notifications and responses may arrive in the same pipe read; the JSONL receiver retains buffered messages rather than treating a drained OS pipe as a missing response. These checks establish a clean execution context; assessment still requires inspecting real traces and artifacts.
+
+## Result objectivity cases
+
+The eight [result objectivity cases](../tests/behavior/evo-inquiry-objectivity-cases.json)
+use five offline synthetic projects. They cover favourable mean rankings with an
+unfavourable exception, justified, partial and unjustified user challenges, an unmet
+declared target alongside a baseline gain, quality/resource tradeoffs,
+independent-run variability, and unequal metric denominators. No case requires
+an experiment, external source or formal scientific acceptance verdict.
+
+Evaluate observed arithmetic and conclusions against each case's required
+outcome, not whether the answer sounds cautious or positive. A leading mean,
+unknown uncertainty and an unmet deployment target can coexist. Missing
+uncertainty must not erase a measured gain or establish no effect. Preserve
+fixture bytes and keep the judging rubric out of the evaluated context.
+
+For installed-plugin selection, use the existing harness with this manifest,
+a fresh output directory and an exact-source discovery check. Directly reading
+the candidate SKILL.md in an independent forward test checks explicit use of
+that source; it does not test automatic routing, plugin replacement or future
+conversation reliability. Record these validation scopes separately.
+
+On 2026-10-15, three independent evaluator contexts using `gpt-6.1-sol`
+explicitly read the candidate skill and completed all eight cases in isolated
+fixture copies. Inspection of the generated analyses found the required
+arithmetic and distinctions, including preserving the correct parts of a
+challenged summary. All original input hashes were preserved. This was one
+execution per case, without an installed-plugin selection test or an A/B
+comparison; it does not establish a general success rate. The focused package,
+mirror, comparison-evidence and behavior-harness regression passed 101 tests
+with two skips. Codex skill validation passed; the unmodified mainline skill
+and its candidate both retain the pre-existing `argument-hint` field that the
+Codex-specific quick validator rejects. The frozen workflow contract and
+86-entrypoint package checks passed; no installation or release was performed.

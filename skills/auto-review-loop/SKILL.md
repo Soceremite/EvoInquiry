@@ -5,6 +5,16 @@ argument-hint: "[topic-or-scope]"
 allowed-tools: Bash(*), Read, Grep, Glob, Write, Edit, Skill, Task, mcp__codex__codex, mcp__codex__codex-reply, mcp__manual_review__review, mcp__manual_review__review_reply
 ---
 
+<!-- EVO-INQUIRY:BEGIN -->
+For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),
+or reuse it if already loaded and unchanged in this session. Apply relevant
+principles within the user's scope and this skill's existing outputs, review
+standards, and recovery contracts. Carry them into nested research tasks and
+reviewer briefs. Continue authorized work through its necessary steps; honor
+budgets, blocking checkpoints, and stopping conditions.
+<!-- EVO-INQUIRY:END -->
+
+
 <!-- EI-GOVERNANCE:BEGIN -->
 Resolve runtime state through tools/state_paths.py before .ei operations. Use
 [project-governance](../shared-references/project-governance.md) for fixed evidence,
@@ -27,6 +37,27 @@ Autonomously iterate: review → implement fixes → re-review, until an indepen
 
 ## Context: $ARGUMENTS
 
+## Evidence closure and bounded stopping
+
+Scores and verdicts remain required interface fields. A positive threshold is
+necessary, and every material issue must also have a checked disposition: fixed
+with evidence, or excluded with a specific, evidenced scope reason. Reviewer
+agreement alone does not resolve an issue. Keep strengths that the evidence
+supports; do not invent objections to make another round appear useful.
+
+Apply this closure condition at every positive stop and acquittal append below.
+An unresolved critical issue prevents a positive receipt even when the score is
+high. Preserve existing independent-review requirements and same-family
+provisional status. File checks do not establish scientific support.
+
+Before iterating, use the authorized round, time, experiment and cost budgets.
+Track which decision-relevant uncertainty each action can resolve. Stop when a
+budget is reached or successive rounds produce no new evidence or actionable
+change; record the reason and remaining unknowns. A budget/stall/user stop is
+completion of the loop, not research acceptance, and grants no acquittal.
+Never hide an unfavorable primary result by adding a favorable metric or by
+renaming the original hypothesis. Label any exploratory reframing explicitly.
+
 ## Constants
 
 - MAX_ROUNDS = 4
@@ -41,7 +72,7 @@ Autonomously iterate: review → implement fixes → re-review, until an indepen
   - `medium` (default): Current behavior — MCP-based review, the executor controls what context the reviewer sees.
   - `hard`: Adds **Reviewer Memory** (the reviewer tracks its own suspicions across rounds) + **Debate Protocol** (the executor can rebut, the reviewer rules).
   - `nightmare`: Everything in `hard` + **Codex exec reviewer reads the repo directly** via `codex exec` (the executor cannot filter what the reviewer sees) + **Adversarial Verification** (the reviewer independently checks if code matches claims).
-- **RENDER_HTML = true** — When `true` (default), auto-render `review-stage/AUTO_REVIEW.md` to HTML on loop termination via `/render-html`. Uses `--no-review` (the loop itself IS the cross-model review; the HTML is a structural conversion). Set `false` to skip, or pass `— render html: false`.
+- **RENDER_HTML = true** — When `true` (default), auto-render `review-stage/AUTO_REVIEW.md` to HTML on loop termination via `/render-html`. Uses `--no-review` for structural conversion of the recorded assessment; rendering does not add or change review acceptance. Preserve unavailable or incomplete reviews as BLOCKED. Set `false` to skip, or pass `— render html: false`.
 
 > ⚠️ **Nightmare + Manual incompatibility**: If `REVIEWER_BACKEND = manual` and `REVIEWER_DIFFICULTY = nightmare`, STOP with:
 > "difficulty: nightmare requires Codex CLI / codex exec and is not compatible with --reviewer: manual. Use difficulty: hard, or switch reviewer to codex."
@@ -382,10 +413,10 @@ mcp__codex__codex:
     - Raw results (verbatim files, not a summary): <path(s)>
     - Changed since last round: <changed-file paths> — read the diff, not my description
 
-    Please act as a senior ML reviewer (NeurIPS/ICML level). Start from the
-    assumption that the work is broken somewhere — your job is to find where.
-    Be adversarial. Trust nothing the author tells you — verify everything
-    yourself.
+    Please review the work against its question, evidence and intended use.
+    Verify consequential claims against actual artifacts. Identify supported
+    strengths, material weaknesses, alternative explanations and missing evidence.
+    Apply the same evidential standard to favorable and unfavorable conclusions.
 
     1. Score this work 1-10 for a top venue
     2. List remaining critical weaknesses (ranked by severity)
@@ -395,28 +426,15 @@ mcp__codex__codex:
     Be brutally honest. If, after genuinely trying to break it, the work holds
     up and is ready, say so clearly.
 
-    === SCOPE LIMITS (these bound what you PROPOSE, never what you look for) ===
-    Report anything that is actually wrong here — including a rare-looking case, if
-    this repo actually produces it. Then keep the fix in scope:
-    1. This is a RESEARCH-WORKFLOW tool, not a security paper. Verification is
-       welcome; over-defense is not. Assume a cooperating operator on their own
-       machine — a malicious local user is NOT in the threat model.
-    2. Do NOT propose SHA / hash / content-fingerprint / digest-binding schemes.
-       Reporting a real defect in hashing code that already exists is fine.
-    3. NO speculative machinery: do not add feature flags, migration frameworks,
-       compat layers, wrappers, pins, or similar mechanisms unless evidence shows
-       a current repo defect they fix or an explicit existing invariant they must
-       preserve. "Load-bearing", "compatibility", and "not scaffolding" are labels,
-       not evidence. Point to the failing path/artifact or invariant, and check the
-       proposal's factual premises, such as whether a named package version exists.
-    4. NO corner-case obsession: exotic encodings, symlink races, RTL text and
-       millisecond races are out of scope unless you can show the case arises here.
-    5. Where a rubric or checklist is genuinely needed, do not over-mechanize
-       judgement. A clear sentence a human reads beats a scored table nobody
-       maintains.
-    Exception: code that runs remote commands, starts a network service, or installs
-    an MCP server runs on the user's machine with their credentials — trust-boundary
-    findings there are in scope and the default is strict.
+    === REVIEW SCOPE ===
+    Evaluate the actual research question, requested deliverable and applicable
+    disciplinary standards. Locate strengths and defects in the supplied evidence;
+    do not presume acceptance, rejection or a particular threat model. Distinguish
+    observed errors, unsupported claims and optional extensions. Propose the smallest
+    adequate correction, citing its failing path, evidence or preserved invariant.
+    Keep hypotheses, speculation and unperformed checks explicit. A real boundary
+    or reproducibility defect is in scope when it affects this work; unrelated
+    infrastructure and speculative redesign are not automatically required.
     Say plainly when something is correct. Do not manufacture findings.
 ```
 
@@ -460,28 +478,15 @@ mcp__codex__codex:
 
     Be brutally honest. Actively look for things the author might be hiding.
 
-    === SCOPE LIMITS (these bound what you PROPOSE, never what you look for) ===
-    Report anything that is actually wrong here — including a rare-looking case, if
-    this repo actually produces it. Then keep the fix in scope:
-    1. This is a RESEARCH-WORKFLOW tool, not a security paper. Verification is
-       welcome; over-defense is not. Assume a cooperating operator on their own
-       machine — a malicious local user is NOT in the threat model.
-    2. Do NOT propose SHA / hash / content-fingerprint / digest-binding schemes.
-       Reporting a real defect in hashing code that already exists is fine.
-    3. NO speculative machinery: do not add feature flags, migration frameworks,
-       compat layers, wrappers, pins, or similar mechanisms unless evidence shows
-       a current repo defect they fix or an explicit existing invariant they must
-       preserve. "Load-bearing", "compatibility", and "not scaffolding" are labels,
-       not evidence. Point to the failing path/artifact or invariant, and check the
-       proposal's factual premises, such as whether a named package version exists.
-    4. NO corner-case obsession: exotic encodings, symlink races, RTL text and
-       millisecond races are out of scope unless you can show the case arises here.
-    5. Where a rubric or checklist is genuinely needed, do not over-mechanize
-       judgement. A clear sentence a human reads beats a scored table nobody
-       maintains.
-    Exception: code that runs remote commands, starts a network service, or installs
-    an MCP server runs on the user's machine with their credentials — trust-boundary
-    findings there are in scope and the default is strict.
+    === REVIEW SCOPE ===
+    Evaluate the actual research question, requested deliverable and applicable
+    disciplinary standards. Locate strengths and defects in the supplied evidence;
+    do not presume acceptance, rejection or a particular threat model. Distinguish
+    observed errors, unsupported claims and optional extensions. Propose the smallest
+    adequate correction, citing its failing path, evidence or preserved invariant.
+    Keep hypotheses, speculation and unperformed checks explicit. A real boundary
+    or reproducibility defect is in scope when it affects this work; unrelated
+    infrastructure and speculative redesign are not automatically required.
     Say plainly when something is correct. Do not manufacture findings.
 ```
 
@@ -519,28 +524,15 @@ OUTPUT FORMAT:
 
 Be adversarial. Trust nothing the author tells you — verify everything yourself.
 
-=== SCOPE LIMITS (these bound what you PROPOSE, never what you look for) ===
-Report anything that is actually wrong here — including a rare-looking case, if
-this repo actually produces it. Then keep the fix in scope:
-1. This is a RESEARCH-WORKFLOW tool, not a security paper. Verification is
-   welcome; over-defense is not. Assume a cooperating operator on their own
-   machine — a malicious local user is NOT in the threat model.
-2. Do NOT propose SHA / hash / content-fingerprint / digest-binding schemes.
-   Reporting a real defect in hashing code that already exists is fine.
-3. NO speculative machinery: do not add feature flags, migration frameworks,
-   compat layers, wrappers, pins, or similar mechanisms unless evidence shows
-   a current repo defect they fix or an explicit existing invariant they must
-   preserve. "Load-bearing", "compatibility", and "not scaffolding" are labels,
-   not evidence. Point to the failing path/artifact or invariant, and check the
-   proposal's factual premises, such as whether a named package version exists.
-4. NO corner-case obsession: exotic encodings, symlink races, RTL text and
-   millisecond races are out of scope unless you can show the case arises here.
-5. Where a rubric or checklist is genuinely needed, do not over-mechanize
-   judgement. A clear sentence a human reads beats a scored table nobody
-   maintains.
-Exception: code that runs remote commands, starts a network service, or installs
-an MCP server runs on the user's machine with their credentials — trust-boundary
-findings there are in scope and the default is strict.
+=== REVIEW SCOPE ===
+Evaluate the actual research question, requested deliverable and applicable
+disciplinary standards. Locate strengths and defects in the supplied evidence;
+do not presume acceptance, rejection or a particular threat model. Distinguish
+observed errors, unsupported claims and optional extensions. Propose the smallest
+adequate correction, citing its failing path, evidence or preserved invariant.
+Keep hypotheses, speculation and unperformed checks explicit. A real boundary
+or reproducibility defect is in scope when it affects this work; unrelated
+infrastructure and speculative redesign are not automatically required.
 Say plainly when something is correct. Do not manufacture findings.
 PROMPT
 )" --skip-git-repo-check 2>&1
@@ -862,7 +854,7 @@ Prioritization rules:
 - Skip fixes requiring excessive compute (flag for manual follow-up)
 - Skip fixes requiring external data/models not available
 - Prefer reframing/analysis over new experiments when both address the concern
-- Always implement metric additions (cheap, high impact)
+- Add a metric only when it resolves a material question within authorization and budget; retain original primary outcomes
 
 #### Phase D: Wait for Results
 
@@ -946,14 +938,14 @@ Increment round counter → back to Phase A.
 
 ### Termination
 
-When loop ends (positive assessment or max rounds):
+When the loop ends (evidence-backed positive assessment, budget, stall or user stop):
 
 1. Update `review-stage/REVIEW_STATE.json` with `"status": "completed"`
 2. Write final summary to `review-stage/AUTO_REVIEW.md`
 3. Update project notes with conclusions
 4. **Write method/pipeline description** to `review-stage/AUTO_REVIEW.md` under a `## Method Description` section — a concise 1-2 paragraph description of the final method, its architecture, and data flow. This serves as input for `/paper-illustration` in Workflow 3 (so it can generate architecture diagrams automatically).
 5. **Generate claims from results** — invoke `/result-to-claim` to convert experiment results from `review-stage/AUTO_REVIEW.md` into structured paper claims. Output: `CLAIMS_FROM_RESULTS.md`. This bridges Workflow 2 → Workflow 3 so `/paper-plan` can directly use validated claims instead of extracting them from scratch. If `/result-to-claim` is not installed, skip this step (no `CLAIMS_FROM_RESULTS.md` is produced; `/paper-plan` extracts claims from the narrative as before) — but NEVER fabricate the file or its verdict. If it ran but its output starts with `verdict: REVIEW_UNAVAILABLE`, keep that file AS-IS (do not overwrite or paraphrase it) and record in `AUTO_REVIEW.md` that claims are UNADJUDICATED — downstream paper stages must not treat them as validated.
-6. If stopped at max rounds without positive assessment:
+6. If stopped for budget, stall or user instruction without evidence closure:
    - List remaining blockers
    - Estimate effort needed for each
    - Suggest whether to continue manually or pivot
@@ -1034,28 +1026,15 @@ cat <<'ARIS_ROUND_INSTRUCTIONS'
 Please re-score and re-assess. Are the remaining concerns addressed?
 Same format: Score, Verdict, Remaining Weaknesses, Minimum Fixes.
 
-=== SCOPE LIMITS (these bound what you PROPOSE, never what you look for) ===
-Report anything that is actually wrong here — including a rare-looking case, if
-this repo actually produces it. Then keep the fix in scope:
-1. This is a RESEARCH-WORKFLOW tool, not a security paper. Verification is
-   welcome; over-defense is not. Assume a cooperating operator on their own
-   machine — a malicious local user is NOT in the threat model.
-2. Do NOT propose SHA / hash / content-fingerprint / digest-binding schemes.
-   Reporting a real defect in hashing code that already exists is fine.
-3. NO speculative machinery: do not add feature flags, migration frameworks,
-   compat layers, wrappers, pins, or similar mechanisms unless evidence shows
-   a current repo defect they fix or an explicit existing invariant they must
-   preserve. "Load-bearing", "compatibility", and "not scaffolding" are labels,
-   not evidence. Point to the failing path/artifact or invariant, and check the
-   proposal's factual premises, such as whether a named package version exists.
-4. NO corner-case obsession: exotic encodings, symlink races, RTL text and
-   millisecond races are out of scope unless you can show the case arises here.
-5. Where a rubric or checklist is genuinely needed, do not over-mechanize
-   judgement. A clear sentence a human reads beats a scored table nobody
-   maintains.
-Exception: code that runs remote commands, starts a network service, or installs
-an MCP server runs on the user's machine with their credentials — trust-boundary
-findings there are in scope and the default is strict.
+=== REVIEW SCOPE ===
+Evaluate the actual research question, requested deliverable and applicable
+disciplinary standards. Locate strengths and defects in the supplied evidence;
+do not presume acceptance, rejection or a particular threat model. Distinguish
+observed errors, unsupported claims and optional extensions. Propose the smallest
+adequate correction, citing its failing path, evidence or preserved invariant.
+Keep hypotheses, speculation and unperformed checks explicit. A real boundary
+or reproducibility defect is in scope when it affects this work; unrelated
+infrastructure and speculative redesign are not automatically required.
 Say plainly when something is correct. Do not manufacture findings.
 
 At the end of your review, include a Memory Update section — this will
@@ -1081,28 +1060,15 @@ copilot --agent "$REVIEWER_PROFILE" --model "$REVIEWER_MODEL" \
     Please re-score and re-assess. Are the remaining concerns addressed?
     Same format: Score, Verdict, Remaining Weaknesses, Minimum Fixes.
 
-    === SCOPE LIMITS (these bound what you PROPOSE, never what you look for) ===
-    Report anything that is actually wrong here — including a rare-looking case, if
-    this repo actually produces it. Then keep the fix in scope:
-    1. This is a RESEARCH-WORKFLOW tool, not a security paper. Verification is
-       welcome; over-defense is not. Assume a cooperating operator on their own
-       machine — a malicious local user is NOT in the threat model.
-    2. Do NOT propose SHA / hash / content-fingerprint / digest-binding schemes.
-       Reporting a real defect in hashing code that already exists is fine.
-    3. NO speculative machinery: do not add feature flags, migration frameworks,
-       compat layers, wrappers, pins, or similar mechanisms unless evidence shows
-       a current repo defect they fix or an explicit existing invariant they must
-       preserve. "Load-bearing", "compatibility", and "not scaffolding" are labels,
-       not evidence. Point to the failing path/artifact or invariant, and check the
-       proposal's factual premises, such as whether a named package version exists.
-    4. NO corner-case obsession: exotic encodings, symlink races, RTL text and
-       millisecond races are out of scope unless you can show the case arises here.
-    5. Where a rubric or checklist is genuinely needed, do not over-mechanize
-       judgement. A clear sentence a human reads beats a scored table nobody
-       maintains.
-    Exception: code that runs remote commands, starts a network service, or installs
-    an MCP server runs on the user's machine with their credentials — trust-boundary
-    findings there are in scope and the default is strict.
+    === REVIEW SCOPE ===
+    Evaluate the actual research question, requested deliverable and applicable
+    disciplinary standards. Locate strengths and defects in the supplied evidence;
+    do not presume acceptance, rejection or a particular threat model. Distinguish
+    observed errors, unsupported claims and optional extensions. Propose the smallest
+    adequate correction, citing its failing path, evidence or preserved invariant.
+    Keep hypotheses, speculation and unperformed checks explicit. A real boundary
+    or reproducibility defect is in scope when it affects this work; unrelated
+    infrastructure and speculative redesign are not automatically required.
     Say plainly when something is correct. Do not manufacture findings.
 ```
 

@@ -1,0 +1,5 @@
+clip_id,question,dataset_answer,baseline_answer,candidate_answer
+v01,Which color appears first?,red,blue,red
+v02,Which color appears first?,blue,blue,red
+v03,Which color appears first?,blue,red,red
+v04,Which color appears first?,red,red,red

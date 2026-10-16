@@ -1,0 +1,2 @@
+# Synthetic preregistered pilot
+Question: does representation rank cause the observed robustness? Primary effect +0.1 pp, paired 95% interval [-0.2,+0.4] pp, using the independent experimental units specified by the protocol. Minimum useful effect was +1.0 pp. Implementation and measurement checks passed. A separate preplanned perturbation preserved robustness despite disabling the rank change, favoring the data-selection explanation. Budget remaining: one CPU-only audit; no GPU runs authorized.

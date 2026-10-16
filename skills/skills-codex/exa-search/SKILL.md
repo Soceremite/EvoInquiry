@@ -44,7 +44,7 @@ Use Exa when you need results beyond academic databases, or when you want conten
 > Overrides (append to arguments):
 > - `/exa-search "RAG pipelines" — max: 5` — top 5 results
 > - `/exa-search "diffusion models" — category: research paper` — research papers only
-> - `/exa-search "startup funding" — category: news, start date: 2025-01-01` — recent news
+> - `/exa-search "startup funding" — category: news, start date: 2025-01-01` — news since that explicit historical date
 > - `/exa-search "transformer" — content: text, max chars: 8000` — full text mode
 > - `/exa-search "transformer" — content: summary` — LLM-generated summaries
 > - `/exa-search "transformer" — domains: arxiv.org,huggingface.co` — domain filter
@@ -121,7 +121,6 @@ python3 "$EXA_FETCHER" search "QUERY" --max 10 --content highlights
 ```bash
 python3 "$EXA_FETCHER" search "QUERY" --max 10 \
   --category "research paper" \
-  --start-date 2025-01-01 \
   --content text --max-chars 8000
 ```
 

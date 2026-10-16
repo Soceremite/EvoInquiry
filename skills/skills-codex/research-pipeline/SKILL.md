@@ -70,6 +70,12 @@ remain non-blocking under `AUTO_PROCEED=true`.
 
 ## Overview
 
+For a vague direction, the idea-discovery v2 framing step can call
+[scientific-brainstorming](../scientific-brainstorming/SKILL.md). Reuse a fixed
+question rather than restarting ideation. Preserve meaningful decisions and
+pivots through [research-manager](../research-manager/SKILL.md) in existing
+records; it does not replace this coordinator or certify its phases.
+
 This skill chains the entire research lifecycle into a single pipeline:
 
 ```
@@ -152,9 +158,9 @@ immediately in the same turn. Do not phrase the update as a question:
 ```
 📋 Idea Discovery complete. Top ideas:
 
-1. [Idea 1 title] — Pilot: POSITIVE (+X%), Novelty: CONFIRMED
-2. [Idea 2 title] — Pilot: WEAK POSITIVE (+Y%), Novelty: CONFIRMED
-3. [Idea 3 title] — Pilot: NEGATIVE, eliminated
+1. [Idea 1 title] — Pilot: [observed finding or not run], Novelty: [checked delta or unknown]
+2. [Idea 2 title] — Pilot: [valid null or other finding], Next inquiry: [what it distinguishes]
+3. [Idea 3 title] — [paused / retained / rejected], with evidence-based reason
 
 AUTO_PROCEED: selected Idea 1 — [title]. Continuing to Stage 2.
 ```

@@ -3,11 +3,20 @@ name: "idea-discovery-robot"
 description: "Workflow 1 adaptation for robotics and embodied AI. Orchestrates robotics-aware literature survey, idea generation, novelty check, and critical review to go from a broad robotics direction to benchmark-grounded, simulation-first ideas. Use when user says \\\"robotics idea discovery\\\", \\\"\u673a\u5668\u4eba\u627eidea\\\", \\\"embodied AI idea\\\", \\\"\u673a\u5668\u4eba\u65b9\u5411\u63a2\u7d22\\\", \\\"sim2real \u9009\u9898\\\", or wants ideas for manipulation, locomotion, navigation, drones, humanoids, or general robot learning."
 ---
 
+<!-- EVO-INQUIRY:BEGIN -->
+For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),
+or reuse it if already loaded and unchanged in this session. Apply relevant
+principles within the user's scope and this skill's existing outputs, review
+standards, and recovery contracts. Carry them into nested research tasks and
+reviewer briefs. Continue authorized work through its necessary steps; honor
+budgets, blocking checkpoints, and stopping conditions.
+<!-- EVO-INQUIRY:END -->
+
 > Override for Codex users who want **Gemini**, not a second Codex agent, to act as the reviewer. Install this package **after** `skills/skills-codex/*`.
 
 # Robotics Idea Discovery Pipeline
 
-> **Gemini overlay assurance:** `review_independence: cross-family` and `acceptance_status: accepted`.
+> **Gemini overlay assurance:** verify the actual different-family reviewer before recording `review_independence: cross-family`; `acceptance_status: accepted` requires a positive disposition and the workflow's evidence closure. Negative, unavailable and budget-stop outcomes grant no phase acceptance; same-family responses retain the base provisional contract.
 
 Orchestrate a robotics-specific idea discovery workflow for: **$ARGUMENTS**
 
@@ -34,6 +43,14 @@ The goal is not to produce flashy demos. The goal is to produce ideas that are:
 - falsifiable
 - feasible with available robotics infrastructure
 - interesting even if the answer is negative
+
+## Problem framing and informative outcomes
+
+Use `scientific-brainstorming` when the robotics direction is still vague, while
+preserving benchmark, simulation and physical-safety constraints. A mechanism
+failure, valid null effect or diagnostic boundary can inform a better research
+question; do not rank solely by a positive performance signal. Pilots remain
+within actual authorization, compute and safety budgets.
 
 ## Constants
 
@@ -313,7 +330,7 @@ Write or update `idea-stage/IDEA_REPORT.md` with a robotics-specific structure s
 - Benchmark / simulator:
 - Bottleneck addressed:
 - Pilot type: sim / offline / real
-- Positive signal:
+- Observed pilot finding and what it distinguishes:
 - Novelty:
 - Reviewer score:
 - Hardware risk:

@@ -22,13 +22,17 @@ Orchestrate a complete idea discovery workflow for: **$ARGUMENTS**
 This skill chains sub-skills into a single automated pipeline:
 
 ```
-/research-lit → /idea-creator → /novelty-check → /research-review → /research-refine-pipeline
+problem-framing → /research-lit → /idea-creator → /novelty-check → /research-review → /research-refine-pipeline
   (survey)      (brainstorm)    (verify novel)    (critical feedback)  (refine method + plan experiments)
 ```
 
 Each phase builds on the previous one's output. The final deliverables are a validated `idea-stage/IDEA_REPORT.md` with ranked ideas, plus a refined proposal (`refine-logs/FINAL_PROPOSAL.md`) and experiment plan (`refine-logs/EXPERIMENT_PLAN.md`) for the top idea.
 
 ## Constants
+
+Pilot limits below are ceilings, not authorization or evidence of available resources.
+Use the actual established compute/storage budget and requested scope; no pilot
+is launched by a request for ideas or planning alone.
 
 - **PILOT_MAX_HOURS = 2** — Skip any pilot experiment estimated to take > 2 hours per GPU. Flag as "needs manual pilot" in the report.
 - **PILOT_TIMEOUT_HOURS = 3** — Hard timeout: kill any running pilot that exceeds 3 hours. Collect partial results if available.
@@ -79,8 +83,25 @@ this ordered state record with `--executor <actual-Codex-model>
 --provisional-advances` (for example, `codex-gpt-6-astra`):
 
 ```text
-research-lit,idea-creator,novelty-check,research-review,research-refine-pipeline
+problem-framing,research-lit,idea-creator,novelty-check,research-review,research-refine-pipeline
 ```
+
+New runs use `--workflow-contract idea-discovery/v2` on `run_state.py start`.
+Retain the contract and phase list on resume: old runs without this field use
+the v1 five-phase gate. Never restart an old run under v2 to bypass its state.
+The additional `problem-framing` artifact is the canonical report section
+`idea-stage/IDEA_REPORT.md#problem-framing`; reuse a suitable existing proposal
+by reference. Its completion records framing, not scientific acceptance. After
+marking this artifact `done` in Phase 0, run:
+
+```text
+python3 <resolved-idea_discovery_gate.py> . <run_id> --framing-only
+```
+
+Only a passing content/artifact check records this mechanical phase as complete
+with a deterministic receipt. It does not certify the question or accept any
+research/review phase. If blocked, fix the actual missing artifact before moving
+on. The final report gate still grants no semantic phase acceptance.
 
 For each phase, mark `running` on entry and `done --artifact <path>` only after
 its artifact is present. Use these artifact locators so the final gate can
@@ -88,6 +109,7 @@ check the canonical report rather than scattered scratch files:
 
 | Phase | Artifact locator |
 |---|---|
+| `problem-framing` (v2) | `idea-stage/IDEA_REPORT.md#problem-framing` |
 | `research-lit` | `idea-stage/IDEA_REPORT.md#literature-landscape` |
 | `idea-creator` | `idea-stage/IDEA_REPORT.md#ranked-ideas` |
 | `novelty-check` | `idea-stage/IDEA_REPORT.md#novelty-verification` |
@@ -140,7 +162,15 @@ phase and re-run the gate before finalizing.
 
 ## Pipeline
 
-### Phase 0: Load Research Brief (if available)
+### Phase 0: Problem framing and existing brief
+
+For v2, establish the question, assumptions, constraints and what the next evidence
+would change. Use [scientific-brainstorming](../scientific-brainstorming/SKILL.md)
+when the direction is vague; a fixed existing question can be reused. Write the
+`Problem Framing` section of the canonical idea report with its evidence links.
+Do not automatically launch pilots or require a venue to complete framing.
+
+#### Load Research Brief (if available)
 
 Before starting any other phase, check for a detailed research brief in the project:
 
@@ -255,11 +285,11 @@ Invoke `/idea-creator` with the landscape context and `idea-stage/REF_PAPER_SUMM
 
 **What this does:**
 - If `idea-stage/REF_PAPER_SUMMARY.md` exists, include it as context so ideas explicitly build on, improve, or extend the reference paper
-- Brainstorm 8-12 concrete ideas via GPT-6-Astra xhigh
+- Generate a task-appropriate set of distinct concrete ideas; avoid fixed counts and duplicated mechanisms
 - Filter by feasibility, compute cost, quick novelty search
 - Deep validate top ideas (full novelty check + devil's advocate)
-- Run parallel pilot experiments on available GPUs (top 2-3 ideas)
-- Rank by empirical signal
+- Run pilots only within the established authorization, verified compute/storage budget and actual resources; planning or brainstorming alone does not launch them
+- Rank by question value, valid discriminating evidence and feasible next inquiry; distinguish measurement/execution failure from a null or contradictory finding
 - Output `idea-stage/IDEA_REPORT.md`
 
 **🚦 Checkpoint:** Present `idea-stage/IDEA_REPORT.md` ranked ideas to the user.
@@ -272,7 +302,7 @@ continue immediately in the same turn, without a question:
 
 1. [Idea 1] — Pilot: POSITIVE (+X%)
 2. [Idea 2] — Pilot: WEAK POSITIVE (+Y%)
-3. [Idea 3] — Pilot: NEGATIVE, eliminated
+3. [Idea 3] — Pilot: NULL/NEGATIVE — assess validity, alternatives and information value
 
 AUTO_PROCEED: selected [top-ranked idea(s)]. Continuing to Phase 3.
 ```
@@ -287,7 +317,7 @@ then end the turn.
 
 ### Phase 3: Deep Novelty Verification
 
-For each top idea (positive pilot signal), run a thorough novelty check:
+For each shortlisted idea (including informative null or negative pilots), run a thorough novelty check:
 
 ```
 /novelty-check "[top idea 1 description]"
@@ -304,7 +334,7 @@ For each top idea (positive pilot signal), run a thorough novelty check:
 
 ### Phase 4: External Critical Review
 
-For the surviving top idea(s), get a sharp outside read — strongest case, named risks, and the cheapest discriminating next experiment; the core hypothesis is not up for rewriting:
+For the surviving top idea(s), get a sharp outside read — strongest case, named risks, and the cheapest discriminating next experiment; preserve the original hypothesis while checking whether evidence warrants revising it; record an explicit change rather than silently rewriting it:
 
 ```
 /research-review "[top idea with hypothesis + pilot results]" — composed: idea-stage/IDEA_REPORT.md
@@ -362,17 +392,20 @@ AUTO_PROCEED: accepted the top proposal. Continuing to Final Report.
 
 ### Phase 5: Final Report
 
-Finalize `idea-stage/IDEA_REPORT.md` with all accumulated information:
+Finalize the existing `idea-stage/IDEA_REPORT.md` with all accumulated information. Preserve the v2 `Problem Framing` section and its evidence references; do not replace it with the template placeholders:
 
 ```markdown
 # Idea Discovery Report
 
 **Direction**: $ARGUMENTS
 **Date**: [today]
-**Pipeline**: research-lit → idea-creator → novelty-check → research-review → research-refine-pipeline
+**Pipeline**: problem-framing (v2) → research-lit → idea-creator → novelty-check → research-review → research-refine-pipeline
 
 ## Executive Summary
 [2-3 sentences: best idea, key evidence, recommended next step]
+
+## Problem Framing
+[v2: preserve the established question, constraints, alternatives and evidence links from Phase 0; old v1 runs keep their existing contract]
 
 ## Literature Landscape
 [from Phase 1]
@@ -387,8 +420,8 @@ Finalize `idea-stage/IDEA_REPORT.md` with all accumulated information:
 [from Phase 4]
 
 ### 🏆 Idea 1: [title] — RECOMMENDED
-- Pilot: POSITIVE (+X%)
-- Novelty: CONFIRMED (closest: [paper], differentiation: [what's different])
+- Pilot: [observed outcome, uncertainty and what it distinguishes; or not run]
+- Novelty: [search coverage, closest checked work, verified difference or unknown]
 - Reviewer score: X/10
 - Next step: implement full experiment → /auto-review-loop
 
@@ -425,7 +458,7 @@ Write `idea-stage/IDEA_CANDIDATES.md` — a lean summary of the top 3-5 survivin
 |---|------|-------------|---------|---------------|--------|
 | 1 | [title] | +X% | Confirmed | X/10 | RECOMMENDED |
 | 2 | [title] | +Y% | Confirmed | X/10 | BACKUP |
-| 3 | [title] | Negative | — | — | ELIMINATED |
+| 3 | [title] | Null/negative | [validity] | [information] | REASSESS |
 
 ## Active Idea: #1 — [title]
 - Hypothesis: [one sentence]
@@ -469,7 +502,7 @@ After finalizing `idea-stage/IDEA_REPORT.md` (and the optional `IDEA_CANDIDATES.
 - **Don't skip phases.** Each phase filters and validates — skipping leads to wasted effort later.
 - **Checkpoint between phases.** Briefly summarize what was found. With `AUTO_PROCEED=true`, state the selected next action and keep executing in the same turn; with `false`, ask and end the turn.
 - **Let pilots kill, not vibes.** A cheap pilot that says no beats a month of implementation that says no — but the kill needs empirical signal or a named published paper, not taste. Talking yourself out of ideas on paper is how pipelines end up with nothing to run.
-- **Empirical signal > theoretical appeal.** An idea with a positive pilot outranks a "sounds great" idea without evidence.
+- **Evidence and question value guide selection.** Distinguish valid negative or null findings from broken execution and underpowered checks. A positive pilot is useful evidence, not an automatic ranking rule; retain informative boundaries and alternatives.
 - **Document everything.** Dead ends are just as valuable as successes for future reference.
 - **Be honest with the reviewer.** Include negative results and failed pilots in the review prompt.
 - **Feishu notifications are optional.** If `~/.codex/feishu.json` exists, send `checkpoint` at each phase transition and `pipeline_done` at final report. If absent/off, skip silently.

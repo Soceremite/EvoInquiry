@@ -5,6 +5,16 @@ argument-hint: "[description-of-diagram]"
 allowed-tools: Bash(*), Read, Write, Edit, mcp__codex__codex
 ---
 
+<!-- EVO-INQUIRY:BEGIN -->
+For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),
+or reuse it if already loaded and unchanged in this session. Apply relevant
+principles within the user's scope and this skill's existing outputs, review
+standards, and recovery contracts. Carry them into nested research tasks and
+reviewer briefs. Continue authorized work through its necessary steps; honor
+budgets, blocking checkpoints, and stopping conditions.
+<!-- EVO-INQUIRY:END -->
+
+
 <!-- EI-GOVERNANCE:BEGIN -->
 Resolve runtime state through tools/state_paths.py before .ei operations. Use
 [project-governance](../shared-references/project-governance.md) for fixed evidence,
@@ -90,6 +100,17 @@ python3 "$FIGURE_RENDERER" render <spec.json> --output <out.svg>
 python3 "$FIGURE_RENDERER" validate <spec.json>
 python3 "$FIGURE_RENDERER" schema
 ```
+
+## Evidence and delivery
+
+Represent proposed mechanisms as hypotheses and verified structure as observed.
+An arrow expresses the stated relationship, not evidence of a causal effect.
+Do not invent measurements or add unverified result labels to a method diagram.
+Keep the JSON source, render deterministic SVG, and inspect the actual output
+for labels, direction, clipping and readability at the intended size. If preview
+conversion is unavailable, deliver the editable SVG and disclose that limitation.
+For a finalized figure, `tools/figure_evidence.py` can bind the source, referenced
+inputs, output and caption; its identity check does not certify scientific claims.
 
 ## Workflow
 

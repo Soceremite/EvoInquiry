@@ -20,8 +20,12 @@ unclear. Use another available skill when it better fits the requested work.
 
 Short follow-ups, corrections, changed constraints, and "continue" / "继续"
 inherit the active research task. Keep using its skill when it still fits; switch
-when the requested work changes. Read the selected SKILL.md and its EvoInquiry
-research principles from the actual installed paths. Reuse guidance already
+when the requested work changes. When running the EvoInquiry Codex plugin, read
+the selected SKILL.md and its research principles from the exact discovered
+Codex path; resolve references beside that `skills/skills-codex/<name>/SKILL.md`
+and do not substitute the sibling mainline `skills/<name>/` tree. Other
+integrations should keep their own discovered skill and reference tree
+consistent. Reuse guidance already
 read and unchanged in this session; load only references needed for this task.
 Briefly identify the skill actually used when answering a research request.
 

@@ -107,6 +107,61 @@ average incompatible metrics or normalise scores in a way that hides raw results
 For many comparisons, disclose selection and multiplicity rather than reporting
 only the most favourable outcome.
 
+## Objective result interpretation
+
+Answer the user's actual comparison before evaluating its importance. Compute
+from raw results when available. If only a screenshot or rounded summary is
+supplied, identify that evidence boundary; do not imply that per-run values,
+sample counts, variability or evaluator code were checked. A missing source
+file limits verification, but does not invalidate arithmetic visible in a table.
+
+Keep four judgments distinct, including in the opening conclusion:
+
+| Judgment | Evidence needed |
+| --- | --- |
+| Observed ranking | Comparable metric, direction, population and reported values; identify ties and display precision |
+| Effect size | Named comparator and signed difference in the metric's units; appropriate relative change when useful |
+| Statistical uncertainty | Actual independent units and suitable uncertainty analysis; summary means alone are insufficient |
+| Practical value | An explicit task target, meaningful-effect threshold, reference baseline or resource tradeoff |
+
+A leading mean is an observation even when its uncertainty is unresolved. Do
+not call it a reliable or significant advantage from rank alone. Conversely,
+unresolved uncertainty or a nonsignificant test does not establish no effect,
+equivalence or a useless method. Describe a low numerical rate as a rate;
+labels such as "weak", "limited", "strong" or "meaningful" require a stated
+reference or criterion. If a criterion is retrospective, label it as such.
+
+For each compared metric, check whether higher or lower is better and state
+which method leads among the compared configurations. Preserve ties in the
+available precision; do not invent extra digits or numerical tolerances. Name
+the comparator for each delta and use the same one within a comparison, or show
+the alternatives explicitly. Do not switch from baseline to runner-up to make
+an effect look larger or smaller. Do not count metric wins as an overall winner
+without a declared objective: correlated metrics, mixed tasks and resource
+tradeoffs are not interchangeable votes. Report unfavourable exceptions as well
+as favourable observations without letting either hide the other.
+
+Check the evaluated condition, eligibility, numerator, denominator and
+aggregation. Token accuracy, exact recovery of selected positions, full-output
+exact match and preservation of an unmodified input answer different questions.
+Full-output scoring on corrupted input does not measure clean-input behaviour;
+rows with no corrupted positions do not demonstrate recovery. Distinguish
+unweighted means across runs from pooled count ratios and do not silently
+replace one with the other, especially when denominators differ. Unknown
+denominators remain unknown, not zero. Do not average incompatible metrics.
+
+Read a challenge as a reason to verify, not a reason to agree. Recompute the
+contested ranking or delta and check the original criterion. Acknowledge a
+specific mistaken interpretation while preserving supported facts; explain
+precisely when the user's proposed correction is only partly supported or is
+contradicted. Label mechanism explanations as hypotheses unless the design
+distinguishes them. Keep caveats proportional to the requested answer: an
+ordinary status question does not require a formal claim review or more runs.
+
+## Sample-level evidence
+
+A substantive result analysis should proactively inspect available per-example outputs and add a compact case study, following [case-study-analysis](case-study-analysis.md). Pair inputs fairly, disclose the selection pool and rule, and preserve improvements, regressions and shared failures where present. Selected-panel observations and post-hoc slices do not establish population prevalence or a mechanism. Narrow metric queries remain narrow. When outputs are unavailable, report that gap without inventing cases or automatically launching inference. Retain the selection record and necessary compact evidence with the comparison log before authorized weight cleanup.
+
 ## Comparison log and weight archival
 
 Before consolidation, persist the fixed protocol, per-run configurations,

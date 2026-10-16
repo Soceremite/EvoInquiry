@@ -9,7 +9,7 @@
 
 <p align="center">
   <a href="https://github.com/Soceremite/EvoInquiry/releases/tag/v1.3.0"><img src="https://img.shields.io/badge/release-1.3.0-FF927E?style=flat&amp;labelColor=7862E8" alt="Stable release 1.3.0"></a>
-  <a href="docs/SKILLS_CATALOG.md"><img src="https://img.shields.io/badge/Codex_skills-86-59C7A7?style=flat&amp;labelColor=7862E8" alt="86 Codex skills"></a>
+  <a href="docs/SKILLS_CATALOG.md"><img src="https://img.shields.io/badge/Codex_skills-88-59C7A7?style=flat&amp;labelColor=7862E8" alt="88 Codex skills"></a>
   <a href="https://github.com/Soceremite/EvoInquiry/actions/workflows/test-suite.yml"><img src="https://github.com/Soceremite/EvoInquiry/actions/workflows/test-suite.yml/badge.svg" alt="Regression test status"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-FFD95E?style=flat&amp;labelColor=7862E8" alt="MIT license"></a>
 </p>
@@ -19,7 +19,7 @@
   <a href="README_CN.md">中文</a> · <a href="#installation">Quick start</a> · <a href="#capabilities">Skills</a> · <a href="https://github.com/Soceremite/EvoInquiry/releases">Releases</a> · <a href="CONTRIBUTING.md">Contribute</a>
 </p>
 
-EvoInquiry is a research workflow toolkit for Codex. Its **86 Codex skills** connect
+EvoInquiry is a research workflow toolkit for Codex. Its **88 Codex skills** connect
 literature, method design, experiments, critical review and paper preparation.
 Use one skill for a focused task, or connect them into a longer workflow.
 The next step follows the research question, existing evidence and your constraints.
@@ -27,6 +27,20 @@ The next step follows the research question, existing evidence and your constrai
 **New in [1.3.0](https://github.com/Soceremite/EvoInquiry/releases/tag/v1.3.0):**
 fair comparison guidance across the experiment lifecycle, evidence checks before
 comparison weight consolidation, and opt-in persistent research routing.
+
+## 1.4.0 development
+
+The working tree adds problem framing and evidence-linked research handoffs, with
+objective interpretation across ideation, review and writing. Literature records
+retain identity, versions and reading scope; figure receipts bind real inputs,
+editable sources and captions. Existing comparison, checkpoint and review gates
+remain in use. The latest stable download below is still 1.3.0 while candidate
+validation is in progress; see [the 1.4.0 validation record](docs/VALIDATION_1_4_0.md).
+
+Try a bounded request such as “Frame research questions about low-cost memory;
+no training yet”, “Check whether these means support the claim”, or “Plot this
+CSV and retain the script, missing runs and uncertainty definition”. A complete
+pipeline is available when requested.
 
 ## What makes EvoInquiry useful
 
@@ -142,6 +156,14 @@ and [comparison evidence format](docs/COMPARISON_EVIDENCE.md).
 Primarily built for ML, AI and related engineering research. See the
 [full skill inventory](docs/SKILLS_CATALOG.md) for domain-specific workflows,
 orchestrators and optional provider backends.
+
+The 1.4.0 candidate also makes [case studies](skills/skills-codex/shared-references/case-study-analysis.md)
+part of substantive result analysis: inspect existing sample outputs, explain
+concrete improvements and failures, and retain traceable, fairly paired examples.
+Classification errors, regression residuals, generated images and timestamped
+video evidence use task-appropriate displays. Short metric queries stay short;
+missing sample outputs are reported rather than invented. This addition is
+under validation and is not part of the installed 1.3.0 release.
 
 <a id="usage"></a>
 

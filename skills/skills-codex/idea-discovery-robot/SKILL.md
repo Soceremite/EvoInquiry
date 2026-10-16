@@ -41,6 +41,14 @@ The goal is not to produce flashy demos. The goal is to produce ideas that are:
 - feasible with available robotics infrastructure
 - interesting even if the answer is negative
 
+## Problem framing and informative outcomes
+
+Use `scientific-brainstorming` when the robotics direction is still vague, while
+preserving benchmark, simulation and physical-safety constraints. A mechanism
+failure, valid null effect or diagnostic boundary can inform a better research
+question; do not rank solely by a positive performance signal. Pilots remain
+within actual authorization, compute and safety budgets.
+
 ## Constants
 
 - **MAX_PILOT_IDEAS = 3** — Validate at most 3 top ideas deeply
@@ -319,7 +327,7 @@ Write or update `idea-stage/IDEA_REPORT.md` with a robotics-specific structure s
 - Benchmark / simulator:
 - Bottleneck addressed:
 - Pilot type: sim / offline / real
-- Positive signal:
+- Observed pilot finding and what it distinguishes:
 - Novelty:
 - Reviewer score:
 - Hardware risk:

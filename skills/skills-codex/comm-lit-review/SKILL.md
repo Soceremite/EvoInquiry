@@ -105,9 +105,7 @@ Publication policy:
 Time-window policy:
 
 - if the user does not specify a year range, include both a short foundational set and a recent set
-- recommended split:
-  - `foundational`: before 2022
-  - `recent`: 2022 to present
+- choose the recent window relative to the current date and subfield; retain relevant foundational work without a fixed universal cutoff
 
 ## Venue Priority
 

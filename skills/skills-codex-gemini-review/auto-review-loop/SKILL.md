@@ -3,15 +3,45 @@ name: "auto-review-loop"
 description: "Autonomous multi-round research review loop. Repeatedly reviews using Gemini via gemini-review MCP, implements fixes, and re-reviews until positive assessment or max rounds reached. Use when user says \"auto review loop\", \"review until it passes\", or wants autonomous iterative improvement."
 ---
 
+<!-- EVO-INQUIRY:BEGIN -->
+For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),
+or reuse it if already loaded and unchanged in this session. Apply relevant
+principles within the user's scope and this skill's existing outputs, review
+standards, and recovery contracts. Carry them into nested research tasks and
+reviewer briefs. Continue authorized work through its necessary steps; honor
+budgets, blocking checkpoints, and stopping conditions.
+<!-- EVO-INQUIRY:END -->
+
 > Override for Codex users who want **Gemini**, not a second Codex agent, to act as the reviewer. Install this package **after** `skills/skills-codex/*`.
 
 # Auto Review Loop: Autonomous Research Improvement
 
-> **Gemini overlay assurance:** `review_independence: cross-family` and `acceptance_status: accepted`.
+> **Gemini overlay assurance:** verify the actual different-family reviewer before recording `review_independence: cross-family`; `acceptance_status: accepted` requires a positive disposition and the workflow's evidence closure. Negative, unavailable and budget-stop outcomes grant no phase acceptance; same-family responses retain the base provisional contract.
 
 Autonomously iterate: review → implement fixes → re-review, until the external reviewer gives a positive assessment or MAX_ROUNDS is reached.
 
 ## Context: $ARGUMENTS
+
+## Evidence closure and bounded stopping
+
+Scores and verdicts remain required interface fields. A positive threshold is
+necessary, and every material issue must also have a checked disposition: fixed
+with evidence, or excluded with a specific, evidenced scope reason. Reviewer
+agreement alone does not resolve an issue. Keep strengths that the evidence
+supports; do not invent objections to make another round appear useful.
+
+Apply this closure condition at every positive stop and any review receipt this workflow produces.
+An unresolved critical issue prevents a positive receipt even when the score is
+high. Preserve existing independent-review requirements and same-family
+provisional status. File checks do not establish scientific support.
+
+Before iterating, use the authorized round, time, experiment and cost budgets.
+Track which decision-relevant uncertainty each action can resolve. Stop when a
+budget is reached or successive rounds produce no new evidence or actionable
+change; record the reason and remaining unknowns. A budget/stall/user stop is
+completion of the loop, not research acceptance, and grants no acquittal.
+Never hide an unfavorable primary result by adding a favorable metric or by
+renaming the original hypothesis. Label any exploratory reframing explicitly.
 
 ## Constants
 
@@ -78,7 +108,10 @@ mcp__gemini-review__review_start:
     [Full research context: claims, methods, results, known weaknesses]
     [Changes since last round, if any]
 
-    Please act as a senior ML reviewer (NeurIPS/ICML level).
+    Please review the work against its question, evidence and intended use.
+    Verify consequential claims against actual artifacts. Identify supported
+    strengths, material weaknesses, alternative explanations and missing evidence.
+    Apply the same evidential standard to favorable and unfavorable conclusions.
 
     1. Score this work 1-10 for a top venue
     2. List remaining critical weaknesses (ranked by severity)
@@ -87,28 +120,15 @@ mcp__gemini-review__review_start:
 
     Be brutally honest. If the work is ready, say so clearly.
 
-    === SCOPE LIMITS (these bound what you PROPOSE, never what you look for) ===
-    Report anything that is actually wrong here — including a rare-looking case, if
-    this repo actually produces it. Then keep the fix in scope:
-    1. This is a RESEARCH-WORKFLOW tool, not a security paper. Verification is
-       welcome; over-defense is not. Assume a cooperating operator on their own
-       machine — a malicious local user is NOT in the threat model.
-    2. Do NOT propose SHA / hash / content-fingerprint / digest-binding schemes.
-       Reporting a real defect in hashing code that already exists is fine.
-    3. NO speculative machinery: do not add feature flags, migration frameworks,
-       compat layers, wrappers, pins, or similar mechanisms unless evidence shows
-       a current repo defect they fix or an explicit existing invariant they must
-       preserve. "Load-bearing", "compatibility", and "not scaffolding" are labels,
-       not evidence. Point to the failing path/artifact or invariant, and check the
-       proposal's factual premises, such as whether a named package version exists.
-    4. NO corner-case obsession: exotic encodings, symlink races, RTL text and
-       millisecond races are out of scope unless you can show the case arises here.
-    5. Where a rubric or checklist is genuinely needed, do not over-mechanize
-       judgement. A clear sentence a human reads beats a scored table nobody
-       maintains.
-    Exception: code that runs remote commands, starts a network service, or installs
-    an MCP server runs on the user's machine with their credentials — trust-boundary
-    findings there are in scope and the default is strict.
+    === REVIEW SCOPE ===
+    Evaluate the actual research question, requested deliverable and applicable
+    disciplinary standards. Locate strengths and defects in the supplied evidence;
+    do not presume acceptance, rejection or a particular threat model. Distinguish
+    observed errors, unsupported claims and optional extensions. Propose the smallest
+    adequate correction, citing its failing path, evidence or preserved invariant.
+    Keep hypotheses, speculation and unperformed checks explicit. A real boundary
+    or reproducibility defect is in scope when it affects this work; unrelated
+    infrastructure and speculative redesign are not automatically required.
     Say plainly when something is correct. Do not manufacture findings.
 ```
 
@@ -125,7 +145,7 @@ Then extract structured fields:
 - **Verdict** ("ready" / "almost" / "not ready")
 - **Action items** (ranked list of fixes)
 
-**STOP CONDITION**: If score >= 6 AND verdict ∈ {"ready", "almost"} (exact match — "not ready" does NOT qualify) → stop loop, document final state.
+**STOP CONDITION**: If score >= 6 AND verdict ∈ {"ready", "almost"} (exact match — "not ready" does NOT qualify) AND material-issue closure is verified → stop loop, document the evidence and final state. Otherwise continue only within the remaining authorized budget; a budget/stall/user stop is not acceptance.
 
 #### Human Checkpoint (if enabled)
 
@@ -180,7 +200,7 @@ Prioritization rules:
 - Skip fixes requiring excessive compute (flag for manual follow-up)
 - Skip fixes requiring external data/models not available
 - Prefer reframing/analysis over new experiments when both address the concern
-- Always implement metric additions (cheap, high impact)
+- Add a metric only when it resolves a material question within authorization and budget; retain original primary outcomes
 
 #### Phase D: Wait for Results
 
@@ -226,12 +246,12 @@ Increment round counter → back to Phase A.
 
 ### Termination
 
-When loop ends (positive assessment or max rounds):
+When the loop ends (evidence-backed positive assessment, budget, stall or user stop):
 
 1. Update `review-stage/REVIEW_STATE.json` with `"status": "completed"`
 2. Write final summary to `review-stage/AUTO_REVIEW.md`
 3. Update project notes with conclusions
-4. If stopped at max rounds without positive assessment:
+4. If stopped for budget, stall or user instruction without evidence closure:
    - List remaining blockers
    - Estimate effort needed for each
    - Suggest whether to continue manually or pivot
@@ -276,28 +296,15 @@ mcp__gemini-review__review_reply_start:
     Please re-score and re-assess. Are the remaining concerns addressed?
     Same format: Score, Verdict, Remaining Weaknesses, Minimum Fixes.
 
-    === SCOPE LIMITS (these bound what you PROPOSE, never what you look for) ===
-    Report anything that is actually wrong here — including a rare-looking case, if
-    this repo actually produces it. Then keep the fix in scope:
-    1. This is a RESEARCH-WORKFLOW tool, not a security paper. Verification is
-       welcome; over-defense is not. Assume a cooperating operator on their own
-       machine — a malicious local user is NOT in the threat model.
-    2. Do NOT propose SHA / hash / content-fingerprint / digest-binding schemes.
-       Reporting a real defect in hashing code that already exists is fine.
-    3. NO speculative machinery: do not add feature flags, migration frameworks,
-       compat layers, wrappers, pins, or similar mechanisms unless evidence shows
-       a current repo defect they fix or an explicit existing invariant they must
-       preserve. "Load-bearing", "compatibility", and "not scaffolding" are labels,
-       not evidence. Point to the failing path/artifact or invariant, and check the
-       proposal's factual premises, such as whether a named package version exists.
-    4. NO corner-case obsession: exotic encodings, symlink races, RTL text and
-       millisecond races are out of scope unless you can show the case arises here.
-    5. Where a rubric or checklist is genuinely needed, do not over-mechanize
-       judgement. A clear sentence a human reads beats a scored table nobody
-       maintains.
-    Exception: code that runs remote commands, starts a network service, or installs
-    an MCP server runs on the user's machine with their credentials — trust-boundary
-    findings there are in scope and the default is strict.
+    === REVIEW SCOPE ===
+    Evaluate the actual research question, requested deliverable and applicable
+    disciplinary standards. Locate strengths and defects in the supplied evidence;
+    do not presume acceptance, rejection or a particular threat model. Distinguish
+    observed errors, unsupported claims and optional extensions. Propose the smallest
+    adequate correction, citing its failing path, evidence or preserved invariant.
+    Keep hypotheses, speculation and unperformed checks explicit. A real boundary
+    or reproducibility defect is in scope when it affects this work; unrelated
+    infrastructure and speculative redesign are not automatically required.
     Say plainly when something is correct. Do not manufacture findings.
 ```
 

@@ -2,8 +2,9 @@
 
 [README](../README.md) · [中文介绍](../README_CN.md)
 
-The development tree provides **86 skills**: 83 retained workflow entrypoints,
-research-guide, project-governance and environment-maintenance. Invoke a skill with the `evo-inquiry:`
+The development tree provides **88 skills**: 83 retained workflow entrypoints,
+research-guide, project-governance, environment-maintenance, scientific-brainstorming
+and research-manager. Invoke a skill with the `evo-inquiry:`
 namespace; each link below opens the Codex implementation actually installed.
 The table describes capabilities and setup categories. Read the selected
 `SKILL.md` for exact inputs, dependencies, outputs, and checkpoints.
@@ -24,7 +25,7 @@ or dependency does not establish that an integration is configured.
 | [`/idea-discovery`](../skills/skills-codex/idea-discovery/SKILL.md) | **Workflow 1** — research-lit → idea-creator → novelty-check → research-review → research-refine-pipeline | Native Codex review |
 | [`/idea-discovery-robot`](../skills/skills-codex/idea-discovery-robot/SKILL.md) | Workflow 1 adapter for robotics / embodied AI — robotics-aware literature survey + benchmark-anchored ideation | Native Codex review |
 | [`/experiment-bridge`](../skills/skills-codex/experiment-bridge/SKILL.md) | **Workflow 1.5** — read experiment plan → implement code → sanity check → deploy to GPU → collect initial results | GPU (local / remote / Vast / Modal) |
-| [`/auto-review-loop`](../skills/skills-codex/auto-review-loop/SKILL.md) | **Workflow 2** — autonomous review → fix → re-review until positive or max rounds; uses a fresh Codex reviewer | Native Codex review |
+| [`/auto-review-loop`](../skills/skills-codex/auto-review-loop/SKILL.md) | **Workflow 2** — bounded review → revision → re-review, governed by issue closure, stagnation and resource limits; stopping grants no acceptance | Native Codex review |
 | [`/auto-review-loop-llm`](../skills/skills-codex/auto-review-loop-llm/SKILL.md) | Same as Workflow 2 but uses any OpenAI-compatible LLM via [`llm-chat`](../mcp-servers/llm-chat/) MCP server | llm-chat MCP |
 | [`/auto-review-loop-minimax`](../skills/skills-codex/auto-review-loop-minimax/SKILL.md) | Workflow 2 variant pinned to MiniMax API | MiniMax API key |
 | [`/paper-writing`](../skills/skills-codex/paper-writing/SKILL.md) | **Workflow 3** — paper-plan → paper-figure → illustration → paper-write → paper-compile → auto-paper-improvement-loop | Native Codex review, LaTeX |
@@ -57,7 +58,9 @@ or dependency does not establish that an integration is configured.
 
 | Skill | Capability | Setup |
 | --- | --- | --- |
-| [`/idea-creator`](../skills/skills-codex/idea-creator/SKILL.md) | Brainstorm 8-12 ideas, filter by feasibility, pilot on GPU, rank by signal | Native Codex review, GPU for pilots |
+| [`/scientific-brainstorming`](../skills/skills-codex/scientific-brainstorming/SKILL.md) | Frame vague directions into testable questions, alternatives and discriminating inquiries | No mandatory external service |
+| [`/research-manager`](../skills/skills-codex/research-manager/SKILL.md) | Evidence-linked decisions, pivots and handoffs using the existing authoritative record | Existing documents; wiki optional |
+| [`/idea-creator`](../skills/skills-codex/idea-creator/SKILL.md) | Generate mechanism candidates for a bounded question; assess novelty, informativeness and feasibility | Pilots only within authorized resources |
 | [`/research-refine`](../skills/skills-codex/research-refine/SKILL.md) | Iterative method refinement — problem anchor → up to 5 review rounds → the skill’s stopping conditions | Native Codex review |
 | [`/experiment-plan`](../skills/skills-codex/experiment-plan/SKILL.md) | Turn a refined proposal into a claim-driven experiment roadmap — ablations, budgets, run order | Task-dependent; see skill |
 | [`/ablation-planner`](../skills/skills-codex/ablation-planner/SKILL.md) | Design ablation studies from a reviewer's perspective (after main results pass `/result-to-claim`) | Native Codex review |
@@ -76,7 +79,7 @@ or dependency does not establish that an integration is configured.
 | [`/research-implement-feature`](../skills/skills-codex/research-implement-feature/SKILL.md) | Build from a plain "implement X" request — runnable spine first, then one feature per rung; every under-determined decision declared in an assumption ledger before the code depends on it, plus a reviewer sweep for the ones that slipped through undeclared | Native Codex review |
 | [`/run-experiment`](../skills/skills-codex/run-experiment/SKILL.md) | Deploy experiments to local / remote / Vast.ai / Modal GPU | GPU (configurable) |
 | [`/monitor-experiment`](../skills/skills-codex/monitor-experiment/SKILL.md) | Monitor running experiments, check progress, collect results | Task-dependent; see skill |
-| [`/analyze-results`](../skills/skills-codex/analyze-results/SKILL.md) | Compute statistics, generate comparison tables, surface insights from experiment results | Task-dependent; see skill |
+| [`/analyze-results`](../skills/skills-codex/analyze-results/SKILL.md) | Interpret metrics and proactively diagnose available sample outputs: paired case studies, errors, improvements, regressions and coverage limits | Task-dependent; see skill |
 | [`/experiment-queue`](../skills/skills-codex/experiment-queue/SKILL.md) | SSH job queue for multi-seed / multi-config sweeps — OOM retry, stale-screen cleanup, wave gating, crash-safe state | SSH access |
 | [`/vast-gpu`](../skills/skills-codex/vast-gpu/SKILL.md) | Rent, manage, destroy on-demand GPU on [Vast.ai](https://vast.ai) | Vast.ai account + `vast-cli` |
 | [`/serverless-modal`](../skills/skills-codex/serverless-modal/SKILL.md) | Run GPU workloads on [Modal](https://modal.com) — zero-config serverless, auto scale-to-zero | `pip install modal` + Modal account |
@@ -88,10 +91,10 @@ or dependency does not establish that an integration is configured.
 
 | Skill | Capability | Setup |
 | --- | --- | --- |
-| [`/research-review`](../skills/skills-codex/research-review/SKILL.md) | Single-round deep critical review from external LLM (Codex GPT xhigh by default; `oracle-pro` route for Pro tier) | Native Codex review (or Oracle MCP) |
-| [`/experiment-audit`](../skills/skills-codex/experiment-audit/SKILL.md) | Cross-model integrity check of experiment code + results — catches fake ground truth, score-normalization fraud, phantom results, scope inflation | Native Codex review |
+| [`/research-review`](../skills/skills-codex/research-review/SKILL.md) | One fresh evidence-based review of a proposal, paper or results, preserving supported findings and unresolved limitations | Native Codex review (or configured optional reviewer) |
+| [`/experiment-audit`](../skills/skills-codex/experiment-audit/SKILL.md) | Audit experiment code, results and fairness; distinguish supplied-record support, direct execution verification and independent review | Native Codex review |
 | [`/result-to-claim`](../skills/skills-codex/result-to-claim/SKILL.md) | Map experimental results to intended claims — judges what's supported, what's not, what's missing; routes to next action | Native Codex review |
-| [`/paper-claim-audit`](../skills/skills-codex/paper-claim-audit/SKILL.md) | Zero-context numeric verification — every number / comparison / scope claim in the paper checked against raw result files by a fresh reviewer (no confirmation bias) | Native Codex review |
+| [`/paper-claim-audit`](../skills/skills-codex/paper-claim-audit/SKILL.md) | Check manuscript numbers, comparisons and scope claims against raw result files in a fresh review | Native Codex review |
 | [`/citation-audit`](../skills/skills-codex/citation-audit/SKILL.md) | Bibliography audit — existence + metadata correctness + context appropriateness for every `\cite{}`; `--soft-only` mode for frozen-bib resubmits | Native Codex review, web access |
 | [`/proof-checker`](../skills/skills-codex/proof-checker/SKILL.md) | Rigorous mathematical proof verification — 20-category issue taxonomy, two-axis severity, side-condition checklists, counterexample red team, proof-obligation ledger | Native Codex review |
 | [`/kill-argument`](../skills/skills-codex/kill-argument/SKILL.md) | Two-thread adversarial review — Thread 1 writes the strongest 200-word rejection memo; Thread 2 (independent) defends point-by-point and surfaces still-unresolved issues | Native Codex review |

@@ -1,0 +1,13 @@
+sample_id,target,baseline_prediction,candidate_prediction
+s01,cat,cat,cat
+s02,cat,cat,cat
+s03,cat,dog,cat
+s04,cat,dog,cat
+s05,cat,dog,cat
+s06,cat,cat,dog
+s07,cat,cat,cat
+s08,cat,dog,dog
+s09,dog,dog,dog
+s10,dog,cat,dog
+s11,bird,bird,cat
+s12,bird,cat,dog

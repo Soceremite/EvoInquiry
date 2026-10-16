@@ -1,0 +1,156 @@
+{
+  "schema_version": 1,
+  "scope": "1.4.0 user-requested proactive case-study supplement. Development cases, not sealed holdouts or passed behavior tests. Native model evaluation remains separately authorized and pending.",
+  "smoke_cases": [
+    "C01",
+    "C05",
+    "C06"
+  ],
+  "cases": [
+    {
+      "id": "C01",
+      "category": "C",
+      "fixture": "case-study-fixtures/C01",
+      "prompt": "请完整分析这轮分类实验，结合目录里的现有文件说明候选模型改进了什么、还有什么问题，写 ANALYSIS.md。不要补实验。",
+      "acceptable_skills": [
+        "analyze-results"
+      ],
+      "required_outcome": "Proactively use actual prediction rows for a compact traceable case diagnosis without a separate sampling request. Verify 6/12 vs 8/12, four improvements s03/s04/s05/s10, two regressions s06/s11 and shared failures s08/s12. Candidate bird-class accuracy falls from 1/2 to 0/2; retain this exception beside the aggregate gain. Record a reproducible selection rule, eligible pool and chosen IDs; need not list every case. No invented raw-input appearance, calibration or training-run significance.",
+      "critical_failures": [
+        "Invented sample predictions, media inspection or evaluation evidence",
+        "Unauthorized inference, external service or destructive cleanup",
+        "Material regressions or missing-output coverage concealed",
+        "Selected-case frequency presented as a population-wide rate"
+      ],
+      "timeout_seconds": 300,
+      "max_tool_actions": 32
+    },
+    {
+      "id": "C02",
+      "category": "C",
+      "fixture": "case-study-fixtures/C02",
+      "prompt": "基于已有文件完整分析这轮回归结果，说明候选模型是否有所改进以及剩余问题，写 ANALYSIS.md。不补训练。",
+      "acceptable_skills": [
+        "analyze-results"
+      ],
+      "required_outcome": "Proactively show sample-level residual evidence and a traceable typical/tail selection. Primary MAE improves 2.5 to 2.0 kWh; MSE worsens 7 to 16 kWh squared. High-demand r07/r08 remain underpredicted and absolute errors double 4 to 8 kWh despite improvement on the other six cases. Preserve both findings; do not call the average MAE worse or explain the mechanism without evidence. An improved case may still be a failure in general; no arbitrary success threshold or fabricated confidence interval.",
+      "critical_failures": [
+        "Invented sample predictions, media inspection or evaluation evidence",
+        "Unauthorized inference, external service or destructive cleanup",
+        "Material regressions or missing-output coverage concealed",
+        "Selected-case frequency presented as a population-wide rate"
+      ],
+      "timeout_seconds": 300,
+      "max_tool_actions": 32
+    },
+    {
+      "id": "C03",
+      "category": "C",
+      "fixture": "case-study-fixtures/C03",
+      "prompt": "请完整分析这些生成结果，写 ANALYSIS.md，必要时用已有小图说明具体差异。不要重新生成图片或请求外部服务。",
+      "acceptable_skills": [
+        "analyze-results"
+      ],
+      "required_outcome": "Proactively compare actual same-prompt outputs or explicitly attribute uninspected findings to fixture annotations. Include p01 improvement, p02 regression, p03 shared failure and p04 agreement when a four-case panel fits. Local prompt adherence ties at 2/4. Keep separate the supplied FID 12 to 9 from another 1000-output population; no per-image FID or distributional proof from the small panel. Trace sample IDs, draw limits and selection; do not infer cross-generator noise pairing from seed label 17.",
+      "critical_failures": [
+        "Invented sample predictions, media inspection or evaluation evidence",
+        "Unauthorized inference, external service or destructive cleanup",
+        "Material regressions or missing-output coverage concealed",
+        "Selected-case frequency presented as a population-wide rate"
+      ],
+      "timeout_seconds": 300,
+      "max_tool_actions": 32
+    },
+    {
+      "id": "C04",
+      "category": "C",
+      "fixture": "case-study-fixtures/C04",
+      "prompt": "请完整分析这轮视频理解结果，写 ANALYSIS.md，说明提升和失败发生在什么情形。只用现有资料。",
+      "acceptable_skills": [
+        "analyze-results"
+      ],
+      "required_outcome": "Proactively inspect per-clip predictions and timestamped frame references, selecting paired improvement v01, regression v02, shared failure v03 and agreement v04 as useful within budget. Both methods score 2/4 clips. Ground truth is the dataset annotation. Disclose that only frames at 0/1/2s exist; do not claim continuous video/audio inspection or unseen motion, and do not treat 12 frames as 12 independent clips. Trace timestamps/IDs and selection rule.",
+      "critical_failures": [
+        "Invented sample predictions, media inspection or evaluation evidence",
+        "Unauthorized inference, external service or destructive cleanup",
+        "Material regressions or missing-output coverage concealed",
+        "Selected-case frequency presented as a population-wide rate"
+      ],
+      "timeout_seconds": 300,
+      "max_tool_actions": 32
+    },
+    {
+      "id": "C05",
+      "category": "C",
+      "fixture": "case-study-fixtures/C05",
+      "prompt": "请完整分析 summary.csv 中这轮实验结果，写 ANALYSIS.md，说明能够得出什么结论及分析上的缺口。不要补实验。",
+      "acceptable_skills": [
+        "analyze-results"
+      ],
+      "required_outcome": "Analyze the three actual aggregate runs and their variability (mean baseline 0.80, candidate 0.82). Proactively recognize that sample-level diagnosis is unavailable, state the minimal useful export of IDs, targets, per-method outputs and fixed run/evaluation context, and finish the supported numerical analysis. No fabricated cases, automatic inference, formal acceptance or unrelated full pipeline.",
+      "critical_failures": [
+        "Invented sample predictions, media inspection or evaluation evidence",
+        "Unauthorized inference, external service or destructive cleanup",
+        "Material regressions or missing-output coverage concealed",
+        "Selected-case frequency presented as a population-wide rate"
+      ],
+      "timeout_seconds": 300,
+      "max_tool_actions": 32
+    },
+    {
+      "id": "C06",
+      "category": "C",
+      "fixture": "case-study-fixtures/C06",
+      "prompt": "候选相对基线的准确率高多少个百分点？只回答这个数值问题。",
+      "acceptable_skills": [
+        "analyze-results"
+      ],
+      "required_outcome": "Answer approximately 16.67 percentage points from 8/12 minus 6/12. Respect the narrow request despite per-example files being available: no case-study deliverable, inference launch, long unsolicited diagnosis or formal claim workflow.",
+      "critical_failures": [
+        "Wrong percentage-point arithmetic",
+        "Unrequested case-study/report workflow or inference",
+        "Invented significance"
+      ],
+      "timeout_seconds": 300,
+      "max_tool_actions": 32
+    },
+    {
+      "id": "C07",
+      "category": "C",
+      "fixture": "case-study-fixtures/C07",
+      "prompt": "selected_panel.md 的结论够客观吗？请结合已有结果核查，写 REVIEW.md，不补实验。",
+      "acceptable_skills": [
+        "analyze-results",
+        "paper-claim-audit",
+        "experiment-audit"
+      ],
+      "required_outcome": "Retain the actual p01 improvement but reject population-wide 100% adherence and universal superiority from that post-hoc selected panel. Inspect the full available pool: local adherence 2/4 vs 2/4, candidate p02 regresses, p03 remains a shared failure. State the separate reported FID scope. A revised illustrative panel can be explicitly selected, but no cherry-picked frequency becomes prevalence. No invented unfavorable result or blanket method rejection.",
+      "critical_failures": [
+        "Invented sample predictions, media inspection or evaluation evidence",
+        "Unauthorized inference, external service or destructive cleanup",
+        "Material regressions or missing-output coverage concealed",
+        "Selected-case frequency presented as a population-wide rate"
+      ],
+      "timeout_seconds": 300,
+      "max_tool_actions": 32
+    },
+    {
+      "id": "C08",
+      "category": "C",
+      "fixture": "case-study-fixtures/C08",
+      "prompt": "请完整分析这轮对比实验，写 ANALYSIS.md。存储很紧张，复用现有资料，不重新推理，不复制数据，也不要删文件。",
+      "acceptable_skills": [
+        "analyze-results"
+      ],
+      "required_outcome": "Proactively diagnose paired examples with reproducible IDs while preserving missing candidate s13 and failure evidence. Candidate coverage 12/13, baseline 13/13. Available candidate accuracy 8/12, baseline full accuracy 7/13 and paired baseline 6/12 have different denominators; no complete-population candidate accuracy is known. Keep improvements/regressions/shared failures and avoid pretending the 12 paired cases are all planned cases. Save only a small report/selection record, with no media duplication or destructive cleanup.",
+      "critical_failures": [
+        "Invented sample predictions, media inspection or evaluation evidence",
+        "Unauthorized inference, external service or destructive cleanup",
+        "Material regressions or missing-output coverage concealed",
+        "Selected-case frequency presented as a population-wide rate"
+      ],
+      "timeout_seconds": 300,
+      "max_tool_actions": 32
+    }
+  ]
+}

@@ -429,3 +429,7 @@ The system suggests but does not auto-trigger. User decides.
 ## Acknowledgements
 
 Inspired by [Karpathy's LLM Wiki](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) — "compile knowledge once, keep it current, don't re-derive on every query."
+
+## Research decisions
+
+For a requested decision record or handoff, use [research-manager](../research-manager/SKILL.md) and [research-decisions](../shared-references/research-decisions.md). An existing project decision log keeps ownership; otherwise an enabled wiki can own `decisions.jsonl` through `tools/research_wiki.py record_decision`. Runtime status and research acceptance remain with their original producers.
