@@ -627,16 +627,134 @@ warnings and 46 subtests passed** in 513.32 seconds
 includes the new protocol's default-off and opt-in fake-CLI checks; those checks
 are not model-behavior passes.
 
+### Dev.8 matched diagnostics
+
+The output-reference and evaluator changes were committed as
+`6dca6745c2aa71fa4cd578b31f2bfb2d228129f5`, pushed on the feature branch and
+the separate `acceptance/v140-dev8-20261016` branch, and frozen as isolated
+`1.4.0-dev.8`. Snapshot SHA-256:
+`9ddb5ccfad97dbfc9a13a3dd764f8227e4e4fc0a6817527ca840424133f9ff7e`.
+The formal installed plugin and release metadata remain 1.3.0. The private
+evaluation does not replace that installation.
+
+Independent implementation review found no blocker, reproduced **55 passing
+focused tests**, verified 352 shared-reference links at their installed Codex
+destinations, reproduced all nine generated Claude files, and confirmed both
+original frozen preservation maps unchanged.
+
+A separately registered six-session diagnostic used the new public-budget
+protocol equally for released 1.3.0 and dev.8: 300 seconds, 32 actions,
+`gpt-6.1-sol`, high reasoning, CLI 0.163.0, concurrency at most two and zero
+automatic retries. All six sessions completed without recorded service errors
+and received independent same-family provisional substantive PASS:
+
+| Original case | Candidate seconds | Baseline seconds | Independently checked outcome |
+| --- | --- | --- | --- |
+| 03 method refinement | 184.61 | 187.13 | Implementable proposal, local evidence and limitations, no full experiment roadmap or invented reviewer acceptance |
+| 04 experiment plan | 233.82 | 231.81 | Matched controls, data isolation, Brier/uncertainty/failure criteria, resources, plan and tracker; candidate reads actual Codex output policies and saves the required manifest |
+| 06 causal assessment | 179.59 | 187.68 | Correct 80% to 84% observation, 100-versus-200-step confound, missing calibration outcome and required review kept unavailable/BLOCKED |
+
+All original inputs remain unchanged. Baseline-specific output/recovery
+differences and a failed outside-project empty-placeholder write in case 04
+are retained separately. No file was created by that failed write. A local
+baseline unavailability-response file explicitly identifies executor-authored
+blocked status, with no reviewer call or response; it is not a reviewer verdict.
+
+These outcomes do not establish that budget disclosure caused completion or
+that either toolkit is faster or generally better. They are not pooled with
+the previous request-only timeouts. No required scientific review is accepted
+by these dependency-handling outcomes.
+
+The affected J07 narrative case was also rerun as one matched **request-only**
+pair at its unchanged 300-second/28-action limit. Candidate 121.78 seconds and
+baseline 85.92 seconds both completed and independently PASS: both preserve the
+80% to 78% primary-result decline and missed target alongside an exploratory
+50-to-30-ms latency gain, without retrospective primary-metric substitution.
+Candidate timestamp/fixed outputs and manifest entries match; original inputs
+and provisional review status remain intact.
+
+Independent source-applicability review permits bounded historical coverage for
+13 earlier dev.5 focus/C cases whose actual loaded source slices and advertised
+frontmatters remain unchanged. It does not label them dev.8 executions or new
+protocol passes. J07 was affected and therefore received the rerun above.
+Original 01/02/05/08 outputs also satisfy their current substantive criteria;
+however, their historical full manifest hash differs and its original copy is
+unavailable. Saved requests, fixture bytes, limits and loaded source were checked
+separately; historical whole-rubric identity remains INCONCLUSIVE.
+An independent methods adjudication permits these four as explicitly bounded
+historical coverage against the current selected-case criteria: saved requests,
+inputs, observed limits, loaded slices and substantive outputs are directly
+checkable. This does not restore the missing original rubric or label them
+fresh dev.8 runs. Case 04 retains its historical substantive PASS with the
+recorded noncritical deviation; current request-only runtime repair confirmation
+has not been executed and is not inferred from the public-budget diagnostic.
+
+Four two-session handoffs and the independently sealed eight-case holdout
+comparison are registered separately. Their prepared fixtures and launch
+registrations are not passes. Handoff session two receives only the hashed
+persisted project and current request in a fresh ephemeral session, excluding
+the earlier answer, event trace, prompt and conversation. Outcomes are recorded
+only after actual execution and independent assessment.
+
+### Dev.8 handoffs and platform verification
+
+All four registered two-session projects completed and received independent
+same-family provisional PASS for both sessions and their persisted-artifact
+boundaries. The original request-only limits remained 900 seconds and 28 actions
+per session; no evaluator retries were added.
+
+| Project | Independently checked behavior |
+| --- | --- |
+| H01 queueing | A frames a bounded synthetic question; B incorporates longest-task waiting into an implementable matched design without running simulations or training |
+| H02 theory | The arbitrary-real range-sum identity and empty boundaries remain correct; B rejects false universal nonnegativity using valid counterexamples |
+| H03 literature | Both contradictory excerpts, actual reading levels and uncertainty survive the handoff; B rejects universal benefit without declaring certain harm, no effect or equivalence |
+| H04 direction change | Primary quality loss and secondary latency gain remain distinct; B appends the explicit user stopping choice to the existing decision authority without training, deletion or a second state system |
+
+Original inputs remain unchanged, with the existing decision record retained as
+an exact prefix where appending was requested. Each second session used a fresh
+ephemeral thread with only the prior project files and its current request.
+The recorded file hashes match. H01/H02 first-session full derived manifests are
+not retained at their historical hashes; saved requests, fixtures, limits and
+loaded resources were independently verified, without claiming equivalence of
+the missing whole manifests. H04's first session recovered one recorded server
+overload reconnect and completed within its original limit; it is not an
+error-free attempt. H04's executor wording about nonacceptance is interpreted
+narrowly under the original question, not as an invented user pivot.
+
+GitHub Actions now reports **success on the exact `6dca674` source** for Ubuntu,
+macOS, Windows PowerShell and Windows pwsh, plus inventory and advisory lint.
+The [current-source test-suite run](https://github.com/Soceremite/EvoInquiry/actions/runs/38909689758)
+supersedes the earlier no-run-observed status. Its platform success and the
+1,150-pass local suite are program evidence, separate from behavioral coverage.
+
+The acceptance inventory was independently corrected to retain 40 focus
+positions: eight independently authored unseen replacements occupy the retired
+holdout positions, with their category-only metadata confirming two J, R, L and
+F cases each. Exposed originals and prior failures remain development/history;
+additional executions are recorded without requiring duplicate current passes
+or double-counting them. Neither preparation nor CLI completion is a pass.
+
+The next registered request-only block completed O01, O02, J02 and J03 for both
+variants at their original limits. Independent assessment returned **candidate
+4/4 PASS and baseline 4/4 PASS**, with no critical failures. Original inputs and
+actual loaded-source identities were verified. These cases cover ranking with
+exceptions, correcting an inaccurate objection, resource/test-selection
+confounding, and a negative pilot's limited but useful evidence. Both J02
+reviewer gates remain honestly unavailable/BLOCKED. All eight sessions completed
+without recorded service errors, but incidental command/helper failures remain
+in the evidence. This block supports task-specific parity, not a general
+candidate advantage.
+
 ## Remaining release gates
 
-The complete native behavior matrix and cross-session handoffs remain
-incomplete. The dev.7 local full program suite passes as recorded above; native
-platform CI passed on the older recorded candidate commit and must cover the
-final changes. The eight completed C attempts now have independent-context
+The complete native behavior matrix remains incomplete. The dev.8 full local
+suite and exact-source platform CI pass, and all four cross-session projects
+have the qualified independent assessment above. The eight completed C attempts now have independent-context
 provisional assessment, while their baseline comparison remains outstanding.
 Those attempts and the six focus pairs do not replace the full matrix,
-remaining original/resource cases, critical repeats, fresh holdouts or handoffs.
-Original cases 03 and 06 remain incomplete; case 04 needs its runtime-reference
-repair validated, while case 07's substantive criteria pass with its required
-review gate still BLOCKED. Release metadata must record actual outcomes rather than
+remaining original/resource cases, critical repeats or fresh holdouts.
+Original request-only 03 and 06 attempts remain incomplete; the new explicit-budget
+03/04/06 diagnostic passes separately and verifies case 04's path repair. Case 07's
+substantive criteria pass with its required review gate still BLOCKED.
+Release metadata must record actual outcomes rather than
 inherit old-version passes.
