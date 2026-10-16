@@ -68,6 +68,14 @@ more time. Record the override, retain original timeouts, and retry only affecte
 cases. This changes the runtime allowance, not the request, tool-action limit,
 or grading criteria. Do not claim latency improvements across different ceilings.
 
+By default the wall-time ceiling is enforced without adding it to the request.
+`--public-budget-context` opts into `public-execution-budget-v1`, appending only
+the wall/action limits and UTC start/deadline. The timer includes CLI startup.
+Use the same flag for both variants. The original request, exact effective
+prompt and budget/hash receipt are retained separately; the rubric remains
+private. Keep these runs separate from request-only attempts and preserve all
+earlier failures. Budget disclosure does not itself establish better behavior.
+
 ## Assess evidence
 
 Inspect the trace and generated artifacts against each case's frozen

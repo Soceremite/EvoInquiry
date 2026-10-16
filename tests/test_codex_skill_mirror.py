@@ -62,14 +62,26 @@ def test_codex_mirror_shared_reference_links_resolve() -> None:
     name set, with Codex-specific normative adaptation notes. This guards against
     the dangling-reference class while the set-equality test guards omissions."""
     ref_re = re.compile(r"shared-references/([a-z0-9-]+\.md)")
+    link_re = re.compile(r"\]\(((?:\.\./)+shared-references/[a-z0-9-]+\.md)(?:#[^)]*)?\)")
     mirror_refs = {p.name for p in (CODEX_SKILLS / "shared-references").glob("*.md")}
+    reference_root = (CODEX_SKILLS / "shared-references").resolve()
     roots = [CODEX_SKILLS, CLAUDE_OVERLAY, GEMINI_OVERLAY]
     dangling: list[str] = []
     for root in roots:
-        for skill_md in root.glob("*/SKILL.md"):
+        skill_documents = list(root.glob("*/SKILL.md")) + list(root.glob("*/references/**/*.md"))
+        for skill_md in skill_documents:
             for ref in ref_re.findall(read(skill_md)):
                 if ref not in mirror_refs:
                     dangling.append(f"{skill_md.relative_to(REPO_ROOT)} -> shared-references/{ref}")
+            # Overlays replace files in skills-codex when installed. Resolve
+            # their links at that actual destination, including deferred docs.
+            # Checking only the basename misses links to an existing mainline
+            # policy with different requirements.
+            installed_document = CODEX_SKILLS / skill_md.relative_to(root)
+            for relative in link_re.findall(read(skill_md)):
+                target = (installed_document.parent / relative).resolve()
+                if not target.is_file() or target.parent != reference_root:
+                    dangling.append(f"{skill_md.relative_to(REPO_ROOT)} -> {relative} escapes or misses Codex shared references")
     assert not dangling, "mirror SKILL.md cites shared-references not in the mirror:\n" + "\n".join(dangling)
 
 

@@ -1,5 +1,7 @@
 """The evaluation harness must retain evidence without leaking or self-grading."""
 from pathlib import Path
+from datetime import datetime, timezone
+import hashlib
 import json
 import os
 import signal
@@ -47,11 +49,79 @@ print(json.dumps({'type':'turn.completed'}))
     result = run_case(case, fixtures, output, toolkit, cli, 'evo-inquiry@evo-inquiry-eval-beta4')
     assert (output / '01/project/received.txt').read_text() == case['prompt'] + '\n'
     assert 'PRIVATE_JUDGING_ONLY' not in (output / '01/prompt.txt').read_text()
+    assert result['evaluation_protocol'] == harness.REQUEST_ONLY_PROTOCOL
+    assert not result['public_budget_context']
+    assert not (output / '01/execution-context.json').exists()
     assert result['session_completed']
     assert result['assessment'] == 'UNASSESSED'
     assert result['changed_or_created_files'] == ['received.txt']
     with pytest.raises(ValueError, match='Refusing to overwrite'):
         run_case(case, fixtures, output, toolkit, cli, 'evo-inquiry@evo-inquiry-eval-beta4')
+
+
+@pytest.mark.skipif(os.name != 'posix', reason='CLI process-group harness uses POSIX signals')
+@pytest.mark.parametrize('marketplace', ['baseline', 'candidate'])
+def test_public_budget_context_preserves_request_and_discloses_only_matched_execution_facts(setup_case, tmp_path, marketplace):
+    case, fixtures, output, toolkit = setup_case
+    cli = fake_cli(tmp_path, '''import json,sys
+from pathlib import Path
+Path('received.txt').write_text(sys.stdin.read())
+print(json.dumps({'type':'turn.completed'}))
+''')
+    before = datetime.now(timezone.utc)
+    result = run_case(case, fixtures, output, toolkit, cli,
+                      'evo-inquiry@evo-inquiry-eval-' + marketplace, public_budget_context=True)
+    after = datetime.now(timezone.utc)
+    destination = output / '01'
+    request = (destination / 'request.txt').read_text()
+    prompt = (destination / 'prompt.txt').read_text()
+    context = json.loads((destination / 'execution-context.json').read_text())
+    assert request == case['prompt'] + '\n'
+    assert prompt == (destination / 'project/received.txt').read_text()
+    notice = prompt[len(request):]
+    budget = json.loads(notice.split('<execution_budget>\n', 1)[1].split('\n</execution_budget>', 1)[0])
+    assert set(budget) == {'wall_time_seconds', 'max_tool_actions', 'started_at_utc', 'deadline_at_utc'}
+    assert budget == context['public_budget']
+    assert budget['wall_time_seconds'] == case['timeout_seconds'] == 5
+    assert budget['max_tool_actions'] == case['max_tool_actions'] == 3
+    started = datetime.fromisoformat(budget['started_at_utc'])
+    deadline = datetime.fromisoformat(budget['deadline_at_utc'])
+    assert before <= started <= after
+    assert (deadline - started).total_seconds() == case['timeout_seconds']
+    assert result['started_at'] == budget['started_at_utc']
+    assert context['request_sha256'] == hashlib.sha256(request.encode()).hexdigest()
+    assert context['notice_sha256'] == hashlib.sha256(notice.encode()).hexdigest()
+    assert context['effective_prompt_sha256'] == hashlib.sha256(prompt.encode()).hexdigest()
+    assert context == result['execution_context']
+    assert result['evaluation_protocol'] == context['protocol'] == harness.PUBLIC_BUDGET_PROTOCOL
+    assert result['public_budget_context'] and result['session_completed']
+    assert result['assessment'] == 'UNASSESSED'
+    assert all(secret not in prompt for secret in ('PRIVATE_JUDGING_ONLY', 'private-expected-route', marketplace))
+
+
+@pytest.mark.skipif(os.name != 'posix', reason='CLI process-group harness uses POSIX signals')
+def test_cli_records_opt_in_budget_protocol_without_exposing_rubric(setup_case, tmp_path, monkeypatch):
+    case, fixtures, output, toolkit = setup_case
+    manifest = tmp_path / 'manifest.json'
+    manifest.write_text(json.dumps({'cases': [dict(case, fixture=str(fixtures / '01'))], 'smoke_cases': ['01']}))
+    cli = fake_cli(tmp_path, '''import json,sys
+if '--version' in sys.argv:
+    print('codex-cli test fixture')
+else:
+    sys.stdin.read()
+    print(json.dumps({'type':'turn.completed'}))
+''')
+    monkeypatch.setattr(harness, 'discover_variant', lambda *a, **kw: {'entrypoints': 1})
+    monkeypatch.setattr(sys, 'argv', ['evaluate_skill_behavior', '--toolkit', str(toolkit), '--output', str(output),
+                                    '--manifest', str(manifest), '--codex', cli, '--public-budget-context'])
+    harness.main()
+    metadata = json.loads((output / 'environment.json').read_text())
+    run = json.loads((output / '01/run.json').read_text())
+    assert metadata['public_budget_context']
+    assert metadata['evaluation_protocol'] == run['evaluation_protocol'] == harness.PUBLIC_BUDGET_PROTOCOL
+    assert metadata['jobs'] == 1
+    assert run['execution_context']['public_budget']['wall_time_seconds'] == case['timeout_seconds']
+    assert 'PRIVATE_JUDGING_ONLY' not in (output / '01/prompt.txt').read_text()
 
 
 @pytest.mark.skipif(os.name != 'posix', reason='CLI process-group harness uses POSIX signals')
@@ -100,7 +170,8 @@ raise SystemExit(1)
 
 
 @pytest.mark.skipif(os.name != 'posix', reason='CLI process-group harness uses POSIX signals')
-def test_time_limit_stops_a_session_and_preserves_raw_trace(setup_case, tmp_path):
+@pytest.mark.parametrize('public_budget_context', [False, True])
+def test_time_limit_stops_a_session_and_preserves_raw_trace(setup_case, tmp_path, public_budget_context):
     case, fixtures, output, toolkit = setup_case
     case['timeout_seconds'] = 0.2
     cli = fake_cli(tmp_path, '''import json,sys,time
@@ -108,7 +179,8 @@ sys.stdin.read()
 print(json.dumps({'type':'turn.started'}),flush=True)
 time.sleep(20)
 ''')
-    result = run_case(case, fixtures, output, toolkit, cli, 'evo-inquiry@evo-inquiry-eval-beta4')
+    result = run_case(case, fixtures, output, toolkit, cli, 'evo-inquiry@evo-inquiry-eval-beta4',
+                      public_budget_context=public_budget_context)
     assert result['limit'] == 'time_limit'
     assert not result['session_completed']
     assert result['seconds'] < 3

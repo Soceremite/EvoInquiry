@@ -1402,15 +1402,17 @@
     },
     "skills/skills-codex-claude-review/auto-review-loop/SKILL.md": {
       "baseline_sha256": "cd2e877606a8b3eb2d636edff19f8ff068a2ef021928abcd17ece0fbfff2917b",
-      "sha256": "a500e2ff7a0f1556a13a20748331ba7bce8b15ba5de40a4adcd3ec3d4f9c04b4",
-      "reason": "Directed 1.4.0 follow-up: primary evidence fidelity, real reviewer access, common principles and conditional receipts, mechanical framing completion, literature discovery clarity and actual installed-path identity.",
+      "sha256": "a01c93e05fa8e419d35c3c4d97a0a7967e8f66345c07bdc2714cff67b8b402a4",
+      "reason": "Directed 1.4.0 follow-up: primary evidence fidelity, real reviewer access, common principles and conditional receipts, mechanical framing completion, literature discovery clarity and actual installed-path identity. Correct shared output protocol links to the installed Codex reference tree; do not mix mainline manifest or versioning policy into Codex and reviewer overlays.",
       "adaptation_version": "1.4.0",
       "review_ref": "docs/ADAPTATIONS_1_4_0.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
         "tests/test_claude_review_artifact_tools.py",
         "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py"
+        "tests/test_idea_discovery_gate.py",
+        "tests/test_claude_review_generator.py",
+        "tests/test_evo_inquiry.py"
       ]
     },
     "skills/skills-codex-claude-review/novelty-check/SKILL.md": {
@@ -1443,8 +1445,8 @@
     },
     "skills/skills-codex-claude-review/paper-plan/SKILL.md": {
       "baseline_sha256": "273a99d453145e2da7c5361137c163c77034992d9d03d7f2499779e134a74d9e",
-      "sha256": "cd3fcf71c28b3b6d498413c21344367060086793a1e3d355a967225142d5aefe",
-      "reason": "Keep primary and material negative evidence visible; allocate useful case diagnosis from actual artifacts without fabricating panels, overriding aggregate evidence or expanding the requested outline into experiments.",
+      "sha256": "c4a0fd883f76e20f82f4417d7116427d85fe434b9d9e4cd8671847c65cbadd00",
+      "reason": "Keep primary and material negative evidence visible; allocate useful case diagnosis from actual artifacts without fabricating panels, overriding aggregate evidence or expanding the requested outline into experiments. Correct shared output protocol links to the installed Codex reference tree; do not mix mainline manifest or versioning policy into Codex and reviewer overlays.",
       "adaptation_version": "1.4.0",
       "review_ref": "docs/ADAPTATIONS_1_4_0.md",
       "test_refs": [
@@ -1453,7 +1455,9 @@
         "tests/test_workflow_contract_versions.py",
         "tests/test_idea_discovery_gate.py",
         "tests/behavior/evo-inquiry-case-study-cases.json",
-        "tests/test_comparison_packaging.py"
+        "tests/test_comparison_packaging.py",
+        "tests/test_claude_review_generator.py",
+        "tests/test_evo_inquiry.py"
       ]
     },
     "skills/skills-codex-claude-review/paper-write/SKILL.md": {
@@ -1615,80 +1619,92 @@
     },
     "skills/skills-codex-gemini-review/auto-paper-improvement-loop/SKILL.md": {
       "baseline_sha256": "418edbee8d6c61bff9ab871fd84a06f2ae37eb129df7b815b52f9778c2ee75b2",
-      "sha256": "326ba050c2aaa7cfefd1a4692e71548ba3a14a7e28dee705de96a3da1e4cd409",
-      "reason": "Directed 1.4.0 follow-up: evidence fidelity in paper improvements, real read-only reviewer access, common principles and conditional review receipts across overlays, and mechanical v2 framing completion without semantic acceptance.",
+      "sha256": "59b27a9bbb56619987c6fdbbba96326f1c8c4b3fab3b6016697593492f24ce40",
+      "reason": "Directed 1.4.0 follow-up: evidence fidelity in paper improvements, real read-only reviewer access, common principles and conditional review receipts across overlays, and mechanical v2 framing completion without semantic acceptance. Correct shared output protocol links to the installed Codex reference tree; do not mix mainline manifest or versioning policy into Codex and reviewer overlays.",
       "adaptation_version": "1.4.0",
       "review_ref": "docs/ADAPTATIONS_1_4_0.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
         "tests/test_claude_review_artifact_tools.py",
         "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py"
+        "tests/test_idea_discovery_gate.py",
+        "tests/test_claude_review_generator.py",
+        "tests/test_evo_inquiry.py"
       ]
     },
     "skills/skills-codex-gemini-review/auto-review-loop/SKILL.md": {
       "baseline_sha256": "b98a321c39d4285ff8383b76881077466ca2b45d6f4cc9cf4dddd8524e7d1771",
-      "sha256": "9b5c8fdfb660e82548465f6f4bc2b64ad5f222da716f86bb670355b8b6b84786",
-      "reason": "Directed 1.4.0 follow-up: evidence fidelity in paper improvements, real read-only reviewer access, common principles and conditional review receipts across overlays, and mechanical v2 framing completion without semantic acceptance.",
+      "sha256": "5e2d2ae69f03e8874f1e078fe8a1b1343733bc6714201543993197543c6401f2",
+      "reason": "Directed 1.4.0 follow-up: evidence fidelity in paper improvements, real read-only reviewer access, common principles and conditional review receipts across overlays, and mechanical v2 framing completion without semantic acceptance. Correct shared output protocol links to the installed Codex reference tree; do not mix mainline manifest or versioning policy into Codex and reviewer overlays.",
       "adaptation_version": "1.4.0",
       "review_ref": "docs/ADAPTATIONS_1_4_0.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
         "tests/test_claude_review_artifact_tools.py",
         "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py"
+        "tests/test_idea_discovery_gate.py",
+        "tests/test_claude_review_generator.py",
+        "tests/test_evo_inquiry.py"
       ]
     },
     "skills/skills-codex-gemini-review/grant-proposal/SKILL.md": {
       "baseline_sha256": "8e834ea2ce5fc82591140bf57d7a723a5e74b6232039fb793fe3d9f8a025a72c",
-      "sha256": "987a8c9a28e947eea813837b304dd155db91b3d3ea21fab328c023b4f987da72",
-      "reason": "Directed 1.4.0 follow-up: evidence fidelity in paper improvements, real read-only reviewer access, common principles and conditional review receipts across overlays, and mechanical v2 framing completion without semantic acceptance.",
+      "sha256": "e0db37970513d9086cf1b71369a1e59b1dca3d302c2e6e2ccda27d3ca2991ed4",
+      "reason": "Directed 1.4.0 follow-up: evidence fidelity in paper improvements, real read-only reviewer access, common principles and conditional review receipts across overlays, and mechanical v2 framing completion without semantic acceptance. Correct shared output protocol links to the installed Codex reference tree; do not mix mainline manifest or versioning policy into Codex and reviewer overlays.",
       "adaptation_version": "1.4.0",
       "review_ref": "docs/ADAPTATIONS_1_4_0.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
         "tests/test_claude_review_artifact_tools.py",
         "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py"
+        "tests/test_idea_discovery_gate.py",
+        "tests/test_claude_review_generator.py",
+        "tests/test_evo_inquiry.py"
       ]
     },
     "skills/skills-codex-gemini-review/idea-creator/SKILL.md": {
       "baseline_sha256": "eabd84c6e6b0ad5d02cda0c24582d73417306a187530bf5c9b366019416ceeb2",
-      "sha256": "5a213a8149379a9d3e367aba93249860637ed535f93fd82f9480915bfec39ec1",
-      "reason": "Directed 1.4.0 follow-up: evidence fidelity in paper improvements, real read-only reviewer access, common principles and conditional review receipts across overlays, and mechanical v2 framing completion without semantic acceptance.",
+      "sha256": "8a73d4056bc13a28644bb2a69f54f85c191d07048aa6575b9e12b615215a62b5",
+      "reason": "Directed 1.4.0 follow-up: evidence fidelity in paper improvements, real read-only reviewer access, common principles and conditional review receipts across overlays, and mechanical v2 framing completion without semantic acceptance. Correct shared output protocol links to the installed Codex reference tree; do not mix mainline manifest or versioning policy into Codex and reviewer overlays.",
       "adaptation_version": "1.4.0",
       "review_ref": "docs/ADAPTATIONS_1_4_0.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
         "tests/test_claude_review_artifact_tools.py",
         "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py"
+        "tests/test_idea_discovery_gate.py",
+        "tests/test_claude_review_generator.py",
+        "tests/test_evo_inquiry.py"
       ]
     },
     "skills/skills-codex-gemini-review/idea-discovery-robot/SKILL.md": {
       "baseline_sha256": "dd0e7f33bff7b7a16fd4fca3bca1b475e3acd7ce24de68af6fdd20ad778c7e29",
-      "sha256": "709bfe5d5ae71599081a58fd2e06b28ff7a5a98e5efe08bff73975434de81c27",
-      "reason": "Directed 1.4.0 follow-up: evidence fidelity in paper improvements, real read-only reviewer access, common principles and conditional review receipts across overlays, and mechanical v2 framing completion without semantic acceptance.",
+      "sha256": "edb077eb87cffc1f4536375d8fe6c716d3862f4ecd0028680a2b221fbfdd8527",
+      "reason": "Directed 1.4.0 follow-up: evidence fidelity in paper improvements, real read-only reviewer access, common principles and conditional review receipts across overlays, and mechanical v2 framing completion without semantic acceptance. Correct shared output protocol links to the installed Codex reference tree; do not mix mainline manifest or versioning policy into Codex and reviewer overlays.",
       "adaptation_version": "1.4.0",
       "review_ref": "docs/ADAPTATIONS_1_4_0.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
         "tests/test_claude_review_artifact_tools.py",
         "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py"
+        "tests/test_idea_discovery_gate.py",
+        "tests/test_claude_review_generator.py",
+        "tests/test_evo_inquiry.py"
       ]
     },
     "skills/skills-codex-gemini-review/idea-discovery/SKILL.md": {
       "baseline_sha256": "618a9f8aa7ea804e162d8e1ab3b10ee1e393a966107401fcc661b2a1d8f7de78",
-      "sha256": "4812d8da634fdc3b1f69dfcea377dc61a09a51ee69131ce9475207d758257556",
-      "reason": "Directed 1.4.0 follow-up: evidence fidelity in paper improvements, real read-only reviewer access, common principles and conditional review receipts across overlays, and mechanical v2 framing completion without semantic acceptance.",
+      "sha256": "43fa51edf43a918b33420c0a40ef430298f9590a82cd90e14fe9dfc41e7504fc",
+      "reason": "Directed 1.4.0 follow-up: evidence fidelity in paper improvements, real read-only reviewer access, common principles and conditional review receipts across overlays, and mechanical v2 framing completion without semantic acceptance. Correct shared output protocol links to the installed Codex reference tree; do not mix mainline manifest or versioning policy into Codex and reviewer overlays.",
       "adaptation_version": "1.4.0",
       "review_ref": "docs/ADAPTATIONS_1_4_0.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
         "tests/test_claude_review_artifact_tools.py",
         "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py"
+        "tests/test_idea_discovery_gate.py",
+        "tests/test_claude_review_generator.py",
+        "tests/test_evo_inquiry.py"
       ]
     },
     "skills/skills-codex-gemini-review/novelty-check/SKILL.md": {
@@ -1706,8 +1722,8 @@
     },
     "skills/skills-codex-gemini-review/paper-figure/SKILL.md": {
       "baseline_sha256": "5dc702aa809cf4a53f906167f292643fb76748ee66998aa4da3e1e945ee134d2",
-      "sha256": "fc7f3fdd146732895aab3839d6339fd755d04ee5e482a8bbd3b06f491051b553",
-      "reason": "Route figures by purpose and retain real data, independent units, missing runs and source identities; arrange actual paired case assets with disclosed selection and transforms, preserving renderer and statistical boundaries.",
+      "sha256": "6b268ffd23e50ad709061ab15295a541458501b1aa233abedab028f483eae316",
+      "reason": "Route figures by purpose and retain real data, independent units, missing runs and source identities; arrange actual paired case assets with disclosed selection and transforms, preserving renderer and statistical boundaries. Correct shared output protocol links to the installed Codex reference tree; do not mix mainline manifest or versioning policy into Codex and reviewer overlays.",
       "adaptation_version": "1.4.0",
       "review_ref": "docs/ADAPTATIONS_1_4_0.md",
       "test_refs": [
@@ -1716,20 +1732,24 @@
         "tests/test_workflow_contract_versions.py",
         "tests/test_idea_discovery_gate.py",
         "tests/behavior/evo-inquiry-case-study-cases.json",
-        "tests/test_comparison_packaging.py"
+        "tests/test_comparison_packaging.py",
+        "tests/test_claude_review_generator.py",
+        "tests/test_evo_inquiry.py"
       ]
     },
     "skills/skills-codex-gemini-review/paper-plan/SKILL.md": {
       "baseline_sha256": "74cb50a2ca3f09611eb557af7d10b4511ecb6762535366178d8f925599e44a38",
-      "sha256": "4b40f0f4263366c2e39d94e73074c663dc37aa702bd0704ff31b384417573f0f",
-      "reason": "Keep primary and material negative evidence visible; allocate useful case diagnosis from actual artifacts without fabricating panels, overriding aggregate evidence or expanding the requested outline into experiments.",
+      "sha256": "3a144d86c671be33d60277be9f54e420cf611f7a5924dff4449cc303c3057db8",
+      "reason": "Keep primary and material negative evidence visible; allocate useful case diagnosis from actual artifacts without fabricating panels, overriding aggregate evidence or expanding the requested outline into experiments. Correct shared output protocol links to the installed Codex reference tree; do not mix mainline manifest or versioning policy into Codex and reviewer overlays.",
       "adaptation_version": "1.4.0",
       "review_ref": "docs/ADAPTATIONS_1_4_0.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
         "tests/test_claude_review_artifact_tools.py",
         "tests/behavior/evo-inquiry-case-study-cases.json",
-        "tests/test_comparison_packaging.py"
+        "tests/test_comparison_packaging.py",
+        "tests/test_claude_review_generator.py",
+        "tests/test_evo_inquiry.py"
       ]
     },
     "skills/skills-codex-gemini-review/paper-poster-html/SKILL.md": {
@@ -1747,41 +1767,47 @@
     },
     "skills/skills-codex-gemini-review/paper-slides/SKILL.md": {
       "baseline_sha256": "3cca23fa611bacd9c0838de2eed702a320163a429e90079227f6387bc5c8fdd4",
-      "sha256": "d2a6d50ad686ea8c521c85e02efb23079fe46edaa82561e3411d02ae4e87aeea",
-      "reason": "Directed 1.4.0 follow-up: evidence fidelity in paper improvements, real read-only reviewer access, common principles and conditional review receipts across overlays, and mechanical v2 framing completion without semantic acceptance.",
+      "sha256": "8a166098d319e451a37e53c87e1c6212029ebb9ab088a9633ad316b696b73d85",
+      "reason": "Directed 1.4.0 follow-up: evidence fidelity in paper improvements, real read-only reviewer access, common principles and conditional review receipts across overlays, and mechanical v2 framing completion without semantic acceptance. Correct shared output protocol links to the installed Codex reference tree; do not mix mainline manifest or versioning policy into Codex and reviewer overlays.",
       "adaptation_version": "1.4.0",
       "review_ref": "docs/ADAPTATIONS_1_4_0.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
         "tests/test_claude_review_artifact_tools.py",
         "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py"
+        "tests/test_idea_discovery_gate.py",
+        "tests/test_claude_review_generator.py",
+        "tests/test_evo_inquiry.py"
       ]
     },
     "skills/skills-codex-gemini-review/paper-write/SKILL.md": {
       "baseline_sha256": "1b37c50aaa69fad1814e319911a7e65af3189586403e15016371a10e07a740c4",
-      "sha256": "a38d20c93bb02081923dc3191b07cfcf3984cf6c9fe38f13a9aa87fc13de6fc0",
-      "reason": "Directed 1.4.0 follow-up: evidence fidelity in paper improvements, real read-only reviewer access, common principles and conditional review receipts across overlays, and mechanical v2 framing completion without semantic acceptance.",
+      "sha256": "aeeae7f3eb360784d879734ec39488953472499add988678cef227cb559e0f03",
+      "reason": "Directed 1.4.0 follow-up: evidence fidelity in paper improvements, real read-only reviewer access, common principles and conditional review receipts across overlays, and mechanical v2 framing completion without semantic acceptance. Correct shared output protocol links to the installed Codex reference tree; do not mix mainline manifest or versioning policy into Codex and reviewer overlays.",
       "adaptation_version": "1.4.0",
       "review_ref": "docs/ADAPTATIONS_1_4_0.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
         "tests/test_claude_review_artifact_tools.py",
         "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py"
+        "tests/test_idea_discovery_gate.py",
+        "tests/test_claude_review_generator.py",
+        "tests/test_evo_inquiry.py"
       ]
     },
     "skills/skills-codex-gemini-review/paper-writing/SKILL.md": {
       "baseline_sha256": "dac8f71654be7fd575e968a701d1e6d821bfc7b0be0278becb6eb7fc63b4283f",
-      "sha256": "15d62ed72c9adfa6d8b12c7b47772a3dc083a1730b938f71cea826f3d9fe40e8",
-      "reason": "Directed 1.4.0 follow-up: evidence fidelity in paper improvements, real read-only reviewer access, common principles and conditional review receipts across overlays, and mechanical v2 framing completion without semantic acceptance.",
+      "sha256": "c5b945f84e7cc7d7e15bc2b49ccb103daa4bbbdc34a810c87e897ff2377e3508",
+      "reason": "Directed 1.4.0 follow-up: evidence fidelity in paper improvements, real read-only reviewer access, common principles and conditional review receipts across overlays, and mechanical v2 framing completion without semantic acceptance. Correct shared output protocol links to the installed Codex reference tree; do not mix mainline manifest or versioning policy into Codex and reviewer overlays.",
       "adaptation_version": "1.4.0",
       "review_ref": "docs/ADAPTATIONS_1_4_0.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
         "tests/test_claude_review_artifact_tools.py",
         "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py"
+        "tests/test_idea_discovery_gate.py",
+        "tests/test_claude_review_generator.py",
+        "tests/test_evo_inquiry.py"
       ]
     },
     "skills/skills-codex-gemini-review/research-refine/SKILL.md": {
@@ -2599,33 +2625,40 @@
   "workflow_adaptations": {
     "auto-review-loop-llm": {
       "baseline_body_sha256": "c3ae350a727daf707b640808e6532ebe2f03fba897567c3ab990897d8cc473c6",
-      "body_sha256": "8233f088df5dc6b38de207fc61e364f1a0ef924a46aca8b233460542c57f8388",
-      "reason": "Evidence-calibrated, scoped review or writing; retain original inputs, outputs, enums, independence and resource boundaries.",
+      "body_sha256": "d97a9d114cc8cad6109ebad30ef416715690ed7db9705e0de3da5ac334770cab",
+      "reason": "Evidence-calibrated, scoped review or writing; retain original inputs, outputs, enums, independence and resource boundaries. Correct shared output protocol links to the installed Codex reference tree; do not mix mainline manifest or versioning policy into Codex and reviewer overlays.",
       "review_ref": "docs/ADAPTATIONS_1_4_0.md",
       "test_refs": [
         "tests/behavior/evo-inquiry-v140-development-cases.json",
-        "tests/test_evo_inquiry.py"
+        "tests/test_evo_inquiry.py",
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_generator.py"
       ]
     },
     "auto-review-loop-minimax": {
       "baseline_body_sha256": "5627f765f5b3c74c472fb2dee67a4bf6e02bfebedf88cc6da391c7c6848f4644",
-      "body_sha256": "fc6437882d11f7477d33d0d889c86379c133d8be6355cf1add3989a6d0950952",
-      "reason": "Evidence-calibrated, scoped review or writing; retain original inputs, outputs, enums, independence and resource boundaries.",
+      "body_sha256": "d5c4373a28cb16157e5751ec75845fa7871477b99864699b342c66b3614213f1",
+      "reason": "Evidence-calibrated, scoped review or writing; retain original inputs, outputs, enums, independence and resource boundaries. Correct shared output protocol links to the installed Codex reference tree; do not mix mainline manifest or versioning policy into Codex and reviewer overlays.",
       "review_ref": "docs/ADAPTATIONS_1_4_0.md",
       "test_refs": [
         "tests/behavior/evo-inquiry-v140-development-cases.json",
-        "tests/test_evo_inquiry.py"
+        "tests/test_evo_inquiry.py",
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_generator.py"
       ]
     },
     "auto-review-loop": {
       "baseline_body_sha256": "fc4f79364d869e0c8e91a35aa00d621e4e3ed9ca4a4b13ad13a25f779fb56512",
-      "body_sha256": "525c06959a44dde3e8f860094639dd2bb789d1ee5e3b42fdc5201d095e01323a",
-      "reason": "HTML rendering preserves actual review receipts, including blocked or incomplete review; it grants no acceptance.",
+      "body_sha256": "8ad307e7b4e6d6945c1a60d4c6a4fcf8cf6df2a770b73390e53013b356a69055",
+      "reason": "HTML rendering preserves actual review receipts, including blocked or incomplete review; it grants no acceptance. Correct shared output protocol links to the installed Codex reference tree; do not mix mainline manifest or versioning policy into Codex and reviewer overlays.",
       "review_ref": "docs/ADAPTATIONS_1_4_0.md",
       "test_refs": [
         "tests/test_claude_review_artifact_tools.py",
         "tests/test_workflow_contract_versions.py",
-        "tests/behavior/evo-inquiry-v140-development-cases.json"
+        "tests/behavior/evo-inquiry-v140-development-cases.json",
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_generator.py",
+        "tests/test_evo_inquiry.py"
       ]
     },
     "citation-audit": {
@@ -2640,24 +2673,28 @@
     },
     "experiment-bridge": {
       "baseline_body_sha256": "b399da10c24b39f203f5f574ecdf00b89ed64bbf1c729126efc3516c8e14ee76",
-      "body_sha256": "23a090205fef4807437bf7232b2dd0d611acc3e10e40dd13347cdb72e7433722",
-      "reason": "Evidence-calibrated, scoped review or writing; retain original inputs, outputs, enums, independence and resource boundaries.",
+      "body_sha256": "e86e9a64aaf91502cd2a55f1d5a1b5c0d70deb7b251cfcaaf7f6db72de9f3fb4",
+      "reason": "Evidence-calibrated, scoped review or writing; retain original inputs, outputs, enums, independence and resource boundaries. Correct shared output protocol links to the installed Codex reference tree; do not mix mainline manifest or versioning policy into Codex and reviewer overlays.",
       "review_ref": "docs/ADAPTATIONS_1_4_0.md",
       "test_refs": [
         "tests/behavior/evo-inquiry-v140-development-cases.json",
-        "tests/test_evo_inquiry.py"
+        "tests/test_evo_inquiry.py",
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_generator.py"
       ]
     },
     "experiment-plan": {
       "baseline_body_sha256": "aa1c87c9c2836d7276a3e19932916f2eb6157705a45e1a16f7f3cc2b70c5687f",
-      "body_sha256": "6ad7e074b2a5ca56652faf446c5aacb70724f1aec09081a5b502d1942910a231",
-      "reason": "Test claims against alternatives with null branches and justified resources; plan compact paired sample evidence and reproducible selection before test inspection instead of leaving diagnosis only to final polish.",
+      "body_sha256": "54d7d0496114edb9efa59fcc9ae835c84c1df31c945c167ca782b969b4a7b84d",
+      "reason": "Test claims against alternatives with null branches and justified resources; plan compact paired sample evidence and reproducible selection before test inspection instead of leaving diagnosis only to final polish. Correct shared output protocol links to the installed Codex reference tree; do not mix mainline manifest or versioning policy into Codex and reviewer overlays.",
       "review_ref": "docs/ADAPTATIONS_1_4_0.md",
       "test_refs": [
         "tests/behavior/evo-inquiry-v140-development-cases.json",
         "tests/test_evo_inquiry.py",
         "tests/behavior/evo-inquiry-case-study-cases.json",
-        "tests/test_comparison_packaging.py"
+        "tests/test_comparison_packaging.py",
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_generator.py"
       ]
     },
     "figure-spec": {
@@ -2681,13 +2718,16 @@
     },
     "idea-discovery": {
       "baseline_body_sha256": "ce3cf409b6b113353161d2621811c15843d549db2488ba6240f2465c5d65fb13",
-      "body_sha256": "68af6b83ccd53c1784c9b0079bbe5effe36b9a4aa5e9f95f0113fbdf053c532c",
-      "reason": "Versioned question framing has explicit deterministic artifact completion; scientific review and legacy run semantics remain unchanged.",
+      "body_sha256": "443bb29de51bcb634db9d7a2749fbc502044a6ea24d148f77b9554a1ea75d9f9",
+      "reason": "Versioned question framing has explicit deterministic artifact completion; scientific review and legacy run semantics remain unchanged. Correct shared output protocol links to the installed Codex reference tree; do not mix mainline manifest or versioning policy into Codex and reviewer overlays.",
       "review_ref": "docs/ADAPTATIONS_1_4_0.md",
       "test_refs": [
         "tests/test_claude_review_artifact_tools.py",
         "tests/test_workflow_contract_versions.py",
-        "tests/behavior/evo-inquiry-v140-development-cases.json"
+        "tests/behavior/evo-inquiry-v140-development-cases.json",
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_generator.py",
+        "tests/test_evo_inquiry.py"
       ]
     },
     "kill-argument": {
@@ -2745,14 +2785,16 @@
     },
     "paper-plan": {
       "baseline_body_sha256": "38dbe0056163ef74c16e4bfc80dcdcfe7f6e013305396e72185bf0de27db353a",
-      "body_sha256": "8ffc8b96dbf4237a4d817f5c0abfee852d35f594fde4a99f0ca5e59fd90332e9",
-      "reason": "Keep primary and material negative evidence visible; allocate useful case diagnosis from actual artifacts without fabricating panels, overriding aggregate evidence or expanding the requested outline into experiments.",
+      "body_sha256": "e2e1f6b5fa04e7a68c08508fd6fe38d98d05f14b4f0f1e2cb52e8668d282437f",
+      "reason": "Keep primary and material negative evidence visible; allocate useful case diagnosis from actual artifacts without fabricating panels, overriding aggregate evidence or expanding the requested outline into experiments. Correct shared output protocol links to the installed Codex reference tree; do not mix mainline manifest or versioning policy into Codex and reviewer overlays.",
       "review_ref": "docs/ADAPTATIONS_1_4_0.md",
       "test_refs": [
         "tests/behavior/evo-inquiry-v140-development-cases.json",
         "tests/test_evo_inquiry.py",
         "tests/behavior/evo-inquiry-case-study-cases.json",
-        "tests/test_comparison_packaging.py"
+        "tests/test_comparison_packaging.py",
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_generator.py"
       ]
     },
     "paper-write": {
@@ -2878,12 +2920,14 @@
     },
     "idea-discovery-robot": {
       "baseline_body_sha256": "0358d4367fcac479d8b78d2cd3118388af5843fc6f643087aaa1fe6d6c7272c1",
-      "body_sha256": "86358fdeeb4017ccc44d21aad1b5f7ed9371ee419a01c1649bdb7f1fddb02172",
-      "reason": "Evidence-calibrated, scoped review or writing; retain original inputs, outputs, enums, independence and resource boundaries.",
+      "body_sha256": "e646ad80458863e2cfe12be351598733db076704c1dd71d1f5fa2189f9068be5",
+      "reason": "Evidence-calibrated, scoped review or writing; retain original inputs, outputs, enums, independence and resource boundaries. Correct shared output protocol links to the installed Codex reference tree; do not mix mainline manifest or versioning policy into Codex and reviewer overlays.",
       "review_ref": "docs/ADAPTATIONS_1_4_0.md",
       "test_refs": [
         "tests/behavior/evo-inquiry-v140-development-cases.json",
-        "tests/test_evo_inquiry.py"
+        "tests/test_evo_inquiry.py",
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_generator.py"
       ]
     },
     "auto-paper-improvement-loop": {
@@ -2919,6 +2963,28 @@
         "tests/test_skill_behavior_harness.py",
         "tests/behavior/evo-inquiry-cases.json"
       ]
+    },
+    "grant-proposal": {
+      "baseline_body_sha256": "d62c0a35d880d4d7f6229944f16f2c82d6cb868a9abc83c70b18d1d3711c4339",
+      "reason": "Correct shared output protocol links to the installed Codex reference tree; do not mix mainline manifest or versioning policy into Codex and reviewer overlays.",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_generator.py",
+        "tests/test_evo_inquiry.py"
+      ],
+      "body_sha256": "f746856ba331e126019aea9e03d951953c645b4da878313297b3a3bd3b2f3f4d"
+    },
+    "research-refine-pipeline": {
+      "baseline_body_sha256": "f663e47cfb82f051a8591253daf733cac119721e77d219c4666a5cf850526096",
+      "reason": "Correct shared output protocol links to the installed Codex reference tree; do not mix mainline manifest or versioning policy into Codex and reviewer overlays.",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_generator.py",
+        "tests/test_evo_inquiry.py"
+      ],
+      "body_sha256": "3ce763dcf1fb05c2955b29ebf9209287475b7abb84104cc9a8901c76de7d7641"
     }
   }
 }

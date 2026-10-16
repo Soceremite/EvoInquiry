@@ -7,7 +7,7 @@ fixture, not the routing rubric. A completed CLI process is not a passed case.
 from __future__ import annotations
 
 import argparse
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from concurrent.futures import CancelledError, ThreadPoolExecutor, as_completed
 import hashlib
 import json
@@ -38,6 +38,8 @@ SERVICE_ERROR_RE = re.compile(
     re.IGNORECASE,
 )
 SERVICE_ERROR_THRESHOLD = 2
+REQUEST_ONLY_PROTOCOL = "request-only-v1"
+PUBLIC_BUDGET_PROTOCOL = "public-execution-budget-v1"
 
 
 def _error_texts(events: list[dict]) -> list[tuple[str, str]]:
@@ -253,7 +255,7 @@ def _terminate_session(proc: subprocess.Popen) -> None:
 
 
 def run_case(case: dict, fixture_root: Path, output: Path, toolkit: Path, codex: str, selector: str, model_settings: dict | None = None,
-             cancel_event: threading.Event | None = None) -> dict:
+             cancel_event: threading.Event | None = None, public_budget_context: bool = False) -> dict:
     if cancel_event is not None and cancel_event.is_set():
         raise CancelledError('Evaluation stopped before this case started')
     destination = output / case["id"]
@@ -263,12 +265,34 @@ def run_case(case: dict, fixture_root: Path, output: Path, toolkit: Path, codex:
     shutil.copytree(fixture_root / case["fixture"], workspace)
     before = {str(p.relative_to(workspace)): hashlib.sha256(p.read_bytes()).hexdigest()
               for p in workspace.rglob("*") if p.is_file()}
-    (destination / "prompt.txt").write_text(case["prompt"] + "\n", encoding="utf-8")
     command = cli_command(codex) + ["-a", "never", "exec", "--ephemeral", "--json",
                "--skip-git-repo-check", "-s", "workspace-write", "-C", str(workspace),
                "-o", str(destination / "answer.md")] + selection_config(selector) + model_config(model_settings) + ["-"]
     started = time.monotonic()
-    started_at = datetime.now(timezone.utc).isoformat()
+    started_utc = datetime.now(timezone.utc)
+    started_at = started_utc.isoformat()
+    request = case["prompt"] + "\n"
+    effective_prompt = request
+    protocol = PUBLIC_BUDGET_PROTOCOL if public_budget_context else REQUEST_ONLY_PROTOCOL
+    execution_context = None
+    if public_budget_context:
+        # Public facts only: never expose the private rubric, expected route or
+        # answer hints. Both variants use the same format and timer semantics.
+        # The monotonic ceiling includes prompt preparation and CLI startup.
+        budget = {"wall_time_seconds": case["timeout_seconds"],
+                  "max_tool_actions": case["max_tool_actions"],
+                  "started_at_utc": started_at,
+                  "deadline_at_utc": (started_utc + timedelta(seconds=case["timeout_seconds"])).isoformat()}
+        notice = "\n<execution_budget>\n" + json.dumps(budget, indent=2) + "\n</execution_budget>\n"
+        effective_prompt += notice
+        execution_context = {"protocol": protocol, "public_budget": budget,
+                             "timer_origin": "Before prompt preparation and CLI startup; enforced with monotonic time",
+                             "request_sha256": hashlib.sha256(request.encode("utf-8")).hexdigest(),
+                             "notice_sha256": hashlib.sha256(notice.encode("utf-8")).hexdigest(),
+                             "effective_prompt_sha256": hashlib.sha256(effective_prompt.encode("utf-8")).hexdigest()}
+        (destination / "request.txt").write_text(request, encoding="utf-8")
+        (destination / "execution-context.json").write_text(json.dumps(execution_context, indent=2) + "\n", encoding="utf-8")
+    (destination / "prompt.txt").write_text(effective_prompt, encoding="utf-8")
     progress = []
     previous_count = -1
     service_errors = []
@@ -282,7 +306,7 @@ def run_case(case: dict, fixture_root: Path, output: Path, toolkit: Path, codex:
         limit = None
         try:
             assert proc.stdin is not None
-            proc.stdin.write(case["prompt"] + "\n")
+            proc.stdin.write(effective_prompt)
             proc.stdin.close()
             while proc.poll() is None:
                 if cancel_event is not None and cancel_event.is_set():
@@ -355,6 +379,9 @@ def run_case(case: dict, fixture_root: Path, output: Path, toolkit: Path, codex:
               "observed_skill_entrypoints": entrypoints,
               "noncanonical_skill_entrypoints": noncanonical,
               "model_settings": dict(model_settings or {}),
+              "evaluation_protocol": protocol,
+              "public_budget_context": public_budget_context,
+              "execution_context": execution_context,
               "assessment": "UNASSESSED", "evidence": str(destination)}
     (destination / "run.json").write_text(json.dumps(result, indent=2) + "\n")
     return result
@@ -386,6 +413,8 @@ def main() -> None:
     parser.add_argument("--timeout-seconds", type=int, help="Explicit equal runtime ceiling for both variants; retain earlier attempts")
     parser.add_argument("--model", help="Pin this model for every session; otherwise snapshot the current configured model")
     parser.add_argument("--reasoning-effort", help="Pin the reasoning setting; otherwise snapshot the current configured effort")
+    parser.add_argument("--public-budget-context", action="store_true",
+                        help="Opt in to a distinct protocol exposing only the time/action budget and UTC start/deadline; apply equally to paired variants")
     args = parser.parse_args()
     manifest_path = args.manifest.resolve()
     manifest = json.loads(manifest_path.read_text())
@@ -420,6 +449,9 @@ def main() -> None:
                 "model_override_arguments": model_config(model_settings),
                 "plugin_selector": args.selector,
                 "timeout_seconds_override": args.timeout_seconds,
+                "jobs": args.jobs,
+                "evaluation_protocol": PUBLIC_BUDGET_PROTOCOL if args.public_budget_context else REQUEST_ONLY_PROTOCOL,
+                "public_budget_context": args.public_budget_context,
                 "discovery": discovery,
                 "cases": sorted(selected), "grading": "Manual trace and artifact assessment against frozen rubric"}
     (output / "environment.json").write_text(json.dumps(metadata, indent=2) + "\n")
@@ -436,7 +468,7 @@ def main() -> None:
         for signum in (signal.SIGINT, signal.SIGTERM):
             previous_handlers[signum] = signal.signal(signum, cancel)
         with ThreadPoolExecutor(max_workers=args.jobs) as executor:
-            futures = [executor.submit(run_case, c, manifest_path.parent, output, args.toolkit.resolve(), args.codex, args.selector, model_settings, cancel_event) for c in cases]
+            futures = [executor.submit(run_case, c, manifest_path.parent, output, args.toolkit.resolve(), args.codex, args.selector, model_settings, cancel_event, args.public_budget_context) for c in cases]
             try:
                 for future in as_completed(futures):
                     try:

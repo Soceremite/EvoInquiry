@@ -556,15 +556,87 @@ The test workflow permits `acceptance/**` branch pushes as well as main/PRs,
 allowing an isolated acceptance branch to trigger the same four platform jobs
 through the available Git SSH authentication without changing the default branch.
 
+### Dev.7 execution and independent assessment
+
+The clean source commit `de26cde8e7b0314c41ee4ab23817763f5c675005` was frozen
+as isolated `1.4.0-dev.7`. Snapshot SHA-256:
+`1e8be3164745f16066572dbf1018b5a170b7362d2d1454c8290d1c1af4fbb74f`.
+Native CLI 0.163.0 discovery pins 88 entrypoints and 270 support resources;
+the separate released baseline has 86 and 253. The additional support coverage
+includes deferred runtime references, rather than additional skills.
+
+The final full local program run on this source returned **1,146 passed,
+38 skipped, three warnings and 46 subtests passed** in 499.90 seconds
+(`full-tests-progressive-refinement-final-20261016.xml`). This supersedes the
+earlier failed local run only for current program status, not its retained
+history. Native platform checks for this exact source remain unobserved: the
+acceptance branch push succeeded, but the public Actions API returned no run
+for it. The older platform CI successes do not cover this followup.
+
+Four original exposed cases were run with the unchanged request-only protocol,
+300 seconds, 32 actions, `gpt-6.1-sol` and high reasoning. A recorded resource
+check permitted at most two isolated CPU-only sessions concurrently. No
+automatic case retries were enabled.
+
+| Case | Execution | Observed deliverable and assessment |
+| --- | --- | --- |
+| 03 method refinement | 300.52 seconds, time limit; no service error | No proposal saved. The proposed write failed with an f-string `NameError`; no completed recovery before the limit. INCONCLUSIVE execution, with the writing error retained |
+| 04 experiment plan | Completed in 225.93 seconds | Plan and tracker saved; independent frozen substantive criteria PASS. A separate medium runtime-policy deviation remains: output links led to mainline references and no Codex-required manifest was saved |
+| 06 causal assessment | 300.34 seconds, time limit; no service error | Literal evidence precheck saved, but no requested `CLAIM_ASSESSMENT.md` or completed turn. INCONCLUSIVE |
+| 07 paper-number audit | Completed in 170.14 seconds | Independent PASS: correct 0.840 rather than 0.860, training-step confound and unsupported domain scope. Executor findings are labeled preliminary and the required reviewer gate remains truthfully BLOCKED |
+
+The independent 04/07 reviewer verified all original input bytes unchanged and
+found no critical integrity failure. A completed CLI and a frozen substantive
+pass do not excuse the separate case-04 runtime-policy issue. The corresponding
+repair changes only actual Codex/overlay output-reference destinations; policies,
+original workflow contracts and the frozen preservation maps remain intact.
+
+A separate independent review of the six historical dev.5 focus pairs returned
+6/6 candidate passes. Baseline deliverables pass in 5/6; J01 invents a required
+proof correction. L01 uses `research-review` rather than a suggested literature
+skill; an adequate alternative is not a failure solely because it falls outside
+the non-exhaustive `acceptable_skills` list. All 16 attempts, including
+service failures and selected retries, remain indexed. These limited development
+results do not validate dev.7 or prove a general reliability advantage.
+
+### Explicit-budget evaluation protocol
+
+Independent methods review confirmed that the original harness enforced its
+300-second ceiling without supplying the numerical wall-time limit or deadline
+to the model. The fixture did disclose the 32-action cap. This does not excuse
+the missing outputs or writing error, and those attempts retain their original
+status. It limits conclusions about compliance with a known numerical deadline.
+
+The evaluator now has a default-off `--public-budget-context` option identifying
+future runs as `public-execution-budget-v1`. It supplies only wall seconds,
+maximum actions, UTC start and deadline; the timer includes CLI startup and is
+still enforced monotonically. Original request, exact model-visible prompt,
+notice/prompt hashes and protocol metadata are retained. No rubric, expected
+route, answer hints or save-early instruction is exposed. Paired variants must
+use the same disclosure setting; previous attempts are neither edited nor pooled
+with the new protocol. This change does not itself establish better completion.
+
+The budget-only harness regression returned **30 passed** in 17.04 seconds.
+After the independently identified path correction, the combined harness,
+mirror, overlay, generator and preservation regression returned **89 passed
+and 26 subtests passed** in 35.47 seconds. New native execution and final
+platform CI remain necessary.
+The subsequent full local suite returned **1,150 passed, 38 skipped, three
+warnings and 46 subtests passed** in 513.32 seconds
+(`full-tests-output-reference-budget-20261016.xml`), with no failures. This
+includes the new protocol's default-off and opt-in fake-CLI checks; those checks
+are not model-behavior passes.
+
 ## Remaining release gates
 
 The complete native behavior matrix and cross-session handoffs remain
-incomplete. The dev.6 local full program suite passes as recorded above; native
+incomplete. The dev.7 local full program suite passes as recorded above; native
 platform CI passed on the older recorded candidate commit and must cover the
 final changes. The eight completed C attempts now have independent-context
 provisional assessment, while their baseline comparison remains outstanding.
 Those attempts and the six focus pairs do not replace the full matrix,
 remaining original/resource cases, critical repeats, fresh holdouts or handoffs.
-The four original-case timeouts remain unresolved until remedial execution and
-assessment finish. Release metadata must record actual outcomes rather than
+Original cases 03 and 06 remain incomplete; case 04 needs its runtime-reference
+repair validated, while case 07's substantive criteria pass with its required
+review gate still BLOCKED. Release metadata must record actual outcomes rather than
 inherit old-version passes.
