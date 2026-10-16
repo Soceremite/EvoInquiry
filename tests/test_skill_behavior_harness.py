@@ -319,7 +319,8 @@ config=[{path="/personal/unrelated/SKILL.md",enabled=false}]
     assert settings[-1] == 'plugins."evo-inquiry@candidate-v140".enabled=true'
 
 
-@pytest.mark.parametrize('drift', ['skill', 'guidance', 'storage', 'helper', 'governance', 'schema', 'mainline', 'overlay'])
+@pytest.mark.parametrize('drift', ['skill', 'guidance', 'storage', 'helper', 'governance', 'schema', 'mainline', 'overlay',
+                                 'deferred_codex', 'deferred_mainline', 'deferred_claude', 'deferred_gemini'])
 def test_discovery_rejects_stale_cache_with_the_correct_name_and_version(tmp_path, drift):
     toolkit = tmp_path / 'source'
     cache = tmp_path / 'cache/market/evo-inquiry/1.0.0-beta.4'
@@ -331,6 +332,10 @@ def test_discovery_rejects_stale_cache_with_the_correct_name_and_version(tmp_pat
     schema_rel = Path('tools/schemas/execution.schema.json')
     mainline_rel = Path('skills/example/SKILL.md')
     overlay_rel = Path('skills/skills-codex-claude-review/example/SKILL.md')
+    deferred = {name: Path('skills') / runtime / 'example/references/full-workflow.md'
+                for name, runtime in (('deferred_codex', 'skills-codex'), ('deferred_mainline', ''),
+                                      ('deferred_claude', 'skills-codex-claude-review'),
+                                      ('deferred_gemini', 'skills-codex-gemini-review'))}
     for root in (toolkit, cache):
         for rel, text in ((skill_rel, 'Current skill bytes'), (common_rel, 'Current guidance'),
                           (storage_rel, 'Current storage guidance'), (helper_rel, 'Current helper'),
@@ -338,12 +343,15 @@ def test_discovery_rejects_stale_cache_with_the_correct_name_and_version(tmp_pat
                           (mainline_rel, 'Current mainline'), (overlay_rel, 'Current overlay')):
             (root / rel).parent.mkdir(parents=True, exist_ok=True)
             (root / rel).write_text(text)
+        for rel in deferred.values():
+            (root / rel).parent.mkdir(parents=True, exist_ok=True)
+            (root / rel).write_text('Current deferred reviewer instructions')
     (toolkit / '.codex-plugin').mkdir()
     (toolkit / '.codex-plugin/plugin.json').write_text('{"version":"1.0.0-beta.4"}')
     (cache / {'skill': skill_rel, 'guidance': common_rel, 'storage': storage_rel,
               'helper': helper_rel, 'governance': governance_rel,
               'schema': schema_rel, 'mainline': mainline_rel,
-              'overlay': overlay_rel}[drift]).write_text('Stale installed bytes')
+              'overlay': overlay_rel, **deferred}[drift]).write_text('Stale installed bytes')
     selector = 'evo-inquiry@evo-inquiry-eval-beta4'
     response = {'data': [{'skills': [{'name': 'evo-inquiry:example', 'enabled': True,
                                       'pluginId': selector, 'path': str(cache / skill_rel)}]}]}
@@ -357,6 +365,7 @@ for line in sys.stdin:
     message = {'skill': 'skill bytes', 'guidance': 'shared guidance',
                'storage': 'support resource', 'helper': 'support resource',
                'governance': 'support resource', 'schema': 'support resource',
-               'mainline': 'support resource', 'overlay': 'support resource'}[drift]
+               'mainline': 'support resource', 'overlay': 'support resource',
+               **{name: 'support resource' for name in deferred}}[drift]
     with pytest.raises(RuntimeError, match=message):
         discover_variant(toolkit, selector, cli)

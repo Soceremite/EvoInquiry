@@ -17,6 +17,12 @@ Apply this formal gate when a claim-support verdict is requested or the active w
 
 For this stage, read [project-governance](../shared-references/project-governance.md). Use fixed raw result/spec/execution/report refs and the actual digest-bound review receipt. Preserve independent/provisional judgments; file/registry/schema success does not establish claim support.
 For comparative claims, load [comparative-experiments](../shared-references/comparative-experiments.md) into the existing review brief. Match the claim to a controlled, resource-bound or tuned-system comparison; assess leakage, selection, seed/failure coverage and uncertainty from fixed raw evidence. Explain confounds and narrow unsupported conclusions. Keep the existing review gates and do not turn an ordinary analysis into an unsolicited formal verdict.
+Use the discovered runtime entrypoint; in Codex this is
+skills/skills-codex/result-to-claim/SKILL.md. Read the evidence-precheck input
+contract before constructing a batch. An unavailable reviewer does not prevent
+saving the requested preliminary assessment and evidence limits; keep the
+independent verdict pending and the required review gate BLOCKED. Do not invent
+a reviewer response or advance from the executor's own interpretation.
 <!-- EVO-INQUIRY:END -->
 
 

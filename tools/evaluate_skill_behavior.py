@@ -206,6 +206,11 @@ def discover_variant(toolkit: Path, selector: str, codex: str, model_settings: d
     resources.extend(sorted((toolkit / 'skills').glob('*/SKILL.md')))
     for overlay in ('skills-codex-claude-review', 'skills-codex-gemini-review'):
         resources.extend(sorted((toolkit / 'skills' / overlay).glob('*/SKILL.md')))
+    # Instructions deferred from an entrypoint remain behavior-affecting bytes.
+    # Pin each reachable runtime's local references as well as its entrypoints.
+    for runtime in ('', 'skills-codex', 'skills-codex-claude-review', 'skills-codex-gemini-review'):
+        resources.extend(p for p in (toolkit / 'skills' / runtime).glob('*/references/**/*')
+                         if p.is_file() and '__pycache__' not in p.parts and p.suffix != '.pyc')
     resources.extend(sorted((toolkit / 'tools').glob('*.py')))
     resources.extend(p for p in (toolkit / 'skills/figure-spec/scripts').glob('*') if p.is_file())
     resources.extend(p for relative in ('VERSION', '.codex-plugin/plugin.json', 'tools/skill-contracts.json',

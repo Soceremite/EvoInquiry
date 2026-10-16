@@ -33,7 +33,7 @@ on:
       - 'requirements-governance.txt'
       - '.github/workflows/test-suite.yml'
   push:
-    branches: [main]
+    branches: [main, 'acceptance/**']
     paths:
       - 'tools/**'
       - 'tests/**'

@@ -67,7 +67,7 @@ in 17.02 seconds. Verification against the actual original preservation commit
 `b9c7861fd22cd2f5471765d583c593f083fa12cc` passes. Earlier failed checks and a
 fixture-setup failure are retained rather than replaced by these results.
 
-The final full Linux sandbox run on 2026-10-16 returned **1,136 passed,
+An earlier full Linux sandbox run on 2026-10-16 returned **1,136 passed,
 9 failed, 37 skipped**, three warnings, in 607.32 seconds
 (`full-tests-local-final-v2.xml`). Three local-copy tests hit the sandbox's
 ownership-preservation restriction; a separate diagnostic also exposed its
@@ -463,14 +463,108 @@ upstream implementation or replace the frozen Codex behavior matrix. Earlier
 401 responses from different endpoint/account combinations remain historical
 diagnostics, not a current blanket claim that these models are unavailable.
 
+### Dev.6 remediation and acceptance continuation
+
+On 2026-10-16 the user explicitly resumed 1.4.0 acceptance. A narrow followup
+clarifies bounded proposal/plan delivery, preserves resumable pending-review
+state, permits labeled preliminary paper-number findings when required fresh
+review cannot run, and documents the evidence helper's existing array input,
+CSV boundary policy and per-item statuses. The helper API and original frozen
+preservation maps are unchanged. An independent implementation review found no
+blocking issues; its two nonblocking clarifications were applied before freezing.
+
+The dev.6 snapshot SHA-256 is
+`cd36241b8c0612d8c66dedb0f428ea5e9fbe3af6e71ed24f264b617f3fddf1ca`.
+It records base commit `33d8963` plus the exact working-tree source hashes and
+modified paths; that commit alone does not contain the followup. The isolated
+package has 989 files, with only `VERSION` and the Codex plugin version changed
+to `1.4.0-dev.6` for installation. Native discovery confirms 88 candidate and
+86 baseline entrypoints, and 250/237 support resources, respectively.
+
+The runtime uses a private temporary Codex home outside the repository and
+leaves the formal installation/configuration unchanged. An earlier preparation
+attempt put that home inside this repository, causing native system skills to
+inherit its namespace; strict discovery rejected it before any model session.
+The relocated runtime passed discovery. Remedial model attempts keep
+`gpt-6.1-sol`, high reasoning, one job, a 300-second ceiling, and zero automatic
+retries. First failures and subsequent diagnostic attempts remain distinct.
+
+The targeted regression returned **58 passed** in 19.01 seconds. A fresh
+Python 3.12 test environment containing `requirements-dev.txt` then ran the
+complete suite: **1,141 passed, 38 skipped, three warnings and 46 subtests
+passed** in 497.06 seconds (`full-tests-native-acceptance-20261016.xml`).
+This is a current local program pass, not a native behavior or platform CI pass.
+
+Two fresh independent contexts also assessed the eight completed dev.5 C
+attempts against their frozen inputs and rubrics. All eight satisfy the
+substantive case requirements as **same-family provisional behavior passes**.
+The reviewers recomputed calculations and inspected relevant images; the
+native CLI export does not establish the evaluated sessions' claimed direct
+image-viewing provenance. That remains unverified rather than silently assumed
+or asserted to be fabrication. These reviews neither erase first failures nor
+complete the missing C baseline comparison.
+
+Eight new holdouts were independently authored and sealed before source freeze.
+Their index SHA-256 is
+`f872ee3c794511969e6c40fc4a86412553db5479b555db5410cc4ae6271992a2`.
+The implementer had not opened their inputs, manifest or rubric at freeze time.
+Their execution and assessment are still pending; sealed fixtures are not
+coverage.
+
+Dev.6's exposed original case 03 then reached **300.52 seconds** with ten
+successful tool actions, no recorded service error, no saved proposal and no
+completed turn. The zero CLI exit code does not make that attempt complete.
+The other three remedial attempts were not started on that build. An independent
+diagnosis counted 49,764 characters of command output, about 95.7% entrypoint or
+reference material. The trace has no per-event timing, so this supports a
+loading-cost concern rather than an exact attribution of elapsed time.
+
+### Progressive refinement followup
+
+The followup makes `research-refine` progressively disclose its original full
+workflow. Its compact Codex entrypoint is about 8 KB rather than 32 KB and asks
+for an early saved anchored proposal/checkpoint. Each runtime retains the full
+reviewer workflow in `references/full-workflow.md`, including original reviewer
+prompts, scoring, round limits, recovery and final output names. Required review
+remains required; unavailability leaves a truthful BLOCKED, resumable state.
+
+The Claude overlay generator now also converts deferred resources. Overlay
+checks inspect those files, and native discovery pins all runtimes' per-skill
+references so a stale deferred workflow cannot silently pass byte verification.
+An initial focused run exposed three missing adaptation registrations and a
+Claude entrypoint conversion mismatch; those were corrected without changing
+the original frozen preservation maps or relaxing the checks. The subsequent
+focused run returned **85 passed and 26 subtests passed** in 32.36 seconds;
+package verification also reports PASS with 88 entrypoints and 83 retained
+contracts. This does not establish that the timeout is fixed; new same-budget
+native execution and independent assessment remain necessary.
+
+Independent implementation review confirms all four extracted full workflows
+match the frozen dev.6 bodies after only relative-link corrections. Its compact
+recovery clarifications were applied: initial round-0 persistence is fresh-run
+only, resumed histories retain real reviewer rounds/scores, and the Gemini
+entrypoint supplies an explicit compatible phase/continuity recovery map.
+
+The next full local suite returned **1,145 passed, 38 skipped and one failed**
+in 485.89 seconds. That failure was a retained payload-guidance check reading
+only the entrypoint after the prompts had moved. Its existing assertions now
+also inspect entrypoint-linked local references; missing or unlinked prompt
+files do not satisfy them. Native platform CI for the exact followup is pending.
+The repaired focused regression returned **87 passed and 26 subtests passed**
+in 33.51 seconds, including that original payload test.
+The test workflow permits `acceptance/**` branch pushes as well as main/PRs,
+allowing an isolated acceptance branch to trigger the same four platform jobs
+through the available Git SSH authentication without changing the default branch.
+
 ## Remaining release gates
 
 The complete native behavior matrix and cross-session handoffs remain
-incomplete. Local coverage includes the full sandbox run and separate
-permission-related rechecks described above; the native platform CI gate passed
-on the recorded older candidate commit. Later C development attempts and the
-six focus pairs have completed execution records, but do not replace the full
-matrix, remaining original/resource cases, critical repeats, fresh holdouts or
-handoffs. The four original-case timeouts above remain unresolved; full program
-and native platform checks must cover the final changed candidate. Release
-metadata must record actual outcomes rather than inherit old-version passes.
+incomplete. The dev.6 local full program suite passes as recorded above; native
+platform CI passed on the older recorded candidate commit and must cover the
+final changes. The eight completed C attempts now have independent-context
+provisional assessment, while their baseline comparison remains outstanding.
+Those attempts and the six focus pairs do not replace the full matrix,
+remaining original/resource cases, critical repeats, fresh holdouts or handoffs.
+The four original-case timeouts remain unresolved until remedial execution and
+assessment finish. Release metadata must record actual outcomes rather than
+inherit old-version passes.

@@ -356,6 +356,21 @@ def generate_one(skill_name: str) -> None:
         shutil.rmtree(target_dir)
     target_dir.mkdir(parents=True, exist_ok=True)
     (target_dir / "SKILL.md").write_text(output, encoding="utf-8")
+    # Deferred reviewer prompts are part of the installed skill too. Translate
+    # their backend just like the entrypoint; a verbatim copy would reintroduce
+    # Codex-only tools when the Claude workflow is finally loaded.
+    references = skill_path.parent / "references"
+    if references.is_dir():
+        for source in sorted(references.rglob("*")):
+            if not source.is_file():
+                continue
+            target = target_dir / "references" / source.relative_to(references)
+            target.parent.mkdir(parents=True, exist_ok=True)
+            if source.suffix == ".md":
+                target.write_text(transform_body(source.read_text(encoding="utf-8")),
+                                  encoding="utf-8")
+            else:
+                shutil.copyfile(source, target)
 
 
 def main() -> None:

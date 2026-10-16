@@ -49,3 +49,22 @@ def test_checked_in_claude_overlay_frontmatter_is_parseable() -> None:
         text = (CLAUDE_OVERLAY / skill / "SKILL.md").read_text(encoding="utf-8")
         assert isinstance(json.loads(_frontmatter_value(text, "name")), str)
         assert isinstance(json.loads(_frontmatter_value(text, "description")), str)
+
+
+def test_generator_retains_and_translates_deferred_reviewer_resources(tmp_path, monkeypatch):
+    from tools import generate_codex_claude_review_overrides as gen
+
+    monkeypatch.setattr(gen, 'DEST_ROOT', tmp_path)
+    gen.generate_one('research-refine')
+    source = gen.SRC_ROOT / 'research-refine/references'
+    output = tmp_path / 'research-refine/references'
+    checked_in = CLAUDE_OVERLAY / 'research-refine/references'
+    assert source.is_dir()
+    expected_files = {p.relative_to(source) for p in source.rglob('*') if p.is_file()}
+    assert expected_files == {p.relative_to(output) for p in output.rglob('*') if p.is_file()}
+    for relative in expected_files:
+        original = source / relative
+        expected = (gen.transform_body(original.read_text(encoding='utf-8')).encode('utf-8')
+                    if original.suffix == '.md' else original.read_bytes())
+        assert (output / relative).read_bytes() == expected
+        assert (checked_in / relative).read_bytes() == expected

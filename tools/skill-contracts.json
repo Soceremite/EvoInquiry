@@ -1128,17 +1128,14 @@
     },
     "skills/experiment-plan/SKILL.md": {
       "baseline_sha256": "c5b53692ff95b0b55e80702e33afc79d9fe8d4f55a69e2a39714013f97ac595e",
-      "sha256": "b7c87841c3925508f8f5c40a14a14acac34e07de9f38fd5b876a696cea7aa669",
-      "reason": "Test claims against alternatives with null branches and justified resources; plan compact paired sample evidence and reproducible selection before test inspection instead of leaving diagnosis only to final polish.",
+      "sha256": "7cb802ac2ab194ce5612ddb06fccd334277b12179a52b12d3306b6f2732333de",
+      "reason": "Preserve existing research/review contracts; complete bounded requested artifacts with explicit blocked/provisional status, and document the existing evidence-check input and conservative CSV semantics.",
       "adaptation_version": "1.4.0",
       "review_ref": "docs/ADAPTATIONS_1_4_0.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py",
-        "tests/behavior/evo-inquiry-case-study-cases.json",
-        "tests/test_comparison_packaging.py"
+        "tests/test_evidence_check.py",
+        "tests/behavior/evo-inquiry-cases.json"
       ]
     },
     "skills/figure-spec/SKILL.md": {
@@ -1236,15 +1233,14 @@
     },
     "skills/paper-claim-audit/SKILL.md": {
       "baseline_sha256": "9bc3eabfe3ec2d3125d4d94e8c6689ba4f0d6ed9021e3d86489a96086bba1a16",
-      "sha256": "c7e08e3f7d00bf0326cd269db4b3170a109aecb406e787aad0fc7945f0a87204",
-      "reason": "Directed 1.4.0 evidence, workflow, figure or distribution adaptation; see scoped implementation review. The existing common principles hook is now reachable from this mainline entrypoint; that hook itself changes no workflow body.",
+      "sha256": "cc3b58333e9f4f3d9267889ffbfd65b2bd011ff909c644a8b5230d432509f529",
+      "reason": "Preserve existing research/review contracts; complete bounded requested artifacts with explicit blocked/provisional status, and document the existing evidence-check input and conservative CSV semantics.",
       "adaptation_version": "1.4.0",
       "review_ref": "docs/ADAPTATIONS_1_4_0.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py"
+        "tests/test_evidence_check.py",
+        "tests/behavior/evo-inquiry-cases.json"
       ]
     },
     "skills/paper-figure/SKILL.md": {
@@ -1370,15 +1366,14 @@
     },
     "skills/result-to-claim/SKILL.md": {
       "baseline_sha256": "ba53865e333fb05271ad116b94879d567d1e681f592dec2a7e8ae7eac6ef13d6",
-      "sha256": "110e46a6165e76bed8a87db68c59bc0efd6dc1ddfe69d3f256620366f612be13",
-      "reason": "Directed 1.4.0 evidence, workflow, figure or distribution adaptation; see scoped implementation review. The existing common principles hook is now reachable from this mainline entrypoint; that hook itself changes no workflow body.",
+      "sha256": "c7230e5a829497e2dab257cbe81493ebf1d0ff24978f83d105c3dab6962e42ed",
+      "reason": "Preserve existing research/review contracts; complete bounded requested artifacts with explicit blocked/provisional status, and document the existing evidence-check input and conservative CSV semantics.",
       "adaptation_version": "1.4.0",
       "review_ref": "docs/ADAPTATIONS_1_4_0.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py"
+        "tests/test_evidence_check.py",
+        "tests/behavior/evo-inquiry-cases.json"
       ]
     },
     "skills/shared-references/review-scope-limits.md": {
@@ -1476,15 +1471,16 @@
     },
     "skills/skills-codex-claude-review/research-refine/SKILL.md": {
       "baseline_sha256": "9cb8f40b527028e4dd71321f70f4a76e5e432dd140d4c7be582cc480ae8f2579",
-      "sha256": "80b1fc71edd631b80eebde93669c8168ca0ac3665daf9d592a4c273af0eedf5f",
-      "reason": "Directed 1.4.0 follow-up: primary evidence fidelity, real reviewer access, common principles and conditional receipts, mechanical framing completion, literature discovery clarity and actual installed-path identity.",
+      "sha256": "722cb18abc6b12984e8b2c2cec6321b65e7816859289a1d700e3db2b3450461f",
+      "reason": "Progressively disclose retained refinement/reviewer instructions; retain and translate deferred resources, preserve pending-review recovery and all review gates, and pin deferred runtime bytes during native discovery.",
       "adaptation_version": "1.4.0",
       "review_ref": "docs/ADAPTATIONS_1_4_0.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_generator.py",
         "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py"
+        "tests/test_skill_behavior_harness.py",
+        "tests/behavior/evo-inquiry-cases.json"
       ]
     },
     "skills/skills-codex-claude-review/research-review/SKILL.md": {
@@ -1790,15 +1786,16 @@
     },
     "skills/skills-codex-gemini-review/research-refine/SKILL.md": {
       "baseline_sha256": "e70c912082ebe40709b3684e254e823e61536a992d50694ae1a7c7a6e8982772",
-      "sha256": "3897d9c6b2eb6cd4398e9809178c7002ccd3fd2a3fbe8e7e061fa463d50314bd",
-      "reason": "Directed 1.4.0 follow-up: evidence fidelity in paper improvements, real read-only reviewer access, common principles and conditional review receipts across overlays, and mechanical v2 framing completion without semantic acceptance.",
+      "sha256": "52ba4aea620ac4ec23061ea2ed865e6ddb406508cf9bb2653466277638ac8740",
+      "reason": "Progressively disclose retained refinement/reviewer instructions; retain and translate deferred resources, preserve pending-review recovery and all review gates, and pin deferred runtime bytes during native discovery.",
       "adaptation_version": "1.4.0",
       "review_ref": "docs/ADAPTATIONS_1_4_0.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_generator.py",
         "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py"
+        "tests/test_skill_behavior_harness.py",
+        "tests/behavior/evo-inquiry-cases.json"
       ]
     },
     "skills/skills-codex-gemini-review/research-review/SKILL.md": {
@@ -1816,15 +1813,16 @@
     },
     "tools/generate_codex_claude_review_overrides.py": {
       "baseline_sha256": "5d29ef95777af0bafea264182839926b0b6d429bb5362cb4104a27cb90d45f1c",
-      "sha256": "3841a20a65dd0da3e5b5bc6363a88e32656c9104cf9609dd2e17a95832fa06f4",
-      "reason": "Directed 1.4.0 follow-up: primary evidence fidelity, real reviewer access, common principles and conditional receipts, mechanical framing completion, literature discovery clarity and actual installed-path identity.",
+      "sha256": "014e1b164684558014776c7952a1f72924074e2efd0c940ec1ea8929f9560595",
+      "reason": "Progressively disclose retained refinement/reviewer instructions; retain and translate deferred resources, preserve pending-review recovery and all review gates, and pin deferred runtime bytes during native discovery.",
       "adaptation_version": "1.4.0",
       "review_ref": "docs/ADAPTATIONS_1_4_0.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_generator.py",
         "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py"
+        "tests/test_skill_behavior_harness.py",
+        "tests/behavior/evo-inquiry-cases.json"
       ]
     },
     "skills/ablation-planner/SKILL.md": {
@@ -2364,15 +2362,16 @@
     },
     "skills/research-refine/SKILL.md": {
       "baseline_sha256": "2888a5d78cce27851dc029240a76dd50fb8d8114f34e2041c67fb15651017837",
-      "sha256": "dafd044883e288aa971ba36bd141a3a5e19fd2ef50b56e3de3d93ec6d92e0feb",
-      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
+      "sha256": "811b7b0bca5d0d3d9376e16c17fe1c97cbd2422a23ff520ae7e9b943dd206891",
+      "reason": "Progressively disclose retained refinement/reviewer instructions; retain and translate deferred resources, preserve pending-review recovery and all review gates, and pin deferred runtime bytes during native discovery.",
       "adaptation_version": "1.4.0",
       "review_ref": "docs/ADAPTATIONS_1_4_0.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_generator.py",
         "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py"
+        "tests/test_skill_behavior_harness.py",
+        "tests/behavior/evo-inquiry-cases.json"
       ]
     },
     "skills/resubmit-pipeline/SKILL.md": {
@@ -2532,6 +2531,69 @@
         "tests/test_workflow_contract_versions.py",
         "tests/test_idea_discovery_gate.py"
       ]
+    },
+    "skills/shared-references/evidence-precheck.md": {
+      "baseline_sha256": "919a437a2e4a618ff6bcac6c03b7ec12bde3fef33d1a2aea25c9d98fcbd5e2d2",
+      "sha256": "442016a3ba690e30ec9a3ce319349fd16ec197683aa2c715aff628330e6e4069",
+      "adaptation_version": "1.4.0",
+      "reason": "Preserve existing research/review contracts; complete bounded requested artifacts with explicit blocked/provisional status, and document the existing evidence-check input and conservative CSV semantics.",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_evidence_check.py",
+        "tests/behavior/evo-inquiry-cases.json"
+      ]
+    },
+    "skills/skills-codex/shared-references/evidence-precheck.md": {
+      "baseline_sha256": "3eee097fe24fead242cf82a7393b828bf4add0fe511703a2be828edf06bb4c0b",
+      "sha256": "5455988374df3018a8a9369532d6c03587ab7d89691da186b61c07a808ca45b6",
+      "adaptation_version": "1.4.0",
+      "reason": "Preserve existing research/review contracts; complete bounded requested artifacts with explicit blocked/provisional status, and document the existing evidence-check input and conservative CSV semantics.",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_evidence_check.py",
+        "tests/behavior/evo-inquiry-cases.json"
+      ]
+    },
+    "tests/test_claude_review_generator.py": {
+      "baseline_sha256": "ba9c518d97061204cb21fb1079a35ff6e10db1613fbc48535c5c430eebfbac86",
+      "sha256": "97bf750ea5f3e3cb3e388b54648ebe09fc4c65c40b41e8e9a466b2488ec3bea1",
+      "reason": "Progressively disclose retained refinement/reviewer instructions; retain and translate deferred resources, preserve pending-review recovery and all review gates, and pin deferred runtime bytes during native discovery.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_generator.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_skill_behavior_harness.py",
+        "tests/behavior/evo-inquiry-cases.json"
+      ]
+    },
+    "tests/test_claude_review_overlay.py": {
+      "baseline_sha256": "eaaa8fa197788b28f4b5ce5366e679bb0a98d1cd12841c094ef0bf2a9553b51d",
+      "sha256": "d0a2549f779ef9e83f424c93822bbcb1acafff8978cf4f3923c7ebbf73812636",
+      "reason": "Progressively disclose retained refinement/reviewer instructions; retain and translate deferred resources, preserve pending-review recovery and all review gates, and pin deferred runtime bytes during native discovery.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_generator.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_skill_behavior_harness.py",
+        "tests/behavior/evo-inquiry-cases.json"
+      ]
+    },
+    "tests/test_mainline_large_payload_prompts.py": {
+      "baseline_sha256": "c177a59906b6443beaf591409de9eace68539bc598647acbe30c1993969a61eb",
+      "sha256": "dcc9020379396133fc6a32b07315de6551f590aa360e7d820cb54c4187ade255",
+      "reason": "Preserve all existing path-only reviewer payload assertions while checking entrypoint-linked deferred workflow instructions as well. Unlinked or missing prompt resources cannot satisfy the checks.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_mainline_large_payload_prompts.py",
+        "tests/test_evo_inquiry.py"
+      ]
     }
   },
   "workflow_adaptations": {
@@ -2660,12 +2722,13 @@
     },
     "paper-claim-audit": {
       "baseline_body_sha256": "c69c88acd7609b3bb5c9796c32e2a56957330ffd1afc4c1a022c4463f20af3cf",
-      "body_sha256": "dd10270eda94ec42a75efb86f10a9f2c0b76e340640dde7ff9aba3da3e745b90",
-      "reason": "Evidence-calibrated, scoped review or writing; retain original inputs, outputs, enums, independence and resource boundaries.",
+      "body_sha256": "8f32dcd1221930a72352ebccdeab6519486cb1359a0f3026f37df84f4658f6a9",
+      "reason": "Retain the fresh zero-context audit gate; allow clearly labeled executor-only numerical findings and canonical BLOCKED receipts when the required reviewer cannot run.",
       "review_ref": "docs/ADAPTATIONS_1_4_0.md",
       "test_refs": [
-        "tests/behavior/evo-inquiry-v140-development-cases.json",
-        "tests/test_evo_inquiry.py"
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_evidence_check.py",
+        "tests/behavior/evo-inquiry-cases.json"
       ]
     },
     "paper-figure": {
@@ -2842,6 +2905,19 @@
       "test_refs": [
         "tests/behavior/evo-inquiry-case-study-cases.json",
         "tests/test_comparison_packaging.py"
+      ]
+    },
+    "research-refine": {
+      "baseline_body_sha256": "6bb37611183bf69381a98846e8db69add34300aa8e45f399a9f8c25b6b5d5e39",
+      "body_sha256": "37cf4c571e224900f4169a26b8d13acfbff84ce6484dc345e4eabf07910670f1",
+      "reason": "Progressively disclose the retained full refinement/reviewer workflow; persist a bounded method proposal before optional expansion and preserve truthful pending-review recovery, outputs, provenance and gates.",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_generator.py",
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_skill_behavior_harness.py",
+        "tests/behavior/evo-inquiry-cases.json"
       ]
     }
   }

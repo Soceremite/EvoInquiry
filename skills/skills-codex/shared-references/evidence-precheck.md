@@ -63,6 +63,28 @@ python3 tools/evidence_check.py <root> --value 73.2 --source results/eval.json  
 python3 tools/evidence_check.py <root> --batch claims.json   # exit 1 if any claim hallucinated
 ```
 
+
+`--batch` expects a **top-level JSON array**, not an object containing a `claims`
+key. Inspect every result status: batch exit code 0 can still include
+`unparseable` items and does not certify that all citations were verified.
+Each item cites one actual source value or literal excerpt:
+
+```json
+[
+  {"id": "reported_value", "value": "73.2", "source": "results/eval.json"}
+]
+```
+
+The numeric boundary policy intentionally rejects ambiguous delimiters, including
+CSV cells adjacent to commas. For those files, cite an exact observed row or
+literal excerpt with identifying fields; do not concatenate separate values or
+rewrite raw evidence to make a check pass. A derived mean or effect needs its
+calculation checked against the source rows separately. A verified literal row
+establishes row existence, not column interpretation or the derived conclusion.
+If a valid citation remains unverified, preserve that status and let the reviewer
+inspect the raw evidence rather than repeatedly changing the citation to force
+`verified`.
+
 ## Cross-references
 - `acceptance-gate.md` — the pre-check is the deterministic DRIVE; the jury is the
   ACQUIT. `verified` is existence (execution-completeness), not correctness.

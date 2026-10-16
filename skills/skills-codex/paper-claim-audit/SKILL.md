@@ -14,6 +14,10 @@ reviewer briefs. Continue authorized work through its necessary steps; honor
 budgets, blocking checkpoints, and stopping conditions.
 
 For this stage, read [project-governance](../shared-references/project-governance.md). Audit against fixed raw execution/result/report refs and preserve the actual verdict digest. Governance integrity and scientific fidelity are separate checks.
+Check review availability early. If fresh review is unavailable or prohibited,
+finish the requested preliminary findings and the required blocked audit
+artifacts; preserve the fresh-review gate. The bounded fallback below permits
+executor checks only when clearly labeled, never a fabricated reviewer verdict.
 <!-- EVO-INQUIRY:END -->
 
 
@@ -68,6 +72,22 @@ whether an unsupported claim has contrary evidence or simply lacks sufficient
 evidence; `no` is not automatically a refutation. File existence, number matching,
 review acceptance and scientific support are distinct judgments. Preserve gains,
 regressions, unknowns and the original primary metric in the reviewer brief.
+
+## When the required reviewer cannot run
+
+Keep the fresh-review path below unchanged when a reviewer is available. If the
+review is prohibited or unavailable, record the review gate as BLOCKED and
+write the required canonical audit JSON with reason `reviewer_unavailable`;
+never fill reviewer identity or verdict fields with an imagined call.
+
+When the user requests numerical consistency findings, the executor may still
+compare the supplied paper with raw results to deliver preliminary notes.
+Label their author and verification level explicitly. Preserve mismatches,
+matching numbers, confounds and unknowns. These notes do not satisfy fresh
+review, do not grant acceptance and must not enter a later zero-context
+reviewer's brief. Save the requested notes, the canonical blocked receipt and
+necessary navigation, verify their paths, then finish the response. Do not
+simulate review rounds or repeat the audit merely because the reviewer is absent.
 
 ## Workflow
 

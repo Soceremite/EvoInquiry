@@ -16,6 +16,11 @@ Plan active recovery and end-of-training cleanup separately. Prefer the complete
 
 For this stage, read [project-governance](../shared-references/project-governance.md). Freeze a versioned experiment spec with declared variant/seed slots, protocol/data/split/evaluator refs, storage/compute budget and failure aggregation. A new spec revision does not grant execution resources.
 For comparative planning, load [comparative-experiments](../shared-references/comparative-experiments.md). State controlled, equal-budget or tuned comparison; freeze data/splits/evaluator, training and search accounting, validation selection, independent seed slots and failure rules. Use common settings plus justified method differences. Three seeds is a starting estimate; choose repetitions for precision and budget, and label unknowns.
+For a planning-only request, batch relevant context/reference reads and reuse
+unchanged guidance already loaded. Write the core plan and required compact
+tracker before optional elaboration. Record unknown resource estimates and
+unresolved execution references as prerequisites; do not probe or initialize a
+runtime merely to fill them. Preserve the existing spec and output contracts.
 <!-- EVO-INQUIRY:END -->
 
 

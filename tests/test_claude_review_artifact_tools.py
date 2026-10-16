@@ -52,10 +52,12 @@ WRITE_TOOLS = ("Bash", "Edit", "Write", "NotebookEdit", "WebFetch", "Task")
 def _review_blocks() -> list[tuple[str, str]]:
     """Every claude-review call block in the overlay, as (skill, block)."""
     blocks = []
-    for skill_file in sorted(OVERLAY.rglob("SKILL.md")):
+    files = list(OVERLAY.glob("*/SKILL.md")) + list(OVERLAY.glob("*/references/**/*.md"))
+    for skill_file in sorted(files):
         text = skill_file.read_text(encoding="utf-8")
+        skill = skill_file.relative_to(OVERLAY).parts[0]
         for match in REVIEW_CALL_BLOCK_RE.finditer(text):
-            blocks.append((skill_file.parent.name, match.group(0)))
+            blocks.append((skill, match.group(0)))
     return blocks
 
 

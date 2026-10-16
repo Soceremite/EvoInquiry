@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import re
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -8,7 +9,16 @@ MAIN_SKILLS = REPO_ROOT / "skills"
 
 
 def read_skill(name: str) -> str:
-    return (MAIN_SKILLS / name / "SKILL.md").read_text(encoding="utf-8")
+    directory = MAIN_SKILLS / name
+    text = (directory / "SKILL.md").read_text(encoding="utf-8")
+    # A prompt can be deferred only when the entrypoint actually links to it.
+    # Keep the existing payload invariants over those reachable instructions.
+    references = set(re.findall(r'\]\((references/[^)#]+\.md)(?:#[^)]*)?\)', text))
+    for relative in sorted(references):
+        path = (directory / relative).resolve()
+        assert path.is_relative_to(directory.resolve()), relative
+        text += '\n' + path.read_text(encoding='utf-8')
+    return text
 
 
 def test_mainline_large_payload_skills_prefer_path_only_codex_prompts() -> None:

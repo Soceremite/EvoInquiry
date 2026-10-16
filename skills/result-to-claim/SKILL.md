@@ -12,6 +12,12 @@ principles within the user's scope and this skill's existing outputs, review
 standards, and recovery contracts. Carry them into nested research tasks and
 reviewer briefs. Continue authorized work through its necessary steps; honor
 budgets, blocking checkpoints, and stopping conditions.
+Use the discovered runtime entrypoint; in Codex this is
+skills/skills-codex/result-to-claim/SKILL.md. Read the evidence-precheck input
+contract before constructing a batch. An unavailable reviewer does not prevent
+saving the requested preliminary assessment and evidence limits; keep the
+independent verdict pending and the required review gate BLOCKED. Do not invent
+a reviewer response or advance from the executor's own interpretation.
 <!-- EVO-INQUIRY:END -->
 
 

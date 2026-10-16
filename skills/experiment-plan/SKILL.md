@@ -11,6 +11,11 @@ principles within the user's scope and this skill's existing outputs, review
 standards, and recovery contracts. Carry them into nested research tasks and
 reviewer briefs. Continue authorized work through its necessary steps; honor
 budgets, blocking checkpoints, and stopping conditions.
+For a planning-only request, batch relevant context/reference reads and reuse
+unchanged guidance already loaded. Write the core plan and required compact
+tracker before optional elaboration. Record unknown resource estimates and
+unresolved execution references as prerequisites; do not probe or initialize a
+runtime merely to fill them. Preserve the existing spec and output contracts.
 <!-- EVO-INQUIRY:END -->
 
 

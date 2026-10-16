@@ -35,7 +35,9 @@ def check_pack(pack=PACK):
         return problems
     for dirpath, _dirnames, filenames in os.walk(pack):
         for fn in filenames:
-            if fn != "SKILL.md":   # pack READMEs legitimately describe the upstream mechanics
+            if fn != "SKILL.md" and not (
+                fn.endswith(".md") and "references" in os.path.relpath(dirpath, pack).split(os.sep)
+            ):   # pack READMEs legitimately describe the upstream mechanics
                 continue
             path = os.path.join(dirpath, fn)
             rel = os.path.relpath(path, REPO)
