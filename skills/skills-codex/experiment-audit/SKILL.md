@@ -1,6 +1,6 @@
 ---
 name: experiment-audit
-description: "Audit experiment integrity and comparative fairness before making claims: data leakage, baseline and budget differences, selection, evaluation, provenance and seed coverage. Use for completed-run integrity review."
+description: "Assess experiment integrity and comparative fairness from supplied records, or obtain an independent execution audit. Use for evaluation design checks, completed-run integrity review and evidence-based audit findings."
 argument-hint: "[experiment-dir-or-results-path]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob
 ---
@@ -13,8 +13,8 @@ standards, and recovery contracts. Carry them into nested research tasks and
 reviewer briefs. Continue authorized work through its necessary steps; honor
 budgets, blocking checkpoints, and stopping conditions.
 
-For this stage, read [project-governance](../shared-references/project-governance.md). Audit fixed input/content/review digests, declared execution inclusion and relevant interface freshness. Registry/schema PASS is integrity only and never upgrades scientific review or accepted/provisional.
-For comparative integrity, load [comparative-experiments](../shared-references/comparative-experiments.md) and include its protocol, comparison log, configurations, complete attempt ledger and raw outputs in the existing fresh-review brief. Check data leakage, baseline quality, training/search/input asymmetry, test-driven selection, missing seeds and evaluation changes. Hash/coverage PASS is not a scientific fairness verdict.
+For a formal execution audit or existing governed run, read [project-governance](../shared-references/project-governance.md). Audit fixed input/content/review digests, declared execution inclusion and relevant interface freshness. Registry/schema PASS is integrity only and never upgrades scientific review or accepted/provisional.
+For comparative integrity, use the applicable checks in [comparative-experiments](../shared-references/comparative-experiments.md). A formal fresh-review brief includes the protocol, comparison log, configurations, complete attempt ledger and raw outputs. A bounded review of supplied records stays within those records. Check relevant data, budget, selection, seed and evaluation issues; hash/coverage PASS is not a scientific fairness verdict.
 <!-- EVO-INQUIRY:END -->
 
 
@@ -32,6 +32,36 @@ state a reported outcome without certifying execution or granting acceptance.
 
 Audit experiment integrity for: **$ARGUMENTS**
 
+## Choose the requested assessment
+
+- **Local evidence assessment:** when asked to inspect a supplied protocol,
+  results or evaluation description, answer that question from the available
+  material. Read the relevant contents directly and save the requested report.
+  State documented safeguards and their purpose, demonstrated defects, and
+  decision-relevant unknowns. A protocol description can support a design
+  assessment without proving that every execution followed it. Keep that
+  boundary explicit; do not discard its documented strengths as worthless.
+- **Independent execution audit:** when the user requests independent
+  verification, or an active workflow requires a verdict-bearing audit, follow
+  the full workflow below. Its fresh reviewer, provenance, tracing, output
+  fields and acceptance requirements remain required.
+
+For the local assessment, a request to be harsh does not supply evidence of a
+defect. An unavailable record or unreported reliability statistic is an unknown
+within the inspected scope; call it a failure only when it violates an actual
+requirement or contradicts the evidence. Identify the affected claim and the
+smallest useful check. Do not turn a protocol review into a certification,
+create an exhaustive prerequisite inventory, or deny claims nobody made.
+Finish the requested artifact and response once the material question is
+answered. No independent audit verdict or acceptance is granted in this mode.
+
+If an independent audit is required but its reviewer or essential execution
+evidence is unavailable, record the specific BLOCKED condition and any useful
+bounded findings. Keep the formal gate open; never relabel the bounded
+assessment as a completed independent audit.
+
+The remaining workflow and templates apply to the independent execution audit.
+
 ## Why This Exists
 
 LLM agents can produce fraudulent experimental results through:
@@ -42,7 +72,7 @@ LLM agents can produce fraudulent experimental results through:
 
 These are NOT intentional deception — they are failure modes of optimizing agents that lack integrity constraints. This skill adds that constraint.
 
-## Core Principle
+## Core Principle for Independent Audits
 
 **The executor (Codex) collects file paths. A fresh Codex reviewer reads code and judges integrity. The executor does NOT participate in integrity judgment; this base route is same-family/provisional.**
 
@@ -52,7 +82,7 @@ This follows `shared-references/reviewer-independence.md` and `shared-references
 
 - **REVIEWER_BACKEND = `codex`** — Default: Codex reviewer agent (`spawn_agent`, ultra — deep-audit tier). Override with `— reviewer: oracle-pro` for GPT-5.5 Pro via Oracle MCP. See `shared-references/reviewer-routing.md`.
 
-## Workflow
+## Independent execution audit workflow
 
 ### Step 1: Collect Artifacts (Executor — Codex)
 

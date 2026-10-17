@@ -21,6 +21,11 @@ unchanged guidance already loaded. Write the core plan and required compact
 tracker before optional elaboration. Record unknown resource estimates and
 unresolved execution references as prerequisites; do not probe or initialize a
 runtime merely to fill them. Preserve the existing spec and output contracts.
+Carry the supplied resource quantities into the feasibility calculation; keep
+provided values, derived totals and genuinely unknown estimates distinct. If
+the requested combination cannot fit, save that calculation and the compact
+tracker with the affected executions blocked and concrete feasible changes.
+Resource infeasibility does not remove the planning deliverables.
 <!-- EVO-INQUIRY:END -->
 
 

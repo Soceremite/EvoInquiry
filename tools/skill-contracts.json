@@ -1128,8 +1128,8 @@
     },
     "skills/experiment-plan/SKILL.md": {
       "baseline_sha256": "c5b53692ff95b0b55e80702e33afc79d9fe8d4f55a69e2a39714013f97ac595e",
-      "sha256": "7cb802ac2ab194ce5612ddb06fccd334277b12179a52b12d3306b6f2732333de",
-      "reason": "Preserve existing research/review contracts; complete bounded requested artifacts with explicit blocked/provisional status, and document the existing evidence-check input and conservative CSV semantics.",
+      "sha256": "d1ad655f8ef6b262db1af1277041d388c429826fadf033d5be04a8e1c5f266a9",
+      "reason": "Preserve existing research/review contracts; complete bounded requested artifacts with explicit blocked/provisional status, and document the existing evidence-check input and conservative CSV semantics. Preserve supplied resource quantities and the compact blocked-execution tracker when a requested resource combination is infeasible.",
       "adaptation_version": "1.4.0",
       "review_ref": "docs/ADAPTATIONS_1_4_0.md",
       "test_refs": [
@@ -1567,8 +1567,8 @@
     },
     "skills/experiment-audit/SKILL.md": {
       "baseline_sha256": "dd5c2405aaae472cf2020f16fbd1b02b431874d8353a65a8aa4c102a65f5aef2",
-      "sha256": "3662c3c2503d931e49387684d1e8498853488355e6325239fd2fe68e5a737d2f",
-      "reason": "Distinguish supplied-record support, execution verification and review assurance; include available case evidence and qualitative selection in the existing scope check without changing fresh-review requirements or acceptance gates.",
+      "sha256": "394f2eae82201cd21d768b756d3dcdab6453a6f35d926b8f945bd96993a77813",
+      "reason": "Choose bounded local record assessment or independent execution audit from the request. Preserve documented design strengths and distinguish missing evidence from demonstrated defects; retain formal fresh-review, tracing, output and acceptance requirements.",
       "adaptation_version": "1.4.0",
       "review_ref": "docs/ADAPTATIONS_1_4_0.md",
       "test_refs": [
@@ -2898,8 +2898,8 @@
     },
     "experiment-audit": {
       "baseline_body_sha256": "40952da15da09b8d1d97f01382894c3fa77f9e7aa2d5af2233b5cda5e3aed316",
-      "body_sha256": "be2e8a5abb71163d5dc934d2e5dbef20a16778aea12e4113236df8d87205fc6c",
-      "reason": "Distinguish supplied-record support, execution verification and review assurance; include available case evidence and qualitative selection in the existing scope check without changing fresh-review requirements or acceptance gates.",
+      "body_sha256": "36e155b336588fc2aa974820158c3c5a67c7d2bc5368c36a1623fc8fe4d62fe6",
+      "reason": "Choose bounded local record assessment or independent execution audit from the request. Preserve documented design strengths and distinguish missing evidence from demonstrated defects; retain formal fresh-review, tracing, output and acceptance requirements.",
       "review_ref": "docs/ADAPTATIONS_1_4_0.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
