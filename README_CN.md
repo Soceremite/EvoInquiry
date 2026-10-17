@@ -209,9 +209,9 @@ python tools/configure_research_guidance.py --project /path/to/project
 保留的后端与客户端兼容资源用于支持已有流程约定，按需启用并单独配置。
 
 当前检查及其适用范围见[1.4.0 验收记录](docs/VALIDATION_1_4_0.md)。
-[已验证实现的 CI](https://github.com/Soceremite/EvoInquiry/actions/runs/38991160599)
+[1.4.0 发布流程](https://github.com/Soceremite/EvoInquiry/actions/runs/38993024356)
 通过了 Linux、macOS，以及 `powershell.exe`、`pwsh` 两组 Windows 原生检查。
-最终发布标签还会在下载包公开前重新执行门禁。
+正式标签门禁通过后，已公开经过校验的源码下载包。
 历史记录见[治理验收](docs/UPGRADE_VALIDATION_CN.md)和[兼容性验收](docs/PORTABILITY_VALIDATION_CN.md)。
 [离线行为评估](docs/SKILL_BEHAVIOR_EVAL.md)使用冻结案例和实际执行轨迹比较自然请求表现。
 下载包需要 Linux、macOS 完整 CI，以及 `powershell.exe`、`pwsh` 两组 Windows 原生安装与治理验收全部通过后发布。

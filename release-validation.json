@@ -2,14 +2,14 @@
   "schema_version": 1,
   "version": "1.4.0",
   "release_kind": "stable",
-  "status": "engineering-candidate-validated; exact-tag-publication-CI-required",
+  "status": "stable-published; formal-local-installation-verified",
   "assessed_at": "2026-10-17",
   "source_base": {
     "version": "1.3.0",
     "commit": "2dd900b8f08cee2e607f0bad003d45e7655b2fb2"
   },
   "validated_implementation_commit": "40ff2c20c059ed639180e9c903233f70b20c54eb",
-  "later_changes": "Version metadata, release documentation, Windows publication coverage and its regression; exact-tag CI gates the final committed package.",
+  "later_changes": "After implementation40ff2c2: version metadata, release documentation, Windows publication coverage and its regression. Exact stable tag f59f383 passed full publication CI; later main changes only record completed release/installation status.",
   "runtime_changed": true,
   "inventory": {
     "codex_entrypoints": 88,
@@ -204,10 +204,44 @@
         "sha256": "963bf55a148d4ef8c0baae3c9c846b6339ce8549fca6cf234135fdaf5cf1362f"
       },
       "scope": "Final version metadata, publication workflow/arguments, package-preservation and mainline/Codex parity checks; full final-tag suite still required."
+    },
+    "formal_install": {
+      "status": "PASS",
+      "version": "1.4.0",
+      "commit": "f59f3839c60b7d615a0bd31a56e379b95fda624d",
+      "entrypoints": 88,
+      "support_resources": 270,
+      "source_files_matching": 993,
+      "persistent_plugin_enabled": true,
+      "unrelated_configuration_preserved": true,
+      "authentication_and_global_guidance_preserved": true,
+      "old_version_files_verified": 815,
+      "model_calls": 0,
+      "new_session_required": true,
+      "receipt": {
+        "path": "validation/release-1.4.0/formal-install/verification.json",
+        "sha256": "7b95331d831f06ca6d17fb51dad65b5c1d26db2cc4a2e2b56a10089c2c48fd8b"
+      },
+      "scope": "Clean source byte-identical to downloaded published tar; no live model call or scientific acceptance."
+    },
+    "persistent_default_discovery": {
+      "status": "PASS",
+      "configuration_overrides": false,
+      "contexts": [
+        "project directory",
+        "ordinary directory"
+      ],
+      "entrypoints_per_context": 88,
+      "skill_errors": 0,
+      "model_calls": 0,
+      "receipt": {
+        "path": "validation/release-1.4.0/formal-install/default-discovery-verification.json",
+        "sha256": "346d69ca6cb3d96c65d83bed4c99fb6f33a5da0026f38b1d07587015515b8864"
+      }
     }
   },
   "ci": {
-    "status": "PASS at validated implementation commit",
+    "status": "PASS at implementation and exact stable tag",
     "commit": "40ff2c20c059ed639180e9c903233f70b20c54eb",
     "run_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/38991160599",
     "jobs": [
@@ -247,13 +281,90 @@
       "windows-latest pwsh portable gate"
     ],
     "exact_tag": {
-      "status": "REQUIRED_BEFORE_PUBLICATION",
-      "workflow": ".github/workflows/release-beta.yml",
+      "status": "PASS",
+      "tag": "v1.4.0",
+      "commit": "f59f3839c60b7d615a0bd31a56e379b95fda624d",
+      "run_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/38993024356",
+      "jobs": [
+        {
+          "id": 117279323871,
+          "name": "windows (pwsh)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/38993024356/job/117279323871"
+        },
+        {
+          "id": 117279324039,
+          "name": "test (ubuntu-latest)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/38993024356/job/117279324039"
+        },
+        {
+          "id": 117279324100,
+          "name": "test (macos-latest)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/38993024356/job/117279324100"
+        },
+        {
+          "id": 117279324149,
+          "name": "windows (powershell.exe)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/38993024356/job/117279324149"
+        },
+        {
+          "id": 117280188923,
+          "name": "publish",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/38993024356/job/117280188923"
+        }
+      ],
       "publication_requires": [
         "test",
         "windows"
       ],
-      "later_workflow_change": "Add literature, decision, workflow-version and figure-evidence modules to both Windows jobs."
+      "receipt": {
+        "path": "validation/release-1.4.0/final-native-ci-jobs.json",
+        "sha256": "8efbfcf63acadd3e0b198845812d00fea4d62af7fca841ec3431385e2acbdaa7"
+      }
+    },
+    "main_same_commit": {
+      "status": "PASS",
+      "commit": "f59f3839c60b7d615a0bd31a56e379b95fda624d",
+      "run_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/38993024121",
+      "jobs": [
+        {
+          "id": 117279322898,
+          "name": "windows (pwsh)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/38993024121/job/117279322898"
+        },
+        {
+          "id": 117279323011,
+          "name": "pytest (macos-latest)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/38993024121/job/117279323011"
+        },
+        {
+          "id": 117279323029,
+          "name": "windows (powershell.exe)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/38993024121/job/117279323029"
+        },
+        {
+          "id": 117279323148,
+          "name": "pytest (ubuntu-latest)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/38993024121/job/117279323148"
+        }
+      ]
     }
   },
   "review_scope": "Fresh-context same-family/provisional engineering reviews; no independent cross-family scientific or universal model-behavior certification.",
@@ -270,5 +381,31 @@
     "Failed filesystem locking probes block governance; no new network-filesystem, distributed-training or power-loss guarantee."
   ],
   "private_evidence": "validation/upgrade-1.4.0; excluded from public committed archives",
-  "report": "docs/VALIDATION_1_4_0.md"
+  "report": "docs/VALIDATION_1_4_0.md",
+  "publication": {
+    "status": "PUBLISHED",
+    "version": "1.4.0",
+    "tag": "v1.4.0",
+    "commit": "f59f3839c60b7d615a0bd31a56e379b95fda624d",
+    "release_id": 415526589,
+    "url": "https://github.com/Soceremite/EvoInquiry/releases/tag/v1.4.0",
+    "latest_stable": true,
+    "assets_downloaded_and_verified": [
+      "evo-inquiry-1.4.0.tar.gz",
+      "evo-inquiry-1.4.0.zip",
+      "release-manifest.json",
+      "SHA256SUMS"
+    ],
+    "archive_sha256": {
+      "evo-inquiry-1.4.0.tar.gz": "249cbc2d4d82f07efc2b107c1dfd732d673f978d4377a47401a68d2fb2f2e9e6",
+      "evo-inquiry-1.4.0.zip": "c5d204113b65247e3d7aae5694236cb9c33236af835a35a701522b4e3601aed3"
+    },
+    "source_files_matching": 993,
+    "notes_match_committed_file": true,
+    "verification": {
+      "path": "validation/release-1.4.0/public-release-verification.json",
+      "sha256": "f907910d5bd78d53f646f22e5e98e89881252595baa78a67688b1434291da0a3"
+    },
+    "download_scope": "Direct browser URL timed out on this host; public GitHub asset API successfully downloaded and verified all four assets."
+  }
 }

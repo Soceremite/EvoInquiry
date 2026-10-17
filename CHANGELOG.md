@@ -36,7 +36,7 @@
 - Choose relevant available literature sources with `sources: auto`; retain legacy explicit `all` and user source constraints. Distinguish metadata, abstracts and inspected sections, including contrary evidence and identity conflicts.
 - Plan compact sample-level evidence before analysis, reuse its selection record in figure panels and paper outlines, and audit qualitative claims against the actual pool. Narrow numerical requests remain narrow; missing outputs do not trigger automatic inference.
 
-See `docs/VALIDATION_1_4_0.md` for source-specific results, preserved failed attempts, human acceptance of J05, runtime deviations and review limitations. The implementation passed 1,150 local tests and all four native CI jobs; publication additionally requires exact-tag CI. Optional external adapters are not advertised as validated integrations.
+See `docs/VALIDATION_1_4_0.md` for source-specific results, preserved failed attempts, human acceptance of J05, runtime deviations and review limitations. The implementation passed 1,150 local tests and all four native CI jobs; the final v1.4.0 tag also passed both full suites and both Windows gates before publication. Public archives and clean-source installation were verified separately. Optional external adapters are not advertised as validated integrations.
 
 ## 1.3.0 — 2026-10-14
 

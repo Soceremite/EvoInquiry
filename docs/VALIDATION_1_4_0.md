@@ -2,13 +2,20 @@
 
 ## Current release assessment — 2026-10-17
 
-The implementation is prepared for the 1.4.0 publication gate. Current source
-`40ff2c20c059ed639180e9c903233f70b20c54eb` passed **1,150 local tests, with
-38 skips**, and [all four native platform CI jobs](https://github.com/Soceremite/EvoInquiry/actions/runs/38991160599).
-Release documentation, version metadata and the Windows publication-coverage
-correction are later changes; the final tag must pass its own CI before archives
-are published. Publication and formal installed-version replacement are separate
-operations, not inferred from these candidate results.
+[EvoInquiry 1.4.0 is published](https://github.com/Soceremite/EvoInquiry/releases/tag/v1.4.0)
+as the latest stable release. Its immutable tag points to
+`f59f3839c60b7d615a0bd31a56e379b95fda624d`.
+The [exact-tag release workflow](https://github.com/Soceremite/EvoInquiry/actions/runs/38993024356)
+passed Ubuntu/macOS full suites, both native Windows shells and publication.
+The [main-branch suite](https://github.com/Soceremite/EvoInquiry/actions/runs/38993024121)
+also passed all four jobs at that same commit. Public archives, checksums,
+manifest, release notes and formal local installation were separately verified.
+
+The implementation at `40ff2c20c059ed639180e9c903233f70b20c54eb` previously
+passed **1,150 local tests, with 38 skips**, and its own four native CI jobs.
+The final tag additionally includes release/version documentation and the
+Windows publication-coverage correction. Later main-branch changes record the
+completed release and installation; they do not rewrite the immutable archives.
 
 | Area | Current evidence and qualification |
 | --- | --- |
@@ -17,7 +24,8 @@ operations, not inferred from these candidate results.
 | Case studies | Candidate and released-1.3.0 baseline outputs reviewed against the eight public cases; content completion is separate from actual media-viewing provenance. No general superiority is claimed. |
 | Storage and governance | Fixed supplied-resource planning, actual bounded CPU restoration and terminal cleanup, plus successful local-filesystem initialization and a declared positive-precondition comparison cleanup. Original prerequisite failures remain. |
 | Held-out routing | One prospectively registered current-candidate isolation verification completed in 62.60 seconds with six actions at unchanged limits; original failures remain and their cause is unknown. Private inputs and rubrics remain withheld. |
-| Platform and publication | Ubuntu/macOS full CI and both native Windows shells pass at the fixed implementation source. A new regression reproduces the release workflow's omitted Windows modules, then passes after repair. Exact-tag publication CI is still required. |
+| Platform and publication | Exact-tag Ubuntu/macOS full suites, both native Windows shells and publish all pass. Four public assets were downloaded through the asset API and verified; the earlier direct-download timeout remains recorded. |
+| Formal installation | Clean 1.4.0 source installed; 88 entrypoints, 270 supporting resources and all 993 source files match. Default discovery without configuration overrides passes in both project and ordinary directories, with zero skill errors. Prior files and configuration are retained for rollback. |
 
 The [approved plan](UPGRADE_PLAN_1_4_0_CN.md) defines the criteria. Reviews here
 are same-family/provisional engineering assessments, not scientific acceptance
@@ -1103,7 +1111,7 @@ surface and earlier failures remain visible. This satisfies the approved
 at-least-22-of-24 threshold with its historical-source/protocol qualifications,
 not 22 fresh current-source or first-attempt clean runs.
 
-### Release-owner disposition
+### Prepublication release-owner disposition
 
 The approved engineering acceptance criteria are satisfied with the explicit
 qualifications above: focus cases and unchanged-slice comparisons have reviewed
@@ -1121,3 +1129,50 @@ from a clean committed release archive, with the prior version retained for
 rollback. The release does not promise universal skill activation, perfect
 bounded completion, visual understanding on every backend, or general research
 superiority. All private case material and runtime credentials remain excluded.
+
+
+## Published release and installed version — 2026-10-17
+
+The immutable `v1.4.0` tag points to
+`f59f3839c60b7d615a0bd31a56e379b95fda624d`. The exact-tag workflow completes
+all five jobs successfully: Ubuntu full suite, macOS full suite, native Windows
+`powershell.exe`, native Windows `pwsh` and publication. The separate main-branch
+workflow also completes all four platform jobs successfully at the same commit.
+GitHub publishes release ID 415526589 at 02:02:10 UTC with `draft=false` and
+`prerelease=false`; a subsequent API read confirms it is the latest stable release.
+
+The first direct browser-download request from this host times out. Public asset
+API downloads subsequently succeed for all four actual assets: tar.gz, zip,
+SHA256SUMS and release-manifest.json. Their sizes and SHA-256 digests match GitHub
+metadata; both archives contain the same 993 committed files and 88 Codex
+entrypoints, with no private validation material or credentials. The manifest
+identifies the exact stable commit, and public release-note text matches the
+committed file, apart from terminal-newline normalization.
+
+| Archive | SHA-256 |
+| --- | --- |
+| evo-inquiry-1.4.0.tar.gz | `249cbc2d4d82f07efc2b107c1dfd732d673f978d4377a47401a68d2fb2f2e9e6` |
+| evo-inquiry-1.4.0.zip | `c5d204113b65247e3d7aae5694236cb9c33236af835a35a701522b4e3601aed3` |
+
+Formal local installation is then replaced through the native plugin CLI using
+a clean source directory byte-identical to the downloaded archive. All 88 skill
+entrypoints, 270 supporting resources and 993 source files match version 1.4.0.
+The plugin is persistently enabled. A fresh native app-server discovery without
+configuration overrides independently returns the same 88 skills and zero skill
+errors in both the project directory and an ordinary directory. These metadata
+checks make no model-generation request. A new interactive session is still
+required to replace the skill catalog already loaded by an existing session.
+
+The actual former 1.3.0 installation's 815 files were copied and verified before
+removal, and the old source and configuration remain available for rollback.
+All unrelated configuration, authentication files and global research guidance
+are preserved. Switching the plugin does not migrate project state. Keep the
+selected clean source directory available; deleting build or source directories
+that remain registered would require re-registering a retained release source.
+
+The raw publication, downloaded-asset and formal/default-discovery receipts are
+under ignored `validation/release-1.4.0/`; public pointers and hashes are in
+`release-validation.json`. These records close publication and installation,
+without erasing the behavior limitations recorded earlier. This postpublication
+main-branch update records actual completed gates; it does not amend the
+immutable tag, source assets or earlier candidate receipts.

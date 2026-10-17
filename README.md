@@ -230,9 +230,9 @@ Retained backend and client compatibility resources support existing workflow
 contracts; they are optional and have separate setup requirements.
 
 Current checks and their scope are recorded in [1.4.0 validation](docs/VALIDATION_1_4_0.md).
-The [validated implementation CI](https://github.com/Soceremite/EvoInquiry/actions/runs/38991160599)
-passed Linux, macOS and native Windows checks with both `powershell.exe` and `pwsh`;
-the final release tag is gated again before publication.
+The [1.4.0 release workflow](https://github.com/Soceremite/EvoInquiry/actions/runs/38993024356)
+passed Linux, macOS and native Windows checks with both `powershell.exe` and `pwsh`,
+then published the verified source archives.
 Historical evidence remains in [governance validation](docs/UPGRADE_VALIDATION_CN.md)
 and [portability coverage](docs/PORTABILITY_VALIDATION_CN.md).
 The [offline behavior evaluation](docs/SKILL_BEHAVIOR_EVAL.md) compares natural
