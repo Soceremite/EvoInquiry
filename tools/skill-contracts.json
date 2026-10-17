@@ -1567,8 +1567,8 @@
     },
     "skills/experiment-audit/SKILL.md": {
       "baseline_sha256": "dd5c2405aaae472cf2020f16fbd1b02b431874d8353a65a8aa4c102a65f5aef2",
-      "sha256": "394f2eae82201cd21d768b756d3dcdab6453a6f35d926b8f945bd96993a77813",
-      "reason": "Choose bounded local record assessment or independent execution audit from the request. Preserve documented design strengths and distinguish missing evidence from demonstrated defects; retain formal fresh-review, tracing, output and acceptance requirements.",
+      "sha256": "7f05931c9145f875e57e7976a540a061d75834f0d5daa54fb486370cf152a35d",
+      "reason": "Choose bounded local record assessment or independent execution audit from the request. Preserve documented design strengths and distinguish missing evidence from demonstrated defects; retain formal fresh-review, tracing, output and acceptance requirements. Validate normalization against the declared metric and actual claim; prediction-dependent denominators are not automatic failures, and shared min-max display values do not establish absolute performance or relative gains.",
       "adaptation_version": "1.4.0",
       "review_ref": "docs/ADAPTATIONS_1_4_0.md",
       "test_refs": [
@@ -2620,6 +2620,32 @@
         "tests/test_mainline_large_payload_prompts.py",
         "tests/test_evo_inquiry.py"
       ]
+    },
+    "skills/shared-references/experiment-integrity.md": {
+      "baseline_sha256": "22150fbdc5867e7790c88f968bccb367079c2db4c190ddce980709aea7e76f60",
+      "sha256": "b6efc1bbd7fa206beb1964857fd3fe7675815505acd392b9e642a549cec43ec9",
+      "reason": "Correct normalization judgments: compare formula, transformation and actual claim; preserve valid prediction-dependent metric definitions and distinguish labeled display rescaling from unsupported absolute or relative-gain claims. Preserve the remainder of the integrity protocol and review gates.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_evo_inquiry.py",
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_comparison_packaging.py",
+        "docs/VALIDATION_1_4_0.md"
+      ]
+    },
+    "skills/skills-codex/shared-references/experiment-integrity.md": {
+      "baseline_sha256": "22150fbdc5867e7790c88f968bccb367079c2db4c190ddce980709aea7e76f60",
+      "sha256": "b6efc1bbd7fa206beb1964857fd3fe7675815505acd392b9e642a549cec43ec9",
+      "reason": "Correct normalization judgments: compare formula, transformation and actual claim; preserve valid prediction-dependent metric definitions and distinguish labeled display rescaling from unsupported absolute or relative-gain claims. Preserve the remainder of the integrity protocol and review gates.",
+      "adaptation_version": "1.4.0",
+      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "test_refs": [
+        "tests/test_evo_inquiry.py",
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_comparison_packaging.py",
+        "docs/VALIDATION_1_4_0.md"
+      ]
     }
   },
   "workflow_adaptations": {
@@ -2898,8 +2924,8 @@
     },
     "experiment-audit": {
       "baseline_body_sha256": "40952da15da09b8d1d97f01382894c3fa77f9e7aa2d5af2233b5cda5e3aed316",
-      "body_sha256": "36e155b336588fc2aa974820158c3c5a67c7d2bc5368c36a1623fc8fe4d62fe6",
-      "reason": "Choose bounded local record assessment or independent execution audit from the request. Preserve documented design strengths and distinguish missing evidence from demonstrated defects; retain formal fresh-review, tracing, output and acceptance requirements.",
+      "body_sha256": "98dadae6aceede98f7502d7a815118c02cc364342ac80db33c7f867900715169",
+      "reason": "Choose bounded local record assessment or independent execution audit from the request. Preserve documented design strengths and distinguish missing evidence from demonstrated defects; retain formal fresh-review, tracing, output and acceptance requirements. Validate normalization against the declared metric and actual claim; prediction-dependent denominators are not automatic failures, and shared min-max display values do not establish absolute performance or relative gains.",
       "review_ref": "docs/ADAPTATIONS_1_4_0.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",

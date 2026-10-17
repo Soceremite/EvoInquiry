@@ -184,10 +184,18 @@ You are an experiment integrity auditor. Verify the comparison against the
 
     ### B. Score Normalization
     For each metric computation:
-    1. Is any metric divided by max/min/mean of the model's OWN output?
-    2. Are raw scores reported alongside any normalized scores?
-    3. Are any scores suspiciously close to 1.0 or 100%?
-    FAIL if: Normalization denominator comes from prediction statistics.
+    1. Does the formula, normalization, aggregation and zero-denominator handling
+       match the declared evaluation protocol (official where applicable)?
+    2. What do the numerator, denominator and fitting population represent?
+       Check whether method-specific rescaling changes the compared quantity.
+    3. For additional display rescaling, are the original scores/units, formula
+       and reference range available, and does the claim respect that scale?
+    Prediction-dependent denominators, such as precision/F1/IoU, and declared
+    per-example normalization are not failures by themselves. Neither is a
+    score near 1. FAIL when evidence demonstrates an undisclosed or claim-invalid
+    rescaling that inflates the reported performance or invalidates the
+    comparison. A labeled display does not justify false absolute-performance
+    or relative-gain claims; missing essential evidence remains unknown/BLOCKED.
 
     ### C. Result File Existence
     For each claim in the paper/narrative:

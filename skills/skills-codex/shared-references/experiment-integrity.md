@@ -15,10 +15,10 @@
 - ✅ Proxy evaluation is allowed IF explicitly labeled as `synthetic_proxy`
 
 ### 2. Score Normalization Fraud
-- ❌ Dividing metrics by max/min of model's own output to get 0.99+
-- ❌ Rescaling scores to hide poor performance
-- ✅ Standard normalization (e.g., min-max across ALL methods including baselines)
-- ✅ Reporting raw and normalized scores side by side
+- ❌ Undisclosed or claim-invalid rescaling that inflates reported performance or hides material differences
+- ✅ Check the formula, units, aggregation and reference population against the declared metric and claim. Precision/F1/IoU denominators and defined per-example normalization are not failures merely because they depend on predictions
+- ✅ A common min-max transform can be a labeled display when its fitting range and original scores are available. Including every method alone does not validate it: it does not preserve absolute calibration, thresholds or relative gains, and a tied range needs a declared convention
+- ✅ Keep original and transformed scores traceable when additional rescaling is used. Disclosure does not excuse a false claim; a score near 1 alone is not evidence of wrongdoing
 
 ### 3. Phantom Results
 - ❌ Claiming results from files that don't exist
