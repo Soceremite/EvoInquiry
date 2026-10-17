@@ -1,10 +1,31 @@
 # EvoInquiry 1.4.0 validation
 
-Status: implementation and candidate validation in progress. No 1.4.0 stable
-release or replacement of the formal installed 1.3.0 has occurred. A separate
-public CI candidate branch is recorded below.
-The [approved plan](UPGRADE_PLAN_1_4_0_CN.md) defines the release criteria.
-Planned tests are not passed tests.
+## Current release assessment — 2026-10-17
+
+The implementation is prepared for the 1.4.0 publication gate. Current source
+`40ff2c20c059ed639180e9c903233f70b20c54eb` passed **1,150 local tests, with
+38 skips**, and [all four native platform CI jobs](https://github.com/Soceremite/EvoInquiry/actions/runs/38991160599).
+Release documentation, version metadata and the Windows publication-coverage
+correction are later changes; the final tag must pass its own CI before archives
+are published. Publication and formal installed-version replacement are separate
+operations, not inferred from these candidate results.
+
+| Area | Current evidence and qualification |
+| --- | --- |
+| Package | 88 Codex and 87 mainline skills; 83 original workflow and 450 protected-resource baseline records retained, with directed adaptations pinned separately. |
+| Objective analysis | Public comparison and challenge cases reviewed; local audit calibration repaired prospectively. J05 has explicit case-specific user acceptance, while its original timeout remains. |
+| Case studies | Candidate and released-1.3.0 baseline outputs reviewed against the eight public cases; content completion is separate from actual media-viewing provenance. No general superiority is claimed. |
+| Storage and governance | Fixed supplied-resource planning, actual bounded CPU restoration and terminal cleanup, plus successful local-filesystem initialization and a declared positive-precondition comparison cleanup. Original prerequisite failures remain. |
+| Held-out routing | One prospectively registered current-candidate isolation verification completed in 62.60 seconds with six actions at unchanged limits; original failures remain and their cause is unknown. Private inputs and rubrics remain withheld. |
+| Platform and publication | Ubuntu/macOS full CI and both native Windows shells pass at the fixed implementation source. A new regression reproduces the release workflow's omitted Windows modules, then passes after repair. Exact-tag publication CI is still required. |
+
+The [approved plan](UPGRADE_PLAN_1_4_0_CN.md) defines the criteria. Reviews here
+are same-family/provisional engineering assessments, not scientific acceptance
+or a guarantee of reliable behavior on every request. Appropriate unavailable
+scientific-review blockers remain blockers even when a software task's required
+preparation and truthful status are complete. Earlier failures, runtime surface
+deviations and superseded open assessments below are historical evidence; use
+the dated closure section at the end for the current disposition.
 
 The user added proactive case studies on 2026-10-16 after the dev.3 behavior
 snapshot and the first successful native platform CI. Those older results
@@ -19,7 +40,8 @@ sample-level behavior. The supplement and its validation are recorded below.
 - Initial hashes, source snapshots and raw evidence are retained under ignored
   `validation/upgrade-1.4.0/`; they are not release files.
 - Development plugins use separate marketplace IDs. Each batch records actual
-  host discovery and support hashes. CLI: 0.162.1; model: gpt-6.1-sol;
+  host discovery and support hashes. Initial batches used CLI 0.162.1; the later
+  closure batches pin CLI 0.163.0. Model: gpt-6.1-sol;
   reasoning: high; configured provider label: OpenAI. This label does not
   authenticate the external endpoint. The formal installation remains separate.
 
@@ -897,7 +919,7 @@ pass, comparative advantage or release-ready claim is made. The report is
 the JSON SHA-256 is
 `f3923fd011b8f5b9ad4fd55c5af432f8e2328412091f1374d16e104a8ee59fe0`.
 
-## Remaining release gates
+## Historical open assessment — before 2026-10-17 closure
 
 The complete native behavior matrix remains incomplete. The dev.8 full local
 suite and exact-source platform CI pass, and all four cross-session projects
@@ -911,3 +933,191 @@ Original request-only 03 and 06 attempts remain incomplete; the new explicit-bud
 substantive criteria pass with its required review gate still BLOCKED.
 Release metadata must record actual outcomes rather than
 inherit old-version passes.
+
+
+## Final candidate closure — 2026-10-17
+
+### Scope, planning and metric-normalization repairs
+
+Source `21b2b65fd398e3f022bcd936ff6ca97b40575df0` separates a local assessment
+of supplied records from formal execution certification and preserves supplied
+resource quantities in planning. A separately frozen dev.9 plugin was tested
+with original request-only inputs and prospective public controls. J09,
+AUDIT_NEGATIVE, AUDIT_GATE and S02 all meet their registered outcomes with actual
+canonical skill/principles reads, preserved inputs, saved artifacts and final
+handoffs. The formal audit control remains BLOCKED when independent review is
+unavailable; the positive local assessment does not bypass that gate.
+
+S02 now retains the supplied 2 GiB weights-only export size, identifies the
+154 GiB recovery-state lower bound against 120 GiB of available storage, considers
+cumulative saving peaks and writes the requested 12-slot blocked tracker. This
+does not authorize an infeasible run. The first pre-execution SQLite discovery
+failure and the original documentation omission remain separate records.
+
+The review is `dev9-scope-calibration-independent-review-20261017.json`, SHA-256
+`ef3b34a68a8e208e69903252b008648aecce6ffe78d1f99a1b4ddad3aa49e8e2`.
+It verifies all 88 entrypoints and 270 reachable support resources against the
+frozen package. The source-specific affected regression passed 90 tests.
+
+A further source review found that the old denominator wording could reject
+legitimate prediction-dependent metrics. Source
+`40ff2c20c059ed639180e9c903233f70b20c54eb` corrects both audit surfaces and
+both shared integrity references: evaluate the declared formula, aggregation,
+zero-denominator handling and actual claim. Disclosed display scaling does not
+justify claims of absolute accuracy, calibration or relative improvement, and
+missing evidence is not proof of misconduct. Original protected maps and formal
+review gates remain unchanged. The affected preservation/package regression
+passed 59 tests.
+
+Two prospectively registered public contrasts on frozen dev.10 both pass:
+N_VALID completes in 113.47 seconds with eight actions and N_INVALID in 89.75
+seconds with seven. Exact-fraction recomputation distinguishes valid
+precision/F1/IoU and direction-only normalization from invalid interpretations
+of display scores. Both sessions directly read the repaired audit Step B; they
+do not directly open the shared integrity reference, so isolated use of that
+reference is not behaviorally established. Their same-family review is
+`dev10-normalization-behavior-review-20261017.json`, SHA-256
+`a4aa3afd94e9d06fd77bfac59e90ae7c98dac7d30b026e446ee7c56d21f0b863`.
+
+The unchanged original legacy06 request also completes prospectively on dev.10
+in 200.87 seconds with 14 actions. It preserves all six rows and the descriptive
++4 percentage-point result, identifies the unequal training and missing
+calibration evidence, proposes useful controls and truthfully records the
+independent claim review as unavailable. This is a completed software-case
+outcome, not causal claim acceptance. Earlier request-only timeouts and the
+budget-disclosed diagnostic are retained and not relabeled.
+
+### Actual local positive paths and retained prerequisite failures
+
+G02 was executed with its unchanged public request and fixture on a verified
+local overlay outside the repository. The session completed in 151.29 seconds,
+ran the filesystem probe before initialization, created and checked the actual
+requested project profile, preserved existing notes and stated unknown
+persistence. This verifies only the tested local operations. The original
+`/lyd` filesystem's cross-process lock-exclusion failure remains a valid blocker;
+its safety check was not weakened.
+
+The original resource L02 cleanup case correctly blocked because its synthetic
+inputs lacked the complete comparison ledger. A separately registered
+L02_POSITIVE_PRECONDITION variant adds explicitly synthetic, pinned nine-run,
+nine-attempt evidence before execution. It uses the unchanged request, rubric
+and limits, and completes in 150.03 seconds. Validation selection retains beta,
+protects alpha's dependency, actually deletes gamma's unneeded state and binds
+the winner receipt to valid evidence. Logs, results and configuration records
+survive; 39 input files remain unchanged. The successful canonical
+`analyze-results` route is adequate but outside the literal registered skill
+list. This outcome does not turn the original blocked fixture into a positive
+execution or validate historical unrecorded experiments.
+
+The same-family reviewer authored that explicit synthetic fixture, but did not
+implement or execute the candidate. Review limitations remain declared. Fifteen
+G02 and 51 L02 archive files match their original output bytes. Absolute runtime
+paths are retained; these archives are evidence, not relocated active stores.
+The review is `dev9-resource-positive-independent-review-20261017.json`, SHA-256
+`a4c377c7a471c4a017e529ea7602ab43e8cc93a96d6fa0cedd2ad6aa87fc098d`.
+
+### One bounded held-out isolation verification
+
+The custodian completed the previously pending third-attempt review without
+revealing the private task to the implementer. Fresh_03 has a qualified positive
+original-protocol outcome; fresh_04's substantive artifact passes but its old
+terminal timeout remains. A prospective methods disposition permits exactly
+one unchanged-limit current-candidate isolation verification after the old home
+was lost and separate runtime-state failures had been observed. Source and
+runtime both change, so this does not identify the original timeout cause.
+
+The custodian executes only that one frozen dev.10 request, without hints,
+budget disclosure or automatic retry. It completes in **62.60 seconds and six
+actions** at the original 300-second/32-action ceiling. Substantive delivery,
+input preservation, bounded scope, suitable routing, actual principles read,
+final handoff and clean-session checks all pass provisionally. Discovery matches
+88 entrypoints and 270 support resources. The raw output archive is byte-identical;
+private inputs, criteria and detailed outputs stay withheld from the implementer
+and are excluded from publication.
+
+The public-safe report is
+`fresh04-dev10-isolation-review-safe-20261017.json`, SHA-256
+`1ee004ec26e2566da78fff10c4bbddeb3249646d65a358df62dae3d3335a023d`.
+This is new bounded evidence, not a retroactive pass, a causal diagnosis of the
+old failure, an unseen-case generalization or independent scientific acceptance.
+
+### Current program and publication checks
+
+The complete local regression at source `40ff2c2` returns **1,150 passed,
+38 skipped, three warnings and 46 subtests** in 476.47 seconds. Its XML is
+`full-tests-normalization-20261017.xml`; it predates the new publication-coverage
+regression. Skips and warnings are not integration or platform passes.
+
+[Exact-source CI run 38991160599](https://github.com/Soceremite/EvoInquiry/actions/runs/38991160599)
+passes Ubuntu full tests, macOS full tests, Windows `powershell.exe` and Windows
+`pwsh`. These are actual completed job outcomes, not planned runs. The later
+release workflow correction adds literature, research decisions, workflow
+versions and figure evidence to its two Windows jobs, matching ordinary CI.
+The new coverage regression first reports one failure and two passes against
+the old workflow, then three passes after repair. Both XML receipts are retained.
+Publication requires the exact final tag's full Linux/macOS suites and both
+native Windows jobs again; no earlier source's CI is substituted for that gate.
+
+The final version metadata, publication workflow/arguments, package and Codex
+mirror checks return **47 passed** in 18.04 seconds, with no failures or skips
+(`final-release-materials-tests-20261017.xml`). Inventory, preservation, local
+README links, release-note wrapping and `git diff --check` also pass. These
+focused results complement, rather than relabel, the earlier full suite.
+
+All report paths above are relative to ignored `validation/upgrade-1.4.0/` and
+are local evidence references, not files included in the release archives.
+
+
+### Case-study comparison and legacy threshold
+
+The eight newly completed baseline sessions use the actual released 1.3.0,
+original request-only cases, 300-second/32-action limits and isolated native
+discovery. All eight satisfy their substantive frozen criteria, within their
+limits. Baseline C03 has observed successful PNG pixel decoding after an
+unavailable optional decoder; C04 and C07 retain **INCONCLUSIVE direct-view
+provenance** despite correct content. Their statements of viewing are not
+promoted to verified visual acquisition, nor does the absent acquisition event
+alone prove fabrication. Existing candidate media-provenance qualifications
+remain the same. No universal visual-tool requirement is added after execution.
+
+The candidate C outputs are previously reviewed selected dev.5 completions,
+not eight new dev.10 sessions or eight first-attempt successes. Every loaded
+analysis/principles/comparison/case-study dependency matches dev.10 and current
+bytes; reuse applies to those unchanged slices only. Different harness versions
+and runtime histories prevent interpreting descriptive times as a speedup.
+Both versions meet these fixed content cases, so no general candidate advantage
+is established. The 207-hash same-family methods report is
+`case-study-baseline-and-legacy-closure-20261017.json`, SHA-256
+`6074725a408468b83c3f93e9fa0595362e28ab06249082bdcddc667151ac53cd`.
+It was written before the final fresh_04 safe receipt; the completed custodian
+receipt above supersedes only that report's pending status.
+
+With the new original-protocol legacy06 outcome, **22 distinct legacy IDs** now
+have qualified positive request-only outcomes across the documented applicable
+candidate sources: 01, 02, 04, 05, 06, 07, 08, 09, 10, 11, 12, 13, 14, 15,
+16, 17, 18, 19, 20, 21, 23 and 24. All seven mandatory categories/IDs remain
+covered: resumption 09/11/14, small tasks 15/16/17 and explicit invocation 18.
+Case 03's positive budget-disclosed diagnostic is excluded from this count;
+case 22 remains incomplete at its original timeout. Case 20's noncanonical
+surface and earlier failures remain visible. This satisfies the approved
+at-least-22-of-24 threshold with its historical-source/protocol qualifications,
+not 22 fresh current-source or first-attempt clean runs.
+
+### Release-owner disposition
+
+The approved engineering acceptance criteria are satisfied with the explicit
+qualifications above: focus cases and unchanged-slice comparisons have reviewed
+outcomes, critical repeats and handoffs have their earlier qualified evidence,
+the legacy threshold and mandatory categories are met, and the repaired storage,
+local positive paths and held-out completion have separate prospective receipts.
+J05 alone uses the user's explicit case-specific acceptance. No new scientific
+acceptance is inferred from software task completion or the lack of a reviewer.
+There is no demonstrated unresolved critical source defect in these reviews.
+
+Proceed to committed packaging and exact-tag publication CI. Failed final CI
+would block publication and require a new recorded correction; prepublication
+checks do not stand in for it. Formal installation must be verified separately
+from a clean committed release archive, with the prior version retained for
+rollback. The release does not promise universal skill activation, perfect
+bounded completion, visual understanding on every backend, or general research
+superiority. All private case material and runtime credentials remain excluded.

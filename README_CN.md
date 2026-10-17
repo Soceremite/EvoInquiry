@@ -8,7 +8,7 @@
 [静态封面](docs/assets/evo-inquiry-hero.svg)
 
 <p align="center">
-  <a href="https://github.com/Soceremite/EvoInquiry/releases/tag/v1.3.0"><img src="https://img.shields.io/badge/release-1.3.0-FF927E?style=flat&amp;labelColor=7862E8" alt="正式版 1.3.0"></a>
+  <a href="https://github.com/Soceremite/EvoInquiry/releases/tag/v1.4.0"><img src="https://img.shields.io/badge/release-1.4.0-FF927E?style=flat&amp;labelColor=7862E8" alt="正式版 1.4.0"></a>
   <a href="docs/SKILLS_CATALOG.md"><img src="https://img.shields.io/badge/Codex_skills-88-59C7A7?style=flat&amp;labelColor=7862E8" alt="88 个 Codex skill"></a>
   <a href="https://github.com/Soceremite/EvoInquiry/actions/workflows/test-suite.yml"><img src="https://github.com/Soceremite/EvoInquiry/actions/workflows/test-suite.yml/badge.svg" alt="回归测试状态"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-FFD95E?style=flat&amp;labelColor=7862E8" alt="MIT 许可证"></a>
@@ -23,15 +23,15 @@ EvoInquiry 是面向 Codex 的科研工作流工具集。**88 个 Codex skill** 
 实验、批判性评审与论文准备。既可以按需完成一个具体任务，也可以组成更长的科研流程。
 下一步由研究问题、已有证据与项目约束共同决定。
 
-**[1.3.0 新增](https://github.com/Soceremite/EvoInquiry/releases/tag/v1.3.0)：**
-贯穿实验全过程的公平比较规范、对比权重归档前的证据检查，以及可选的持续科研路由。
+**[1.4.0 新增](https://github.com/Soceremite/EvoInquiry/releases/tag/v1.4.0)：**
+将模糊方向变成可检验的问题，保留带证据的科研决策，并在客观解读指标时主动补充案例分析。
 
-## 1.4.0 开发进展
+## 从模糊方向走向有证据的下一步
 
-当前工作树新增模糊方向的问题界定、带证据的科研决策与交接，并将客观判断
-落实到选题、审阅和写作。文献记录保留身份、版本和阅读层级；图件记录关联
+用 `scientific-brainstorming` 探索竞争解释和可检验的问题，用 `research-manager`
+在已有项目记录中跟踪决策、未解决问题与交接。文献记录保留身份、版本和阅读层级；图件记录关联
 真实输入、可编辑源文件与图注。已有公平比较、权重保留和审阅门槛继续使用。
-候选验证期间，下方最新正式版下载仍为 1.3.0；实际进展见
+具体能力见[版本说明](RELEASE_NOTES.md)，实际验证范围见
 [1.4.0 验证记录](docs/VALIDATION_1_4_0.md)。
 
 可以直接说：“探索低成本记忆的研究问题，先不训练”“检查这些均值能支持
@@ -59,13 +59,13 @@ EvoInquiry 是面向 Codex 的科研工作流工具集。**88 个 Codex skill** 
 
 ## 快速开始
 
-从 [正式版 Release](https://github.com/Soceremite/EvoInquiry/releases/tag/v1.3.0)
-下载并解压 `evo-inquiry-1.3.0.tar.gz` 或 `.zip`。
+从 [正式版 Release](https://github.com/Soceremite/EvoInquiry/releases/tag/v1.4.0)
+下载并解压 `evo-inquiry-1.4.0.tar.gz` 或 `.zip`。
 请使用提供 `codex plugin` 命令的 Codex 版本；插件安装已在 Linux 上使用
-Codex CLI **0.162.1** 验证。
+Codex CLI **0.163.0** 验证。
 
 ```sh
-cd /path/to/evo-inquiry-1.3.0
+cd /path/to/evo-inquiry-1.4.0
 codex plugin marketplace add "$PWD"
 codex plugin add evo-inquiry@evo-inquiry
 ```
@@ -88,7 +88,7 @@ skill 使用 `evo-inquiry:` 命名空间。安装插件使技能可用；
 <summary><strong>源码开发与干净安装</strong></summary>
 
 需要查看和开发源码时，可以使用
-`git clone --branch v1.3.0 https://github.com/Soceremite/EvoInquiry.git EvoInquiry`。
+`git clone --branch v1.4.0 https://github.com/Soceremite/EvoInquiry.git EvoInquiry`。
 安装插件时使用干净的 Release 解压目录。Codex CLI 0.162.1 也会复制来源目录中的
 未跟踪文件；Release 包可以避免把私有验证记录、构建产物和 Git 历史带入安装缓存。
 
@@ -132,10 +132,11 @@ skill 使用 `evo-inquiry:` 命名空间。安装插件使技能可用；
 | 能力 | 适用任务 | 代表 skill |
 | --- | --- | --- |
 | 课题接续 | 复用已有证据，协调下一项授权工作 | `research-guide` |
+| 科研决策与交接 | 跟踪证据、备选方案、阻碍和已授权的下一步 | `research-manager` |
 | 项目与证据治理 | 固定输入与执行身份，恢复报告，规划迁移 | `project-governance` |
 | 环境维护 | 验证候选环境，保护论文复现所需的环境 | `environment-maintenance` |
 | 文献与知识积累 | 检索论文，梳理已有工作，检查新颖性，维护知识库 | `research-lit`、`novelty-check`、`research-wiki` |
-| 选题与研究设计 | 探索方向，打磨方法，围绕主张规划验证 | `idea-discovery`、`research-refine`、`experiment-plan` |
+| 选题与研究设计 | 界定模糊方向，探索替代解释，打磨方法并规划验证 | `scientific-brainstorming`、`idea-discovery`、`research-refine`、`experiment-plan` |
 | 理论推导与证明 | 整理假设，推导公式，撰写并检查证明 | `formula-derivation`、`proof-writer`、`proof-checker` |
 | 实验与结果分析 | 实施比较，运行实验，分析种子结果，设计消融 | `experiment-bridge`、`run-experiment`、`analyze-results` |
 | 证据审查与评审 | 审查完整性，判断结论支持程度，核对引用，检验替代解释 | `experiment-audit`、`result-to-claim`、`research-review` |
@@ -146,11 +147,11 @@ skill 使用 `evo-inquiry:` 命名空间。安装插件使技能可用；
 主要面向 ML、AI 与相关工程科研。
 领域专用流程、总流程和可选后端见[完整 skill 清单](docs/SKILLS_CATALOG.md)。
 
-1.4.0 候选版还将[案例分析](skills/skills-codex/shared-references/case-study-analysis.md)
+1.4.0 将[案例分析](skills/skills-codex/shared-references/case-study-analysis.md)
 纳入完整结果分析：主动检查已有逐样本输出，说明具体改善、退化和失败，保留可追溯、
 公平配对的案例。分类看错分，回归看残差，生成任务看真实输出，视频理解看带时间位置的
 证据。简短指标问题保持简短；没有样本输出时说明缺口，不编造案例。
-这项能力仍在验证，尚不属于当前安装的 1.3.0 正式版。
+新增推理或实验仍需相应的任务范围与资源授权。
 
 <a id="usage"></a>
 
@@ -207,9 +208,10 @@ python tools/configure_research_guidance.py --project /path/to/project
 本项目提供的 EvoInquiry 安装方式是上面的 Codex 插件。
 保留的后端与客户端兼容资源用于支持已有流程约定，按需启用并单独配置。
 
-当前检查及其适用范围见[1.3.0 验收记录](docs/VALIDATION_1_3_0.md)。
-[1.3.0 发布流程](https://github.com/Soceremite/EvoInquiry/actions/runs/38521070262)
+当前检查及其适用范围见[1.4.0 验收记录](docs/VALIDATION_1_4_0.md)。
+[已验证实现的 CI](https://github.com/Soceremite/EvoInquiry/actions/runs/38991160599)
 通过了 Linux、macOS，以及 `powershell.exe`、`pwsh` 两组 Windows 原生检查。
+最终发布标签还会在下载包公开前重新执行门禁。
 历史记录见[治理验收](docs/UPGRADE_VALIDATION_CN.md)和[兼容性验收](docs/PORTABILITY_VALIDATION_CN.md)。
 [离线行为评估](docs/SKILL_BEHAVIOR_EVAL.md)使用冻结案例和实际执行轨迹比较自然请求表现。
 下载包需要 Linux、macOS 完整 CI，以及 `powershell.exe`、`pwsh` 两组 Windows 原生安装与治理验收全部通过后发布。

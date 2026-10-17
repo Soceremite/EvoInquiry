@@ -1,249 +1,274 @@
 {
   "schema_version": 1,
-  "version": "1.3.0",
+  "version": "1.4.0",
   "release_kind": "stable",
-  "status": "local-and-native-CI-validation-passed",
+  "status": "engineering-candidate-validated; exact-tag-publication-CI-required",
+  "assessed_at": "2026-10-17",
   "source_base": {
-    "version": "1.2.0",
-    "commit": "4a05eed153de94c87d6506f4c6ae0b6c8f13db51"
+    "version": "1.3.0",
+    "commit": "2dd900b8f08cee2e607f0bad003d45e7655b2fb2"
   },
+  "validated_implementation_commit": "40ff2c20c059ed639180e9c903233f70b20c54eb",
+  "later_changes": "Version metadata, release documentation, Windows publication coverage and its regression; exact-tag CI gates the final committed package.",
   "runtime_changed": true,
   "inventory": {
-    "codex_entrypoints": 86,
+    "codex_entrypoints": 88,
+    "mainline_entries": 87,
     "retained_workflow_bodies": 83,
     "protected_resources": 450,
-    "previously_approved_adaptations": 34,
-    "mainline_shared_references": 35,
-    "codex_shared_references": 38
+    "directed_workflow_adaptations": 33,
+    "mainline_shared_references": 41,
+    "codex_shared_references": 41,
+    "frozen_maps_unchanged": true,
+    "added_codex_skills_since_original_83": 5,
+    "new_codex_skills_since_1_3_0": 2
   },
   "runtime_sha256": {
     "tools/checkpoint_retention.py": "d67aa6a5aaf7a27857e08eb3ee74df7aeff760d0aaabd92e295485d5c979e96e",
     "tools/comparison_evidence.py": "2bef0b2315b828e60e55633f5d6141d25aac3461c3a35078f5f584cd2c7a19be",
     "tools/configure_research_guidance.py": "11ba3b1efd3c7f6664951766f672cc8dfb5a803d32d899798d9f3e98e63a62c2",
-    "tools/report_ci_failures.py": "8c930754821b7dbc6bbbb725b2bb2fc7704f2eaa2fd949cc124d885474bf2c92"
+    "tools/literature_records.py": "8960f42ccd99e8ccb880fccb8fd5022328ae552613819b5793782ac1899c447c",
+    "tools/figure_evidence.py": "51b4fd605353f2cc04e9e73707872630f73c5232f5fd51d1cf54c65e37a0b35e"
   },
   "current_checks": {
     "source_preservation": {
       "status": "PASS",
-      "scope": "current 1.3.0 source; retained-body and protected-resource digest contracts"
+      "scope": "Current package, 83 retained-workflow and 450 protected-resource baseline contracts; individually pinned directed adaptations",
+      "receipt": {
+        "path": "validation/upgrade-1.4.0/final-release-preservation-20261017.json",
+        "sha256": "f2181b2fdadc3eeb46b57dd79af33e5af1cd7c9ae94b83ec7398a0b2a339ad53"
+      }
     },
     "inventory": {
-      "status": "PASS"
-    },
-    "focused": {
       "status": "PASS",
-      "passed": 164,
-      "junit": "validation/upgrade-1.3.0/focused-closure-junit.xml",
-      "scope": "Linux Python 3.10; includes actual PyTorch CPU continuation witness; process-local protobuf workaround",
-      "skipped": 2
-    },
-    "packaging": {
-      "status": "PASS",
-      "passed": 26,
-      "junit": "validation/upgrade-1.3.0/package-junit.xml"
+      "codex_entrypoints": 88
     },
     "full_suite": {
       "status": "PASS",
-      "scope": "Linux Python 3.12.14 full regression before the release-CI Windows file-flush correction; actual PyTorch training/restoration included; not claimed as a rerun of the corrected tree",
-      "junit": "validation/upgrade-1.3.0/full-closure-junit.xml",
-      "source_manifest": "validation/upgrade-1.3.0/final-runtime-source.json",
-      "passed": 1053,
-      "skipped": 35,
+      "commit": "40ff2c20c059ed639180e9c903233f70b20c54eb",
+      "passed": 1150,
+      "skipped": 38,
       "failed": 0,
       "errors": 0,
-      "duration_seconds": 936.031
+      "warnings": 3,
+      "subtests_passed": 46,
+      "duration_seconds": 476.47,
+      "receipt": {
+        "path": "validation/upgrade-1.4.0/full-tests-normalization-20261017.xml",
+        "sha256": "0736afa891958e3fc77c7303e9bc9485a0f86bd9124ac63cd637c2d5f0c0abde"
+      },
+      "scope": "Local Linux acceptance interpreter; before the added publication-coverage regression; skips are not integration passes."
     },
-    "native_discovery": {
+    "publication_coverage_regression": {
       "status": "PASS",
-      "entrypoints": 86,
-      "source_files_matching": 801,
-      "scopes": [
-        "project directory",
-        "ordinary directory"
+      "before": {
+        "passed": 2,
+        "failed": 1,
+        "receipt": {
+          "path": "validation/upgrade-1.4.0/release-windows-coverage-before-20261017.xml",
+          "sha256": "dedbe24a37c9e1ed2bbfb94652086b82a99e1d55538f647609b939581727dfce"
+        }
+      },
+      "after": {
+        "passed": 3,
+        "failed": 0,
+        "receipt": {
+          "path": "validation/upgrade-1.4.0/release-windows-coverage-after-20261017.xml",
+          "sha256": "705c5c1a694481c69c28dfe6e389554efae402433a2f6ae06f1730c3c7020430"
+        }
+      },
+      "scope": "Both native Windows release jobs include all modules in ordinary CI; publish depends on Linux/macOS and Windows gates."
+    },
+    "scope_and_resource_calibration": {
+      "status": "PASS",
+      "candidate_commit": "21b2b65fd398e3f022bcd936ff6ca97b40575df0",
+      "cases": [
+        "J09",
+        "AUDIT_NEGATIVE",
+        "AUDIT_GATE",
+        "S02"
       ],
-      "scope": "isolated corrected source at the fixed runtime commit; native metadata discovery only; final changes are documentation; user configuration and installed plugin unchanged",
-      "evidence": "validation/release-1.3.0/native/verification.json",
-      "commit": "a76fcf5a8802b438fcb88d8a9845d934266955dc"
+      "formal_audit_acceptance": "BLOCKED when independent review unavailable",
+      "review": {
+        "path": "validation/upgrade-1.4.0/dev9-scope-calibration-independent-review-20261017.json",
+        "sha256": "ef3b34a68a8e208e69903252b008648aecce6ffe78d1f99a1b4ddad3aa49e8e2"
+      }
     },
-    "generic_skill_validator": {
-      "passed": 5,
-      "preexisting_argument_hint_rejections": 3,
-      "baseline_reproduced": true
-    },
-    "preliminary_full_suite": {
+    "normalization_and_legacy06": {
       "status": "PASS",
-      "passed": 1052,
-      "skipped": 33,
-      "scope": "Linux Python 3.12; before final NTFS-junction and record-size changes; not counted as final closure"
+      "cases": [
+        "N_VALID",
+        "N_INVALID",
+        "original legacy06"
+      ],
+      "scope": "Prospective public request-only controls, actual repaired audit Step B reads; no isolated shared-reference-consumption or superiority claim. Legacy independent claim acceptance remains BLOCKED.",
+      "review": {
+        "path": "validation/upgrade-1.4.0/dev10-normalization-behavior-review-20261017.json",
+        "sha256": "a4aa3afd94e9d06fd77bfac59e90ae7c98dac7d30b026e446ee7c56d21f0b863"
+      }
     },
-    "governed_cpu_training": {
+    "positive_local_resource_paths": {
       "status": "PASS",
-      "device": "cpu",
-      "method_count": 2,
-      "seeds_per_method": 3,
-      "recorded_attempts": 7,
-      "included_attempts": 6,
-      "restoration_control": true,
-      "full_state_restoration_identical": true,
-      "scientific_verdict": "not-assessed"
+      "cases": [
+        "unchanged G02 on verified local overlay",
+        "explicit L02_POSITIVE_PRECONDITION synthetic evidence variant"
+      ],
+      "scope": "Actual initialization and actual protected winner cleanup; original lock-probe and missing-ledger blockers remain. Synthetic fixture author also reviewed; local operations only.",
+      "review": {
+        "path": "validation/upgrade-1.4.0/dev9-resource-positive-independent-review-20261017.json",
+        "sha256": "a4c377c7a471c4a017e529ea7602ab43e8cc93a96d6fa0cedd2ad6aa87fc098d"
+      }
     },
-    "release_ci_corrections": {
+    "held_out_isolation_verification": {
+      "status": "PASS-provisional",
+      "seconds": 62.6,
+      "tool_actions": 6,
+      "time_limit_seconds": 300,
+      "action_limit": 32,
+      "attempts": 1,
+      "request_and_fixture_unchanged": true,
+      "private_material_disclosed_to_implementer": false,
+      "old_failures_preserved": true,
+      "scope": "Prospectively registered current-candidate isolation check; source/runtime both changed, so old failure cause is unknown.",
+      "public_safe_review": {
+        "path": "validation/upgrade-1.4.0/fresh04-dev10-isolation-review-safe-20261017.json",
+        "sha256": "1ee004ec26e2566da78fff10c4bbddeb3249646d65a358df62dae3d3335a023d"
+      }
+    },
+    "case_study_baseline_and_legacy": {
+      "status": "qualified-criteria-met",
+      "baseline_content_met": 8,
+      "candidate_content_met": 8,
+      "candidate_scope": "Previously reviewed selected completions; loaded dependency slices unchanged at current source, not fresh source10 or first-attempt-clean execution.",
+      "media_viewing_provenance": "Historical candidate C03/C04/C07 and baseline C04/C07 remain INCONCLUSIVE; correct content does not prove direct viewing. Baseline C03 has successful pixel acquisition.",
+      "legacy_request_only_positive_ids": [
+        "01",
+        "02",
+        "04",
+        "05",
+        "06",
+        "07",
+        "08",
+        "09",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20",
+        "21",
+        "23",
+        "24"
+      ],
+      "legacy_mandatory_ids": [
+        "09",
+        "11",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18"
+      ],
+      "not_counted": [
+        "03: public-budget positive only",
+        "22: timeout/partial without final handoff"
+      ],
+      "legacy_scope": "22 distinct request-only outcomes across documented applicable sources; case20 noncanonical-surface qualification remains.",
+      "review": {
+        "path": "validation/upgrade-1.4.0/case-study-baseline-and-legacy-closure-20261017.json",
+        "sha256": "6074725a408468b83c3f93e9fa0595362e28ab06249082bdcddc667151ac53cd"
+      }
+    },
+    "J05": {
+      "status": "user-accepted",
+      "scope": "Completed required artifacts accepted explicitly by user; original timeout and incomplete terminal turn preserved; no other case or scientific-review waiver."
+    },
+    "other_approved_matrix": {
+      "status": "qualified-criteria-met",
+      "scope": "40 focus positions, eight critical paired repeats and four cross-session handoffs; replaced private positions remain blinded. Use dated validation report for source, runtime and review-gate qualifications."
+    },
+    "final_materials_package_and_mirror": {
       "status": "PASS",
-      "passed": 140,
-      "skipped": 2,
+      "passed": 47,
+      "skipped": 0,
       "failed": 0,
       "errors": 0,
-      "junit": "validation/release-1.3.0/windows-read-fix-local.xml",
-      "scope": "Linux Python 3.10 checkpoint/evidence/archival/publication/CI-annotation regression after Windows sync and manifest read/write contention corrections; real PyTorch CPU restoration included"
+      "duration_seconds": 18.04,
+      "receipt": {
+        "path": "validation/upgrade-1.4.0/final-release-materials-tests-20261017.xml",
+        "sha256": "963bf55a148d4ef8c0baae3c9c846b6339ce8549fca6cf234135fdaf5cf1362f"
+      },
+      "scope": "Final version metadata, publication workflow/arguments, package-preservation and mainline/Codex parity checks; full final-tag suite still required."
     }
   },
   "ci": {
-    "status": "PASS",
+    "status": "PASS at validated implementation commit",
+    "commit": "40ff2c20c059ed639180e9c903233f70b20c54eb",
+    "run_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/38991160599",
+    "jobs": [
+      {
+        "id": 117273639271,
+        "name": "windows (powershell.exe)",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/38991160599/job/117273639271"
+      },
+      {
+        "id": 117273639408,
+        "name": "pytest (macos-latest)",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/38991160599/job/117273639408"
+      },
+      {
+        "id": 117273639421,
+        "name": "pytest (ubuntu-latest)",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/38991160599/job/117273639421"
+      },
+      {
+        "id": 117273639437,
+        "name": "windows (pwsh)",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/38991160599/job/117273639437"
+      }
+    ],
     "required": [
       "ubuntu-latest full suite",
       "macos-latest full suite",
       "windows-latest powershell.exe portable gate",
       "windows-latest pwsh portable gate"
     ],
-    "windows_new_tests": [
-      "test_research_guidance.py",
-      "test_comparison_evidence.py",
-      "test_comparison_archive.py"
-    ],
-    "prior_attempts": [
-      {
-        "commit": "d5f21e725bf92e92ef26db2f1506d5c9038e4f29",
-        "run_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/38517081776",
-        "conclusion": "failure",
-        "jobs": [
-          {
-            "name": "pytest (macos-latest)",
-            "conclusion": "success",
-            "html_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/38517081776/job/115698181670"
-          },
-          {
-            "name": "pytest (ubuntu-latest)",
-            "conclusion": "success",
-            "html_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/38517081776/job/115698181812"
-          },
-          {
-            "name": "windows (pwsh)",
-            "conclusion": "failure",
-            "html_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/38517081776/job/115698181830"
-          },
-          {
-            "name": "windows (powershell.exe)",
-            "conclusion": "failure",
-            "html_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/38517081776/job/115698181896"
-          }
-        ]
-      },
-      {
-        "commit": "580710eba8e8072a6a46bf235bae181b8d406f1e",
-        "run_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/38518206170",
-        "conclusion": "failure",
-        "jobs": [
-          {
-            "name": "pytest (ubuntu-latest)",
-            "conclusion": "success",
-            "html_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/38518206170/job/115701695713"
-          },
-          {
-            "name": "pytest (macos-latest)",
-            "conclusion": "success",
-            "html_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/38518206170/job/115701695928"
-          },
-          {
-            "name": "windows (powershell.exe)",
-            "conclusion": "failure",
-            "html_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/38518206170/job/115701695950"
-          },
-          {
-            "name": "windows (pwsh)",
-            "conclusion": "failure",
-            "html_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/38518206170/job/115701696024"
-          }
-        ]
-      },
-      {
-        "commit": "325e116c47e49753d145f4998f415e1d44e115c9",
-        "run_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/38519005869",
-        "conclusion": "failure",
-        "jobs": [
-          {
-            "name": "windows (powershell.exe)",
-            "conclusion": "failure",
-            "html_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/38519005869/job/115704156399"
-          },
-          {
-            "name": "pytest (ubuntu-latest)",
-            "conclusion": "success",
-            "html_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/38519005869/job/115704156639"
-          },
-          {
-            "name": "pytest (macos-latest)",
-            "conclusion": "success",
-            "html_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/38519005869/job/115704156686"
-          },
-          {
-            "name": "windows (pwsh)",
-            "conclusion": "failure",
-            "html_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/38519005869/job/115704156703"
-          }
-        ]
-      }
-    ],
-    "corrections": [
-      "Windows checkpoint flushing needs a writable, non-truncating descriptor",
-      "Keep the terminal exception in public CI annotation excerpts",
-      "Run the checkpoint-retention suite under both native Windows shells",
-      "Retry only temporary native sharing/access errors while atomically replacing the manifest; one-second bound, preserve old bytes and propagate other errors",
-      "Apply bounded sharing-error retries to manifest reads, including Windows CRT EACCES without a Win32 code; reject persistent errors and invalid JSON"
-    ],
-    "commit": "a76fcf5a8802b438fcb88d8a9845d934266955dc",
-    "run_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/38519743173",
-    "jobs": [
-      {
-        "name": "pytest (ubuntu-latest)",
-        "conclusion": "success",
-        "html_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/38519743173/job/115706472917"
-      },
-      {
-        "name": "windows (powershell.exe)",
-        "conclusion": "success",
-        "html_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/38519743173/job/115706473114"
-      },
-      {
-        "name": "windows (pwsh)",
-        "conclusion": "success",
-        "html_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/38519743173/job/115706473265"
-      },
-      {
-        "name": "pytest (macos-latest)",
-        "conclusion": "success",
-        "html_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/38519743173/job/115706473270"
-      }
-    ],
-    "junit_receipts": {
-      "ubuntu-latest": [
-        "Pytest JUnit receipt: 1055 passed, 34 skipped, 0 failed, 0 errors."
+    "exact_tag": {
+      "status": "REQUIRED_BEFORE_PUBLICATION",
+      "workflow": ".github/workflows/release-beta.yml",
+      "publication_requires": [
+        "test",
+        "windows"
       ],
-      "powershell.exe": [
-        "Pytest JUnit receipt: 220 passed, 4 skipped, 0 failed, 0 errors."
-      ]
-    },
-    "scope": "Corrected runtime and tests at fixed commit; final documentation-only commit is additionally gated by exact-tag CI before publication"
+      "later_workflow_change": "Add literature, decision, workflow-version and figure-evidence modules to both Windows jobs."
+    }
   },
+  "review_scope": "Fresh-context same-family/provisional engineering reviews; no independent cross-family scientific or universal model-behavior certification.",
   "historical_evidence": {
-    "version": "1.2.0",
-    "reference": "https://github.com/Soceremite/EvoInquiry/blob/v1.2.0/release-validation.json",
+    "version": "1.3.0",
+    "reference": "https://github.com/Soceremite/EvoInquiry/blob/v1.3.0/release-validation.json",
     "counted_as_current": false
   },
   "limits": [
-    "coverage and fixed bytes do not certify scientific fairness, numerical correctness, preregistration or unrecorded jobs",
-    "no new implicit-skill invocation-rate or paid model evaluation",
-    "no new GPU, distributed training, object-store, network-filesystem or power-loss acceptance"
+    "Prior timeouts, interruptions, noncanonical reads and unavailable scientific reviews remain recorded; targeted prospective successes do not erase failures.",
+    "Fixed-case content parity does not establish general superiority, activation reliability or image-understanding quality.",
+    "Coverage and fixed bytes do not certify research correctness, unrecorded jobs or claim acceptance.",
+    "Optional live backends and complete projects are not all validated end to end.",
+    "Failed filesystem locking probes block governance; no new network-filesystem, distributed-training or power-loss guarantee."
   ],
-  "private_evidence": "validation/upgrade-1.3.0; excluded from public source assets",
-  "report": "docs/VALIDATION_1_3_0.md"
+  "private_evidence": "validation/upgrade-1.4.0; excluded from public committed archives",
+  "report": "docs/VALIDATION_1_4_0.md"
 }

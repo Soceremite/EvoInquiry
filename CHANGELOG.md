@@ -1,10 +1,10 @@
 # Changelog
 
-## Unreleased
+## 1.4.0 — 2026-10-17
 
 ### Added
 
-- Add `scientific-brainstorming` and `research-manager`, bringing the working-tree inventory to 88 Codex and 87 mainline skills. Frame testable questions and preserve evidence-linked decisions within existing project records.
+- Add `scientific-brainstorming` and `research-manager`, bringing the inventory to 88 Codex and 87 mainline skills. Frame testable questions and preserve evidence-linked decisions within existing project records.
 - Add offline literature identity/source/reading records and figure input/source/output identity receipts alongside existing fetchers and renderers.
 - Add versioned framing for new idea-discovery runs, preserving old run contracts and scientific review gates.
 - Add proactive case studies to substantive result analysis, with task-specific diagnosis for classification, regression, image generation and video understanding. Reuse existing sample outputs and record selection, paired evidence, regressions and missing coverage.
@@ -15,9 +15,14 @@
   remain concise, substantive reports lead with the observed comparison, and
   repeated case findings are consolidated. Conditional reference loading reduces
   unnecessary routing work while preserving sample-level evidence, regressions,
-  missing coverage and review gates. Codex runs now stay on the exact discovered
-  mirror, finish after one verified report, and classify repeated service
-  overload/reconnect failures as incomplete infrastructure evidence.
+  missing coverage and review gates. Correct runtime-relative links, pin loaded
+  skill variants, and report noncanonical reads separately. Bound completion work
+  after one verified report and record overload/reconnect failures without
+  treating incomplete execution as a pass.
+- Distinguish assessment of supplied records from formal execution certification. Local audits report supported findings, demonstrated defects and unknowns without forcing a full audit; required independent review still blocks acceptance when unavailable.
+- Preserve supplied resource quantities in experiment plans and deliver a compact blocked-run tracker when the requested storage or execution plan is infeasible.
+- Judge normalization against metric definitions, comparison protocols and claims. Legitimate precision/F1/IoU denominators and disclosed display transforms are not failures by themselves; display rescaling does not establish absolute accuracy, calibration or relative gains.
+- Include the literature, research-decision, workflow-version and figure-evidence modules in both native Windows release gates. Add a regression that detects gaps between ordinary CI and publication coverage.
 - Keep primary and material negative results visible through paper improvement; mark secondary reframing exploratory. Give generated Claude reviewers actual read-only artifact access.
 - Complete mechanical framing against a nonempty fixed artifact so sessions resume at the next phase, without granting scientific acceptance.
 - Reject figure path aliases and invalid geometry; preserve interrupted decision history, Unicode output and stable literature export ordering.
@@ -31,7 +36,7 @@
 - Choose relevant available literature sources with `sources: auto`; retain legacy explicit `all` and user source constraints. Distinguish metadata, abstracts and inspected sections, including contrary evidence and identity conflicts.
 - Plan compact sample-level evidence before analysis, reuse its selection record in figure panels and paper outlines, and audit qualitative claims against the actual pool. Narrow numerical requests remain narrow; missing outputs do not trigger automatic inference.
 
-These changes are under validation for 1.4.0. See `docs/VALIDATION_1_4_0.md` for observed results and outstanding gates; optional external adapters are not advertised as validated integrations.
+See `docs/VALIDATION_1_4_0.md` for source-specific results, preserved failed attempts, human acceptance of J05, runtime deviations and review limitations. The implementation passed 1,150 local tests and all four native CI jobs; publication additionally requires exact-tag CI. Optional external adapters are not advertised as validated integrations.
 
 ## 1.3.0 — 2026-10-14
 

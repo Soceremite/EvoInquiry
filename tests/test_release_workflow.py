@@ -2,6 +2,7 @@
 import json
 import os
 from pathlib import Path
+import shlex
 import shutil
 import subprocess
 
@@ -10,6 +11,34 @@ import yaml
 
 
 REPO = Path(__file__).resolve().parents[1]
+
+
+def test_release_covers_portable_windows_validation_before_publication():
+    workflows = {
+        name: yaml.load((REPO / '.github/workflows' / name).read_text(),
+                        Loader=yaml.BaseLoader)
+        for name in ('test-suite.yml', 'release-beta.yml')
+    }
+
+    def windows_modules(workflow):
+        return {
+            token
+            for step in workflow['jobs']['windows']['steps']
+            for token in shlex.split(step.get('run', ''))
+            if token.startswith('tests/') and token.endswith('.py')
+        }
+
+    development = windows_modules(workflows['test-suite.yml'])
+    release = workflows['release-beta.yml']
+    assert development, 'The normal Windows validation suite must be nonempty'
+    assert development <= windows_modules(release), (
+        'Publication omits Windows validation modules: '
+        + ', '.join(sorted(development - windows_modules(release)))
+    )
+    assert {'powershell.exe', 'pwsh'} <= set(
+        release['jobs']['windows']['strategy']['matrix']['powershell']
+    )
+    assert {'test', 'windows'} <= set(release['jobs']['publish']['needs'])
 
 
 @pytest.mark.parametrize('version', ['1.0.0', '1.0.0-beta.5'])

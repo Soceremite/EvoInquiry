@@ -8,7 +8,7 @@
 [Static cover](docs/assets/evo-inquiry-hero.svg)
 
 <p align="center">
-  <a href="https://github.com/Soceremite/EvoInquiry/releases/tag/v1.3.0"><img src="https://img.shields.io/badge/release-1.3.0-FF927E?style=flat&amp;labelColor=7862E8" alt="Stable release 1.3.0"></a>
+  <a href="https://github.com/Soceremite/EvoInquiry/releases/tag/v1.4.0"><img src="https://img.shields.io/badge/release-1.4.0-FF927E?style=flat&amp;labelColor=7862E8" alt="Stable release 1.4.0"></a>
   <a href="docs/SKILLS_CATALOG.md"><img src="https://img.shields.io/badge/Codex_skills-88-59C7A7?style=flat&amp;labelColor=7862E8" alt="88 Codex skills"></a>
   <a href="https://github.com/Soceremite/EvoInquiry/actions/workflows/test-suite.yml"><img src="https://github.com/Soceremite/EvoInquiry/actions/workflows/test-suite.yml/badge.svg" alt="Regression test status"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-FFD95E?style=flat&amp;labelColor=7862E8" alt="MIT license"></a>
@@ -24,18 +24,19 @@ literature, method design, experiments, critical review and paper preparation.
 Use one skill for a focused task, or connect them into a longer workflow.
 The next step follows the research question, existing evidence and your constraints.
 
-**New in [1.3.0](https://github.com/Soceremite/EvoInquiry/releases/tag/v1.3.0):**
-fair comparison guidance across the experiment lifecycle, evidence checks before
-comparison weight consolidation, and opt-in persistent research routing.
+**New in [1.4.0](https://github.com/Soceremite/EvoInquiry/releases/tag/v1.4.0):**
+turn vague directions into testable questions, preserve evidence-linked decisions,
+and combine objective result interpretation with proactive case studies.
 
-## 1.4.0 development
+## From a rough direction to an evidence-backed next step
 
-The working tree adds problem framing and evidence-linked research handoffs, with
-objective interpretation across ideation, review and writing. Literature records
+Start with `scientific-brainstorming` to explore competing explanations and
+feasible questions. Use `research-manager` to track decisions, unresolved issues
+and handoffs in existing project records. Literature records
 retain identity, versions and reading scope; figure receipts bind real inputs,
 editable sources and captions. Existing comparison, checkpoint and review gates
-remain in use. The latest stable download below is still 1.3.0 while candidate
-validation is in progress; see [the 1.4.0 validation record](docs/VALIDATION_1_4_0.md).
+remain in use. See [what changed](RELEASE_NOTES.md) and the
+[1.4.0 validation record](docs/VALIDATION_1_4_0.md).
 
 Try a bounded request such as “Frame research questions about low-cost memory;
 no training yet”, “Check whether these means support the claim”, or “Plot this
@@ -64,13 +65,13 @@ Your scope, review gates, resource budget and stopping conditions govern the wor
 
 ## Quick start
 
-Download and extract `evo-inquiry-1.3.0.tar.gz` or `.zip` from the
-[stable release](https://github.com/Soceremite/EvoInquiry/releases/tag/v1.3.0).
+Download and extract `evo-inquiry-1.4.0.tar.gz` or `.zip` from the
+[stable release](https://github.com/Soceremite/EvoInquiry/releases/tag/v1.4.0).
 Use a Codex version with the `codex plugin` commands; installation has been checked
-with Codex CLI **0.162.1** on Linux.
+with Codex CLI **0.163.0** on Linux.
 
 ```sh
-cd /path/to/evo-inquiry-1.3.0
+cd /path/to/evo-inquiry-1.4.0
 codex plugin marketplace add "$PWD"
 codex plugin add evo-inquiry@evo-inquiry
 ```
@@ -93,7 +94,7 @@ available; persistent selection preferences are [configured separately](#usage).
 <summary><strong>Source development and a clean installation</strong></summary>
 
 For source development, use
-`git clone --branch v1.3.0 https://github.com/Soceremite/EvoInquiry.git EvoInquiry`.
+`git clone --branch v1.4.0 https://github.com/Soceremite/EvoInquiry.git EvoInquiry`.
 Install the plugin from a clean release archive. Codex CLI 0.162.1 copies local
 untracked files too, so a release archive keeps private validation records,
 build outputs and Git history out of the installed cache.
@@ -142,10 +143,11 @@ and [comparison evidence format](docs/COMPARISON_EVIDENCE.md).
 | Capability | Tasks | Example skills |
 | --- | --- | --- |
 | Project continuation | Reuse existing evidence and coordinate the next authorized step | `research-guide` |
+| Research decisions and handoffs | Track evidence, competing options, blockers and authorized next steps | `research-manager` |
 | Project and evidence governance | Fix inputs and execution identities, recover reports and plan migrations | `project-governance` |
 | Environment maintenance | Validate candidates and protect environments needed for reproduction | `environment-maintenance` |
 | Literature and knowledge | Search papers, map prior work, check novelty and maintain a knowledge base | `research-lit`, `novelty-check`, `research-wiki` |
-| Ideas and research design | Explore directions, refine a method and plan tests of its claims | `idea-discovery`, `research-refine`, `experiment-plan` |
+| Ideas and research design | Frame vague directions, explore alternatives, refine a method and plan tests | `scientific-brainstorming`, `idea-discovery`, `research-refine`, `experiment-plan` |
 | Theory and proofs | Organize assumptions, derive formulas, write proofs and check gaps | `formula-derivation`, `proof-writer`, `proof-checker` |
 | Experiments and analysis | Implement comparisons, run experiments, analyse seeds and plan ablations | `experiment-bridge`, `run-experiment`, `analyze-results` |
 | Evidence and review | Audit integrity, assess supported claims, verify citations and challenge conclusions | `experiment-audit`, `result-to-claim`, `research-review` |
@@ -157,13 +159,13 @@ Primarily built for ML, AI and related engineering research. See the
 [full skill inventory](docs/SKILLS_CATALOG.md) for domain-specific workflows,
 orchestrators and optional provider backends.
 
-The 1.4.0 candidate also makes [case studies](skills/skills-codex/shared-references/case-study-analysis.md)
+Version 1.4.0 makes [case studies](skills/skills-codex/shared-references/case-study-analysis.md)
 part of substantive result analysis: inspect existing sample outputs, explain
 concrete improvements and failures, and retain traceable, fairly paired examples.
 Classification errors, regression residuals, generated images and timestamped
 video evidence use task-appropriate displays. Short metric queries stay short;
-missing sample outputs are reported rather than invented. This addition is
-under validation and is not part of the installed 1.3.0 release.
+missing sample outputs are reported rather than invented. New inference or
+experiments require their own scope and resource authorization.
 
 <a id="usage"></a>
 
@@ -227,9 +229,10 @@ The documented EvoInquiry installation route is the Codex plugin above.
 Retained backend and client compatibility resources support existing workflow
 contracts; they are optional and have separate setup requirements.
 
-Current checks and their scope are recorded in [1.3.0 validation](docs/VALIDATION_1_3_0.md).
-The [1.3.0 release workflow](https://github.com/Soceremite/EvoInquiry/actions/runs/38521070262)
-passed Linux, macOS and native Windows checks with both `powershell.exe` and `pwsh`.
+Current checks and their scope are recorded in [1.4.0 validation](docs/VALIDATION_1_4_0.md).
+The [validated implementation CI](https://github.com/Soceremite/EvoInquiry/actions/runs/38991160599)
+passed Linux, macOS and native Windows checks with both `powershell.exe` and `pwsh`;
+the final release tag is gated again before publication.
 Historical evidence remains in [governance validation](docs/UPGRADE_VALIDATION_CN.md)
 and [portability coverage](docs/PORTABILITY_VALIDATION_CN.md).
 The [offline behavior evaluation](docs/SKILL_BEHAVIOR_EVAL.md) compares natural
