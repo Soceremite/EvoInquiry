@@ -19,10 +19,32 @@
   <a href="README_CN.md">中文</a> · <a href="#installation">Quick start</a> · <a href="#capabilities">Skills</a> · <a href="https://github.com/Soceremite/EvoInquiry/releases">Releases</a> · <a href="CONTRIBUTING.md">Contribute</a>
 </p>
 
-EvoInquiry is a research workflow toolkit for Codex. Its **88 Codex skills** connect
-literature, method design, experiments, critical review and paper preparation.
-Use one skill for a focused task, or connect them into a longer workflow.
-The next step follows the research question, existing evidence and your constraints.
+Meet **EvoInquiry, a research companion that helps you take an idea forward.**
+
+Research often starts with a single sentence. You read the papers, explore the
+possibilities, and still need to work out what to try next. Once experiments are
+running, there are resources to manage, results to interpret and failures to
+understand. Bringing that work together into a convincing paper takes care at
+every step.
+
+We built EvoInquiry for Codex to help connect those steps. Its **88 Codex skills**
+span brainstorming, literature search, experiment design, execution monitoring,
+result analysis and paper writing. Evidence from one step becomes a useful input
+for the next. Use one skill for a focused task, or connect them into a longer
+workflow shaped by your research question, existing evidence and constraints.
+
+We have put care into the details, too. Comparisons should account for data,
+training budgets and random seeds. Analysis should examine concrete successes
+and failures alongside the metrics. Long runs should include a plan for saving
+weights, recovering from interruptions and keeping storage under control.
+
+**Above all, we value objectivity.** Explain improvements clearly, report
+regressions openly, and keep validating when the evidence is incomplete. A
+research tool should help us see the problem more clearly.
+
+**EvoInquiry 1.4.0 is open source.** Try it on your own research tasks and share
+the problems and suggestions you encounter. Help us make this research companion
+more dependable and more useful.
 
 **New in [1.4.0](https://github.com/Soceremite/EvoInquiry/releases/tag/v1.4.0):**
 turn vague directions into testable questions, preserve evidence-linked decisions,
