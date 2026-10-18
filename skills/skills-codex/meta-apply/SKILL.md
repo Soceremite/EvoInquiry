@@ -22,17 +22,25 @@ budgets, blocking checkpoints, and stopping conditions.
 > `stamp-provisional`; the artifact is not auto-curatable. Only an overlay or
 > deterministic verifier may produce accepted authorization.
 
-This skill exists to enforce a **privilege boundary**. Producers like
-[`/meta-optimize`](../meta-optimize/SKILL.md) (and, later, `corpus-audit`) are
-**read-only** — no `Write`/`Edit`, no apply step; they can only *stage* candidate patches
-under `.ei/meta/pending/`. **This skill is the only place a staged patch becomes a real
-change to the corpus.** Splitting "propose" from "land" across two skills with different
-tool grants is what makes "a loop cannot apply its own patch" structural rather than a
-sentence the producer is asked to obey.
+This skill owns the landing boundary. Producers like
+[meta-optimize](../meta-optimize/SKILL.md) may write staging artifacts under
+`.ei/meta/pending/`; they must not modify the corpus or invoke this workflow.
+Codex tool grants are not a filesystem sandbox, so do not claim that different
+frontmatter alone makes unauthorized writes technically impossible. This separate
+workflow applies the human selection, fresh review and provenance requirements.
 
 It is **human-invoked only.** It runs when the user explicitly types `/meta-apply` after
 reading the producer's REPORT. That invocation IS the landing authorization (the locked
 2026-05-30 decision: the human stays at the landing gate).
+
+## Check the tested candidate
+
+When candidate-comparison evidence is supplied, verify its fixed sources and
+that the actual staged diff matches the tested candidate. Read regressions,
+missing/failed attempts, held-out coverage and rollback conditions. The report
+is advisory; it cannot substitute for this fresh landing verdict or expand the
+patches the human authorized. No Goal or producer loop may call this landing step
+automatically. Preserve the original review, provenance and backup requirements.
 
 ## The acquittal is generated HERE, not relayed
 

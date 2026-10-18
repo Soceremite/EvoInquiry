@@ -31,6 +31,18 @@ def test_release_covers_portable_windows_validation_before_publication():
     development = windows_modules(workflows['test-suite.yml'])
     release = workflows['release-beta.yml']
     assert development, 'The normal Windows validation suite must be nonempty'
+    bounded_research = {
+        'tests/test_run_state.py',
+        'tests/test_research_control.py',
+        'tests/test_research_events.py',
+        'tests/test_research_memory.py',
+        'tests/test_candidate_comparison.py',
+        'tests/test_research_pilots.py',
+    }
+    assert bounded_research <= development, (
+        'Native Windows validation omits bounded research modules: '
+        + ', '.join(sorted(bounded_research - development))
+    )
     assert development <= windows_modules(release), (
         'Publication omits Windows validation modules: '
         + ', '.join(sorted(development - windows_modules(release)))

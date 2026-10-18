@@ -127,6 +127,14 @@ Special rules:
 
 Plan the case-selection population, outcome-independent sample and diagnostic contrasts before inspecting test outputs where feasible. Record any later exploratory selection. Include both successful and failed outcomes when present, without requiring arbitrary quotas or storing every generated asset. Start diagnosis as baseline/main results become available; final presentation may wait for polish.
 
+For a requested sustained investigation, read
+[bounded-inquiry](../shared-references/bounded-inquiry.md). Link each expensive
+block to the uncertainty it resolves, competing predicted outcomes, declared
+costs and a decision/stopping rule. Reuse relevant prior negative findings rather
+than scheduling an unchanged retry. Reserve verification and handoff time.
+Planning produces the spec and roadmap; neither a host Goal nor this plan starts
+jobs or grants additional resources. Keep the existing fairness and review gates.
+
 ### Phase 4: Turn the Plan Into an Execution Order
 
 Build a realistic run order so the user knows what to do first.

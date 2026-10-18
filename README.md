@@ -193,6 +193,11 @@ experiments require their own scope and resource authorization.
 
 ## Use EvoInquiry throughout a project
 
+Bounded continuation is under development for 1.5.0. See the
+[Plan/Goal usage guide (Chinese)](docs/BOUNDED_RESEARCH_CN.md) and
+[candidate validation](docs/VALIDATION_1_5_0.md) for scope and status.
+The stable release and formal installation remain 1.4.0.
+
 > Continue this research project from its existing proposal and pilot results.
 > Complete the next useful analysis and prepare the follow-up plan; stop before
 > launching new experiments.

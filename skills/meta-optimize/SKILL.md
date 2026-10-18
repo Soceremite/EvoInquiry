@@ -86,42 +86,24 @@ Inspired by Meta-Harness (Lee et al., 2026): the key insight is that harness des
 ## Prerequisites
 
 1. **Logging must be active.** Copy `templates/claude-hooks/meta_logging.json` into your project's `.claude/settings.json` (or merge the hooks section).
-2. **Sufficient data.** At least 5 complete workflow runs logged in `.ei/meta/events.jsonl`. The skill will check and warn if insufficient.
+2. **Relevant evidence.** Five completed independent task traces are a collection heuristic, not five skill calls or a proof of sufficiency. A specific reproducible defect can justify a narrow proposal sooner; broad defaults need broader evidence. Report actual coverage and missing outcomes.
 
 ## Workflow
 
 ### Step 0: Check Data Availability
 
-```bash
-EVENTS_FILE=".ei/meta/events.jsonl"
-if [ ! -f "$EVENTS_FILE" ]; then
-    echo "ERROR: No event log found at $EVENTS_FILE"
-    echo "Enable logging first: copy templates/claude-hooks/meta_logging.json into .claude/settings.json"
-    exit 1
-fi
+Resolve the existing state namespace and read `.ei/meta/events.jsonl`. Use the
+installed package's `tools/research_events.py --root <project> --summary` for
+read-only counts. Keep recorded invocations, skill-reference candidates, completed
+turns and completed workflows distinct. Legacy hooks and exported Codex traces
+have different observable fields; unknown outcomes remain unknown. Missing logs
+are missing evidence, not permission to manufacture examples or scan private history.
 
-EVENT_COUNT=$(wc -l < "$EVENTS_FILE")
-SKILL_INVOCATIONS=$(grep -c '"skill_invoke"' "$EVENTS_FILE" || echo 0)
-SESSIONS=$(grep -c '"session_start"' "$EVENTS_FILE" || echo 0)
-
-echo "📊 Event log: $EVENT_COUNT events, $SKILL_INVOCATIONS skill invocations, $SESSIONS sessions"
-
-if [ "$SKILL_INVOCATIONS" -lt 5 ]; then
-    echo "⚠️  Insufficient data (<5 skill invocations). Continue using ARIS normally and re-run later."
-    exit 0
-fi
-
-# Bottleneck succession: what did the LAST cycle say was the limiting stage?
-BOTTLENECK_LOG=".ei/meta/bottleneck_log.jsonl"
-if [ -f "$BOTTLENECK_LOG" ]; then
-    echo "🧭 Prior cycle's bottleneck: $(tail -1 "$BOTTLENECK_LOG")"
-fi
-```
-
-If a prior bottleneck entry exists, open the report (Step 5) by stating whether
-that named bottleneck was **resolved** (and by which landed patches) and what it
-has now **moved to** — bottleneck SUCCESSION, not just existence, is the signal
-this ledger exists to carry.
+For an explicit project-relative Codex export, the Codex-compatible event logger
+is `tools/research_events.py --root <project> --source <trace.jsonl> --session <id>`.
+It imports source-bound observations without raw prompts, commands or outputs.
+No installed Codex session hook is implied. Keep original traces local under
+existing access policy. A command path mention is not proof of skill compliance.
 
 ### Step 1: Analyze Usage Patterns
 
@@ -183,7 +165,35 @@ Read `.ei/meta/events.jsonl` and compute:
   like (record the probe model) and treat it as a proxy — it measures selection
   under a query set, not the full long-list omission problem.
 
+For Codex, use the existing `tools/evaluate_skill_behavior.py` with the actual
+installed catalog for bounded routing and task-behavior cases, including negative
+cases. Preserve native discovery, source snapshots, every failed or timed-out
+attempt, and independently assess the traces/artifacts against a frozen rubric.
+A command reading a skill is an access signal; behavior needs outcome assessment.
+The Claude-only trigger probe above is not a Codex probe.
+
 Present findings as a structured summary table.
+
+### Paired candidate evaluation
+
+Before using a proposed change to claim improvement, freeze development/held-out
+case IDs, independent repetitions, model/provider/effort, budgets, harness and
+rubric. Pin baseline and candidate environment/discovery snapshots. Use the same
+request and fixture for each pair; reusing a test task during revision makes it
+part of development, so replace its held-out role. More forceful triggering alone
+is not better behavior. Report unnecessary activations as well as omissions.
+
+`tools/meta_opt/compare_candidates.py --root <study> --request <request.json>`
+consumes a fixed `protocol_ref`, existing native-harness run records and separate
+source-bound assessments. Its Python docstring specifies the input fields. Keep
+all declared attempts, failures, timeouts, unassessed outcomes, improvements and
+regressions. Fewer than two repeats or no held-out tasks is explicitly insufficient
+for its candidate signal. This minimum is not a statistical sufficiency rule.
+
+The comparison report is advisory. It cannot establish reviewer independence,
+discover undisclosed attempts, authorize landing, or certify general RSI. A faster
+or cheaper candidate still needs quality and scope checks. Preserve the old
+version and define rollback conditions before a human-authorized landing.
 
 ### Step 1.5: Name the Current Bottleneck
 
@@ -408,7 +418,7 @@ The log at `.ei/meta/events.jsonl` contains JSONL records with these shapes:
 
 This skill is NOT part of the standard W1→W1.5→W2→W3→W4 pipeline. It is a **maintenance workflow** with three trigger mechanisms:
 
-1. **Passive logging** (always on): Claude Code hooks record events to `.ei/meta/events.jsonl` automatically during normal usage. Zero user effort.
+1. **Passive logging** (when the hooks are configured): Claude Code hooks record events to `.ei/meta/events.jsonl` automatically during normal usage. Zero user effort.
 
 2. **Automatic readiness check** (SessionEnd hook): When a Claude Code session ends, `check_ready.sh` counts skill invocations since the last `/meta-optimize` run. If ≥5 new invocations have accumulated, it prints a reminder:
    ```

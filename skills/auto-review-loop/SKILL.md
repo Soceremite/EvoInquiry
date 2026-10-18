@@ -58,6 +58,13 @@ completion of the loop, not research acceptance, and grants no acquittal.
 Never hide an unfavorable primary result by adding a favorable metric or by
 renaming the original hypothesis. Label any exploratory reframing explicitly.
 
+For sustained loops or recovery, use
+[bounded-inquiry](../shared-references/bounded-inquiry.md) with the existing run.
+Bind a retry to the actual failed attempt and changed evidence; a lost connection
+is not proof that a job stopped. Record actual costs and preserve failed attempts.
+A native host Goal can continue authorized work only when explicitly requested;
+it does not reset this loop's budget, remove an unresolved issue or grant acquittal.
+
 ## Constants
 
 - MAX_ROUNDS = 4

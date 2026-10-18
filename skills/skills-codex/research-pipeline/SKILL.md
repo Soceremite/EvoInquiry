@@ -108,7 +108,7 @@ Warn-and-skip state tracking if `RUN_STATE` cannot be resolved; never pretend it
 was persisted. Phases are `idea-discovery,experiment-bridge,auto-review-loop,summary,paper-writing`.
 
 - New run: `python3 "$RUN_STATE" start . "$RUN_ID" --executor codex-gpt-6-astra --provisional-advances --phases "idea-discovery,experiment-bridge,auto-review-loop,summary,paper-writing"` (the `--provisional-advances` policy is what lets a same-family provisional verdict close a phase for resume — without it, mainline semantics apply and provisional phases stay open).
-- Resume: `python3 "$RUN_STATE" resume . "$RUN_ID"`; restart the returned phase.
+- Resume: `python3 "$RUN_STATE" resume . "$RUN_ID"`; inspect the returned phase and reconcile its existing execution before retrying work.
 - Each phase: mark `running`, then `done --artifact <path>`.
 - A fresh Codex reviewer PASS uses `mark-provisional --reviewer gpt-6-astra
   --verdict-id <trace-or-agent-id>`. This is terminal for resume but not accepted.
@@ -129,6 +129,19 @@ completion. After each tick run `iteration_log.py note <root> <run_id> <phase>
 <new-finding-count>`: `pivot=structural` requires a genuinely different approach;
 `pivot=human` surfaces the stall. Neither result is a quality verdict. See
 [`resumable-runs.md`](../shared-references/resumable-runs.md).
+
+## Bounded continuation and host modes
+
+For a sustained authorized investigation, use
+[bounded-inquiry](../shared-references/bounded-inquiry.md) within this original run.
+Choose the next action by the uncertainty and competing explanations it can
+resolve, using relevant prior decisions. Before dispatch reserve a stable action
+identity and declared cost; on resume reconcile actual execution before retry.
+Preserve original phase reviews, failure history and the existing storage policy.
+A native Goal, when explicitly requested, can sustain the host session; it cannot
+advance a research gate or replace experiment budgets. Plan-only work stops at
+the requested plan. Negative findings and evidence-driven pivots belong in the
+research history; the requested paper pipeline does not certify a positive claim.
 
 ## Pipeline
 

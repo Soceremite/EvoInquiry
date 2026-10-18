@@ -815,10 +815,17 @@
   "upgrade_source_commit": "69cfbc5dc5fc34c4d7e6146fe66f5520866f7dfe",
   "approved_upgrade_files": {
     ".gitignore": {
-      "sha256": "127abd5f6907575808507b1bf87e679fb12616095214d51d7424004f7b73d472",
       "baseline_sha256": "1284128154c23f57502d53698abfa987f7101e90c5daa5819c66b8a0f62eb1fd",
-      "reason": "Governance upgrade: reviewed resolver, publication, execution/queue integration, catalog or current-inventory regression adaptation",
-      "upgrade_baseline_sha256": "1284128154c23f57502d53698abfa987f7101e90c5daa5819c66b8a0f62eb1fd"
+      "sha256": "5afe32f30741e65c9d2365ffee86eef4ea5ffb1beecb5651d216f64c0fe023f3",
+      "adaptation_version": "1.5.0",
+      "previous_sha256": "127abd5f6907575808507b1bf87e679fb12616095214d51d7424004f7b73d472",
+      "reason": "User-approved 1.5.0: regenerate the dependent reviewer overlay, or allow only the exact synthetic recovery fixture while keeping private runtime state ignored.",
+      "review_ref": "docs/VALIDATION_1_5_0.md#directed-adaptations",
+      "test_refs": [
+        "tests/test_claude_review_artifact_tools.py",
+        "tests/test_comparison_packaging.py",
+        "tests/test_evo_inquiry.py"
+      ]
     },
     "mcp-servers/manual-review/server.py": {
       "sha256": "958ce1134f328258791f9d2ae900a3781672a4885bdf48a2fbf0f9bea7210731",
@@ -917,25 +924,18 @@
       "upgrade_baseline_sha256": "ec0dfb8b08de96c97b751968dd9b8e08bf323828cbf727e757a8bf2fc2d6ed76"
     },
     "tools/run_state.py": {
-      "sha256": "1dc45ea2740118e4040d781f44503483d0a62220bd91b8ccd9171d1d3bda5466",
       "baseline_sha256": "5fc466462e2d4c26c6de078dcb04100bafa3a9c56df9a0dc4e38f316a33df5b5",
-      "reason": "Directed 1.4.0 evidence, workflow, figure or distribution adaptation; see scoped implementation review.",
-      "upgrade_baseline_sha256": "5fc466462e2d4c26c6de078dcb04100bafa3a9c56df9a0dc4e38f316a33df5b5",
-      "previous_adaptations": [
-        {
-          "sha256": "b3bfc9645764601df77369bd92f382deb3ea0ece1af3eaf46d965d4bf1583515",
-          "reason": "Governance upgrade: reviewed resolver, publication, execution/queue integration, catalog or current-inventory regression adaptation"
-        }
-      ],
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "f8f0a6299f04610ae3e9d468fd01a5584c79713411264cde9f7d731055fd0d97",
+      "reason": "User-approved 1.5.0 bounded research implementation; preserve the frozen original digest and existing public workflow interfaces.",
+      "adaptation_version": "1.5.0",
+      "review_ref": "docs/VALIDATION_1_5_0.md#directed-adaptations",
       "test_refs": [
-        "tests/test_evo_inquiry.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_literature_records.py",
-        "tests/test_research_decisions.py",
-        "tests/test_figure_evidence.py"
-      ]
+        "tests/test_research_control.py",
+        "tests/test_research_events.py",
+        "tests/test_research_pilots.py",
+        "tests/test_candidate_comparison.py"
+      ],
+      "previous_sha256": "1dc45ea2740118e4040d781f44503483d0a62220bd91b8ccd9171d1d3bda5466"
     },
     "tools/save_trace.sh": {
       "sha256": "f6222ec6df378707905c9824478040e92bf6f7c182ccea440481a89d22bdc752",
@@ -1087,16 +1087,17 @@
     },
     "skills/auto-review-loop/SKILL.md": {
       "baseline_sha256": "071a28ed4653dd20604b0933cee34eb1337e272ecbe6b93fc86ee698a327d298",
-      "sha256": "2a8e80aa7dc079781b2ae476e9c357575f31fb5a9af0cfcca4763d0d8c04be8c",
-      "reason": "Directed 1.4.0 follow-up: primary evidence fidelity, real reviewer access, common principles and conditional receipts, mechanical framing completion, literature discovery clarity and actual installed-path identity.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "d7475f85beb20786591747862cc215e8d2879f138442e13ba83a73bbc13efbc4",
+      "reason": "User-approved 1.5.0 bounded research implementation; preserve the frozen original digest and existing public workflow interfaces.",
+      "adaptation_version": "1.5.0",
+      "review_ref": "docs/VALIDATION_1_5_0.md#directed-adaptations",
       "test_refs": [
-        "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py"
-      ]
+        "tests/test_research_control.py",
+        "tests/test_research_events.py",
+        "tests/test_research_pilots.py",
+        "tests/test_candidate_comparison.py"
+      ],
+      "previous_sha256": "2a8e80aa7dc079781b2ae476e9c357575f31fb5a9af0cfcca4763d0d8c04be8c"
     },
     "skills/citation-audit/SKILL.md": {
       "baseline_sha256": "7f68355f009a93077c76ba8d999cc00df0a3a87fbe3e4cba1b5f5e0df0810c2e",
@@ -1128,15 +1129,17 @@
     },
     "skills/experiment-plan/SKILL.md": {
       "baseline_sha256": "c5b53692ff95b0b55e80702e33afc79d9fe8d4f55a69e2a39714013f97ac595e",
-      "sha256": "d1ad655f8ef6b262db1af1277041d388c429826fadf033d5be04a8e1c5f266a9",
-      "reason": "Preserve existing research/review contracts; complete bounded requested artifacts with explicit blocked/provisional status, and document the existing evidence-check input and conservative CSV semantics. Preserve supplied resource quantities and the compact blocked-execution tracker when a requested resource combination is infeasible.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "113aeb8ff2b17a1fd70ca40cbf6668e758e677ae6072b84bd52767c385435ea9",
+      "reason": "User-approved 1.5.0 bounded research implementation; preserve the frozen original digest and existing public workflow interfaces.",
+      "adaptation_version": "1.5.0",
+      "review_ref": "docs/VALIDATION_1_5_0.md#directed-adaptations",
       "test_refs": [
-        "tests/test_codex_skill_mirror.py",
-        "tests/test_evidence_check.py",
-        "tests/behavior/evo-inquiry-cases.json"
-      ]
+        "tests/test_research_control.py",
+        "tests/test_research_events.py",
+        "tests/test_research_pilots.py",
+        "tests/test_candidate_comparison.py"
+      ],
+      "previous_sha256": "d1ad655f8ef6b262db1af1277041d388c429826fadf033d5be04a8e1c5f266a9"
     },
     "skills/figure-spec/SKILL.md": {
       "baseline_sha256": "090a28a1b6464d3b88cf32b9bf59f6a1008e7e63d638801070f0b888c3ef9c5b",
@@ -1207,16 +1210,17 @@
     },
     "skills/meta-optimize/SKILL.md": {
       "baseline_sha256": "0599dcc7eec1b7204e67bb7960487c652b5034af8b2d18323f0a3ff057580fd2",
-      "sha256": "0763b4b87b45e088e89841bb5f87db3b9d90c4c068e1e4396834aabf15dab13c",
-      "reason": "Directed 1.4.0 evidence, workflow, figure or distribution adaptation; see scoped implementation review. The existing common principles hook is now reachable from this mainline entrypoint; that hook itself changes no workflow body.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "53c17bfbce8839e88a0c9376c7dc74ef380dd9d050ee475381c336567e50fa8a",
+      "reason": "User-approved 1.5.0 bounded research implementation; preserve the frozen original digest and existing public workflow interfaces.",
+      "adaptation_version": "1.5.0",
+      "review_ref": "docs/VALIDATION_1_5_0.md#directed-adaptations",
       "test_refs": [
-        "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py"
-      ]
+        "tests/test_research_control.py",
+        "tests/test_research_events.py",
+        "tests/test_research_pilots.py",
+        "tests/test_candidate_comparison.py"
+      ],
+      "previous_sha256": "0763b4b87b45e088e89841bb5f87db3b9d90c4c068e1e4396834aabf15dab13c"
     },
     "skills/novelty-check/SKILL.md": {
       "baseline_sha256": "7738e665e8a7ad358e016ea3fcfa0f994e1f064f3626fe2fa454217a2750f3a0",
@@ -1327,16 +1331,17 @@
     },
     "skills/research-pipeline/SKILL.md": {
       "baseline_sha256": "3dd1f071770ffd700c55e607f8a6f641b7be5d4fbd3c2e0ab203bbfe22fd2d3b",
-      "sha256": "93a0c0836eb63fe12b26536e7e8ff3d8dae0b0e7c5bdd95f6b739491879380a2",
-      "reason": "Directed 1.4.0 evidence, workflow, figure or distribution adaptation; see scoped implementation review. The existing common principles hook is now reachable from this mainline entrypoint; that hook itself changes no workflow body.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "a13d969dfba4a09e70e29f4888cd0c8771999613e07fe72fb780936a63a332aa",
+      "reason": "User-approved 1.5.0 bounded research implementation; preserve the frozen original digest and existing public workflow interfaces.",
+      "adaptation_version": "1.5.0",
+      "review_ref": "docs/VALIDATION_1_5_0.md#directed-adaptations",
       "test_refs": [
-        "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py"
-      ]
+        "tests/test_research_control.py",
+        "tests/test_research_events.py",
+        "tests/test_research_pilots.py",
+        "tests/test_candidate_comparison.py"
+      ],
+      "previous_sha256": "93a0c0836eb63fe12b26536e7e8ff3d8dae0b0e7c5bdd95f6b739491879380a2"
     },
     "skills/research-review/SKILL.md": {
       "baseline_sha256": "85c75d2bef1f08e2e7d2e6a7f6bc0ae42faecf942d5314d25f17376e1292597f",
@@ -1402,16 +1407,14 @@
     },
     "skills/skills-codex-claude-review/auto-review-loop/SKILL.md": {
       "baseline_sha256": "cd2e877606a8b3eb2d636edff19f8ff068a2ef021928abcd17ece0fbfff2917b",
-      "sha256": "a01c93e05fa8e419d35c3c4d97a0a7967e8f66345c07bdc2714cff67b8b402a4",
-      "reason": "Directed 1.4.0 follow-up: primary evidence fidelity, real reviewer access, common principles and conditional receipts, mechanical framing completion, literature discovery clarity and actual installed-path identity. Correct shared output protocol links to the installed Codex reference tree; do not mix mainline manifest or versioning policy into Codex and reviewer overlays.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "5b104d442f8ac309440a848c91b3dd5876684af177d26aa3635b00234f9735b7",
+      "adaptation_version": "1.5.0",
+      "previous_sha256": "a01c93e05fa8e419d35c3c4d97a0a7967e8f66345c07bdc2714cff67b8b402a4",
+      "reason": "User-approved 1.5.0: regenerate the dependent reviewer overlay, or allow only the exact synthetic recovery fixture while keeping private runtime state ignored.",
+      "review_ref": "docs/VALIDATION_1_5_0.md#directed-adaptations",
       "test_refs": [
-        "tests/test_codex_skill_mirror.py",
         "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py",
-        "tests/test_claude_review_generator.py",
+        "tests/test_comparison_packaging.py",
         "tests/test_evo_inquiry.py"
       ]
     },
@@ -1879,18 +1882,17 @@
     },
     "skills/analyze-results/SKILL.md": {
       "baseline_sha256": "2b97b8ae1a279ac8a7db14e7d7bea67934c88352d55c95e20fcfb681a8640930",
-      "sha256": "0d2defbf20cb9b3e46eb7d288ebb2c5d65d99074b82d0814f6340fae5001e32a",
-      "reason": "Preserve objective metric interpretation and original result outputs; proactively add traceable paired case diagnosis to substantive analysis while retaining narrow-request and evidence/resource limits. Followup guidance makes reference loading conditional, reports concise after a timed-out development attempt, binds Codex sessions to their exact discovered mirror, and records repeated service failures as incomplete infrastructure evidence. Reports explicitly reference rather than duplicate raw tables.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "ada652f83a938641f2d2a4cfcea44f0b1dff36c3f5eede5bdff8a915e4d0aca0",
+      "reason": "User-approved 1.5.0 bounded research implementation; preserve the frozen original digest and existing public workflow interfaces.",
+      "adaptation_version": "1.5.0",
+      "review_ref": "docs/VALIDATION_1_5_0.md#directed-adaptations",
       "test_refs": [
-        "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py",
-        "tests/behavior/evo-inquiry-case-study-cases.json",
-        "tests/test_comparison_packaging.py"
-      ]
+        "tests/test_research_control.py",
+        "tests/test_research_events.py",
+        "tests/test_research_pilots.py",
+        "tests/test_candidate_comparison.py"
+      ],
+      "previous_sha256": "0d2defbf20cb9b3e46eb7d288ebb2c5d65d99074b82d0814f6340fae5001e32a"
     },
     "skills/arxiv/SKILL.md": {
       "baseline_sha256": "474be36fb19d0dd99ddc8c6fa2d684836a45dca9d02051d98b5c79ac979307ed",
@@ -2089,16 +2091,17 @@
     },
     "skills/meta-apply/SKILL.md": {
       "baseline_sha256": "0760749e7a26315d836f0ce52c94b2014f09b186f5de015cb3da5ead9875e629",
-      "sha256": "82583f57e50506902c1f26ae776ca1564b14bd00f49041dc681d9516b5bfdee3",
-      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "a7669835f875d543e10751fd594b104fef0d9f93e8303511c25edd97722ac91d",
+      "reason": "User-approved 1.5.0 bounded research implementation; preserve the frozen original digest and existing public workflow interfaces.",
+      "adaptation_version": "1.5.0",
+      "review_ref": "docs/VALIDATION_1_5_0.md#directed-adaptations",
       "test_refs": [
-        "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py"
-      ]
+        "tests/test_research_control.py",
+        "tests/test_research_events.py",
+        "tests/test_research_pilots.py",
+        "tests/test_candidate_comparison.py"
+      ],
+      "previous_sha256": "82583f57e50506902c1f26ae776ca1564b14bd00f49041dc681d9516b5bfdee3"
     },
     "skills/monitor-experiment/SKILL.md": {
       "baseline_sha256": "0527977308bb7b26139ffb56cd2d45ecc72a9dd2961073ad51fac4aac106961d",
@@ -2646,6 +2649,19 @@
         "tests/test_comparison_packaging.py",
         "docs/VALIDATION_1_4_0.md"
       ]
+    },
+    "tools/publication-policy.json": {
+      "baseline_sha256": "b6b65bede8a5d21a5040d9543e41b71bcf2bad71990013e5b49225151f3c7c52",
+      "sha256": "a632b8bf05d34f4990039ee8b5e569b0f012ecf876dfe32e7ebe0175d12f8e57",
+      "adaptation_version": "1.5.0",
+      "reason": "Require all optional bounded-research helpers and usage/validation references in public packages; retain retired-material exclusions.",
+      "review_ref": "docs/VALIDATION_1_5_0.md#directed-adaptations",
+      "test_refs": [
+        "tests/test_evo_inquiry.py",
+        "tests/test_research_control.py",
+        "tests/test_candidate_comparison.py"
+      ],
+      "previous_sha256": "b6b65bede8a5d21a5040d9543e41b71bcf2bad71990013e5b49225151f3c7c52"
     }
   },
   "workflow_adaptations": {
@@ -2675,17 +2691,17 @@
     },
     "auto-review-loop": {
       "baseline_body_sha256": "fc4f79364d869e0c8e91a35aa00d621e4e3ed9ca4a4b13ad13a25f779fb56512",
-      "body_sha256": "8ad307e7b4e6d6945c1a60d4c6a4fcf8cf6df2a770b73390e53013b356a69055",
-      "reason": "HTML rendering preserves actual review receipts, including blocked or incomplete review; it grants no acceptance. Correct shared output protocol links to the installed Codex reference tree; do not mix mainline manifest or versioning policy into Codex and reviewer overlays.",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "body_sha256": "dc56291321fe7484a96f4f822c8281c215ebe55af024661c1498fd3a7fc3f373",
+      "reason": "1.5.0 approved bounded research upgrade: optional continuation, source-bound decision reuse and measured candidate optimization; original stage, scope and review contracts remain authoritative.",
+      "review_ref": "docs/VALIDATION_1_5_0.md#directed-adaptations",
       "test_refs": [
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/behavior/evo-inquiry-v140-development-cases.json",
-        "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_generator.py",
-        "tests/test_evo_inquiry.py"
-      ]
+        "tests/test_research_control.py",
+        "tests/test_research_pilots.py",
+        "tests/test_candidate_comparison.py",
+        "tests/behavior/evo-inquiry-v150-development-cases.json"
+      ],
+      "adaptation_version": "1.5.0",
+      "previous_body_sha256": "8ad307e7b4e6d6945c1a60d4c6a4fcf8cf6df2a770b73390e53013b356a69055"
     },
     "citation-audit": {
       "baseline_body_sha256": "69d870b26a3c44b07252984af52f9269632f72435715ab601856387b64f0b917",
@@ -2711,17 +2727,17 @@
     },
     "experiment-plan": {
       "baseline_body_sha256": "aa1c87c9c2836d7276a3e19932916f2eb6157705a45e1a16f7f3cc2b70c5687f",
-      "body_sha256": "54d7d0496114edb9efa59fcc9ae835c84c1df31c945c167ca782b969b4a7b84d",
-      "reason": "Test claims against alternatives with null branches and justified resources; plan compact paired sample evidence and reproducible selection before test inspection instead of leaving diagnosis only to final polish. Correct shared output protocol links to the installed Codex reference tree; do not mix mainline manifest or versioning policy into Codex and reviewer overlays.",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "body_sha256": "8701a2458928e0a39761c6c3f54d83a16ee6df32c6f278b1d7018c9a06abcc45",
+      "reason": "1.5.0 approved bounded research upgrade: optional continuation, source-bound decision reuse and measured candidate optimization; original stage, scope and review contracts remain authoritative.",
+      "review_ref": "docs/VALIDATION_1_5_0.md#directed-adaptations",
       "test_refs": [
-        "tests/behavior/evo-inquiry-v140-development-cases.json",
-        "tests/test_evo_inquiry.py",
-        "tests/behavior/evo-inquiry-case-study-cases.json",
-        "tests/test_comparison_packaging.py",
-        "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_generator.py"
-      ]
+        "tests/test_research_control.py",
+        "tests/test_research_pilots.py",
+        "tests/test_candidate_comparison.py",
+        "tests/behavior/evo-inquiry-v150-development-cases.json"
+      ],
+      "adaptation_version": "1.5.0",
+      "previous_body_sha256": "54d7d0496114edb9efa59fcc9ae835c84c1df31c945c167ca782b969b4a7b84d"
     },
     "figure-spec": {
       "baseline_body_sha256": "2426de32a23ba21cfbde3eb94f6ca53e2431eda73b95df267a65f7ee9a460d89",
@@ -2768,13 +2784,17 @@
     },
     "meta-optimize": {
       "baseline_body_sha256": "5f0a95da7608326df7d180cd4fb188b03c2407c240a3ed1f5e53adc1872c4648",
-      "body_sha256": "d565f62b114ea9290bb21be04c1f35a720a11a5053b98544fe2234fd7ad8b87a",
-      "reason": "Evidence-calibrated, scoped review or writing; retain original inputs, outputs, enums, independence and resource boundaries.",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "body_sha256": "cf1c8add8f4daecaa0b08557cfb01f853c94ca901dbf6fbf768690cb67a05848",
+      "reason": "1.5.0 approved bounded research upgrade: optional continuation, source-bound decision reuse and measured candidate optimization; original stage, scope and review contracts remain authoritative.",
+      "review_ref": "docs/VALIDATION_1_5_0.md#directed-adaptations",
       "test_refs": [
-        "tests/behavior/evo-inquiry-v140-development-cases.json",
-        "tests/test_evo_inquiry.py"
-      ]
+        "tests/test_research_control.py",
+        "tests/test_research_pilots.py",
+        "tests/test_candidate_comparison.py",
+        "tests/behavior/evo-inquiry-v150-development-cases.json"
+      ],
+      "adaptation_version": "1.5.0",
+      "previous_body_sha256": "d565f62b114ea9290bb21be04c1f35a720a11a5053b98544fe2234fd7ad8b87a"
     },
     "novelty-check": {
       "baseline_body_sha256": "f95e5d60298ceb187e4fc1108a48e0aae3f34dee2c184e0879edbd589e7d431d",
@@ -2865,13 +2885,17 @@
     },
     "research-pipeline": {
       "baseline_body_sha256": "fd923d4b77b6a23b5f4627a7bd0a95f7f1dca7892037298173a4d43877043485",
-      "body_sha256": "72bc9ec345b048d6dd24cda610448da68a11978f24e7376b52848e25ea39e298",
-      "reason": "Evidence-calibrated, scoped review or writing; retain original inputs, outputs, enums, independence and resource boundaries.",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "body_sha256": "b4b1667a26790a8d57d3235b98681f6d39ee6ccf1c6c28e6b7e07ff5b0816bfe",
+      "reason": "1.5.0 approved bounded research upgrade: optional continuation, source-bound decision reuse and measured candidate optimization; original stage, scope and review contracts remain authoritative.",
+      "review_ref": "docs/VALIDATION_1_5_0.md#directed-adaptations",
       "test_refs": [
-        "tests/behavior/evo-inquiry-v140-development-cases.json",
-        "tests/test_evo_inquiry.py"
-      ]
+        "tests/test_research_control.py",
+        "tests/test_research_pilots.py",
+        "tests/test_candidate_comparison.py",
+        "tests/behavior/evo-inquiry-v150-development-cases.json"
+      ],
+      "adaptation_version": "1.5.0",
+      "previous_body_sha256": "72bc9ec345b048d6dd24cda610448da68a11978f24e7376b52848e25ea39e298"
     },
     "research-review": {
       "baseline_body_sha256": "0ccbc315d33966e1d24b39b684afbe5bad51df263d84c05ffa306922a3930195",
@@ -2969,13 +2993,17 @@
     },
     "analyze-results": {
       "baseline_body_sha256": "a51bcf45953fe6b539d9c7dd7d54083b2c3916de95505b134a20e3eb2087e48d",
-      "body_sha256": "980fe8d817b9ba9e032e5ddb9681d988c7407822c19178a29283e14e420ea4c7",
-      "reason": "Preserve objective metric interpretation and original result outputs; proactively add traceable paired case diagnosis to substantive analysis while retaining narrow-request and evidence/resource limits.",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "body_sha256": "fd2e72340842dc398d7934ae5cbb2cda99daf2d268f70e36299aef41b08f2a16",
+      "reason": "1.5.0 approved bounded research upgrade: optional continuation, source-bound decision reuse and measured candidate optimization; original stage, scope and review contracts remain authoritative.",
+      "review_ref": "docs/VALIDATION_1_5_0.md#directed-adaptations",
       "test_refs": [
-        "tests/behavior/evo-inquiry-case-study-cases.json",
-        "tests/test_comparison_packaging.py"
-      ]
+        "tests/test_research_control.py",
+        "tests/test_research_pilots.py",
+        "tests/test_candidate_comparison.py",
+        "tests/behavior/evo-inquiry-v150-development-cases.json"
+      ],
+      "adaptation_version": "1.5.0",
+      "previous_body_sha256": "980fe8d817b9ba9e032e5ddb9681d988c7407822c19178a29283e14e420ea4c7"
     },
     "research-refine": {
       "baseline_body_sha256": "6bb37611183bf69381a98846e8db69add34300aa8e45f399a9f8c25b6b5d5e39",
@@ -3011,6 +3039,20 @@
         "tests/test_evo_inquiry.py"
       ],
       "body_sha256": "3ce763dcf1fb05c2955b29ebf9209287475b7abb84104cc9a8901c76de7d7641"
+    },
+    "meta-apply": {
+      "baseline_body_sha256": "b0d12c2f3a13cd9bbb7872124955ecad37774acb27e8aa58cc1ca7397380dde1",
+      "body_sha256": "6c54ccd359221155e1b8dfb9e2f59e98b6287c0dd1cb83194c410dec75df1162",
+      "reason": "1.5.0 approved bounded research upgrade: optional continuation, source-bound decision reuse and measured candidate optimization; original stage, scope and review contracts remain authoritative.",
+      "review_ref": "docs/VALIDATION_1_5_0.md#directed-adaptations",
+      "test_refs": [
+        "tests/test_research_control.py",
+        "tests/test_research_pilots.py",
+        "tests/test_candidate_comparison.py",
+        "tests/behavior/evo-inquiry-v150-development-cases.json"
+      ],
+      "adaptation_version": "1.5.0",
+      "previous_body_sha256": null
     }
   }
 }

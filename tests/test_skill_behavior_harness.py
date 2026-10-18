@@ -53,6 +53,13 @@ print(json.dumps({'type':'turn.completed'}))
     assert not result['public_budget_context']
     assert not (output / '01/execution-context.json').exists()
     assert result['session_completed']
+    assert result['case_budget'] == {'timeout_seconds': 5, 'max_tool_actions': 3}
+    assert result['request_sha256'] == hashlib.sha256((case['prompt'] + '\n').encode()).hexdigest()
+    fixture = {'input.txt': hashlib.sha256(b'Raw fixture, not a grading rubric.\n').hexdigest()}
+    assert result['fixture_sha256'] == hashlib.sha256(json.dumps(fixture, sort_keys=True,
+        separators=(',', ':')).encode()).hexdigest()
+    assert result['plugin_selector'] == 'evo-inquiry@evo-inquiry-eval-beta4'
+    assert result['toolkit_version'] == '1.0.0-beta.4'
     assert result['assessment'] == 'UNASSESSED'
     assert result['changed_or_created_files'] == ['received.txt']
     with pytest.raises(ValueError, match='Refusing to overwrite'):

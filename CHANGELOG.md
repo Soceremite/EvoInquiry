@@ -1,5 +1,30 @@
 # Changelog
 
+## 1.5.0 — Unreleased
+
+### Added
+
+- Add optional bounded continuation over existing run state: reserve resources before dispatch, reconcile interrupted work, deduplicate repeated claims and limit retries without changing scientific review gates.
+- Import explicitly selected Codex JSONL exports into compact, source-bound activity records. Preserve failures and unknown completion, support idempotent import and keep raw commands, prompts, outputs and credentials out of normalized events.
+- Retrieve relevant decisions from existing Markdown and JSONL records, with source identities, supersession, evidence freshness and revisit conditions. Retrieval remains read-only and lexical matches remain candidates for inspection.
+- Compare baseline and candidate behavior using frozen inputs, model settings, budgets, repeated tasks and held-out coverage. Report missing attempts and regressions; comparison results do not authorize toolkit changes.
+- Add three actual synthetic CPU studies covering positive findings, negative findings and an evidence-driven pivot, plus six public native Codex development cases. Document optional Plan and Goal coordination.
+
+### Fixed
+
+- Allow CPU-only investigations when the GPU allowance is zero. Reject corrupted accounting, retain actual resource overruns and preserve unresolved reservations after a stop.
+- Separate skill-path references from verified skill invocation or compliance, and completed turns from complete research workflows. Reject changed or truncated imported history.
+- Correct the Codex self-optimization instructions to use the existing native behavior harness and stage proposed patches for the established landing review. Preserve human selection, backups, provenance and provisional review status.
+- Bind candidate comparisons to actual request and fixture hashes, distinct run receipts and explicit assessments. Keep timeouts and failed executions in the planned denominator.
+- Cover the bounded research modules and original run state in both native Windows shell gates for development and release CI.
+
+### Changed
+
+- Guide sustained investigations toward the next decision-changing uncertainty, competing predictions, prior negative results and explicit stopping conditions. Keep small numerical questions and advice within their requested scope.
+- Retain all 88 Codex entrypoints, 83 original workflow records and 450 protected-resource baselines; register targeted adaptations separately.
+
+This is a development candidate, not a published release. See [candidate validation](docs/VALIDATION_1_5_0.md) for observed checks, preserved failures and limitations. The native development cases do not establish general superiority over 1.4.0 or complete recursive self-improvement.
+
 ## 1.4.0 — 2026-10-17
 
 ### Added

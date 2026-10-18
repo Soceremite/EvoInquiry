@@ -36,6 +36,15 @@ It is **human-invoked only.** It runs when the user explicitly types `/meta-appl
 reading the producer's REPORT. That invocation IS the landing authorization (the locked
 2026-05-30 decision: the human stays at the landing gate).
 
+## Check the tested candidate
+
+When candidate-comparison evidence is supplied, verify its fixed sources and
+that the actual staged diff matches the tested candidate. Read regressions,
+missing/failed attempts, held-out coverage and rollback conditions. The report
+is advisory; it cannot substitute for this fresh landing verdict or expand the
+patches the human authorized. No Goal or producer loop may call this landing step
+automatically. Preserve the original review, provenance and backup requirements.
+
 ## The acquittal is generated HERE, not relayed
 
 The earlier design trusted a `jury_verdict: pass` field in the producer's manifest. That

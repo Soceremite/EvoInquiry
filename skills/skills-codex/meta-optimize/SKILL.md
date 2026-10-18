@@ -19,6 +19,15 @@ budgets, blocking checkpoints, and stopping conditions.
 
 Analyze accumulated usage logs and propose optimizations for: **$ARGUMENTS**
 
+## Producer boundary
+
+This skill proposes and stages; it never changes the installed corpus or invokes
+its own landing. Write only reports, evidence and patches under `.ei/meta/`.
+Tool availability is not a filesystem sandbox: retain this workflow boundary and
+do not claim that frontmatter alone technically prevents all writes. A separate,
+human-invoked [meta-apply](../meta-apply/SKILL.md) performs fresh landing review on
+the actual staged diff and preserves same-family provisional status.
+
 ## Context
 
 ARIS is a **research harness** — a system of skills, bridges, workflows, and artifact contracts that wraps around LLMs to orchestrate research. This skill implements a prototype **outer loop** that observes how the harness is used and proposes improvements to the harness itself (not to the research artifacts it produces).
@@ -41,31 +50,24 @@ Inspired by Meta-Harness (Lee et al., 2026): the key insight is that harness des
 ## Prerequisites
 
 1. **Logging must be active.** Codex mirror installs do not create Claude Code hooks. Provide `.ei/meta/events.jsonl` from a Codex-compatible event logger, an external wrapper, or a manually exported trace log before running this skill.
-2. **Sufficient data.** At least 5 complete workflow runs logged in `.ei/meta/events.jsonl`. The skill will check and warn if insufficient.
+2. **Relevant evidence.** Five completed independent task traces are a collection heuristic, not five skill calls or a proof of sufficiency. A specific reproducible defect can justify a narrow proposal sooner; broad defaults need broader evidence. Report actual coverage and missing outcomes.
 
 ## Workflow
 
 ### Step 0: Check Data Availability
 
-```bash
-EVENTS_FILE=".ei/meta/events.jsonl"
-if [ ! -f "$EVENTS_FILE" ]; then
-    echo "ERROR: No event log found at $EVENTS_FILE"
-    echo "Enable Codex-compatible logging first: create .ei/meta/events.jsonl from your Codex wrapper, external event logger, or exported trace log."
-    exit 1
-fi
+Resolve the existing state namespace and read `.ei/meta/events.jsonl`. Use the
+installed package's `tools/research_events.py --root <project> --summary` for
+read-only counts. Keep recorded invocations, skill-reference candidates, completed
+turns and completed workflows distinct. Legacy hooks and exported Codex traces
+have different observable fields; unknown outcomes remain unknown. Missing logs
+are missing evidence, not permission to manufacture examples or scan private history.
 
-EVENT_COUNT=$(wc -l < "$EVENTS_FILE")
-SKILL_INVOCATIONS=$(grep -c '"skill_invoke"' "$EVENTS_FILE" || echo 0)
-SESSIONS=$(grep -c '"session_start"' "$EVENTS_FILE" || echo 0)
-
-echo "📊 Event log: $EVENT_COUNT events, $SKILL_INVOCATIONS skill invocations, $SESSIONS sessions"
-
-if [ "$SKILL_INVOCATIONS" -lt 5 ]; then
-    echo "⚠️  Insufficient data (<5 skill invocations). Continue using ARIS normally and re-run later."
-    exit 0
-fi
-```
+For an explicit project-relative Codex export, the Codex-compatible event logger
+is `tools/research_events.py --root <project> --source <trace.jsonl> --session <id>`.
+It imports source-bound observations without raw prompts, commands or outputs.
+No installed Codex session hook is implied. Keep original traces local under
+existing access policy. A command path mention is not proof of skill compliance.
 
 ### Step 1: Analyze Usage Patterns
 
@@ -106,13 +108,41 @@ Read `.ei/meta/events.jsonl` and compute:
 which skills were USED, not which were WANTED-but-omitted. Mainline ships
 `tools/meta_opt/trigger_eval.py`, which measures Claude Code's skill triggering
 via `claude -p` probes (trigger / confusion / miss). It is Claude-Code-specific
-— there is no equivalent `codex` skill-selection probe yet, so for a Codex
-executor treat trigger-rate as a mainline signal, not a step you run here.
+— use the separate native Codex behavior harness below for Codex;
+this Claude-only selection probe is not a step you run as a Codex probe.
 Measure-only regardless: a low rate is INPUT to a proposal, never a self-applied
 rewrite; the confusion matrix (which sibling a query lands on) points at
 disambiguation, not "make it pushier".
 
+For Codex, use the existing `tools/evaluate_skill_behavior.py` with the actual
+installed catalog for bounded routing and task-behavior cases, including negative
+cases. Preserve native discovery, source snapshots, every failed or timed-out
+attempt, and independently assess the traces/artifacts against a frozen rubric.
+A command reading a skill is an access signal; behavior needs outcome assessment.
+The Claude-only trigger probe above is not a Codex probe.
+
 Present findings as a structured summary table.
+
+### Paired candidate evaluation
+
+Before using a proposed change to claim improvement, freeze development/held-out
+case IDs, independent repetitions, model/provider/effort, budgets, harness and
+rubric. Pin baseline and candidate environment/discovery snapshots. Use the same
+request and fixture for each pair; reusing a test task during revision makes it
+part of development, so replace its held-out role. More forceful triggering alone
+is not better behavior. Report unnecessary activations as well as omissions.
+
+`tools/meta_opt/compare_candidates.py --root <study> --request <request.json>`
+consumes a fixed `protocol_ref`, existing native-harness run records and separate
+source-bound assessments. Its Python docstring specifies the input fields. Keep
+all declared attempts, failures, timeouts, unassessed outcomes, improvements and
+regressions. Fewer than two repeats or no held-out tasks is explicitly insufficient
+for its candidate signal. This minimum is not a statistical sufficiency rule.
+
+The comparison report is advisory. It cannot establish reviewer independence,
+discover undisclosed attempts, authorize landing, or certify general RSI. A faster
+or cheaper candidate still needs quality and scope checks. Preserve the old
+version and define rollback conditions before a human-authorized landing.
 
 ### Step 1.5: Name the Current Bottleneck
 
@@ -274,19 +304,18 @@ resolved by <patch ids> / unresolved / first recorded cycle]. (Ledger:
 - [ ] Consider manual review of Change 2
 
 ## Next Steps
-Run `/meta-optimize apply 1` to apply a specific change, or
-`/meta-optimize apply all` to apply all recommended changes.
+This producer ends with a report and staged candidates. The human invokes
+`/meta-apply` for a selected patch; its fresh landing review remains required.
 ```
 
-### Step 6: Apply Changes (if user approves)
+### Step 6: Stage selected patches; never apply here
 
-If user runs `/meta-optimize apply [N]`:
-1. Back up original SKILL.md to `.ei/meta/backups/`
-2. Apply the patch
-3. Log the change to `.ei/meta/optimizations.jsonl`
-4. Remind user to test the changed skill on their next run
-
-**Never auto-apply without user approval.**
+Write each selected diff under `.ei/meta/pending/` with its target, author model,
+source evidence and an explicitly advisory pre-screen. Bind any comparison report
+to the staged patch and tested candidate snapshot. Producer-written scores and
+`CANDIDATE_SIGNAL` are not landing verdicts. Report the staged paths; leave backups,
+fresh landing review, application, provenance stamping and rollback logging to the
+separately invoked [meta-apply](../meta-apply/SKILL.md). Never invoke it yourself.
 
 ## Key Rules
 
@@ -315,19 +344,15 @@ The log at `.ei/meta/events.jsonl` contains JSONL records with these shapes:
 
 ## Triggering
 
-This skill is NOT part of the standard W1→W1.5→W2→W3→W4 pipeline. It is a **maintenance workflow** with three trigger mechanisms:
+This is a maintenance workflow, outside the normal research pipeline. Codex
+installation supplies no automatic session logging or readiness callback. Import
+explicit exports or use an authorized wrapper, inspect relevant complete tasks,
+and run this skill when requested. Existing Claude hooks/check_ready reminders
+apply only in a configured Claude installation; their invocation count does not
+establish complete task coverage or scientific success.
 
-1. **Passive logging** (always on): Claude Code hooks record events to `.ei/meta/events.jsonl` automatically during normal usage. Zero user effort.
-
-2. **Automatic readiness check** (SessionEnd hook): When a Claude Code session ends, `check_ready.sh` counts skill invocations since the last `/meta-optimize` run. If ≥5 new invocations have accumulated, it prints a reminder:
-   ```
-   📊 ARIS has logged 8 skill runs since last optimization. Run /meta-optimize to check for improvement opportunities.
-   ```
-   This is a **suggestion only** — it does not auto-run optimization.
-
-3. **Manual trigger**: User runs `/meta-optimize` when they see the reminder or whenever they want.
-
-**After each `/meta-optimize` run**, the skill writes the current timestamp to `.ei/meta/.last_optimize` so the readiness check only counts new invocations.
+After an actual optimization analysis, update existing optimization history with
+the source coverage and resolved model. Do not invent a model from missing fields.
 
 ## Acknowledgements
 

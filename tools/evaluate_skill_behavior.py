@@ -213,7 +213,9 @@ def discover_variant(toolkit: Path, selector: str, codex: str, model_settings: d
     for runtime in ('', 'skills-codex', 'skills-codex-claude-review', 'skills-codex-gemini-review'):
         resources.extend(p for p in (toolkit / 'skills' / runtime).glob('*/references/**/*')
                          if p.is_file() and '__pycache__' not in p.parts and p.suffix != '.pyc')
-    resources.extend(sorted((toolkit / 'tools').glob('*.py')))
+    resources.extend(p for p in (toolkit / 'tools').rglob('*')
+                     if p.is_file() and '__pycache__' not in p.parts
+                     and p.suffix in ('.py', '.sh', '.json', '.tsv', '.md'))
     resources.extend(p for p in (toolkit / 'skills/figure-spec/scripts').glob('*') if p.is_file())
     resources.extend(p for relative in ('VERSION', '.codex-plugin/plugin.json', 'tools/skill-contracts.json',
                                         'tools/skill-groups.tsv', 'templates/EVOINQUIRY_AGENTS_SNIPPET.md')
@@ -379,6 +381,12 @@ def run_case(case: dict, fixture_root: Path, output: Path, toolkit: Path, codex:
               "observed_skill_entrypoints": entrypoints,
               "noncanonical_skill_entrypoints": noncanonical,
               "model_settings": dict(model_settings or {}),
+              "case_budget": {"timeout_seconds": case["timeout_seconds"],
+                              "max_tool_actions": case["max_tool_actions"]},
+              "request_sha256": hashlib.sha256(request.encode('utf-8')).hexdigest(),
+              "fixture_sha256": hashlib.sha256(json.dumps(before, sort_keys=True,
+                  separators=(',', ':')).encode()).hexdigest(),
+              "plugin_selector": selector, "toolkit_version": expected_version,
               "evaluation_protocol": protocol,
               "public_budget_context": public_budget_context,
               "execution_context": execution_context,

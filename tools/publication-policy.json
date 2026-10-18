@@ -207,7 +207,16 @@
     "docs/tutorials/attention_tutorial.md",
     "docs/tutorials/attention_tutorial.review.json",
     "docs/tutorials/flow_matching_tutorial.html",
-    "docs/tutorials/flow_matching_tutorial.md"
+    "docs/tutorials/flow_matching_tutorial.md",
+    "docs/BOUNDED_RESEARCH_CN.md",
+    "docs/VALIDATION_1_5_0.md",
+    "docs/UPGRADE_PLAN_1_5_0_CN.md",
+    "tools/research_control.py",
+    "tools/research_events.py",
+    "tools/research_memory.py",
+    "tools/meta_opt/compare_candidates.py",
+    "skills/shared-references/bounded-inquiry.md",
+    "skills/skills-codex/shared-references/bounded-inquiry.md"
   ],
   "adapted_upstream_documents": [
     "AGENT_GUIDE.md",

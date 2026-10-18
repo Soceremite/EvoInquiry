@@ -182,6 +182,19 @@ Act on `pivot`:
 The heartbeat may say "keep going / change direction," never "good enough" — every
 quality verdict still terminates in the cross-model jury (`acceptance-gate.md`).
 
+## Bounded continuation and host modes
+
+For a sustained authorized investigation, use
+[bounded-inquiry](../shared-references/bounded-inquiry.md) within this original run.
+Choose the next action by the uncertainty and competing explanations it can
+resolve, using relevant prior decisions. Before dispatch reserve a stable action
+identity and declared cost; on resume reconcile actual execution before retry.
+Preserve original phase reviews, failure history and the existing storage policy.
+A native Goal, when explicitly requested, can sustain the host session; it cannot
+advance a research gate or replace experiment budgets. Plan-only work stops at
+the requested plan. Negative findings and evidence-driven pivots belong in the
+research history; the requested paper pipeline does not certify a positive claim.
+
 ## Pipeline
 
 ### Stage 1: Idea Discovery (Workflow 1)

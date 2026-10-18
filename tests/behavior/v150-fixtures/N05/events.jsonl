@@ -1,0 +1,4 @@
+{"event": "session_start", "session": "sample"}
+{"event": "skill_reference", "session": "sample", "skill": "evo-inquiry:research-guide"}
+{"event": "tool_failure", "session": "sample", "tool": "command_execution", "exit_code": 1}
+{"event": "session_end", "session": "sample", "status": "completed"}
