@@ -2,7 +2,7 @@
   "schema_version": 1,
   "version": "1.5.0",
   "release_kind": "stable",
-  "status": "local-repair-checked-with-one-rechecked-timeout; native-ci-pending; not-published",
+  "status": "published-verified",
   "assessed_at": "2026-10-19",
   "source_base": {
     "version": "1.4.0",
@@ -83,13 +83,28 @@
       "scope": "Ubuntu/macOS and powershell.exe/pwsh before later uncommitted runtime and guidance repairs; not current-source CI"
     },
     "new_commit_native_ci": {
-      "status": "PENDING_REPAIR_COMMIT",
-      "scope": "New commit must pass Ubuntu/macOS full suites and both Windows shell gates; earlier passes do not override the failed tag run."
+      "status": "PASS_FOR_RELEASE_SOURCE",
+      "commit": "16abc3ac47eee77f9daf7584cc964ced0fd1521e",
+      "url": "https://github.com/Soceremite/EvoInquiry/actions/runs/39241073667",
+      "python": "3.12",
+      "ubuntu_and_macos_each": {
+        "passed": 1279,
+        "skipped": 35,
+        "failed": 0,
+        "errors": 0
+      },
+      "powershell_exe_and_pwsh_each": {
+        "passed": 420,
+        "skipped": 4,
+        "failed": 0,
+        "errors": 0
+      },
+      "scope": "Both full suites and native Windows gates include the checkpoint sharing repair. No change to or acquittal of earlier failed runs."
     },
     "formal_installation": {
       "status": "UNCHANGED",
       "version": "1.4.0",
-      "scope": "Temporary dev9/dev10 evaluation installs removed; the user has authorized committing 1.5.0, no formal installation replacement performed"
+      "scope": "Last verified enabled install is 1.4.0. Publication did not replace the installed plugin."
     },
     "previous_local_suite_before_checkpoint_fix": {
       "status": "PASS_WITH_SKIPS",
@@ -146,14 +161,15 @@
       }
     },
     "checkpoint_rotation_repair": {
-      "status": "LOCAL_FOCUSED_PASS; NATIVE_PENDING",
+      "status": "PASS_LOCAL_AND_NATIVE_WINDOWS",
       "passed": 85,
       "skipped": 2,
       "receipt": {
         "path": "validation/release-1.5.0/checkpoint-fix.xml",
         "sha256": "c43979da15d8830d0027dda5b35f9c6319ec19f8f906b99b37f6d2416eb580c4"
       },
-      "scope": "Real publication/rotation with deterministic simulated sharing errors, partial deletion, persistent/permanent error bounds, recovery and journal retry; includes a Windows-only real open-handle test for native CI. Two new tests fail against original source as expected."
+      "scope": "Real publication/rotation with deterministic simulated sharing errors, partial deletion, persistent/permanent error bounds, recovery and journal retry; includes a Windows-only real open-handle test for native CI. Two new tests fail against original source as expected.",
+      "native_scope": "Real held-file sharing test and cooperating monitor/publisher test pass under both powershell.exe and pwsh, included in both normal and tag CI. Persistent errors remain bounded and visible."
     },
     "unchanged_bridge_recheck": {
       "status": "PASS",
@@ -165,6 +181,28 @@
         "sha256": "cf2e4fb1cd43d746de032a7a53f4107a96e006932fc927531885563517372127"
       },
       "scope": "Separate unchanged invocation of all Grok bridge tests. Does not erase the full-suite timeout or establish its frequency or root cause."
+    },
+    "final_publication_ci": {
+      "status": "PASS",
+      "commit": "16abc3ac47eee77f9daf7584cc964ced0fd1521e",
+      "url": "https://github.com/Soceremite/EvoInquiry/actions/runs/39241625001",
+      "completed_jobs": 5,
+      "scope": "Four native test gates repeated successfully on the final tag, then committed-source build and release publication completed."
+    },
+    "published_assets": {
+      "status": "PASS",
+      "commit": "16abc3ac47eee77f9daf7584cc964ced0fd1521e",
+      "matching_payload_files": 1064,
+      "codex_entrypoints": 88,
+      "sha256": {
+        "evo-inquiry-1.5.0.tar.gz": "5d767558b571c2ed90219dd84c88224ab4ec33121ab82ba729ae08a7ded90016",
+        "evo-inquiry-1.5.0.zip": "fecad9470e8ae080484dd91ace3677d8b0fe53592fcf7564dd226cd551e4eeaa"
+      },
+      "receipt": {
+        "path": "validation/release-1.5.0/publication-verification.json",
+        "sha256": "67909250a980671a925fd98c0a0acdbeb8418d5e0b98a6af0684f31b7aeda6e2"
+      },
+      "scope": "Actual public tar/zip downloads, SHA256SUMS and manifest verified; all file hashes match locally built committed source, bilingual notes match and private state is excluded."
     }
   },
   "validation_record": "docs/VALIDATION_1_5_0.md",
@@ -176,5 +214,15 @@
     "Local validation receipts are intentionally ignored and not bundled in source assets; repository validation records preserve scopes and local receipt hashes.",
     "Native macOS/Windows results from the ancestor do not certify later changes.",
     "Optional external providers, distributed training, network filesystems and power-loss recovery are not newly guaranteed."
-  ]
+  ],
+  "publication": {
+    "tag": "v1.5.0",
+    "commit": "16abc3ac47eee77f9daf7584cc964ced0fd1521e",
+    "url": "https://github.com/Soceremite/EvoInquiry/releases/tag/v1.5.0",
+    "published_at": "2026-10-19T11:06:31Z",
+    "latest": true,
+    "draft": false,
+    "prerelease": false,
+    "scope": "Applies to the immutable published tag and its public downloads. This later documentation record is separate from the frozen source assets."
+  }
 }

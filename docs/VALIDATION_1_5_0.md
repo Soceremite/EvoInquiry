@@ -1,13 +1,13 @@
 # EvoInquiry 1.5.0 validation
 
-**Current source status (2026-10-19):** the user has authorized publishing 1.5.0.
-Version metadata and bilingual release materials now identify 1.5.0. Earlier
-sections below retain their original source-specific development and installation
-statuses; they do not describe a later commit or an already published release.
-The first tag run exposed a Windows checkpoint cleanup race and did not publish.
-Its failure and the subsequent repair checks are recorded at the end of this
-document. The formal local installation remains 1.4.0 until an upgrade is performed
-separately.
+**Publication status (2026-10-19):** [EvoInquiry 1.5.0](https://github.com/Soceremite/EvoInquiry/releases/tag/v1.5.0)
+is published as the latest stable release from
+`16abc3ac47eee77f9daf7584cc964ced0fd1521e`. Four native test gates and the
+publication job passed; actual public downloads were verified. Earlier sections
+retain their original source-specific development, failure and installation
+statuses. The final publication record is at the end. This later documentation
+record does not alter the frozen tag or its source assets. The formal local
+installation remains last verified at 1.4.0; publication did not replace it.
 
 Development started on 2026-10-18 from `180f7d8ebd6690caa3a77328e9cb2bf5eeeee7ce`
 on `feat/bounded-research-v1.5.0`, under the
@@ -714,3 +714,39 @@ The repaired checkpoint cases pass locally; native Windows and complete native
 Linux/macOS suites remain required for the repair commit and publication tag.
 The initial tag is still unpublished and will be updated after repair validation.
 The formal installed plugin remains 1.4.0.
+
+
+## Verified stable publication — 2026-10-19
+
+The checkpoint repair was committed as
+`16abc3ac47eee77f9daf7584cc964ced0fd1521e` and pushed directly to main.
+[Normal CI](https://github.com/Soceremite/EvoInquiry/actions/runs/39241073667)
+passed all four native jobs. The original unpublished tag was then updated using
+an exact expected-ref lease after confirming that no 1.5.0 Release existed.
+The first failed publication remains in Actions history; no published release
+or main history was rewritten.
+
+The final [tag workflow](https://github.com/Soceremite/EvoInquiry/actions/runs/39241625001)
+repeated the four checks and published successfully. Ubuntu and macOS each
+reported **1,279 passed / 35 skipped**; Windows powershell.exe and pwsh each
+reported **420 passed / four skipped**, with no failures or errors. Both native
+Windows gates include the real held-file sharing test and the cooperating
+monitor/publisher test. These are platform-specific software checks, not a
+guarantee against every storage failure or new scientific acceptance.
+
+[EvoInquiry 1.5.0](https://github.com/Soceremite/EvoInquiry/releases/tag/v1.5.0)
+was published at **2026-10-19T11:06:31Z** as a stable, non-draft release and
+confirmed as Latest. Actual public tar.gz, zip, SHA256SUMS and manifest downloads
+were checked. Their checksums agree, both archives contain the same **1,064
+files** as the locally built committed source, all **88 Codex entrypoints** are
+present, private runtime state is excluded and the release body matches the
+bilingual source notes. Raw transfer attempts and verification receipts remain
+under ignored `validation/release-1.5.0/`.
+
+The source and validation records retain the initial Windows publication failure
+and the later local Python 3.14 three-second Grok progress timeout with its passing
+unchanged seven-test recheck. Neither is retrospectively marked passed. Final
+Python 3.12 native checks establish publication acceptance for their stated
+scope, without assigning a cause or frequency to the local timeout. Earlier
+scientific limitations remain. This post-publication record changes documentation
+only; the published tag and assets remain fixed at the release commit above.
