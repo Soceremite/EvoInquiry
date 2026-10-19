@@ -1,0 +1,7 @@
+sample_id,horizon,weight,baseline_error,candidate_error
+a,near,2,4,1
+b,near,2,5,2
+c,near,2,3,1
+d,near,2,4,2
+a,far,1,2,4
+b,far,1,4,6

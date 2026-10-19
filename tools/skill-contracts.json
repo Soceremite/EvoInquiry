@@ -1061,43 +1061,46 @@
     },
     "skills/auto-review-loop-llm/SKILL.md": {
       "baseline_sha256": "f46c40b1a3edcc63b07cf263253fc01e706d2335bd851d672d66099b29774cf8",
-      "sha256": "838c2826a85c5004bc4c7260cfbcb2c8490652cbabea679e65307da600c4d512",
-      "reason": "Directed 1.4.0 evidence, workflow, figure or distribution adaptation; see scoped implementation review. The existing common principles hook is now reachable from this mainline entrypoint; that hook itself changes no workflow body.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "23afabc28fe62ecb70355d1524fc88ee91ffb0f5becaa9713c619b525d4a4ca3",
+      "reason": "User-directed conditional reuse of the shared interface/documentation contract during research-code changes. Original workflow body, frontmatter and frozen baseline remain unchanged.",
+      "adaptation_version": "1.5.0",
+      "review_ref": "docs/VALIDATION_1_5_0.md#interface-and-closeout-follow-up",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
         "tests/test_claude_review_artifact_tools.py",
         "tests/test_workflow_contract_versions.py",
         "tests/test_idea_discovery_gate.py"
-      ]
+      ],
+      "prior_candidate_sha256": "838c2826a85c5004bc4c7260cfbcb2c8490652cbabea679e65307da600c4d512"
     },
     "skills/auto-review-loop-minimax/SKILL.md": {
       "baseline_sha256": "70f4952522747030f4ee8011c0e29c7670a289bd0bff73fffbcb9bac232a4102",
-      "sha256": "9d8335be5da4217a1707121ad8424a16f412923f2ec7df96d6191dc1523c312e",
-      "reason": "Directed 1.4.0 evidence, workflow, figure or distribution adaptation; see scoped implementation review. The existing common principles hook is now reachable from this mainline entrypoint; that hook itself changes no workflow body.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "a5b7e7a90f45d664c79ff5ecccc13b5f3a4dff2a4e16cfe6578d3d1a9000c310",
+      "reason": "User-directed conditional reuse of the shared interface/documentation contract during research-code changes. Original workflow body, frontmatter and frozen baseline remain unchanged.",
+      "adaptation_version": "1.5.0",
+      "review_ref": "docs/VALIDATION_1_5_0.md#interface-and-closeout-follow-up",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
         "tests/test_claude_review_artifact_tools.py",
         "tests/test_workflow_contract_versions.py",
         "tests/test_idea_discovery_gate.py"
-      ]
+      ],
+      "prior_candidate_sha256": "9d8335be5da4217a1707121ad8424a16f412923f2ec7df96d6191dc1523c312e"
     },
     "skills/auto-review-loop/SKILL.md": {
       "baseline_sha256": "071a28ed4653dd20604b0933cee34eb1337e272ecbe6b93fc86ee698a327d298",
-      "sha256": "d7475f85beb20786591747862cc215e8d2879f138442e13ba83a73bbc13efbc4",
-      "reason": "User-approved 1.5.0 bounded research implementation; preserve the frozen original digest and existing public workflow interfaces.",
+      "sha256": "90cb069d6686e2fb1fb0b9c3f2976cef91fea63108b4131dd329899170359a60",
+      "reason": "User-directed conditional reuse of the shared interface/documentation contract during research-code changes. Original workflow body, frontmatter and frozen baseline remain unchanged.",
       "adaptation_version": "1.5.0",
-      "review_ref": "docs/VALIDATION_1_5_0.md#directed-adaptations",
+      "review_ref": "docs/VALIDATION_1_5_0.md#interface-and-closeout-follow-up",
       "test_refs": [
         "tests/test_research_control.py",
         "tests/test_research_events.py",
         "tests/test_research_pilots.py",
         "tests/test_candidate_comparison.py"
       ],
-      "previous_sha256": "2a8e80aa7dc079781b2ae476e9c357575f31fb5a9af0cfcca4763d0d8c04be8c"
+      "previous_sha256": "2a8e80aa7dc079781b2ae476e9c357575f31fb5a9af0cfcca4763d0d8c04be8c",
+      "prior_candidate_sha256": "d7475f85beb20786591747862cc215e8d2879f138442e13ba83a73bbc13efbc4"
     },
     "skills/citation-audit/SKILL.md": {
       "baseline_sha256": "7f68355f009a93077c76ba8d999cc00df0a3a87fbe3e4cba1b5f5e0df0810c2e",
@@ -1114,18 +1117,20 @@
     },
     "skills/experiment-bridge/SKILL.md": {
       "baseline_sha256": "595d41fee920c7dafb920e89d8e33c0c3967704f84457786432aaadc920767a0",
-      "sha256": "424a424711e26260123dafad47f1ae6836586e30ce393d40efdce47a20852e6c",
-      "reason": "Keep common research guidance and existing execution/review contracts; add bounded sample-evidence instrumentation of the authorized evaluation without inventing new experiments.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "bd60a45f26cd3f8ebee803eb6f0a1a23c70541f20d6e64c1c0f6ecbccdf5135f",
+      "reason": "Keep common research guidance and existing execution/review contracts; add bounded sample-evidence instrumentation of the authorized evaluation without inventing new experiments. User-directed concise interface documentation and evidence-based assessment follow-up; original workflow body and frozen baseline retained.",
+      "adaptation_version": "1.5.0",
+      "review_ref": "docs/VALIDATION_1_5_0.md#interface-and-closeout-follow-up",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
         "tests/test_claude_review_artifact_tools.py",
         "tests/test_workflow_contract_versions.py",
         "tests/test_idea_discovery_gate.py",
         "tests/behavior/evo-inquiry-case-study-cases.json",
-        "tests/test_comparison_packaging.py"
-      ]
+        "tests/test_comparison_packaging.py",
+        "tests/behavior/evo-inquiry-v150-followup-cases.json"
+      ],
+      "prior_candidate_sha256": "424a424711e26260123dafad47f1ae6836586e30ce393d40efdce47a20852e6c"
     },
     "skills/experiment-plan/SKILL.md": {
       "baseline_sha256": "c5b53692ff95b0b55e80702e33afc79d9fe8d4f55a69e2a39714013f97ac595e",
@@ -1210,17 +1215,20 @@
     },
     "skills/meta-optimize/SKILL.md": {
       "baseline_sha256": "0599dcc7eec1b7204e67bb7960487c652b5034af8b2d18323f0a3ff057580fd2",
-      "sha256": "53c17bfbce8839e88a0c9376c7dc74ef380dd9d050ee475381c336567e50fa8a",
-      "reason": "User-approved 1.5.0 bounded research implementation; preserve the frozen original digest and existing public workflow interfaces.",
+      "sha256": "5f9f5c4b184c486969e42ef2ad9a8d31a57a59bb8955defd060d8caebc77966c",
+      "reason": "User-approved 1.5.0 bounded research implementation; preserve the frozen original digest and existing public workflow interfaces. User-directed concise interface documentation and evidence-based assessment follow-up; original workflow body and frozen baseline retained.",
       "adaptation_version": "1.5.0",
-      "review_ref": "docs/VALIDATION_1_5_0.md#directed-adaptations",
+      "review_ref": "docs/VALIDATION_1_5_0.md#interface-and-closeout-follow-up",
       "test_refs": [
         "tests/test_research_control.py",
         "tests/test_research_events.py",
         "tests/test_research_pilots.py",
-        "tests/test_candidate_comparison.py"
+        "tests/test_candidate_comparison.py",
+        "tests/test_codex_skill_mirror.py",
+        "tests/behavior/evo-inquiry-v150-followup-cases.json"
       ],
-      "previous_sha256": "0763b4b87b45e088e89841bb5f87db3b9d90c4c068e1e4396834aabf15dab13c"
+      "previous_sha256": "0763b4b87b45e088e89841bb5f87db3b9d90c4c068e1e4396834aabf15dab13c",
+      "prior_candidate_sha256": "53c17bfbce8839e88a0c9376c7dc74ef380dd9d050ee475381c336567e50fa8a"
     },
     "skills/novelty-check/SKILL.md": {
       "baseline_sha256": "7738e665e8a7ad358e016ea3fcfa0f994e1f064f3626fe2fa454217a2750f3a0",
@@ -1305,16 +1313,18 @@
     },
     "skills/research-implement-feature/SKILL.md": {
       "baseline_sha256": "453416dee9d15117f950244115a22dce6ebb33f5fe4792374369d799b6a1a88f",
-      "sha256": "533411e9f6ff2b32461129a53c065df44a96a1a4338a368841d888cf0a156837",
-      "reason": "Directed 1.4.0 evidence, workflow, figure or distribution adaptation; see scoped implementation review. The existing common principles hook is now reachable from this mainline entrypoint; that hook itself changes no workflow body.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "990f22e73ee87f7c1fcd0dc5d4ba3ae9fbdf8b8086eabc3c6f37d282dddc49de",
+      "reason": "Directed 1.4.0 evidence, workflow, figure or distribution adaptation; see scoped implementation review. The existing common principles hook is now reachable from this mainline entrypoint; that hook itself changes no workflow body. User-directed concise interface documentation and evidence-based assessment follow-up; original workflow body and frozen baseline retained.",
+      "adaptation_version": "1.5.0",
+      "review_ref": "docs/VALIDATION_1_5_0.md#interface-and-closeout-follow-up",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
         "tests/test_claude_review_artifact_tools.py",
         "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py"
-      ]
+        "tests/test_idea_discovery_gate.py",
+        "tests/behavior/evo-inquiry-v150-followup-cases.json"
+      ],
+      "prior_candidate_sha256": "533411e9f6ff2b32461129a53c065df44a96a1a4338a368841d888cf0a156837"
     },
     "skills/research-lit/SKILL.md": {
       "baseline_sha256": "00d9f549e4db72f3b02d55b9f6dcd61b20403f5a7e25cf3396160423140b9183",
@@ -1856,16 +1866,17 @@
     },
     "skills/ablation-planner/SKILL.md": {
       "baseline_sha256": "ce51bfff265e5f0a6e8fd03333bfa8dee679e728e0d325830988ca5bd31307da",
-      "sha256": "d5fa7bea6c270ff52c6700d62f75b0cc10f0dd02057ee1aa1d82920bfbf608fa",
-      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "7cadf8dee08d93dc9217ba9e8f05a602f92e889e3df3bb194821411f0cd3ae77",
+      "reason": "User-directed conditional reuse of the shared interface/documentation contract during research-code changes. Original workflow body, frontmatter and frozen baseline remain unchanged.",
+      "adaptation_version": "1.5.0",
+      "review_ref": "docs/VALIDATION_1_5_0.md#interface-and-closeout-follow-up",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
         "tests/test_claude_review_artifact_tools.py",
         "tests/test_workflow_contract_versions.py",
         "tests/test_idea_discovery_gate.py"
-      ]
+      ],
+      "prior_candidate_sha256": "d5fa7bea6c270ff52c6700d62f75b0cc10f0dd02057ee1aa1d82920bfbf608fa"
     },
     "skills/alphaxiv/SKILL.md": {
       "baseline_sha256": "f313e596afbfc7e88a10def82c9438d0715942cc4e945480a27c809b099c3585",

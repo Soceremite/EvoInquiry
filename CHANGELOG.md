@@ -1,10 +1,12 @@
 # Changelog
 
-## 1.5.0 — Unreleased
+## 1.5.0 — 2026-10-19
 
 ### Added
 
 - Add optional bounded continuation over existing run state: reserve resources before dispatch, reconcile interrupted work, deduplicate repeated claims and limit retries without changing scientific review gates.
+- Preserve an original authorized task clock when attaching late, expose remaining dispatch time and reserve closeout inside the same wall budget. Add read-only handoff capture/check commands for the run and selected present or absent source files.
+- Settle a pre-bound registered execution from verified terminal evidence, including after interruption, without relaunching or advancing review gates; keep scientific result-file formats independent from accounting records.
 - Import explicitly selected Codex JSONL exports into compact, source-bound activity records. Preserve failures and unknown completion, support idempotent import and keep raw commands, prompts, outputs and credentials out of normalized events.
 - Retrieve relevant decisions from existing Markdown and JSONL records, with source identities, supersession, evidence freshness and revisit conditions. Retrieval remains read-only and lexical matches remain candidates for inspection.
 - Compare baseline and candidate behavior using frozen inputs, model settings, budgets, repeated tasks and held-out coverage. Report missing attempts and regressions; comparison results do not authorize toolkit changes.
@@ -14,6 +16,7 @@
 
 - Allow CPU-only investigations when the GPU allowance is zero. Reject corrupted accounting, retain actual resource overruns and preserve unresolved reservations after a stop.
 - Separate skill-path references from verified skill invocation or compliance, and completed turns from complete research workflows. Reject changed or truncated imported history.
+- Validate and publish each event import as one atomic batch, avoiding repeated whole-source reads and log rewrites. Cooperating importers retain distinct observations once; failed replacement preserves the previous log.
 - Correct the Codex self-optimization instructions to use the existing native behavior harness and stage proposed patches for the established landing review. Preserve human selection, backups, provenance and provisional review status.
 - Bind candidate comparisons to actual request and fixture hashes, distinct run receipts and explicit assessments. Keep timeouts and failed executions in the planned denominator.
 - Cover the bounded research modules and original run state in both native Windows shell gates for development and release CI.
@@ -21,9 +24,13 @@
 ### Changed
 
 - Guide sustained investigations toward the next decision-changing uncertainty, competing predictions, prior negative results and explicit stopping conditions. Keep small numerical questions and advice within their requested scope.
+- Connect clearly authorized sustained tasks to their existing run's budget control before costly preparation. Reuse verified receipts and reviewed small-wave ranges, save incomplete review findings progressively and refresh recovery facts from current sources. Public local repair cases retain all incomplete and failed attempts.
+- Shorten continuation guidance and entrypoint hooks, reuse existing runners and save useful findings early. Keep domain-specific protocols out of shared instructions and distinguish import readiness from formal environment freezing.
+- Document scientific interfaces beside the code with meaningful parameters, shapes and returns; check changed routines before their first consumer or handoff and reuse that contract during implementation, ablations and code fixes. Checkpoint completed waves, bind review claims to observable receipts and assess time/tool limits through host-enforced records. Distinguish initial setup from unmeasured reuse performance.
+- Size required reviews to the pending decision and remaining budget, reuse valid scoped receipts, and finish once required coverage is met. When splitting a review, retain cross-interface checks and uncovered requirements as pending; partial or timed-out prose cannot close a gate.
 - Retain all 88 Codex entrypoints, 83 original workflow records and 450 protected-resource baselines; register targeted adaptations separately.
 
-This is a development candidate, not a published release. See [candidate validation](docs/VALIDATION_1_5_0.md) for observed checks, preserved failures and limitations. The native development cases do not establish general superiority over 1.4.0 or complete recursive self-improvement.
+See [1.5.0 validation](docs/VALIDATION_1_5_0.md) for actual local use, source-specific checks, preserved failures and limitations. These observations do not establish general superiority over 1.4.0, unattended research over hours or days, or complete recursive self-improvement. Publication and local installation are recorded separately from implementation validation.
 
 ## 1.4.0 — 2026-10-17
 

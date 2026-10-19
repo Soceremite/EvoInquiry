@@ -1,0 +1,6 @@
+{
+  "status": "ready",
+  "interpreter": "/usr/bin/python3",
+  "scope": "local standard-library analysis only",
+  "remote_execution_verified": false
+}

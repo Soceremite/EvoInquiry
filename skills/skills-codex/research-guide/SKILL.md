@@ -12,6 +12,8 @@ reviewer briefs. Continue authorized work through its necessary steps; honor
 budgets, blocking checkpoints, and stopping conditions.
 
 For analysis-to-plan requests, use the scope boundaries in [task-scope](../shared-references/task-scope.md). For artifact-producing experiments, carry the established [storage policy](../shared-references/experiment-storage.md) to the execution skill.
+
+For authorized sustained work or recovery, use [bounded inquiry](../shared-references/bounded-inquiry.md): reuse the existing owner, original budget and valid evidence; choose the smallest discriminating step and save useful progress before closeout. Use documented helpers before inspecting implementation. Advice and small tasks need no new runtime.
 <!-- EVO-INQUIRY:END -->
 
 

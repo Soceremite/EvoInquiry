@@ -13,10 +13,11 @@ budgets, blocking checkpoints, and stopping conditions.
 
 For artifact-producing runs, read [experiment storage](../shared-references/experiment-storage.md). Carry the plan's storage policy into actual trainer configuration, verify save/resume in sanity checks, and budget aggregate concurrent output before deployment.
 
-For this stage, read [project-governance](../shared-references/project-governance.md). Before implementation, inspect reusable interfaces and their real callers/tests; update public docs/examples and contract tests together. Bind a recipe revision and record smoke, recovery and scientific reviews separately.
-Use [code-reuse-and-docs](../shared-references/code-reuse-and-docs.md) for code changes and [environment-stewardship](../shared-references/environment-stewardship.md) for dependency changes.
+For this stage, read [project-governance](../shared-references/project-governance.md). Inspect reusable interfaces and callers/tests; use [code-reuse-and-docs](../shared-references/code-reuse-and-docs.md) for implementation and concise parameter/shape/return docstrings. Update affected consumers together. Bind a recipe revision and distinguish smoke, recovery and scientific review. Use [environment-stewardship](../shared-references/environment-stewardship.md) for dependency changes.
 When implementing comparisons, load [comparative-experiments](../shared-references/comparative-experiments.md). Carry the fixed data/splits, permitted input access, selection/evaluator and method-specific configurations into executable checks. Persist effective configurations and every attempt; record deviations instead of silently repairing only one method.
 For empirical evaluations, proactively implement economical sample evidence alongside the planned metrics, unless the user or plan explicitly limits it: stable IDs, target/output references, relevant run/draw/settings and compact per-example scores where affordable. Use [case-study-analysis](../shared-references/case-study-analysis.md) to plan a bounded diagnostic export; retain selected real outputs without copying every image, video or dataset. Reuse the existing evaluator and record omitted coverage. This is instrumentation of the authorized evaluation, not a new experiment or inference budget.
+
+For sustained work, use [bounded inquiry](../shared-references/bounded-inquiry.md). Reuse the existing runner and verified environment scope; check adapter result-reading/settlement with fixture outputs before costly dispatch. Save useful progress early and retain incomplete review gates.
 <!-- EVO-INQUIRY:END -->
 
 

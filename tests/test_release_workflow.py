@@ -34,6 +34,7 @@ def test_release_covers_portable_windows_validation_before_publication():
     bounded_research = {
         'tests/test_run_state.py',
         'tests/test_research_control.py',
+        'tests/test_research_handoff.py',
         'tests/test_research_events.py',
         'tests/test_research_memory.py',
         'tests/test_candidate_comparison.py',

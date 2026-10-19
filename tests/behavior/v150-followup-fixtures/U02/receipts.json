@@ -1,0 +1,11 @@
+{
+  "fixture_scope": "Synthetic public evidence-reading exercise, not an actual historical experiment",
+  "validation": {"samples": 4, "baseline_accuracy": 0.5, "variant_accuracy": 0.75},
+  "confirmation": null,
+  "latency": null,
+  "environment": {"lifecycle": "frozen", "observed_checks": ["import math passed"], "promotion_receipt": null},
+  "review": {"status": "accepted", "review_independence": "cross-family", "reviewed_source_sha256": "0000000000000000000000000000000000000000000000000000000000000000", "invocation_trace": null},
+  "prior_attempt": {"declared_wall_limit_seconds": 120, "observed_wall_seconds": 121.32, "observed_tool_actions": 9, "limit": "time_limit", "session_completed": false, "exit_code": 0},
+  "timing": {"initial_setup_seconds": 95, "pilot_execution_seconds": 3, "reused_environment_run_seconds": null},
+  "phase": {"status": "pending", "scientific_acceptance": null}
+}

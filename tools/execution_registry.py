@@ -529,7 +529,8 @@ def main():
     spec = sub.add_parser('register-spec')
     spec.add_argument('--record', required=True)
     verify = sub.add_parser('verify-snapshot')
-    verify.add_argument('--ref', required=True)
+    verify.add_argument('--ref', required=True,
+                        help='Path to a JSON reference object with path and sha256 fields; not the snapshot manifest or inline JSON')
     prepare = sub.add_parser('prepare')
     prepare.add_argument('--request', required=True)
     launch = sub.add_parser('launch')

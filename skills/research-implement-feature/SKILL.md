@@ -19,7 +19,7 @@ budgets, blocking checkpoints, and stopping conditions.
 Resolve runtime state through tools/state_paths.py before .ei operations. Use
 [project-governance](../shared-references/project-governance.md) for fixed evidence,
 profiles and controlled migration; missing profiles retain compat-v1.
-Reuse stable shared interfaces after inspecting callers and tests. Document public shape/dtype/label/split/statistics, RNG and I/O contracts, and update representative consumers in the same change.
+Inspect reusable interfaces and callers/tests; document new or changed public interfaces and core scientific routines with concise parameter, input/output shape and return docstrings. Update affected consumers together.
 For code/dependency changes, read [code-reuse-and-docs](../shared-references/code-reuse-and-docs.md) and [environment-stewardship](../shared-references/environment-stewardship.md).
 <!-- EI-GOVERNANCE:END -->
 

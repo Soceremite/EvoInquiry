@@ -18,6 +18,8 @@ For this stage, read [project-governance](../shared-references/project-governanc
 Use [code-reuse-and-docs](../shared-references/code-reuse-and-docs.md) for code changes and [environment-stewardship](../shared-references/environment-stewardship.md) for dependency changes.
 When executing comparisons, load [comparative-experiments](../shared-references/comparative-experiments.md). Check effective configurations, data/split/evaluator identities, declared resource limits and validation selection. Preserve every seed and failed/retried attempt. Before winner-only cleanup, bind a complete comparison evidence index and keep logs outside checkpoint artifact directories.
 When the evaluation produces sample evidence, persist its compact prediction/selection records and the planned small output subset with the run's results before temporary storage or weights are released. Apply [case-study-analysis](../shared-references/case-study-analysis.md) for the relevant identities and storage limits. Do not add evaluation runs, regenerate missing samples or copy whole datasets merely to fill a case panel.
+
+For sustained execution or recovery, use [bounded inquiry](../shared-references/bounded-inquiry.md). Preserve the original owner/budget: reserve before launch, settle from terminal evidence and keep unfinished work visible. Registered executions can use its `settle-execution` helper; it never relaunches or accepts research gates.
 <!-- EVO-INQUIRY:END -->
 
 

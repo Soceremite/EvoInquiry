@@ -14,6 +14,8 @@ budgets, blocking checkpoints, and stopping conditions.
 Carry the relevant [experiment storage policy](../shared-references/experiment-storage.md) into planning, implementation, and launch phases. Reuse its budget and retention decisions rather than introducing another storage report or checkpoint state system.
 
 For this stage, read [project-governance](../shared-references/project-governance.md). Keep the existing run_state.py coordinator and IDs. Attach artifact_refs, execution_refs and spec_refs to original phases without changing gate semantics; namespace migration and artifact layout selection remain separate.
+
+For sustained work, use [bounded inquiry](../shared-references/bounded-inquiry.md). Preserve the original owner/budget, reuse valid receipts and obtain discriminating evidence early. Save progress during work; a negative result or justified stop does not require another wave.
 <!-- EVO-INQUIRY:END -->
 
 

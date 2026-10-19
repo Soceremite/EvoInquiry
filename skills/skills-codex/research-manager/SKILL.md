@@ -7,6 +7,8 @@ description: "Record research decisions, evidence-driven pivots, deferred branch
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),
 or reuse it if already loaded and unchanged in this session. Preserve the user's
 scope and the active workflow's review, resource and recovery contracts.
+
+For sustained work or recovery, use [bounded inquiry](../shared-references/bounded-inquiry.md). Save findings and requested deliverables still missing, then refresh the handoff after relevant changes. On resume verify current sources, original timing and unresolved work; do not duplicate an existing attempt.
 <!-- EVO-INQUIRY:END -->
 
 # Research decisions and handoffs

@@ -12,6 +12,8 @@ principles within the user's scope and this skill's existing outputs, review
 standards, and recovery contracts. Carry them into nested research tasks and
 reviewer briefs. Continue authorized work through its necessary steps; honor
 budgets, blocking checkpoints, and stopping conditions.
+
+Separate initial setup from repeated-use timings; a cold start alone establishes neither recurring overhead nor a faster warm run. For time/tool-limit claims, use a host-enforced runner with observed start/end and native action counts; preserve interrupted attempts and raw artifacts durably. Declared limits or self-reported commands cannot certify compliance. The existing Codex runner is described below.
 <!-- EVO-INQUIRY:END -->
 
 

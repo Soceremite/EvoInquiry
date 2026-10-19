@@ -26,6 +26,8 @@ provided values, derived totals and genuinely unknown estimates distinct. If
 the requested combination cannot fit, save that calculation and the compact
 tracker with the affected executions blocked and concrete feasible changes.
 Resource infeasibility does not remove the planning deliverables.
+
+For authorized multi-wave work, use [bounded inquiry](../shared-references/bounded-inquiry.md): specify allowed configuration ranges, per-wave bounds, decision branches and stops. Reuse reviews only within their verified scope; planning alone performs no execution or runtime initialization.
 <!-- EVO-INQUIRY:END -->
 
 

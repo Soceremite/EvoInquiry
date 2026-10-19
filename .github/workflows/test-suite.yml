@@ -98,7 +98,7 @@ jobs:
       - name: Verify native Windows installer and local governance
         env:
           ARIS_TEST_POWERSHELL: ${{ matrix.powershell }}
-        run: python -m pytest tests/test_install_aris_ps1.py tests/test_filesystem_doctor.py tests/test_windows_governance.py tests/test_portability_governance.py tests/test_ci_failure_annotations.py tests/test_research_guidance.py tests/test_comparison_evidence.py tests/test_comparison_archive.py tests/test_checkpoint_retention.py tests/test_literature_records.py tests/test_research_decisions.py tests/test_workflow_contract_versions.py tests/test_figure_evidence.py tests/test_run_state.py tests/test_research_control.py tests/test_research_events.py tests/test_research_memory.py tests/test_candidate_comparison.py tests/test_research_pilots.py -q -rs --junitxml=validation/ci/test-results.xml
+        run: python -m pytest tests/test_install_aris_ps1.py tests/test_filesystem_doctor.py tests/test_windows_governance.py tests/test_portability_governance.py tests/test_ci_failure_annotations.py tests/test_research_guidance.py tests/test_comparison_evidence.py tests/test_comparison_archive.py tests/test_checkpoint_retention.py tests/test_literature_records.py tests/test_research_decisions.py tests/test_workflow_contract_versions.py tests/test_figure_evidence.py tests/test_run_state.py tests/test_research_control.py tests/test_research_handoff.py tests/test_research_events.py tests/test_research_memory.py tests/test_candidate_comparison.py tests/test_research_pilots.py -q -rs --junitxml=validation/ci/test-results.xml
       - name: Report actual pytest failures
         if: always()
         run: python tools/report_ci_failures.py validation/ci/test-results.xml

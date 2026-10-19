@@ -117,6 +117,56 @@ def _verify_source(root, source):
         raise RegistryError('Source event line changed')
 
 
+def _check_import_history(records, lines, source, session):
+    for row in records:
+        reference = row.get('source', {})
+        if (not row.get('event_id') or row.get('session') != session
+                or not isinstance(reference, dict) or reference.get('path') != source):
+            continue
+        index = reference.get('line')
+        if (isinstance(index, bool) or not isinstance(index, int) or index < 1
+                or index > len(lines) or digest(lines[index - 1]) != reference.get('sha256')):
+            raise RegistryError('Previously imported source changed; preserve the original trace')
+
+
+def _append_import(root, raw, source, session, events):
+    """Commit one validated import atomically, reading the source/log in batches.
+
+    Holding the existing namespace and event locks keeps cooperating importers
+    idempotent. Readers see either the previous log or the complete import; a
+    failed replacement retains the previous observations. An actively growing
+    source is allowed when the captured byte prefix remains unchanged.
+    """
+    if not events:
+        log = resolve_state_root(root, 'read') / 'meta/events.jsonl'
+        _, existing = _read_log(log)
+        _check_import_history(existing, raw.splitlines(), source, session)
+        return 0
+    with state_writer(root) as state:
+        log = local_path(root, (state / 'meta/events.jsonl').relative_to(Path(root).resolve()).as_posix())
+        with file_lock(log.with_suffix('.lock')):
+            current = local_path(root, source).read_bytes()
+            if not current.startswith(raw):
+                raise RegistryError('Codex source changed during import; preserve the original trace')
+            previous, records = _read_log(log)
+            _check_import_history(records, current.splitlines(), source, session)
+            known = {row.get('event_id'): row for row in records if row.get('event_id')}
+            additions = []
+            for event_id, payload in events:
+                if event_id in known:
+                    if {key: value for key, value in known[event_id].items()
+                            if key not in ('event_id', 'schema_version', 'ts')} != payload:
+                        raise RegistryError('Previously imported source changed; preserve the original trace')
+                    continue
+                record = {'schema_version': 1, 'event_id': event_id, 'ts': now(), **payload}
+                additions.append(json.dumps(record, ensure_ascii=False, sort_keys=True,
+                                            allow_nan=False).encode() + b'\n')
+                known[event_id] = record
+            if additions:
+                atomic_write(log, previous + b''.join(additions))
+            return len(additions)
+
+
 def _normalize(event, base):
     kind = event.get('type')
     if kind == 'thread.started':
@@ -202,21 +252,7 @@ def import_codex(root, source, session, *, workflow_run_id=None):
             _validate_event(normalized)
             events.append((digest({'session': session, 'source': str(source),
                                    'line': index, 'observation': ordinal}), normalized))
-    # Check immutable observation IDs before writing any member of this import.
-    log = resolve_state_root(root, 'read') / 'meta/events.jsonl'
-    _, existing = _read_log(log)
-    known = {row.get('event_id'): row for row in existing if row.get('event_id')}
-    for row in known.values():
-        if row.get('session') == session and row.get('source', {}).get('path') == str(source):
-            try:
-                _verify_source(root, row['source'])
-            except RegistryError as error:
-                raise RegistryError('Previously imported source changed; preserve the original trace') from error
-    for event_id, payload in events:
-        if event_id in known and {k: v for k, v in known[event_id].items()
-                                 if k not in ('event_id', 'schema_version', 'ts')} != payload:
-            raise RegistryError('Previously imported source changed; preserve the original trace')
-    appended = sum(append_event(root, payload, event_id=event_id)['appended'] for event_id, payload in events)
+    appended = _append_import(root, raw, str(source), session, events)
     endings = [event['type'] for _, event, _ in parsed if event.get('type') in ('turn.completed', 'turn.failed')]
     completion = 'unknown'
     for _, event, _ in parsed:

@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "captured_at": "2026-10-18T09:34:13.552252+00:00",
+  "run_id": "study",
+  "run_ref": {
+    "path": ".ei/runs/study.json",
+    "sha256": "10637fb2a11e6ed04afd9dcde81175d7df93c0380b5be20ab6ad5a9ffdffb61f"
+  },
+  "files": [
+    {
+      "path": "DATASET_MANIFEST.json",
+      "state": "absent"
+    },
+    {
+      "path": "ENVIRONMENT.json",
+      "state": "absent"
+    }
+  ],
+  "phase": {
+    "phase": "pilot",
+    "status": "pending",
+    "artifact": null,
+    "verdict_id": null,
+    "reviewer": null,
+    "reviewer_family": null,
+    "review_independence": null,
+    "acceptance_status": null,
+    "executor_model": "gpt-6.1-sol",
+    "executor_family": "openai",
+    "updated": "2026-10-18T09:34:13Z"
+  },
+  "continuation_status": "RECONCILE",
+  "timing": {
+    "started_at": "2026-10-18T09:34:13.547522+00:00",
+    "deadline_at": "2026-10-18T09:35:13.547522+00:00",
+    "remaining_seconds": 59.996123,
+    "elapsed_seconds": 0.003877,
+    "closeout_seconds": 15,
+    "dispatch_seconds_remaining": 44.996123
+  },
+  "unresolved_actions": [
+    "a000001"
+  ],
+  "scientific_verdict": "not-assessed",
+  "host_goal_modified": false
+}

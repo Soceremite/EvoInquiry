@@ -10,6 +10,8 @@ principles within the user's scope and this skill's existing outputs, review
 standards, and recovery contracts. Carry them into nested research tasks and
 reviewer briefs. Continue authorized work through its necessary steps; honor
 budgets, blocking checkpoints, and stopping conditions.
+
+For a bounded review, use [bounded inquiry](../shared-references/bounded-inquiry.md): give scope, evidence, deadline and output path; save INCOMPLETE coverage first and update progressively. Bind the reviewed revision to actual call/result evidence; missing provenance or interrupted coverage cannot certify independence or close a gate.
 <!-- EVO-INQUIRY:END -->
 
 
