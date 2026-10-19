@@ -20,6 +20,7 @@
 - Correct the Codex self-optimization instructions to use the existing native behavior harness and stage proposed patches for the established landing review. Preserve human selection, backups, provenance and provisional review status.
 - Bind candidate comparisons to actual request and fixture hashes, distinct run receipts and explicit assessments. Keep timeouts and failed executions in the planned denominator.
 - Cover the bounded research modules and original run state in both native Windows shell gates for development and release CI.
+- Retry temporary native Windows sharing violations when a monitoring reader blocks old-checkpoint deletion. Bound the wait, retain the deletion journal and latest recovery points, and propagate persistent or unrelated errors.
 
 ### Changed
 

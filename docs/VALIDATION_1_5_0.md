@@ -1,11 +1,13 @@
 # EvoInquiry 1.5.0 validation
 
-**Current source status (2026-10-19):** the user has authorized submitting 1.5.0.
+**Current source status (2026-10-19):** the user has authorized publishing 1.5.0.
 Version metadata and bilingual release materials now identify 1.5.0. Earlier
 sections below retain their original source-specific development and installation
 statuses; they do not describe a later commit or an already published release.
-The final submission checks are recorded at the end of this document. The formal
-local installation remains 1.4.0 until an upgrade is performed separately.
+The first tag run exposed a Windows checkpoint cleanup race and did not publish.
+Its failure and the subsequent repair checks are recorded at the end of this
+document. The formal local installation remains 1.4.0 until an upgrade is performed
+separately.
 
 Development started on 2026-10-18 from `180f7d8ebd6690caa3a77328e9cb2bf5eeeee7ce`
 on `feat/bounded-research-v1.5.0`, under the
@@ -659,3 +661,56 @@ real local validation, credentials, model weights and experiment state remain
 excluded. Raw local receipts are retained under ignored
 `validation/release-1.5.0/`. Submission, release publication and installation are
 distinct actions; the formal installation still remains 1.4.0 at this checkpoint.
+
+## Native publication failure and checkpoint repair — 2026-10-19
+
+Submission `7003c6000ea907cd016f44d369c05814194c0b97` passed all four
+[native CI jobs](https://github.com/Soceremite/EvoInquiry/actions/runs/39235374741):
+Ubuntu and macOS each reported 1,273 passed / 34 skipped, and each Windows shell
+reported 413 passed / four skipped. The user subsequently merged it as main
+`f49380777c8f54c8ebc3c286007f6219c7e5ea63`, whose tracked tree is identical and
+whose normal CI also passed. These observations did not eliminate an intermittent
+checkpoint cleanup race.
+
+The first `v1.5.0` tag run
+[failed](https://github.com/Soceremite/EvoInquiry/actions/runs/39237501171).
+Windows `powershell.exe` reported 412 passed, four skipped and one failure: the
+monitoring/publisher test's child process hit native WinError 32 deleting an old
+`state.json` while a status reader held the file open. Linux, macOS and `pwsh`
+passed; publication was skipped and no Release was created. The original failed
+job and its exception annotation remain available. A successful rerun alone is
+not used as a fix.
+
+The existing one-second Windows I/O retry is now also used during journaled
+artifact removal. Deletion retries only native sharing violation 32; general
+access denial, errno-only errors, unrelated failures and POSIX errors propagate.
+Partial deletion retains its journal entry until removal succeeds. An exhausted
+retry still reports the error, preserving the committed newest recovery points
+and the journal for a later explicit retry. There is no change to checkpoint
+formats, retention counts, storage budgets or skill entrypoints.
+
+Six deterministic regression cases exercise real publication and cleanup with
+controlled OS failures. Against the original source, two fail as expected: a
+transient sharing failure aborts rotation, and persistent sharing has no bounded
+retry. The other four error classifications pass. With the repair, checkpoint
+and comparison-archive checks report **85 passed / two skipped in 13.64 seconds**.
+A Windows-only test additionally holds an actual checkpoint file open in another
+thread, observes the native sharing error, releases the handle and checks that
+rotation finishes with both newest recoveries intact. Its native result remains
+pending CI at this checkpoint; Linux simulation is not native Windows evidence.
+
+Full regression against a local-filesystem snapshot reported **1,274 passed,
+39 skipped, one failed, three warnings and 46 passing subtests in 1,025.99
+seconds**. The 1,064 tracked files matched the authoring tree at dispatch;
+subsequent note and validation-record edits are separate. The failure was
+`test_ping_progress_and_cancel_while_child_runs`, which received no first progress
+message within its existing three-second queue wait. The bridge and test bytes
+are unchanged from the earlier passing source. A separate unchanged invocation
+of all seven bridge tests passed, including seven subtests, in 13.06 seconds.
+That recheck does not rewrite the failed full run or establish the cause or
+frequency of the timeout. Both raw receipts remain.
+
+The repaired checkpoint cases pass locally; native Windows and complete native
+Linux/macOS suites remain required for the repair commit and publication tag.
+The initial tag is still unpublished and will be updated after repair validation.
+The formal installed plugin remains 1.4.0.

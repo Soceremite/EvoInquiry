@@ -38,8 +38,13 @@ def _integer(value: object, name: str, minimum: int = 0) -> int:
     return value
 
 
-def _manifest_io(operation: Callable, *, reading: bool = False):
-    """Bound native Windows reader/rename contention without hiding failures."""
+def _windows_io(operation: Callable, *, reading: bool = False,
+                sharing_only: bool = False):
+    """Retry transient Windows I/O for at most a second; propagate other errors.
+
+    Deletion retries only a native sharing violation, never general access
+    denial. Manifest reads also allow the CRT's errno-only access error.
+    """
     deadline = time.monotonic() + 1.0
     while True:
         try:
@@ -49,7 +54,7 @@ def _manifest_io(operation: Callable, *, reading: bool = False):
             # Python's CRT-backed open can expose only errno EACCES, unlike
             # os.replace's Win32 error. Accept that fallback for reads only.
             retryable = bool(_WINDOWS_REPLACE_ERRORS) and (
-                code in _WINDOWS_REPLACE_ERRORS
+                (code == 32 if sharing_only else code in _WINDOWS_REPLACE_ERRORS)
                 or (reading and code is None and error.errno == errno.EACCES))
             if not retryable or time.monotonic() >= deadline:
                 raise
@@ -67,7 +72,7 @@ def _atomic_json(path: Path, data: dict) -> None:
         # A short-lived monitoring handle can deny rename on Windows. Keep the
         # old manifest intact while retrying only native sharing/access errors;
         # persistent errors still fail, and the owning writer lock remains held.
-        _manifest_io(lambda: os.replace(temporary, path))
+        _windows_io(lambda: os.replace(temporary, path))
         if hasattr(os, 'O_DIRECTORY'):
             descriptor = os.open(path.parent, os.O_RDONLY | os.O_DIRECTORY)
             try:
@@ -192,7 +197,7 @@ class CheckpointStore:
         if path.is_symlink():
             raise RetentionError('Refusing a symlinked manifest')
         try:
-            data = json.loads(_manifest_io(lambda: path.read_text(encoding='utf-8'), reading=True))
+            data = json.loads(_windows_io(lambda: path.read_text(encoding='utf-8'), reading=True))
             if data['schema_version'] != 1 or not isinstance(data['run_id'], str):
                 raise ValueError('identity/schema')
             policy = data['policy']
@@ -340,7 +345,10 @@ class CheckpointStore:
                 continue
             path = self.root / entry['id']
             if path.exists():
-                shutil.rmtree(path)
+                # A lock-free status scan may still hold an old file open on
+                # Windows. Retain this journal entry through partial deletion
+                # and retry; persistent errors remain visible and recoverable.
+                _windows_io(lambda: shutil.rmtree(path), sharing_only=True)
             data['garbage'].remove(entry)
             self._write(data)
             removed.append(entry['id'])

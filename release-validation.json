@@ -2,7 +2,7 @@
   "schema_version": 1,
   "version": "1.5.0",
   "release_kind": "stable",
-  "status": "source-validated; submission-authorized; not-published",
+  "status": "local-repair-checked-with-one-rechecked-timeout; native-ci-pending; not-published",
   "assessed_at": "2026-10-19",
   "source_base": {
     "version": "1.4.0",
@@ -29,7 +29,8 @@
     "tools/meta_opt/compare_candidates.py": "2e045480f7b043afe18f04d1b1f3de32fab1c5578e619894154263665721dcc6",
     "tools/run_state.py": "f8f0a6299f04610ae3e9d468fd01a5584c79713411264cde9f7d731055fd0d97",
     "skills/skills-codex/shared-references/bounded-inquiry.md": "54e25f45286ef32c243e9d3925c640d98622e105006973d475edc6757063b6c0",
-    "skills/skills-codex/shared-references/code-reuse-and-docs.md": "bdca70ed7b44c368a08113e04ae6d86d765d397cc04495f4e89aa900e5c1211b"
+    "skills/skills-codex/shared-references/code-reuse-and-docs.md": "bdca70ed7b44c368a08113e04ae6d86d765d397cc04495f4e89aa900e5c1211b",
+    "tools/checkpoint_retention.py": "a543315153827fd854150829eca86209e9748f168980f47702daa3df5857c133"
   },
   "current_checks": {
     "source_preservation": {
@@ -39,27 +40,6 @@
         "sha256": "f2181b2fdadc3eeb46b57dd79af33e5af1cd7c9ae94b83ec7398a0b2a339ad53"
       },
       "scope": "88 canonical entrypoints and frozen original 83/450 baseline contracts with directed adaptations"
-    },
-    "final_full_local_suite": {
-      "status": "PASS_WITH_SKIPS",
-      "python": "3.14.7",
-      "platform": "Linux",
-      "passed": 1269,
-      "skipped": 38,
-      "warnings": 3,
-      "passing_subtests": 46,
-      "failures": 0,
-      "errors": 0,
-      "duration_seconds": 1072.62,
-      "receipt": {
-        "path": "validation/release-1.5.0/full-tests.xml",
-        "sha256": "219bc55d71d55282802b63ad459c87f55e27d1220b2896c72b2da586336dfab6"
-      },
-      "log": {
-        "path": "validation/release-1.5.0/full-tests.log",
-        "sha256": "069bbced5880c9cd87ffb8d49c6dfcf0262eb0a43ccc448ce39146160e927234"
-      },
-      "scope": "Full tests/ on the final runtime in a fresh isolated environment. Native Windows, optional requests/PyTorch/expect and unconfigured live API skips remain; existing UTC and legacy-state warnings remain. Counts overlap earlier runs."
     },
     "review_interface_forward_use": {
       "status": "PASS_WITH_SCOPE_LIMITATIONS",
@@ -103,13 +83,88 @@
       "scope": "Ubuntu/macOS and powershell.exe/pwsh before later uncommitted runtime and guidance repairs; not current-source CI"
     },
     "new_commit_native_ci": {
-      "status": "PENDING_SUBMISSION",
-      "scope": "Fresh Ubuntu/macOS full suite and both Windows shell gates required for the new commit"
+      "status": "PENDING_REPAIR_COMMIT",
+      "scope": "New commit must pass Ubuntu/macOS full suites and both Windows shell gates; earlier passes do not override the failed tag run."
     },
     "formal_installation": {
       "status": "UNCHANGED",
       "version": "1.4.0",
       "scope": "Temporary dev9/dev10 evaluation installs removed; the user has authorized committing 1.5.0, no formal installation replacement performed"
+    },
+    "previous_local_suite_before_checkpoint_fix": {
+      "status": "PASS_WITH_SKIPS",
+      "python": "3.14.7",
+      "platform": "Linux",
+      "passed": 1269,
+      "skipped": 38,
+      "warnings": 3,
+      "passing_subtests": 46,
+      "failures": 0,
+      "errors": 0,
+      "duration_seconds": 1072.62,
+      "receipt": {
+        "path": "validation/release-1.5.0/full-tests.xml",
+        "sha256": "219bc55d71d55282802b63ad459c87f55e27d1220b2896c72b2da586336dfab6"
+      },
+      "log": {
+        "path": "validation/release-1.5.0/full-tests.log",
+        "sha256": "069bbced5880c9cd87ffb8d49c6dfcf0262eb0a43ccc448ce39146160e927234"
+      },
+      "scope": "Source before the newly discovered Windows cleanup-sharing repair; 1269 passing tests do not certify the later fix."
+    },
+    "final_full_local_suite": {
+      "status": "FAIL_WITH_ONE_TIMEOUT",
+      "python": "3.14.7",
+      "platform": "Linux",
+      "passed": 1274,
+      "skipped": 39,
+      "failures": 1,
+      "errors": 0,
+      "warnings": 3,
+      "passing_subtests": 46,
+      "duration_seconds": 1025.99,
+      "receipt": {
+        "path": "validation/release-1.5.0/checkpoint-full-tests.xml",
+        "sha256": "fde3363bf27e41a71524cb36c8e02d83d96de9ec635873f899ffcc438d0e95da"
+      },
+      "scope": "Filesystem-local snapshot: 1064 tracked files matched at dispatch. Unchanged Grok bridge progress/cancellation test exceeded its three-second first-message wait. Later notes and validation edits are separate. Checkpoint repair tests passed; this full run remains failed."
+    },
+    "accepted_submission_native_ci": {
+      "status": "PASS_FOR_PRE_FIX_SOURCE",
+      "commit": "7003c6000ea907cd016f44d369c05814194c0b97",
+      "url": "https://github.com/Soceremite/EvoInquiry/actions/runs/39235374741",
+      "scope": "Four passing platform jobs on the original submission. A later tag run exposed Windows cleanup sharing contention."
+    },
+    "first_publication_attempt": {
+      "status": "FAILED_NOT_PUBLISHED",
+      "commit": "f49380777c8f54c8ebc3c286007f6219c7e5ea63",
+      "url": "https://github.com/Soceremite/EvoInquiry/actions/runs/39237501171",
+      "failure": "Native Windows powershell.exe: WinError 32 during journaled old-checkpoint removal while a monitoring reader held state.json. Other three platform jobs passed; publication was skipped.",
+      "annotation_receipt": {
+        "path": "validation/release-1.5.0/publication-windows-annotations.json",
+        "sha256": "996e41b19243003f65c58dcd2fdb2d4fce6896eaf1f90a5933de85c19376fc6e"
+      }
+    },
+    "checkpoint_rotation_repair": {
+      "status": "LOCAL_FOCUSED_PASS; NATIVE_PENDING",
+      "passed": 85,
+      "skipped": 2,
+      "receipt": {
+        "path": "validation/release-1.5.0/checkpoint-fix.xml",
+        "sha256": "c43979da15d8830d0027dda5b35f9c6319ec19f8f906b99b37f6d2416eb580c4"
+      },
+      "scope": "Real publication/rotation with deterministic simulated sharing errors, partial deletion, persistent/permanent error bounds, recovery and journal retry; includes a Windows-only real open-handle test for native CI. Two new tests fail against original source as expected."
+    },
+    "unchanged_bridge_recheck": {
+      "status": "PASS",
+      "passed": 7,
+      "passing_subtests": 7,
+      "duration_seconds": 13.06,
+      "receipt": {
+        "path": "validation/release-1.5.0/grok-recheck.xml",
+        "sha256": "cf2e4fb1cd43d746de032a7a53f4107a96e006932fc927531885563517372127"
+      },
+      "scope": "Separate unchanged invocation of all Grok bridge tests. Does not erase the full-suite timeout or establish its frequency or root cause."
     }
   },
   "validation_record": "docs/VALIDATION_1_5_0.md",

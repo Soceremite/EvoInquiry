@@ -455,6 +455,119 @@ def test_interrupted_deletion_is_journaled_and_can_finish_safely(store, monkeypa
     assert sorted(e['step'] for e in active(store)) == [2, 3]
 
 
+def test_windows_reader_contention_retries_partially_deleted_garbage(store, monkeypatch):
+    import tools.checkpoint_retention as module
+    first = save(store, 1)
+    save(store, 2)
+    real_rmtree = module.shutil.rmtree
+    attempts = []
+
+    def temporarily_busy(path):
+        attempts.append(path)
+        data = json.loads((store.root / MANIFEST).read_text())
+        assert [entry['id'] for entry in data['garbage']] == [first['id']]
+        assert [entry['step'] for entry in data['entries']] == [2, 3]
+        if len(attempts) == 1:
+            (path / 'state.json').unlink()
+            error = PermissionError(errno.EACCES, 'monitor has a checkpoint file open')
+            error.winerror = 32
+            raise error
+        real_rmtree(path)
+
+    monkeypatch.setattr(module, '_WINDOWS_REPLACE_ERRORS', (5, 32))
+    monkeypatch.setattr(module.shutil, 'rmtree', temporarily_busy)
+    saved = save(store, 3)
+    assert len(attempts) == 2
+    assert saved['step'] == store.status()['latest_step'] == 3
+    assert sorted(entry['step'] for entry in active(store)) == [2, 3]
+    assert not (store.root / first['id']).exists()
+    assert json.loads((store.root / MANIFEST).read_text())['garbage'] == []
+
+
+@pytest.mark.parametrize('platform,winerror', [
+    ('windows', 32), ('windows', 5), ('windows', 112),
+    ('windows', None), ('posix', 32),
+])
+def test_cleanup_retries_are_bounded_and_preserve_recovery_and_journal(store, monkeypatch,
+                                                                    platform, winerror):
+    import tools.checkpoint_retention as module
+    first = save(store, 1)
+    save(store, 2)
+    real_rmtree = module.shutil.rmtree
+    elapsed = [0.0]
+    attempts = []
+
+    def sleep(seconds):
+        elapsed[0] += seconds
+
+    def cannot_delete(path):
+        attempts.append(path)
+        error = PermissionError(errno.EACCES, 'checkpoint deletion is blocked')
+        if winerror is not None:
+            error.winerror = winerror
+        raise error
+
+    monkeypatch.setattr(module, '_WINDOWS_REPLACE_ERRORS', (5, 32) if platform == 'windows' else ())
+    monkeypatch.setattr(module, 'time', SimpleNamespace(monotonic=lambda: elapsed[0], sleep=sleep))
+    monkeypatch.setattr(module.shutil, 'rmtree', cannot_delete)
+    with pytest.raises(PermissionError, match='deletion is blocked'):
+        save(store, 3)
+    assert sorted(entry['step'] for entry in active(store)) == [2, 3]
+    assert store.status()['latest_step'] == 3
+    assert json.loads((store.latest() / 'state.json').read_text())['step'] == 3
+    assert store.status()['garbage_remove'] == [first['id']]
+    assert (store.root / first['id'] / 'state.json').is_file()
+    if platform == 'windows' and winerror == 32:
+        assert len(attempts) > 1 and 1.0 <= elapsed[0] < 1.02
+    else:
+        assert len(attempts) == 1 and elapsed[0] == 0
+
+    monkeypatch.setattr(module.shutil, 'rmtree', real_rmtree)
+    result = CheckpointStore(store.root).prune(apply=True)
+    assert result['deleted'] == [first['id']]
+    assert sorted(entry['step'] for entry in active(store)) == [2, 3]
+    assert not store.status()['garbage_remove']
+
+
+@pytest.mark.skipif(sys.platform != 'win32', reason='Native Windows file-sharing semantics')
+def test_native_windows_open_checkpoint_handle_does_not_abort_rotation(store, monkeypatch):
+    import threading
+    import tools.checkpoint_retention as module
+    first = save(store, 1)
+    save(store, 2)
+    held, contested = threading.Event(), threading.Event()
+    real_rmtree = module.shutil.rmtree
+    sharing_errors = []
+
+    def monitor():
+        with (store.root / first['id'] / 'state.json').open('rb'):
+            held.set()
+            contested.wait(5)
+
+    def observe_deletion(path):
+        try:
+            return real_rmtree(path)
+        except PermissionError as error:
+            sharing_errors.append(getattr(error, 'winerror', None))
+            contested.set()
+            raise
+
+    reader = threading.Thread(target=monitor)
+    reader.start()
+    try:
+        assert held.wait(5), 'monitor did not acquire the old checkpoint handle'
+        monkeypatch.setattr(module.shutil, 'rmtree', observe_deletion)
+        save(store, 3)
+    finally:
+        contested.set()
+        reader.join(timeout=5)
+    assert not reader.is_alive()
+    assert sharing_errors and set(sharing_errors) == {32}
+    assert store.status()['latest_step'] == 3
+    assert sorted(entry['step'] for entry in active(store)) == [2, 3]
+    assert not store.status()['garbage_remove']
+
+
 def test_cooperating_writer_lock_prevents_nested_publication(store):
     other = CheckpointStore(store.root)
 

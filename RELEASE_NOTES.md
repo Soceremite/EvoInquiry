@@ -20,6 +20,7 @@ EvoInquiry helps turn a rough research direction into a sequence of testable que
 - Separate a skill-path reference from verified invocation or compliance, a completed turn from a completed workflow, and a terminal process from a supported scientific claim.
 - Correct the Codex self-optimization path to use the existing native behavior harness and separate proposal generation from reviewed landing.
 - Include bounded-research and handoff regressions in both native Windows shell gates for development and release CI.
+- Retry short Windows file-sharing contention during old-checkpoint cleanup. Persistent sharing errors remain visible after a bounded wait; access-denied errors are not treated as temporary. The deletion journal and newest recovery points remain available after interrupted cleanup.
 
 ## Improved research guidance
 
@@ -44,6 +45,8 @@ EvoInquiry 1.5.0 的重点是：**让已授权的科研任务能够在明确边�
 **新增能力：** 保留原始任务时钟、资源预留和收尾窗口，依据上一轮证据决定下一轮；核对中断任务的实际终态再重试；将执行身份与固定的源码、配置和结果绑定；检查交接所选来源是否仍然有效。从已有决策文档检索证据、备选方案和重新考虑的条件；显式导入来源绑定的操作记录，并在相同任务与预算下比较工具修改。
 
 **修复问题：** 零 GPU 预算不再误拦允许的 CPU 工作；实际超支、未决预留和原始截止时间不会被恢复操作掩盖。日志按批原子写入，避免反复扫描和重写，保留失败发布前的历史。纠正“提到了 skill 路径就等于执行”“会话完成就等于科研完成”和自优化直接改写已安装技能等错误边界；补齐两种 Windows Shell 的发布回归范围。
+
+Windows 监控读取旧断点时，清理操作现在会对短暂的文件共享占用进行有时限的重试；持久占用和其他权限错误仍会报告，删除日志及最新恢复点得到保留。
 
 **规范改进：** 新改科研函数在代码旁说明参数、shape、返回值和约束，并在首次调用或交接前核对。评审围绕待决定的问题与剩余预算展开，拆分后保留跨接口和未覆盖检查；超时文本不能关闭门槛。每轮先保存结果、样例与决策，保留正面发现、退化和未知；负结果与有依据的停止同样有效。
 
