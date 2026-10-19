@@ -15,6 +15,8 @@ budgets, blocking checkpoints, and stopping conditions.
 
 For a formal execution audit or existing governed run, read [project-governance](../shared-references/project-governance.md). Audit fixed input/content/review digests, declared execution inclusion and relevant interface freshness. Registry/schema PASS is integrity only and never upgrades scientific review or accepted/provisional.
 For comparative integrity, use the applicable checks in [comparative-experiments](../shared-references/comparative-experiments.md). A formal fresh-review brief includes the protocol, comparison log, configurations, complete attempt ledger and raw outputs. A bounded review of supplied records stays within those records. Check relevant data, budget, selection, seed and evaluation issues; hash/coverage PASS is not a scientific fairness verdict.
+
+For a deadline-bound report, use [bounded inquiry](../shared-references/bounded-inquiry.md): save coverage progressively and verify claimed checks/reviewer provenance against actual receipts. An environment label or schema PASS cannot replace its required validation layers. Local assessment needs no new run or reviewer; formal audit retains its gate.
 <!-- EVO-INQUIRY:END -->
 
 

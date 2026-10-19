@@ -27,6 +27,10 @@ REQUIRED_COMPARISON_RESOURCES = (
 
 REQUIRED_RESEARCH_RESOURCES = (
     'tools/literature_records.py', 'tools/figure_evidence.py',
+    'tools/research_control.py', 'tools/research_events.py', 'tools/research_memory.py',
+    'tools/meta_opt/compare_candidates.py',
+    'skills/shared-references/bounded-inquiry.md',
+    'skills/skills-codex/shared-references/bounded-inquiry.md',
     'skills/shared-references/literature-evidence.md',
     'skills/skills-codex/shared-references/literature-evidence.md',
     'skills/shared-references/research-decisions.md',

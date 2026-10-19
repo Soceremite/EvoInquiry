@@ -26,6 +26,8 @@ provided values, derived totals and genuinely unknown estimates distinct. If
 the requested combination cannot fit, save that calculation and the compact
 tracker with the affected executions blocked and concrete feasible changes.
 Resource infeasibility does not remove the planning deliverables.
+
+For authorized multi-wave work, use [bounded inquiry](../shared-references/bounded-inquiry.md): specify allowed configuration ranges, per-wave bounds, decision branches and stops. Reuse reviews only within their verified scope; planning alone performs no execution or runtime initialization.
 <!-- EVO-INQUIRY:END -->
 
 
@@ -126,6 +128,14 @@ Special rules:
 - If the proposal is intentionally non-frontier, say so explicitly and skip the frontier block instead of forcing one.
 
 Plan the case-selection population, outcome-independent sample and diagnostic contrasts before inspecting test outputs where feasible. Record any later exploratory selection. Include both successful and failed outcomes when present, without requiring arbitrary quotas or storing every generated asset. Start diagnosis as baseline/main results become available; final presentation may wait for polish.
+
+For a requested sustained investigation, read
+[bounded-inquiry](../shared-references/bounded-inquiry.md). Link each expensive
+block to the uncertainty it resolves, competing predicted outcomes, declared
+costs and a decision/stopping rule. Reuse relevant prior negative findings rather
+than scheduling an unchanged retry. Reserve verification and handoff time.
+Planning produces the spec and roadmap; neither a host Goal nor this plan starts
+jobs or grants additional resources. Keep the existing fairness and review gates.
 
 ### Phase 4: Turn the Plan Into an Execution Order
 

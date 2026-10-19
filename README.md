@@ -8,7 +8,7 @@
 [Static cover](docs/assets/evo-inquiry-hero.svg)
 
 <p align="center">
-  <a href="https://github.com/Soceremite/EvoInquiry/releases/tag/v1.4.0"><img src="https://img.shields.io/badge/release-1.4.0-FF927E?style=flat&amp;labelColor=7862E8" alt="Stable release 1.4.0"></a>
+  <a href="https://github.com/Soceremite/EvoInquiry/releases/tag/v1.5.0"><img src="https://img.shields.io/badge/release-1.5.0-FF927E?style=flat&amp;labelColor=7862E8" alt="Version 1.5.0"></a>
   <a href="docs/SKILLS_CATALOG.md"><img src="https://img.shields.io/badge/Codex_skills-88-59C7A7?style=flat&amp;labelColor=7862E8" alt="88 Codex skills"></a>
   <a href="https://github.com/Soceremite/EvoInquiry/actions/workflows/test-suite.yml"><img src="https://github.com/Soceremite/EvoInquiry/actions/workflows/test-suite.yml/badge.svg" alt="Regression test status"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-FFD95E?style=flat&amp;labelColor=7862E8" alt="MIT license"></a>
@@ -42,13 +42,13 @@ weights, recovering from interruptions and keeping storage under control.
 regressions openly, and keep validating when the evidence is incomplete. A
 research tool should help us see the problem more clearly.
 
-**EvoInquiry 1.4.0 is open source.** Try it on your own research tasks and share
+**EvoInquiry 1.5.0 is open source.** Try it on your own research tasks and share
 the problems and suggestions you encounter. Help us make this research companion
 more dependable and more useful.
 
-**New in [1.4.0](https://github.com/Soceremite/EvoInquiry/releases/tag/v1.4.0):**
-turn vague directions into testable questions, preserve evidence-linked decisions,
-and combine objective result interpretation with proactive case studies.
+**New in [1.5.0](RELEASE_NOTES.md):** continue authorized research within an
+original budget, reconcile interrupted work, reuse evidence-linked decisions,
+and finish each investigation with verified results, cases and a current handoff.
 
 ## From a rough direction to an evidence-backed next step
 
@@ -58,7 +58,7 @@ and handoffs in existing project records. Literature records
 retain identity, versions and reading scope; figure receipts bind real inputs,
 editable sources and captions. Existing comparison, checkpoint and review gates
 remain in use. See [what changed](RELEASE_NOTES.md) and the
-[1.4.0 validation record](docs/VALIDATION_1_4_0.md).
+[1.5.0 validation record](docs/VALIDATION_1_5_0.md).
 
 Try a bounded request such as “Frame research questions about low-cost memory;
 no training yet”, “Check whether these means support the claim”, or “Plot this
@@ -87,13 +87,14 @@ Your scope, review gates, resource budget and stopping conditions govern the wor
 
 ## Quick start
 
-Download and extract `evo-inquiry-1.4.0.tar.gz` or `.zip` from the
-[stable release](https://github.com/Soceremite/EvoInquiry/releases/tag/v1.4.0).
+Download and extract `evo-inquiry-1.5.0.tar.gz` or `.zip` from the
+[stable release](https://github.com/Soceremite/EvoInquiry/releases/tag/v1.5.0).
+Assets become available after the version's publication checks pass.
 Use a Codex version with the `codex plugin` commands; installation has been checked
 with Codex CLI **0.163.0** on Linux.
 
 ```sh
-cd /path/to/evo-inquiry-1.4.0
+cd /path/to/evo-inquiry-1.5.0
 codex plugin marketplace add "$PWD"
 codex plugin add evo-inquiry@evo-inquiry
 ```
@@ -116,7 +117,7 @@ available; persistent selection preferences are [configured separately](#usage).
 <summary><strong>Source development and a clean installation</strong></summary>
 
 For source development, use
-`git clone --branch v1.4.0 https://github.com/Soceremite/EvoInquiry.git EvoInquiry`.
+`git clone --branch v1.5.0 https://github.com/Soceremite/EvoInquiry.git EvoInquiry`.
 Install the plugin from a clean release archive. Codex CLI 0.162.1 copies local
 untracked files too, so a release archive keeps private validation records,
 build outputs and Git history out of the installed cache.
@@ -193,6 +194,14 @@ experiments require their own scope and resource authorization.
 
 ## Use EvoInquiry throughout a project
 
+Version 1.5.0 adds bounded continuation: keep the original task clock, reserve
+resources before dispatch, reconcile interrupted actions and check the handoff
+against current sources. Reuse valid reviewed work and choose the next wave from
+its evidence; a negative finding or justified stop can complete the task.
+See the [Plan/Goal usage guide (Chinese)](docs/BOUNDED_RESEARCH_CN.md) and
+[validation record](docs/VALIDATION_1_5_0.md). Plan and Goal remain optional host
+features; EvoInquiry does not automatically create a Goal or a background service.
+
 > Continue this research project from its existing proposal and pilot results.
 > Complete the next useful analysis and prepare the follow-up plan; stop before
 > launching new experiments.
@@ -251,10 +260,12 @@ The documented EvoInquiry installation route is the Codex plugin above.
 Retained backend and client compatibility resources support existing workflow
 contracts; they are optional and have separate setup requirements.
 
-Current checks and their scope are recorded in [1.4.0 validation](docs/VALIDATION_1_4_0.md).
-The [1.4.0 release workflow](https://github.com/Soceremite/EvoInquiry/actions/runs/38993024356)
-passed Linux, macOS and native Windows checks with both `powershell.exe` and `pwsh`,
-then published the verified source archives.
+Current checks and their scope are recorded in [1.5.0 validation](docs/VALIDATION_1_5_0.md).
+Local practical use includes a 36-minute, four-wave research continuation with
+21 new CPU fits, proactive case studies and independently recomputed predictions.
+Public development tests preserve incomplete attempts and review limits; they do
+not establish general superiority or unattended research over hours or days.
+The earlier [1.4.0 publication](docs/VALIDATION_1_4_0.md) remains a separate record.
 Historical evidence remains in [governance validation](docs/UPGRADE_VALIDATION_CN.md)
 and [portability coverage](docs/PORTABILITY_VALIDATION_CN.md).
 The [offline behavior evaluation](docs/SKILL_BEHAVIOR_EVAL.md) compares natural

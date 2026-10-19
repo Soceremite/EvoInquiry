@@ -12,6 +12,8 @@ reviewer briefs. Continue authorized work through its necessary steps; honor
 budgets, blocking checkpoints, and stopping conditions.
 
 For analysis-to-plan requests, use the scope boundaries in [task-scope](../shared-references/task-scope.md). For artifact-producing experiments, carry the established [storage policy](../shared-references/experiment-storage.md) to the execution skill.
+
+For authorized sustained work or recovery, use [bounded inquiry](../shared-references/bounded-inquiry.md): reuse the existing owner, original budget and valid evidence; choose the smallest discriminating step and save useful progress before closeout. Use documented helpers before inspecting implementation. Advice and small tasks need no new runtime.
 <!-- EVO-INQUIRY:END -->
 
 
@@ -90,6 +92,24 @@ Separate observed findings, interpretation, missing evidence, and review status.
 When a blocker is confirmed, record its evidence in the requested artifact before
 optional investigation. Mark unfinished checks so an interrupted attempt leaves
 usable findings without implying completion.
+
+## Sustained tasks and host modes
+
+For a multi-step continuation with budgets or interrupted work, read
+[bounded-inquiry](../shared-references/bounded-inquiry.md). Reuse the existing run
+and decision owner. Inspect relevant prior failed or deferred routes before a
+costly repeat; verify evidence and the condition that would justify reopening one.
+Select the next investigation by its ability to distinguish competing explanations,
+including a null outcome, at an authorized cost. Use action reservations and real
+execution reconciliation when that existing run needs them. Short tasks do not
+require initialization or a new contract.
+
+Codex Plan helps review the path before implementation. A planning-only request
+ends with the plan; approved implementation continues within its authorization.
+Native Goal is optional and only created on an explicit user request with available
+host tooling. It tracks a thread objective, while project records hold evidence.
+A Goal does not grant resources, remove review gates or prove a scientific result.
+Do not claim to switch modes or persist background work without host support.
 
 ## Continue or stop
 

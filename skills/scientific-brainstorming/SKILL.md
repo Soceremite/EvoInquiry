@@ -49,6 +49,14 @@ evidence. Check closest work and contradictory findings, then reopen exploration
 if the evidence changes the framing. Label unsearched novelty as unknown; an
 unfamiliar combination or a bounded search without a match is not proof of novelty.
 
+Before recommending a repeated route, inspect any relevant project decisions:
+why it was deferred or rejected, which evidence supported that choice and what
+would justify reopening it. Use [bounded-inquiry](../shared-references/bounded-inquiry.md)
+when a sustained exploration or pivot needs recovery, budgets or decision retrieval.
+For the next inquiry, state competing predictions, including no difference or a
+worse result, and the decision each would change. Prefer the smallest informative
+check; novelty language and a promising score do not establish information value.
+
 Prioritize using relevance, discriminating power, checked differences, feasibility
 and value even if the result is null. Keep disagreement and important unknowns.
 Numerical scores are optional decision aids, not probabilities or proof of quality.

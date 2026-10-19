@@ -1,0 +1,73 @@
+{
+  "run_id": "study",
+  "executor_model": "gpt-6.1-sol",
+  "executor_family": "openai",
+  "policy": {
+    "provisional_advances": false
+  },
+  "created": "2026-10-18T09:34:13Z",
+  "updated": "2026-10-18T09:34:13Z",
+  "gates": {},
+  "phases": [
+    {
+      "phase": "pilot",
+      "status": "pending",
+      "artifact": null,
+      "verdict_id": null,
+      "reviewer": null,
+      "reviewer_family": null,
+      "review_independence": null,
+      "acceptance_status": null,
+      "executor_model": "gpt-6.1-sol",
+      "executor_family": "openai",
+      "updated": "2026-10-18T09:34:13Z"
+    },
+    {
+      "phase": "report",
+      "status": "pending",
+      "artifact": null,
+      "verdict_id": null,
+      "reviewer": null,
+      "reviewer_family": null,
+      "review_independence": null,
+      "acceptance_status": null,
+      "executor_model": "gpt-6.1-sol",
+      "executor_family": "openai",
+      "updated": "2026-10-18T09:34:13Z"
+    }
+  ],
+  "coordination": {
+    "schema_version": 1,
+    "objective": "Reconcile interrupted execution",
+    "limits": {
+      "max_actions": 3,
+      "wall_seconds": 60,
+      "max_attempts_per_key": 1,
+      "resources": {
+        "gpu_seconds": 0
+      }
+    },
+    "started_at": "2026-10-18T09:34:13.547522+00:00",
+    "configured_at": "2026-10-18T09:34:13.547522+00:00",
+    "closeout_seconds": 15,
+    "actions": [
+      {
+        "id": "a000001",
+        "key": "remote-probe",
+        "phase": "pilot",
+        "question": "Can the previous attempt be reconciled?",
+        "signature": "bf85f7c5fd7b8a4d5e4a5dcb9db86d1e1d09cb33c985f019622a861debf7e704",
+        "attempt": 1,
+        "status": "reserved",
+        "reserved_costs": {
+          "gpu_seconds": 0
+        },
+        "input_refs": [],
+        "result_refs": [],
+        "claimed_at": "2026-10-18T09:34:13.549859+00:00",
+        "finished_at": null
+      }
+    ],
+    "stopped": null
+  }
+}

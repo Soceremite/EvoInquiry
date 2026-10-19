@@ -12,6 +12,8 @@ principles within the user's scope and this skill's existing outputs, review
 standards, and recovery contracts. Carry them into nested research tasks and
 reviewer briefs. Continue authorized work through its necessary steps; honor
 budgets, blocking checkpoints, and stopping conditions.
+
+When changing research code, use [code-reuse-and-docs](../shared-references/code-reuse-and-docs.md) for readable interfaces and code-side documentation.
 <!-- EVO-INQUIRY:END -->
 
 
@@ -57,6 +59,13 @@ change; record the reason and remaining unknowns. A budget/stall/user stop is
 completion of the loop, not research acceptance, and grants no acquittal.
 Never hide an unfavorable primary result by adding a favorable metric or by
 renaming the original hypothesis. Label any exploratory reframing explicitly.
+
+For sustained loops or recovery, use
+[bounded-inquiry](../shared-references/bounded-inquiry.md) with the existing run.
+Bind a retry to the actual failed attempt and changed evidence; a lost connection
+is not proof that a job stopped. Record actual costs and preserve failed attempts.
+A native host Goal can continue authorized work only when explicitly requested;
+it does not reset this loop's budget, remove an unresolved issue or grant acquittal.
 
 ## Constants
 

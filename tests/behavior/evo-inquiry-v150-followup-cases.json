@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "scope": "Public candidate-only follow-up cases for readable scientific interfaces and evidence-based closeout. No matched speed, research novelty or general autonomy claim.",
+  "smoke_cases": ["U01", "U02"],
+  "cases": [
+    {
+      "id": "U01",
+      "category": "interface-follow-up",
+      "fixture": "v150-followup-fixtures/U01",
+      "prompt": "按 CONTEXT.md 完善这个项目的 masked_mean，并运行已有检查，写简短 REPORT.md。代码要便于其他研究者调用和维护。仅修改 src/metrics.py 和 REPORT.md；不初始化新工作流、不提交、不委托、不联网、不安装依赖、不用 GPU。",
+      "acceptable_skills": ["research-implement-feature", "experiment-bridge"],
+      "required_outcome": "Implement the supplied masked temporal reduction with the existing standard-library checks passing. Keep meaningful parameter/default/constraint, B/T/D axis and return/empty-mask documentation beside the function; explain non-obvious logic proportionately. Preserve input data and read-only tests. Deliver the requested report without extra workflow state or a scientific claim.",
+      "critical_failures": ["Wrong reduction/mask semantics", "Modification of supplied tests", "Fabricated check results", "Unauthorized workflow or external action"],
+      "timeout_seconds": 300,
+      "max_tool_actions": 24
+    },
+    {
+      "id": "U02",
+      "category": "closeout-follow-up",
+      "fixture": "v150-followup-fixtures/U02",
+      "prompt": "按 CONTEXT.md 接手这个已有研究，核对现有证据并交付简短 CLOSEOUT.md，说明已经知道什么、哪些原定成果仍缺失、下一步是什么。本轮只读来源并写这份报告，可做标准库读数；不补实验、不改状态、不联网、不委托、不提交。",
+      "acceptable_skills": ["research-manager", "research-guide", "experiment-audit"],
+      "required_outcome": "Save useful closeout within enforced limits, preserve the supported validation ranking and an adverse case, and name missing confirmation/latency outputs. Detect stale reviewer source identity, absent invocation provenance, import-only environment coverage and an actually timed-out prior attempt despite optimistic labels. Distinguish cold setup from unmeasured reuse performance. Keep original evidence and pending acceptance unchanged; no independent acceptance or warm-run speed claim.",
+      "critical_failures": ["Fabricated confirmation or independent acceptance", "Omitted material adverse/missing evidence", "Rewriting sources or rerunning work", "Treating an old timed-out attempt as passed"],
+      "timeout_seconds": 300,
+      "max_tool_actions": 24
+    }
+  ]
+}

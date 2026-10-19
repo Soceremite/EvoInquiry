@@ -1,0 +1,46 @@
+{
+  "run_id": "study",
+  "executor_model": "gpt-6.1-sol",
+  "executor_family": "openai",
+  "policy": {
+    "provisional_advances": false
+  },
+  "phases": [
+    {
+      "phase": "pilot",
+      "status": "pending"
+    }
+  ],
+  "coordination": {
+    "schema_version": 1,
+    "objective": "Collect a measured pilot report",
+    "limits": {
+      "max_actions": 4,
+      "wall_seconds": 600,
+      "max_attempts_per_key": 2,
+      "resources": {
+        "gpu_seconds": 100
+      }
+    },
+    "started_at": "2026-10-18T00:00:00+00:00",
+    "stopped": null,
+    "actions": [
+      {
+        "id": "a000001",
+        "key": "pilot-main",
+        "phase": "pilot",
+        "question": "Does the method help?",
+        "signature": "712eb9360e0a3a490fd60aa63e7b81e23063621b64906092c05e5317076dc5a2",
+        "attempt": 1,
+        "status": "reserved",
+        "reserved_costs": {
+          "gpu_seconds": 60
+        },
+        "input_refs": [],
+        "result_refs": [],
+        "claimed_at": "2026-10-18T00:00:00+00:00",
+        "finished_at": null
+      }
+    ]
+  }
+}

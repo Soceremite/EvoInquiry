@@ -1,0 +1,7 @@
+{
+  "status": "available",
+  "scope": "local diagnostic sample only",
+  "rows": 3,
+  "path": "sample.csv",
+  "remote_result": false
+}

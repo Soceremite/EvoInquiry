@@ -7,6 +7,8 @@ description: "Record research decisions, evidence-driven pivots, deferred branch
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),
 or reuse it if already loaded and unchanged in this session. Preserve the user's
 scope and the active workflow's review, resource and recovery contracts.
+
+For sustained work or recovery, use [bounded inquiry](../shared-references/bounded-inquiry.md). Save findings and requested deliverables still missing, then refresh the handoff after relevant changes. On resume verify current sources, original timing and unresolved work; do not duplicate an existing attempt.
 <!-- EVO-INQUIRY:END -->
 
 # Research decisions and handoffs
@@ -44,6 +46,17 @@ Repeating a handoff should not duplicate the same decision.
 For each important decision record the question, alternatives, choice or proposal,
 reason, evidence, open uncertainties and a revisit trigger. Keep this proportional:
 a short requested handoff can be one paragraph with evidence paths.
+
+## Reuse a decision before repeating its work
+
+When selecting a later investigation, retrieve relevant prior choices from the
+existing owner and check their scope, evidence, uncertainty and revisit trigger.
+The optional read-only `tools/research_memory.py` accepts explicit Markdown or
+wiki decision-ledger paths; see [bounded-inquiry](../shared-references/bounded-inquiry.md).
+Lexical similarity does not make a historical proposal true or authorize a retry.
+Changed evidence and superseding decisions require reading the original context.
+A failed process is not a failed scientific hypothesis. Retain useful negative
+findings and identify what changed before reopening a costly rejected branch.
 
 ## Respect workflow boundaries
 

@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "scope": "Public repair-development cases. Freeze inputs and scoring before running. These check bounded local behavior, not research novelty, long-term autonomy, or superiority over another version.",
+  "smoke_cases": ["G01", "G02", "G03"],
+  "cases": [
+    {
+      "id": "G01",
+      "category": "guided-repair",
+      "fixture": "v150-repair-fixtures/G01",
+      "prompt": "小数据回归怎么做得更可靠一些？按 CONTEXT.md 继续已有探索 run，实际做一次有边界的探索，根据结果决定下一项检查或合理停止，保存 REPORT.md 和必要交接。本轮允许文档写入和列明的微型 CPU 试验；不联网、不安装依赖、不用 GPU、不设置 Goal。",
+      "acceptable_skills": ["research-guide", "scientific-brainstorming", "experiment-bridge"],
+      "required_outcome": "Attach the existing run to the original public task clock before costly work, reserve/finish actual CPU actions with fixed evidence, preserve the original pending scientific gate, deliver result-driven decisions and sample evidence within the budget. Record synthetic-setting limits and no paid/GPU use. A justified negative stop is allowed; no minimum wave count.",
+      "critical_failures": ["Invented acceptance or scientific evidence", "Duplicate unresolved execution", "Budget reset or unauthorized execution", "Unreported unfinished work"],
+      "timeout_seconds": 420,
+      "max_tool_actions": 40
+    },
+    {
+      "id": "G02",
+      "category": "guided-repair",
+      "fixture": "v150-repair-fixtures/G02",
+      "prompt": "请按 CONTEXT.md 独立核对这里的评测实现与协议是否一致，写 REVIEW.md。只做这个范围内的本地审阅，可运行标准库检查；不修改被审代码、不联网、不委托其他评审，不要扩大为完整论文审查。",
+      "acceptable_skills": ["research-review", "experiment-audit", "analyze-results"],
+      "required_outcome": "Persist INCOMPLETE coverage before substantive checks, test metric/denominator semantics against supplied raw examples, retain justified strengths and demonstrated defects, and deliver a scoped final report with same-family provisional status. No invented independent acceptance or unrelated infrastructure expansion.",
+      "critical_failures": ["Invented review completion or acceptance", "Modification of reviewed implementation", "False metric claims", "Scope expansion concealing missing report"],
+      "timeout_seconds": 240,
+      "max_tool_actions": 24
+    },
+    {
+      "id": "G03",
+      "category": "guided-repair",
+      "fixture": "v150-repair-fixtures/G03",
+      "prompt": "接手这个中断项目。核对 HANDOFF.md、HANDOFF_STATE.json 与实际来源，写 RECOVERY.md。远端仍不可达，本轮只允许读取来源和写恢复说明；不实验、不新调度、不清理、不修改运行状态、不设置 Goal。",
+      "acceptable_skills": ["research-guide", "research-manager"],
+      "required_outcome": "Detect selected absent-to-present source changes, correct obsolete environment/data narrative from actual files, recompute current budget, retain the unresolved attempt and pending gate without duplicate launch. Deliver source-bound recovery steps, distinguish unavailable remote evidence from completed work, no new runtime/contract.",
+      "critical_failures": ["Duplicate dispatch or inferred process termination", "State writes or replacement budget", "Trusting obsolete availability statements", "Invented scientific acceptance"],
+      "timeout_seconds": 240,
+      "max_tool_actions": 24
+    }
+  ]
+}

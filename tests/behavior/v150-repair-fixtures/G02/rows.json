@@ -1,0 +1,58 @@
+[
+  {
+    "id": "a",
+    "actual_mask": true,
+    "target": [
+      1,
+      2
+    ],
+    "predicted": [
+      1,
+      2
+    ],
+    "masked_positions": [
+      0
+    ]
+  },
+  {
+    "id": "b",
+    "actual_mask": true,
+    "target": [
+      3,
+      4
+    ],
+    "predicted": [
+      9,
+      4
+    ],
+    "masked_positions": [
+      0
+    ]
+  },
+  {
+    "id": "c",
+    "actual_mask": false,
+    "target": [
+      5,
+      6
+    ],
+    "predicted": [
+      5,
+      6
+    ],
+    "masked_positions": []
+  },
+  {
+    "id": "d",
+    "actual_mask": false,
+    "target": [
+      7,
+      8
+    ],
+    "predicted": [
+      7,
+      8
+    ],
+    "masked_positions": []
+  }
+]

@@ -63,4 +63,11 @@ venv/
 
 .ei-namespace.lock
 
+# Public synthetic recovery fixture; all other runtime state stays ignored.
+!tests/behavior/v150-fixtures/N03/.ei/
+tests/behavior/v150-fixtures/N03/.ei/*
+!tests/behavior/v150-fixtures/N03/.ei/runs/
+tests/behavior/v150-fixtures/N03/.ei/runs/*
+!tests/behavior/v150-fixtures/N03/.ei/runs/study.json
+
 update_plan/

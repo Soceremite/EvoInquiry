@@ -1,0 +1,10 @@
+{
+  "weighted_observation_count": 10,
+  "baseline_overall_mae": 3.8,
+  "candidate_overall_mae": 2.2,
+  "horizons": {
+    "near": {"observations": 4, "weight": 2, "baseline_mae": 4.0, "candidate_mae": 1.5},
+    "far": {"observations": 2, "weight": 1, "baseline_mae": 3.0, "candidate_mae": 5.0}
+  },
+  "scope": "Supplied paired rows only; integration not assessed"
+}

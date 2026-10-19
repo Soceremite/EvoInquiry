@@ -51,7 +51,7 @@ def test_mainline_common_principles_are_reachable_without_codex_tree() -> None:
 def test_codex_shared_reference_set_matches_mainline() -> None:
     main_refs = {p.name for p in (MAIN_SKILLS / "shared-references").glob("*.md")}
     codex_refs = {p.name for p in (CODEX_SKILLS / "shared-references").glob("*.md")}
-    assert len(main_refs) == 41
+    assert len(main_refs) == 42
     assert codex_refs == main_refs | {"evo-inquiry.md", "task-scope.md", "experiment-storage.md"}
 
 

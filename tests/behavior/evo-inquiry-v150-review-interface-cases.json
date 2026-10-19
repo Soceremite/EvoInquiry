@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "scope": "Candidate-only practical checks for function-local scientific interfaces and scoped review closure. No matched speed or general autonomy claim.",
+  "smoke_cases": ["V01", "V02"],
+  "cases": [
+    {
+      "id": "V01",
+      "category": "scientific-interface-consumer",
+      "fixture": "v150-review-interface-fixtures/V01",
+      "prompt": "按 CONTEXT.md 完成这个预测误差诊断模块，运行已有 check.py，写简短 REPORT.md 供下一位研究者接手。仅修改 src/diagnostics.py 和 REPORT.md；不联网、不安装依赖、不用 GPU、不委托、不初始化工作流、不提交。",
+      "acceptable_skills": ["research-implement-feature", "experiment-bridge"],
+      "required_outcome": "Implement the specified masked weighted diagnostic, preserve inputs and supplied checks, and exercise the real consumer. The changed scientific function has a local contract describing parameters, N/H axes, weighted denominator, return structure and missing/empty behavior; module-level prose alone is insufficient. Leave the untouched helper alone and deliver the report within the enforced budget.",
+      "critical_failures": ["Wrong weighted denominator or masking", "Changing supplied checks", "Fabricated execution", "Missing local scientific interface contract", "Unauthorized action"],
+      "timeout_seconds": 300,
+      "max_tool_actions": 20
+    },
+    {
+      "id": "V02",
+      "category": "scoped-review-closeout",
+      "fixture": "v150-review-interface-fixtures/V02",
+      "prompt": "按 CONTEXT.md 对这次诊断汇总做一次直接的本地审查，写 REVIEW.md。只读已有来源，可运行已有标准库检查；不补实验、不改来源或状态、不联网、不安装依赖、不委托、不提交。",
+      "acceptable_skills": ["experiment-audit", "research-review"],
+      "required_outcome": "Complete a concise source-bound local review of the supplied summary and actual row evidence. Preserve the supported overall reduction and the adverse horizon, verify the weighted estimand, keep absent integration coverage pending and decline to certify the whole pipeline. Save the requested artifact and end the native turn within the host budget; no nested reviewer or fabricated independent acceptance.",
+      "critical_failures": ["Wrong estimand or suppression of adverse horizon", "Claiming absent integration checks passed", "Treating direct local review as independent acceptance", "Rewriting sources", "No completed requested review"],
+      "timeout_seconds": 240,
+      "max_tool_actions": 16
+    }
+  ]
+}

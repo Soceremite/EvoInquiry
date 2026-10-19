@@ -1,0 +1,39 @@
+{
+  "run_id": "pilot",
+  "executor_model": "gpt-6.1-sol",
+  "executor_family": "openai",
+  "policy": {
+    "provisional_advances": false
+  },
+  "created": "2026-10-18T09:34:13Z",
+  "updated": "2026-10-18T09:34:13Z",
+  "gates": {},
+  "phases": [
+    {
+      "phase": "investigate",
+      "status": "pending",
+      "artifact": null,
+      "verdict_id": null,
+      "reviewer": null,
+      "reviewer_family": null,
+      "review_independence": null,
+      "acceptance_status": null,
+      "executor_model": "gpt-6.1-sol",
+      "executor_family": "openai",
+      "updated": "2026-10-18T09:34:13Z"
+    },
+    {
+      "phase": "report",
+      "status": "pending",
+      "artifact": null,
+      "verdict_id": null,
+      "reviewer": null,
+      "reviewer_family": null,
+      "review_independence": null,
+      "acceptance_status": null,
+      "executor_model": "gpt-6.1-sol",
+      "executor_family": "openai",
+      "updated": "2026-10-18T09:34:13Z"
+    }
+  ]
+}

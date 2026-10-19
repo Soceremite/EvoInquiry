@@ -46,7 +46,7 @@ import tempfile
 from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Iterator, Optional
+from typing import Callable, Iterator, Optional
 
 try:
     from .state_paths import resolve_state_root, state_writer
@@ -227,6 +227,39 @@ def load_run(root: str, run_id: str, *, legacy_read: bool = False) -> dict:
     return _load(root, run_id, 'legacy-read' if legacy_read else 'read')
 
 
+def update_coordination(root: str, run_id: str,
+                        transition: Callable[[dict, dict], dict]) -> dict:
+    """Atomically update optional coordination metadata, preserving phase gates.
+
+    ``transition(metadata, run_snapshot)`` receives JSON copies under the existing
+    run/namespace locks and returns a JSON object. Only ``coordination`` is saved;
+    changes to the snapshot cannot accept phases or alter policy. Exceptions leave
+    the run unchanged. Example consumer: research_control.configure / claim_action.
+    The existing single-orchestrator contract and state-root resolver still apply.
+    """
+    with _lock(root, run_id):
+        state = _load(root, run_id)
+        snapshot = json.loads(json.dumps(state, allow_nan=False))
+        metadata = snapshot.pop('coordination', {})
+        updated = transition(metadata, snapshot)
+        if not isinstance(updated, dict):
+            raise ValueError('Coordination transition must return an object')
+        json.dumps(updated, allow_nan=False)
+        state['coordination'] = updated
+        _save(root, run_id, state)
+        return state
+
+
+def first_open_phase(state: dict) -> Optional[dict]:
+    """Select the original resume target from a loaded run without writing it.
+
+    Respect per-run provisional policy; executor ``done`` is not acceptance.
+    The returned phase belongs to the supplied snapshot, not live state.
+    """
+    terminal = _terminal_statuses(state)
+    return next((phase for phase in state['phases'] if phase['status'] not in terminal), None)
+
+
 def attach_references(root: str, run_id: str, phase: str, *, artifact_refs=(), execution_refs=(), spec_refs=()) -> dict:
     """Attach fixed identities without changing phase status, policy or review provenance."""
     for reference in [*artifact_refs, *execution_refs, *spec_refs]:
@@ -375,11 +408,7 @@ def resume_point(root: str, run_id: str) -> Optional[dict]:
     A `done`-but-not-`accepted` phase IS a resume target: its cross-model audit is
     still owed and must run before the next phase proceeds.
     """
-    state = _load(root, run_id)
-    for ph in state["phases"]:
-        if ph["status"] not in _terminal_statuses(state):
-            return ph
-    return None
+    return first_open_phase(_load(root, run_id))
 
 
 def _print_status(state: dict) -> None:

@@ -1,0 +1,11 @@
+# Only the frozen synthetic run records belong to these public cases.
+!G01/.ei/
+G01/.ei/*
+!G01/.ei/runs/
+G01/.ei/runs/*
+!G01/.ei/runs/pilot.json
+!G03/.ei/
+G03/.ei/*
+!G03/.ei/runs/
+G03/.ei/runs/*
+!G03/.ei/runs/study.json

@@ -1,0 +1,6 @@
+[
+  {"id": "a", "target": 1, "baseline": 0, "variant": 1},
+  {"id": "b", "target": 0, "baseline": 0, "variant": 1},
+  {"id": "c", "target": 1, "baseline": 0, "variant": 1},
+  {"id": "d", "target": 0, "baseline": 0, "variant": 0}
+]

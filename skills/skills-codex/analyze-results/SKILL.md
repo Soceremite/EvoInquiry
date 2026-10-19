@@ -89,6 +89,16 @@ If findings are significant:
 - Propose updates to project notes or experiment reports
 - Draft a concise finding statement (1-2 sentences)
 
+## Carry findings into the next decision
+
+When analysis changes a substantial research choice, preserve the supported gains,
+regressions, null findings, case-study evidence and unresolved alternatives in the
+existing decision record through [research-manager](../research-manager/SKILL.md).
+Record the condition for revisiting it. A completed analysis can justify stopping
+or a new investigation without making the original hypothesis successful. For a
+requested sustained cycle, use [bounded-inquiry](../shared-references/bounded-inquiry.md);
+ordinary metric questions still end with the requested analysis.
+
 ## Output Format
 Always include:
 1. Raw data table

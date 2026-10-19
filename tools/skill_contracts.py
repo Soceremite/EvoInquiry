@@ -99,7 +99,7 @@ def load_contract(root: Path) -> dict:
             raise ValueError(f'{relative}: invalid protected-file adaptation')
         if record.get('baseline_sha256') != data['protected_files'][relative]:
             raise ValueError(f'{relative}: protected-file baseline mismatch')
-        if record.get('adaptation_version') == '1.4.0':
+        if record.get('adaptation_version') in ('1.4.0', '1.5.0'):
             refs = record.get('test_refs')
             if (not isinstance(refs, list) or not refs
                     or not all(_local_reference(root, ref) for ref in [record.get('review_ref')] + refs)):

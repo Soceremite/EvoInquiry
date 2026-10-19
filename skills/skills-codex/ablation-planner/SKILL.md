@@ -14,6 +14,8 @@ budgets, blocking checkpoints, and stopping conditions.
 
 For this stage, read [project-governance](../shared-references/project-governance.md). Keep declared comparison/seed/failure rules and fixed baseline/evaluator refs. Reuse shared interfaces without erasing method-specific interventions.
 For ablations, load [comparative-experiments](../shared-references/comparative-experiments.md). Distinguish controlled removal from a retuned alternative; isolate the contribution without imposing an unsuitable shared recipe. Declare coupled changes, resource/search budgets, validation selection and seed/failure accounting; preserve matched baseline identities.
+
+When changing research code, use [code-reuse-and-docs](../shared-references/code-reuse-and-docs.md) for readable interfaces and code-side documentation.
 <!-- EVO-INQUIRY:END -->
 
 
