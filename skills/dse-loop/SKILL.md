@@ -12,6 +12,10 @@ principles within the user's scope and this skill's existing outputs, review
 standards, and recovery contracts. Carry them into nested research tasks and
 reviewer briefs. Continue authorized work through its necessary steps; honor
 budgets, blocking checkpoints, and stopping conditions.
+For sustained research tuning, review the trajectory at planned batches using
+[bounded-inquiry](../shared-references/bounded-inquiry.md), while keeping this
+loop's search bounds and stopping rules. Surface related unresolved problems to
+`/problem-synthesis`; changing the objective or bounds returns to the plan owner.
 <!-- EVO-INQUIRY:END -->
 
 

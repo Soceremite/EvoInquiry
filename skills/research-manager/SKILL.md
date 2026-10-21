@@ -58,6 +58,11 @@ Changed evidence and superseding decisions require reading the original context.
 A failed process is not a failed scientific hypothesis. Retain useful negative
 findings and identify what changed before reopening a costly rejected branch.
 
+For a trajectory checkpoint or problem synthesis, retain the original question,
+problem/branch IDs, rejected alternatives, evidence and revisit condition in this
+same record. Link the existing iteration-ledger reflection and revised plan;
+do not duplicate the gate state or mark its blocker resolved by writing a summary.
+
 ## Respect workflow boundaries
 
 Use an available workflow router when the next step is unclear, and

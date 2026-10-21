@@ -15,15 +15,10 @@ budgets, blocking checkpoints, and stopping conditions.
 <!-- EVO-INQUIRY:END -->
 
 
-# Paper Poster (DEPRECATED → /paper-poster-html)
+# Paper Poster — compatibility alias
 
-This skill is retired. The LaTeX/tcbposter pipeline it described produced posters with
-unbounded color palettes, no real paper figures, and no print-canvas verification, and
-has been replaced by the measurement-gated HTML/CSS pipeline.
-
-**Immediately proceed with `/paper-poster-html`**, passing through all of the user's
-arguments unchanged. Do not attempt the legacy LaTeX flow.
-
-The full legacy implementation remains available in git history
-(`git log -- skills/paper-poster/SKILL.md`) if a venue ever mandates LaTeX poster
-source — none is known to.
+For an existing `/paper-poster` invocation, forward all arguments unchanged to
+[paper-poster-html](../paper-poster-html/SKILL.md) and use that workflow once.
+New poster requests use `paper-poster-html` directly. This alias adds no separate
+rendering, review or output path; preserve the canonical workflow's real figures,
+measured layout checks and export requirements.

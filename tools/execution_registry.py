@@ -7,12 +7,14 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import os
 from pathlib import Path
 import platform
 import signal
 import subprocess
 import sys
+import time
 
 try:
     from .registry_common import (RegistryError, configure_utf8_output, atomic_write, canonical, digest, file_lock,
@@ -245,13 +247,18 @@ def clone_attempt(root, parent_id, execution_run_id, *, checkpoint_ref=None):
 
 
 def inspect_terminal(root, execution_run_id):
-    """Validate a completed attempt and all of its fixed input/output references."""
+    """Validate a terminal attempt and its fixed input/output references.
+
+    Cancellation is independent of exit code: a cooperative trainer can save
+    its state and exit zero after an enforced stop without completing its task.
+    """
     root = Path(root).resolve()
     path = local_path(root, f'runs/{identifier(execution_run_id)}/execution.final.json')
     record = validate_schema('execution', read_record(path))
     if record['execution_run_id'] != execution_run_id or record['status'] not in ('completed', 'failed', 'stopped'):
         raise RegistryError('Terminal record has a different identity or nonterminal status')
-    if (record['status'] == 'completed') != (record['exit_code'] == 0):
+    if ((record['status'] == 'completed' and record['exit_code'] != 0)
+            or (record['status'] == 'failed' and record['exit_code'] == 0)):
         raise RegistryError('Terminal status and actual exit code disagree')
     snapshot = verify_snapshot(root, record['snapshot_ref'])
     for key in ('execution_run_id', 'spec_ref', 'env_revision', 'variant_id', 'seed'):
@@ -315,6 +322,9 @@ def reconcile_execution(root, execution_run_id, *, final_ref=None, termination_r
     be replayed from its fixed final_ref. Otherwise a fixed process-observer
     receipt must identify this job/execution, its actual exit and confirmed
     termination; calling this does not launch a replacement process.
+    An observer can explicitly set stopped=true for cooperative cancellation,
+    independently of exit code. Legacy zero-exit observations retain their
+    completed interpretation when no cancellation is recorded.
     """
     root = Path(root).resolve()
     execution_run_id = identifier(execution_run_id)
@@ -339,11 +349,12 @@ def reconcile_execution(root, execution_run_id, *, final_ref=None, termination_r
         if (receipt.get('execution_run_id') != execution_run_id or receipt.get('job_ref') != current['job_ref']
                 or receipt.get('process_alive') is not False or receipt.get('queued') is not False
                 or not receipt.get('confirmed_at') or not receipt.get('source')
-                or type(receipt.get('exit_code')) is not int):
+                or type(receipt.get('exit_code')) is not int
+                or ('stopped' in receipt and type(receipt['stopped']) is not bool)):
             raise RegistryError('Termination receipt does not establish this actual process exit')
         final = dict(current, status='stopped', exit_code=receipt['exit_code'],
                      updated_at=now(), result_refs=[termination_ref])
-        if final['exit_code'] == 0:
+        if final['exit_code'] == 0 and receipt.get('stopped') is not True:
             final['status'] = 'completed'
         atomic_write(path.with_name('execution.final.json'), final)
         atomic_write(path, final)
@@ -375,11 +386,119 @@ def _stop_owned_process(process):
     process.wait()
 
 
+def request_stop_execution(root, execution_run_id, reason):
+    """Request cancellation of one running local execution, without sending signals.
+
+    Bind the request to its immutable snapshot and observed local process file.
+    The existing launcher observes it, stops its own process group and freezes
+    actual termination evidence. Return a fixed request reference; this is not
+    a termination receipt and cannot settle a live reservation. Same-reason
+    retries reuse the request; changed reasons/identities are rejected.
+    """
+    if not isinstance(reason, str) or not reason.strip():
+        raise RegistryError('Execution stop needs a reason')
+    execution_run_id = identifier(execution_run_id)
+    root = Path(root).resolve()
+    directory = local_path(root, f'runs/{execution_run_id}')
+    with state_writer(root) as state, file_lock(state / 'locks/executions.lock'):
+        record = validate_schema('execution', read_record(directory / 'execution.json'))
+        target = directory / 'stop-request.json'
+        if target.exists():
+            existing = read_record(target)
+            if (existing.get('execution_run_id') != execution_run_id
+                    or existing.get('snapshot_ref') != record['snapshot_ref']
+                    or existing.get('reason') != reason):
+                raise RegistryError('Existing execution stop request is immutable')
+            verify_ref(root, existing['process_ref'])
+            return fixed_ref(root, target.relative_to(root))
+        if record['status'] != 'running':
+            raise RegistryError('Only a running execution can receive a stop request')
+        process_ref = fixed_ref(root, (directory / 'process.json').relative_to(root))
+        process = read_record(verify_ref(root, process_ref))
+        if (process.get('execution_run_id') != execution_run_id
+                or process.get('host') != platform.node()):
+            raise RegistryError('No matching observed local process for this execution')
+        atomic_write(target, {'schema_version': 1, 'execution_run_id': execution_run_id,
+                             'snapshot_ref': record['snapshot_ref'], 'process_ref': process_ref,
+                             'reason': reason, 'requested_at': now()})
+        return fixed_ref(root, target.relative_to(root))
+
+
+def _workflow_directive(root, record):
+    if not record.get('workflow_run_id'):
+        return None
+    try:
+        from .research_control import execution_directive
+    except ImportError:
+        from research_control import execution_directive
+    return execution_directive(root, record['workflow_run_id'])
+
+
+def _positive_timeout(value):
+    if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value) or value <= 0:
+        raise RegistryError('Execution timeout must be finite and positive')
+    return float(value)
+
+
+def _wait_controlled(root, directory, record, process, timeout, bound_workflow):
+    """Wait for actual exit while observing only this execution's control inputs."""
+    started = time.monotonic()
+    cause = None
+    while process.poll() is None:
+        try:
+            request_path = directory / 'stop-request.json'
+            if request_path.exists():
+                request = read_record(request_path)
+                if (request.get('schema_version') != 1
+                        or request.get('execution_run_id') != record['execution_run_id']
+                        or request.get('snapshot_ref') != record['snapshot_ref']
+                        or request.get('process_ref') != fixed_ref(root, (directory / 'process.json').relative_to(root))
+                        or not isinstance(request.get('reason'), str) or not request['reason'].strip()):
+                    raise RegistryError('Execution stop request has mismatched identities')
+                cause = {'cause': 'execution_stop', 'reason': request['reason'],
+                         'requested_at': request['requested_at'],
+                         'request_ref': fixed_ref(root, request_path.relative_to(root))}
+            if cause is None and bound_workflow:
+                directive = _workflow_directive(root, record)
+                if directive is None:
+                    raise RegistryError('Bound workflow control disappeared')
+                if directive['stopped']:
+                    cause = {'cause': 'workflow_stop', 'reason': directive['stopped']['reason'],
+                             'requested_at': directive['stopped']['at']}
+                elif directive['timing']['dispatch_seconds_remaining'] <= 0:
+                    cause = {'cause': 'workflow_deadline', 'reason': 'Original dispatch budget exhausted'}
+            if cause is None and timeout is not None and time.monotonic() - started >= timeout:
+                cause = {'cause': 'timeout', 'reason': 'Fixed execution time limit reached'}
+        except (RegistryError, OSError, ValueError, TypeError, KeyError) as error:
+            cause = {'cause': 'control_error', 'reason': str(error)}
+        if cause is not None:
+            _stop_owned_process(process)
+            receipt = dict(cause, schema_version=1, execution_run_id=record['execution_run_id'],
+                           workflow_run_id=record.get('workflow_run_id'), snapshot_ref=record['snapshot_ref'],
+                           process_ref=fixed_ref(root, (directory / 'process.json').relative_to(root)),
+                           pid=process.pid, exit_code=process.returncode, parent_exited=True,
+                           termination_scope='posix-process-group' if os.name == 'posix' else 'windows-parent-only',
+                           observed_at=now())
+            atomic_write(directory / 'termination.json', receipt)
+            return process.returncode, True
+        try:
+            process.wait(timeout=0.2)
+        except subprocess.TimeoutExpired:
+            pass
+    return process.returncode, False
+
+
 def launch_execution(root, execution_run_id, arguments=(), *, timeout=None):
     """Launch an authorized local CPU/GPU entry from its verified snapshot and interpreter.
 
     Resource authorization/budgets belong to the calling execution skill. Imports
     of mutable project code are rejected and actual import paths are retained.
+    The local wait observes bound workflow stops and identity-bound per-execution
+    requests. Effective timeout is the minimum of an explicit bound, the spec's
+    max_seconds_per_attempt and the configured workflow's original remaining
+    dispatch time. Ordinary reflection does not interrupt a healthy process.
+    A termination.json receipt records actual exit and its enforcement scope;
+    Windows parent termination does not certify a descendant process tree.
     """
     root = Path(root).resolve()
     directory = local_path(root, f'runs/{identifier(execution_run_id)}')
@@ -390,6 +509,15 @@ def launch_execution(root, execution_run_id, arguments=(), *, timeout=None):
     snapshot = verify_snapshot(root, record['snapshot_ref'])
     if 'arguments' in snapshot and list(arguments) != snapshot['arguments']:
         raise RegistryError('Launch arguments differ from the frozen snapshot')
+    bounds = []
+    if timeout is not None:
+        bounds.append(_positive_timeout(timeout))
+    spec_budget = read_record(verify_ref(root, record['spec_ref']))['budget']
+    if 'max_seconds_per_attempt' in spec_budget:
+        bounds.append(_positive_timeout(spec_budget['max_seconds_per_attempt']))
+    directive = _workflow_directive(root, record)
+    if directive is not None and directive['stopped']:
+        raise RegistryError('Bound workflow already stopped; execution was not launched')
     try:
         from .project_registry import discover_project
     except ImportError:
@@ -397,6 +525,15 @@ def launch_execution(root, execution_run_id, arguments=(), *, timeout=None):
     if discover_project(root)['layout_profile'] == 'governed-v1' and 'arguments' not in snapshot:
         raise RegistryError('Governed formal launch requires explicit frozen arguments, including an empty array')
     observed = verify_environment(root, record['env_revision'])
+    if directive is not None:
+        directive = _workflow_directive(root, record)
+        if directive is None or directive['stopped']:
+            raise RegistryError('Bound workflow stopped or disappeared before launch')
+        remaining = directive['timing']['dispatch_seconds_remaining']
+        if remaining <= 0:
+            raise RegistryError('Original workflow dispatch budget exhausted before launch')
+        bounds.append(remaining)
+    effective_timeout = min(bounds) if bounds else None
     snapshot_dir = verify_ref(root, record['snapshot_ref']).parent
     with state_writer(root) as state, file_lock(state / 'locks/executions.lock'):
         current = read_record(path)
@@ -448,17 +585,16 @@ finally:
                 try:
                     atomic_write(directory / 'process.json', {'execution_run_id': execution_run_id,
                                  'pid': process.pid, 'host': platform.node(), 'command': command,
-                                 'cwd': str(snapshot_dir), 'started_at': now()})
+                                 'cwd': str(snapshot_dir), 'started_at': now(),
+                                 'effective_timeout_seconds': effective_timeout})
                 except BaseException:
                     _stop_owned_process(process)
                     # Keep the attempt unresolved for explicit reconciliation:
                     # there is no durable process identity to certify its exit.
                     raise
                 try:
-                    exit_code, stopped = process.wait(timeout=timeout), False
-                except subprocess.TimeoutExpired:
-                    _stop_owned_process(process)
-                    exit_code, stopped = process.returncode, True
+                    exit_code, stopped = _wait_controlled(root, directory, record, process,
+                                                         effective_timeout, directive is not None)
                 except BaseException:
                     _stop_owned_process(process)
                     raise
@@ -467,6 +603,8 @@ finally:
             references.append(fixed_ref(root, (directory / 'process.json').relative_to(root)))
         if (directory / 'import-paths.json').exists():
             references.append(fixed_ref(root, (directory / 'import-paths.json').relative_to(root)))
+        if (directory / 'termination.json').exists():
+            references.append(fixed_ref(root, (directory / 'termination.json').relative_to(root)))
         reference = finish_execution(root, execution_run_id, exit_code, references, stopped=stopped)
         return {'exit_code': exit_code, 'execution_ref': reference}
 
@@ -541,6 +679,9 @@ def main():
     recover.add_argument('--execution-id', required=True)
     recover.add_argument('--final-ref')
     recover.add_argument('--termination-ref')
+    stop = sub.add_parser('stop', help='Request an identity-bound local execution stop; await actual terminal evidence')
+    stop.add_argument('--execution-id', required=True)
+    stop.add_argument('--reason', required=True)
     args = parser.parse_args()
     try:
         if args.command == 'register-spec':
@@ -557,6 +698,8 @@ def main():
             result = reconcile_execution(args.root, args.execution_id,
                 final_ref=read_record(args.final_ref) if args.final_ref else None,
                 termination_ref=read_record(args.termination_ref) if args.termination_ref else None)
+        elif args.command == 'stop':
+            result = request_stop_execution(args.root, args.execution_id, args.reason)
         else:
             result = launch_execution(args.root, args.execution_id, args.arguments, timeout=args.timeout)
         print(json.dumps(result, ensure_ascii=False, indent=2))

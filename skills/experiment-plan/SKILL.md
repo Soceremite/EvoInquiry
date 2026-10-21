@@ -160,6 +160,17 @@ For each milestone, estimate:
 
 Separate **must-run** from **nice-to-have** experiments.
 
+### Reflection checkpoints
+
+Declare proportional review boundaries for comparison blocks, tuning batches,
+major milestones and direction changes. Use
+[bounded-inquiry](../shared-references/bounded-inquiry.md) for the checkpoint and
+existing action brake. Record the question, expected information, budget and
+stop/revisit condition; repeated local repairs, overlapping failures or growing
+branches may require an earlier review. With several potentially related open
+problems, hand off to `/problem-synthesis`; ordinary review stays with the active
+owner. This is planning metadata, not execution or scientific acceptance.
+
 ### Phase 5: Write the Outputs
 
 #### Step 5.1: Write `refine-logs/EXPERIMENT_PLAN.md`

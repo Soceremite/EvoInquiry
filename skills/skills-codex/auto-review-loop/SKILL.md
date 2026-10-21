@@ -26,33 +26,12 @@ Autonomously iterate: review → implement fixes → re-review, until the extern
 
 ## Context: $ARGUMENTS
 
-## Evidence closure and bounded stopping
+## Shared cycle and recovery
 
-Scores and verdicts remain required interface fields. A positive threshold is
-necessary, and every material issue must also have a checked disposition: fixed
-with evidence, or excluded with a specific, evidenced scope reason. Reviewer
-agreement alone does not resolve an issue. Keep strengths that the evidence
-supports; do not invent objections to make another round appear useful.
-
-Apply this closure condition at every positive stop and acquittal append below.
-An unresolved critical issue prevents a positive receipt even when the score is
-high. Preserve existing independent-review requirements and same-family
-provisional status. File checks do not establish scientific support.
-
-Before iterating, use the authorized round, time, experiment and cost budgets.
-Track which decision-relevant uncertainty each action can resolve. Stop when a
-budget is reached or successive rounds produce no new evidence or actionable
-change; record the reason and remaining unknowns. A budget/stall/user stop is
-completion of the loop, not research acceptance, and grants no acquittal.
-Never hide an unfavorable primary result by adding a favorable metric or by
-renaming the original hypothesis. Label any exploratory reframing explicitly.
-
-For sustained loops or recovery, use
-[bounded-inquiry](../shared-references/bounded-inquiry.md) with the existing run.
-Bind a retry to the actual failed attempt and changed evidence; a lost connection
-is not proof that a job stopped. Record actual costs and preserve failed attempts.
-A native host Goal can continue authorized work only when explicitly requested;
-it does not reset this loop's budget, remove an unresolved issue or grant acquittal.
+Read [research-review-cycle](../shared-references/research-review-cycle.md)
+before iterating or resuming. It owns material-issue closure, cumulative budgets,
+state preservation and the common cycle. The backend routing, reviewer memory,
+acquittal gate and single receipt append site below remain authoritative.
 
 ## Constants
 
@@ -141,15 +120,10 @@ In addition to the overwritable state file, maintain an **append-only** acquitta
      - **Generate `run_id`**: `run_<YYYYMMDD>_<8-char-hex>` (e.g., `run_20260713_a1b2c3d4`). This run_id persists across all round writes and binds acquittal receipts to this invocation.
    - If it exists AND `status` is `"completed"`: **fresh start** (previous loop finished normally — but its `ACQUITTAL_LOG.jsonl` entries are retained as an audit trail with their own `run_id`, and are NOT valid for the current run's stop gate)
      - **Generate a new `run_id`** for this invocation.
-   - If it exists AND `status` is `"in_progress"` AND `timestamp` is older than 24 hours: **fresh start** (stale state from a killed/abandoned run — delete the file and start over)
-     - **Generate a new `run_id`** for this invocation.
-   - If it exists AND `status` is `"in_progress"` AND `timestamp` is within 24 hours: **resume**
-     - Read the state file to recover `run_id`, `round`, `agent_id`, `last_score`, `pending_experiments`
-     - **Legacy backward compat**: if `run_id` is absent from the state file (pre-run_id era), generate a new `run_id` and log: "No run_id in legacy state file; assigned run_<...> for this resume."
-     - Read `review-stage/AUTO_REVIEW.md` to restore full context of prior rounds *(fall back to `./AUTO_REVIEW.md`)*
-     - If `pending_experiments` is non-empty, check if they have completed (e.g., check screen sessions)
-     - Resume from the next round (round = saved round + 1)
-     - Log: "Recovered from context compaction. Resuming at Round N."
+   - If `status` is `"in_progress"`: reconcile pending jobs and evidence, then resume the same run regardless of timestamp age. Apply the shared cycle's recovery rules; never delete state or reset original limits because it is old.
+     - Read the saved `run_id`, round, reviewer session and pending work unchanged. If a legacy state lacks `run_id`, assign it once and record the migration; old unrelated receipts remain invalid.
+     - Read the existing cumulative review log and actual pending-job records before choosing the next round. Preserve unfinished work until its outcome is verified.
+   - Malformed or conflicting state: preserve it and report the specific recovery issue; do not silently begin a replacement run.
 2. Read project narrative documents, memory files, and any prior review documents. When `COMPACT = true` and compact files exist, prefer `findings.md` + `EXPERIMENT_LOG.md` over full raw logs.
 3. Read recent experiment results (check output directories, logs)
 4. Identify current weaknesses and open TODOs from prior reviews

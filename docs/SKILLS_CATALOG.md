@@ -2,9 +2,9 @@
 
 [README](../README.md) · [中文介绍](../README_CN.md)
 
-The development tree provides **88 skills**: 83 retained workflow entrypoints,
-research-guide, project-governance, environment-maintenance, scientific-brainstorming
-and research-manager. Invoke a skill with the `evo-inquiry:`
+EvoInquiry 1.6.0 provides **89 skills**: 83 retained workflow entrypoints,
+research-guide, project-governance, environment-maintenance, scientific-brainstorming,
+research-manager and problem-synthesis. Invoke a skill with the `evo-inquiry:`
 namespace; each link below opens the Codex implementation actually installed.
 The table describes capabilities and setup categories. Read the selected
 `SKILL.md` for exact inputs, dependencies, outputs, and checkpoints.
@@ -60,6 +60,7 @@ or dependency does not establish that an integration is configured.
 | --- | --- | --- |
 | [`/scientific-brainstorming`](../skills/skills-codex/scientific-brainstorming/SKILL.md) | Frame vague directions into testable questions, alternatives and discriminating inquiries | No mandatory external service |
 | [`/research-manager`](../skills/skills-codex/research-manager/SKILL.md) | Evidence-linked decisions, pivots and handoffs using the existing authoritative record | Existing documents; wiki optional |
+| [`/problem-synthesis`](../skills/skills-codex/problem-synthesis/SKILL.md) | Compare related open problems, test a shared cause, or preserve separate branches at a higher-level reflection checkpoint | Existing project evidence and iteration ledger |
 | [`/idea-creator`](../skills/skills-codex/idea-creator/SKILL.md) | Generate mechanism candidates for a bounded question; assess novelty, informativeness and feasibility | Pilots only within authorized resources |
 | [`/research-refine`](../skills/skills-codex/research-refine/SKILL.md) | Iterative method refinement — problem anchor → up to 5 review rounds → the skill’s stopping conditions | Native Codex review |
 | [`/experiment-plan`](../skills/skills-codex/experiment-plan/SKILL.md) | Turn a refined proposal into a claim-driven experiment roadmap — ablations, budgets, run order | Task-dependent; see skill |

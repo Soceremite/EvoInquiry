@@ -207,6 +207,19 @@ def check_inventory() -> list[str]:
     require(doc_ladder, "external-cadence.md must document the stall ladder with both thresholds (>=2 structural, >=4 human) (B)", failures)
     require(wired, "research-pipeline/SKILL.md must actually wire iteration_log.py (resolver + `$ITER_LOG note` + pivot handling) — not just mention it (B)", failures)
 
+    # Check reachable packaged resources; CLI behavior is exercised in tests.
+    resources = [REPO_ROOT / 'tools/problem_synthesis.py',
+                 REPO_ROOT / 'tools/research_control.py',
+                 CODEX_ROOT / 'problem-synthesis/SKILL.md',
+                 CODEX_ROOT / 'problem-synthesis/references/record-format.md']
+    for resource in resources:
+        require(resource.is_file(), f'Missing problem-synthesis resource: {resource}', failures)
+    if all(resource.is_file() for resource in resources):
+        skill = read(resources[2])
+        pipeline = read(CODEX_ROOT / 'research-pipeline/SKILL.md')
+        require('references/record-format.md' in skill and '/problem-synthesis' in pipeline,
+                'problem-synthesis must be reachable from the workflow and link its recorder contract', failures)
+
     # research_wiki.py add_claim (claim layer) ⇔ its documented birth trigger in
     # /proof-checker. add_claim is a writer; without a skill that calls it, the claim
     # layer is dead code (the exact orphan-writer trap). Same dead-code guard as above:

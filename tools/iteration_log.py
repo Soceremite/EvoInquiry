@@ -28,6 +28,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from contextlib import contextmanager
 from datetime import datetime, timezone
@@ -36,13 +37,10 @@ from typing import Iterator, Optional
 
 try:
     from .state_paths import resolve_state_root, state_writer
+    from .registry_common import digest, file_lock
 except ImportError:
     from state_paths import resolve_state_root, state_writer
-
-try:
-    import fcntl
-except ImportError:  # pragma: no cover - non-POSIX
-    fcntl = None  # type: ignore
+    from registry_common import digest, file_lock
 
 PIVOT_STRUCTURAL_AT = 2   # consecutive zero-finding iterations → force a structural pivot
 ESCALATE_HUMAN_AT = 4     # still stalled → flag for human attention
@@ -71,18 +69,8 @@ def _lock(path: Path) -> Iterator[None]:
 @contextmanager
 def _iteration_file_lock(path: Path) -> Iterator[None]:
     path.parent.mkdir(parents=True, exist_ok=True)
-    if fcntl is None:
+    with file_lock(path.with_suffix('.jsonl.lock')):
         yield
-        return
-    fh = open(path.with_suffix(".jsonl.lock"), "w")
-    try:
-        fcntl.flock(fh, fcntl.LOCK_EX)
-        yield
-    finally:
-        try:
-            fcntl.flock(fh, fcntl.LOCK_UN)
-        finally:
-            fh.close()
 
 
 def _last_stale(path: Path) -> int:
@@ -96,7 +84,9 @@ def _last_stale(path: Path) -> int:
             if not line:
                 continue
             try:
-                last = int(json.loads(line).get("stale_count", last))
+                row = json.loads(line)
+                if isinstance(row, dict) and row.get('event') != 'reflection':
+                    last = int(row.get("stale_count", last))
             except (json.JSONDecodeError, ValueError, TypeError):
                 continue  # tolerate a partial/garbled line, keep the last good count
     except OSError:
@@ -129,6 +119,46 @@ def note(root: str, run_id: str, phase: str, new_findings: int,
         with open(path, "a", encoding="utf-8") as f:
             f.write(json.dumps(rec, ensure_ascii=False) + "\n")
     return {"stale_count": stale_count, "pivot": pivot}
+
+
+def record_reflection(root: str, run_id: str, phase: str, payload: dict) -> dict:
+    """Append an immutable, idempotent reflection envelope to this ledger.
+
+    The reflection shares the append-only iteration ledger with ``note`` and
+    therefore remains visible to existing resume/inspection tooling.  It does
+    not alter the run-state coordinator or grant any scientific acceptance.
+    Payload validation belongs to the caller. The envelope prevents payloads
+    from overwriting counters; content identity makes interrupted retries safe.
+    """
+    if not isinstance(payload, dict):
+        raise ValueError("reflection payload must be an object")
+    if not isinstance(phase, str) or not phase.strip():
+        raise ValueError("phase must be a non-empty string")
+    path = _log_path(root, run_id)
+    identity = {'phase': phase.strip(), 'reflection': payload}
+    reflection_id = digest(identity)
+    rec = {"ts": _now(), "event": "reflection", **identity,
+           'reflection_id': reflection_id}
+    with _lock(path):
+        for line in show(root, run_id).splitlines():
+            try:
+                previous = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if isinstance(previous, dict) and previous.get('reflection_id') == reflection_id:
+                if previous.get('phase') != phase.strip() or previous.get('reflection') != payload:
+                    raise ValueError('Reflection identity conflicts with the ledger')
+                return {**previous, 'ledger': str(path), 'record': 'existing'}
+        with open(path, "a", encoding="utf-8") as f:
+            if path.stat().st_size:
+                with path.open('rb') as source:
+                    source.seek(-1, os.SEEK_END)
+                    if source.read(1) != b'\n':
+                        f.write('\n')
+            f.write(json.dumps(rec, ensure_ascii=False, sort_keys=True) + "\n")
+            f.flush()
+            os.fsync(f.fileno())
+    return {**rec, 'ledger': str(path), 'record': 'new'}
 
 
 def show(root: str, run_id: str) -> str:

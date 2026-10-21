@@ -1,228 +1,184 @@
 {
   "schema_version": 1,
-  "version": "1.5.0",
+  "version": "1.6.0",
   "release_kind": "stable",
-  "status": "published-verified",
-  "assessed_at": "2026-10-19",
+  "status": "locally-validated-awaiting-native-ci",
+  "assessed_at": "2026-10-21T09:06:05.084695+00:00",
   "source_base": {
-    "version": "1.4.0",
-    "commit": "180f7d8ebd6690caa3a77328e9cb2bf5eeeee7ce"
+    "version": "1.5.0",
+    "commit": "d50a6a573b2e692ba1ede53ad6d407b9eaaf2016"
   },
-  "implementation_ancestor": "9e09c85c20a12a42e867255facf0bdef69a9d962",
   "runtime_changed": true,
   "inventory": {
-    "codex_entrypoints": 88,
-    "mainline_entries": 87,
+    "codex_entrypoints": 89,
+    "mainline_entries": 88,
     "retained_workflow_baselines": 83,
     "protected_resources": 450,
-    "directed_workflow_adaptations": 34,
-    "mainline_shared_references": 42,
-    "codex_shared_references": 42,
-    "new_codex_skills_since_1_4_0": 0,
+    "directed_workflow_adaptations": 35,
+    "mainline_shared_references": 43,
+    "codex_shared_references": 43,
+    "new_codex_skills_since_1_5_0": [
+      "problem-synthesis"
+    ],
     "frozen_maps_unchanged": true
   },
   "runtime_sha256": {
-    "tools/research_control.py": "e2b28a647f02abc24ce172e825cdee93c4e109da47b96723655fc1bcd05aa92a",
-    "tools/research_events.py": "4ae4f4b4099906f7c879ac0819b1a10ee0bd5fa12d3579be0d18233c8b9a087a",
-    "tools/research_memory.py": "dbd8e7e445499606cfee66c3dd79ae6b91d75e70d083c302ea7acb1c2b7eba0e",
-    "tools/execution_registry.py": "8aedc2417df2c10cc909effc9587b20a8f2cbbb6c71b221c7af3caad680edc1e",
-    "tools/meta_opt/compare_candidates.py": "2e045480f7b043afe18f04d1b1f3de32fab1c5578e619894154263665721dcc6",
+    "tools/research_control.py": "0d0dc1bd404e6621514c4942ed6f2525569b8df7893a74f4de370d4f70e981ed",
+    "tools/execution_registry.py": "5ae210ea87ce54a0d4fb2e650369d1e659342a519fc6af3f367e1caca42598e3",
+    "tools/iteration_log.py": "5767d8e76ce199cc1b8b043f0b21b345808e4242a73311c6fdf4a409eff0bfb7",
+    "tools/problem_synthesis.py": "ec075d147d170aa5d1821f824c570f200e031b9b41f6af96392e1776fde71f5e",
     "tools/run_state.py": "f8f0a6299f04610ae3e9d468fd01a5584c79713411264cde9f7d731055fd0d97",
-    "skills/skills-codex/shared-references/bounded-inquiry.md": "54e25f45286ef32c243e9d3925c640d98622e105006973d475edc6757063b6c0",
-    "skills/skills-codex/shared-references/code-reuse-and-docs.md": "bdca70ed7b44c368a08113e04ae6d86d765d397cc04495f4e89aa900e5c1211b",
-    "tools/checkpoint_retention.py": "a543315153827fd854150829eca86209e9748f168980f47702daa3df5857c133"
+    "tools/checkpoint_retention.py": "a543315153827fd854150829eca86209e9748f168980f47702daa3df5857c133",
+    "skills/skills-codex/shared-references/bounded-inquiry.md": "ff305cd973bd0b2470d894fb60fa590f72dfb0c5bd1c38ae2467b722f63b0441",
+    "skills/skills-codex/shared-references/research-review-cycle.md": "1bd03163b051a9947f597b3759089e6ea8b0b024bda20ec7d24971fbe19c54e9",
+    "skills/skills-codex/problem-synthesis/SKILL.md": "3a56dc66583c6a60e34f0526812348a5cc41111096c880ddbe502c953c847242"
   },
   "current_checks": {
-    "source_preservation": {
+    "full_local_regression": {
+      "status": "PASS_WITH_SKIPS",
+      "python": "3.12.14",
+      "platform": "Linux",
+      "passed": 1349,
+      "skipped": 36,
+      "failures": 0,
+      "errors": 0,
+      "warnings": 3,
+      "passing_subtests": 46,
+      "duration_seconds": 2402.06,
+      "receipt": {
+        "path": "validation/v160/autonomous-brake/full-suite.xml",
+        "sha256": "e8d41150340b992efa0bd856f9bf873f27826b0ed3ad4391bac2bf55ca7a8bff"
+      },
+      "summary": {
+        "path": "validation/v160/autonomous-brake/regression-result.json",
+        "sha256": "bdb1bcb33ded241f83c963f01227512f67b3154389e819610d4ad77d478fb38e"
+      },
+      "source_manifest": {
+        "path": "validation/v160/autonomous-brake/final-python-sources.json",
+        "sha256": "c337b3f39a32614c05fea6a3bde226b6e776321a4d9e645c4dfddb43e5d5cf6d"
+      },
+      "scope": "192 Python file identities unchanged through final regression and observation; local Linux only"
+    },
+    "package_preservation": {
       "status": "PASS",
       "receipt": {
-        "path": "validation/release-1.5.0/preservation.json",
-        "sha256": "f2181b2fdadc3eeb46b57dd79af33e5af1cd7c9ae94b83ec7398a0b2a339ad53"
+        "path": "validation/v160/autonomous-brake/package-post-ci.json",
+        "sha256": "5134c86851eb34af3d9435301eaa25f9b968812f347053532cd0ec6c43e17ead"
       },
-      "scope": "88 canonical entrypoints and frozen original 83/450 baseline contracts with directed adaptations"
+      "scope": "89 discoverable Codex entrypoints, 83 frozen retained workflow baselines and resolved shared references"
     },
-    "review_interface_forward_use": {
+    "native_windows_ci_wiring": {
+      "status": "PASS_LOCAL_WIRING_ONLY",
+      "passed": 3,
+      "receipt": {
+        "path": "validation/v160/autonomous-brake/ci-wiring.xml",
+        "sha256": "aa35809741b3f6b168858b1feea560ee7aa5bacbe19b5a653494bb7750fc7239"
+      },
+      "scope": "Both Windows shells cover reflection and execution governance; not a native Windows execution result"
+    },
+    "hourly_cuda_engineering": {
       "status": "PASS_WITH_SCOPE_LIMITATIONS",
-      "candidate": "1.5.0-dev.10",
-      "cases": [
+      "training_seconds": 3600.003729,
+      "optimizer_steps": 2145720,
+      "full_state_publications": 30,
+      "retained_recovery_points": 2,
+      "retained_bytes": 336100,
+      "receipt": {
+        "path": "validation/v160/hourly/observed-summary.json",
+        "sha256": "b0539e02b2841c9f501f9ff43cd3bb154f8625a095bdbf8877c056520d1c432f"
+      },
+      "scope": "Constructed Linux/H100 engineering endurance, injected numerical failure and deterministic full-state replay; three programmed reviews, not LLM research decisions"
+    },
+    "native_model_trajectory_and_stop": {
+      "status": "REQUESTED_BEHAVIORS_OBSERVED",
+      "duration_seconds": 2632.38561,
+      "maximum_seconds": 3600,
+      "original_deadline_preserved": true,
+      "decisions": [
+        "REPLAN",
+        "STOP"
+      ],
+      "stop_delivery_seconds": 3.505249,
+      "actual_exit_code": 0,
+      "actual_status": "stopped",
+      "full_state_replay_identical": true,
+      "aggregate_gpu_allocation_seconds": 781.8702230378985,
+      "actions": 7,
+      "receipt": {
+        "path": "validation/v160/autonomous-brake/final-observed-summary.json",
+        "sha256": "31290a3cb90b94a3fa18806b0b127318580593595cbc2afd49c4aa03d1baaaca"
+      },
+      "evidence_manifest": {
+        "path": "validation/v160/autonomous-brake/runtime-evidence-sha256.json",
+        "sha256": "bd803e28d73640b49abc5595ae8976c0b765690c6be43e50e68120d0bf681b66"
+      },
+      "paired_cases": {
+        "path": "validation/v160/autonomous-brake/paired-case-audit.json",
+        "sha256": "7ae1fb6f4a2d3511d2055f416b9565772f28146ac285d0d7ba40fcb1c4f243d7"
+      },
+      "scope": "Constructed three-domain/two-initialization-seed cohort, fixed paired validation, explicitly guided candidate use; same-family provisional, not matched toolkit comparison"
+    },
+    "assumption_sweep": {
+      "status": "GAPS_REPAIRED_WITH_SCOPE_LIMITATIONS",
+      "review_independence": "same-family/provisional",
+      "rounds": 2,
+      "reports": [
         {
-          "id": "V01",
-          "seconds": 141.83,
-          "native_tool_actions": 10
+          "path": "validation/v160/autonomous-brake/implement-stage/SILENT_ASSUMPTION_SWEEP.json",
+          "sha256": "b3dda873de080a2e436d8dc5371d06c8400ee49896c9b2d4dedb1bf1b031bdbf"
         },
         {
-          "id": "V02",
-          "seconds": 111.49,
-          "native_tool_actions": 9
+          "path": "validation/v160/autonomous-brake/implement-stage/SILENT_ASSUMPTION_SWEEP_FOLLOWUP.json",
+          "sha256": "dbff1edd6953edaecc636e35f7b59bf774dc4521255ef1f3740e099e4efd65b9"
         }
       ],
-      "receipt": {
-        "path": "validation/upgrade-1.5.0/review-interface-repair/assessment.json",
-        "sha256": "53e457a02efea6c4b26ce54ddfcf144b47e2375616248c6687edaca5a79366e8"
-      },
-      "scope": "Two fresh gpt-6.1-sol/high sessions; actual consumer checks, source-integrity checks and parent same-family artifact assessment; not a matched comparison or population estimate"
+      "scope": "Both zero-exit cancellation paths repaired; all 19 execution-governance checks pass. Final observer repair has deterministic checks, no third fresh sweep or independent CLEAN verdict."
     },
-    "multi_wave_practical_use": {
-      "status": "PASS_WITH_SCOPE_LIMITATIONS",
-      "candidate": "1.5.0-dev.9",
-      "duration_seconds": 2181.58,
-      "waves": 4,
-      "new_model_fits": 21,
-      "prediction_records_reconstructed": 376272,
-      "paired_case_entries": 24,
-      "receipt": {
-        "path": "validation/upgrade-1.5.0/multiwave-retest/recovery-3/assessment.json",
-        "sha256": "24cb7b110d51489c33d8ef8e35f37353101b2af41ef889019d6fa68ad5d63680"
-      },
-      "scope": "One warm-project real-data continuation; independent parent readback code, same-family provisional evidence review. Later guidance changes tested separately. Old failures and external interruption remain."
-    },
-    "prior_native_ci": {
-      "status": "PASS_FOR_ANCESTOR_ONLY",
-      "commit": "9e09c85c20a12a42e867255facf0bdef69a9d962",
-      "url": "https://github.com/Soceremite/EvoInquiry/actions/runs/39106725110",
-      "scope": "Ubuntu/macOS and powershell.exe/pwsh before later uncommitted runtime and guidance repairs; not current-source CI"
-    },
-    "new_commit_native_ci": {
-      "status": "PASS_FOR_RELEASE_SOURCE",
-      "commit": "16abc3ac47eee77f9daf7584cc964ced0fd1521e",
-      "url": "https://github.com/Soceremite/EvoInquiry/actions/runs/39241073667",
-      "python": "3.12",
-      "ubuntu_and_macos_each": {
-        "passed": 1279,
-        "skipped": 35,
-        "failed": 0,
-        "errors": 0
-      },
-      "powershell_exe_and_pwsh_each": {
-        "passed": 420,
-        "skipped": 4,
-        "failed": 0,
-        "errors": 0
-      },
-      "scope": "Both full suites and native Windows gates include the checkpoint sharing repair. No change to or acquittal of earlier failed runs."
+    "native_release_ci": {
+      "status": "REQUIRED_BEFORE_PUBLICATION",
+      "workflow": ".github/workflows/release-beta.yml",
+      "url": "https://github.com/Soceremite/EvoInquiry/actions/workflows/release-beta.yml",
+      "required": [
+        "ubuntu-latest full suite",
+        "macos-latest full suite",
+        "windows-latest powershell.exe",
+        "windows-latest pwsh"
+      ],
+      "scope": "Tag workflow requires all four native gates before publication; earlier-version CI is not current-source acceptance"
     },
     "formal_installation": {
       "status": "UNCHANGED",
-      "version": "1.4.0",
-      "scope": "Last verified enabled install is 1.4.0. Publication did not replace the installed plugin."
-    },
-    "previous_local_suite_before_checkpoint_fix": {
-      "status": "PASS_WITH_SKIPS",
-      "python": "3.14.7",
-      "platform": "Linux",
-      "passed": 1269,
-      "skipped": 38,
-      "warnings": 3,
-      "passing_subtests": 46,
-      "failures": 0,
-      "errors": 0,
-      "duration_seconds": 1072.62,
-      "receipt": {
-        "path": "validation/release-1.5.0/full-tests.xml",
-        "sha256": "219bc55d71d55282802b63ad459c87f55e27d1220b2896c72b2da586336dfab6"
-      },
-      "log": {
-        "path": "validation/release-1.5.0/full-tests.log",
-        "sha256": "069bbced5880c9cd87ffb8d49c6dfcf0262eb0a43ccc448ce39146160e927234"
-      },
-      "scope": "Source before the newly discovered Windows cleanup-sharing repair; 1269 passing tests do not certify the later fix."
-    },
-    "final_full_local_suite": {
-      "status": "FAIL_WITH_ONE_TIMEOUT",
-      "python": "3.14.7",
-      "platform": "Linux",
-      "passed": 1274,
-      "skipped": 39,
-      "failures": 1,
-      "errors": 0,
-      "warnings": 3,
-      "passing_subtests": 46,
-      "duration_seconds": 1025.99,
-      "receipt": {
-        "path": "validation/release-1.5.0/checkpoint-full-tests.xml",
-        "sha256": "fde3363bf27e41a71524cb36c8e02d83d96de9ec635873f899ffcc438d0e95da"
-      },
-      "scope": "Filesystem-local snapshot: 1064 tracked files matched at dispatch. Unchanged Grok bridge progress/cancellation test exceeded its three-second first-message wait. Later notes and validation edits are separate. Checkpoint repair tests passed; this full run remains failed."
-    },
-    "accepted_submission_native_ci": {
-      "status": "PASS_FOR_PRE_FIX_SOURCE",
-      "commit": "7003c6000ea907cd016f44d369c05814194c0b97",
-      "url": "https://github.com/Soceremite/EvoInquiry/actions/runs/39235374741",
-      "scope": "Four passing platform jobs on the original submission. A later tag run exposed Windows cleanup sharing contention."
-    },
-    "first_publication_attempt": {
-      "status": "FAILED_NOT_PUBLISHED",
-      "commit": "f49380777c8f54c8ebc3c286007f6219c7e5ea63",
-      "url": "https://github.com/Soceremite/EvoInquiry/actions/runs/39237501171",
-      "failure": "Native Windows powershell.exe: WinError 32 during journaled old-checkpoint removal while a monitoring reader held state.json. Other three platform jobs passed; publication was skipped.",
-      "annotation_receipt": {
-        "path": "validation/release-1.5.0/publication-windows-annotations.json",
-        "sha256": "996e41b19243003f65c58dcd2fdb2d4fce6896eaf1f90a5933de85c19376fc6e"
-      }
-    },
-    "checkpoint_rotation_repair": {
-      "status": "PASS_LOCAL_AND_NATIVE_WINDOWS",
-      "passed": 85,
-      "skipped": 2,
-      "receipt": {
-        "path": "validation/release-1.5.0/checkpoint-fix.xml",
-        "sha256": "c43979da15d8830d0027dda5b35f9c6319ec19f8f906b99b37f6d2416eb580c4"
-      },
-      "scope": "Real publication/rotation with deterministic simulated sharing errors, partial deletion, persistent/permanent error bounds, recovery and journal retry; includes a Windows-only real open-handle test for native CI. Two new tests fail against original source as expected.",
-      "native_scope": "Real held-file sharing test and cooperating monitor/publisher test pass under both powershell.exe and pwsh, included in both normal and tag CI. Persistent errors remain bounded and visible."
-    },
-    "unchanged_bridge_recheck": {
-      "status": "PASS",
-      "passed": 7,
-      "passing_subtests": 7,
-      "duration_seconds": 13.06,
-      "receipt": {
-        "path": "validation/release-1.5.0/grok-recheck.xml",
-        "sha256": "cf2e4fb1cd43d746de032a7a53f4107a96e006932fc927531885563517372127"
-      },
-      "scope": "Separate unchanged invocation of all Grok bridge tests. Does not erase the full-suite timeout or establish its frequency or root cause."
-    },
-    "final_publication_ci": {
-      "status": "PASS",
-      "commit": "16abc3ac47eee77f9daf7584cc964ced0fd1521e",
-      "url": "https://github.com/Soceremite/EvoInquiry/actions/runs/39241625001",
-      "completed_jobs": 5,
-      "scope": "Four native test gates repeated successfully on the final tag, then committed-source build and release publication completed."
-    },
-    "published_assets": {
-      "status": "PASS",
-      "commit": "16abc3ac47eee77f9daf7584cc964ced0fd1521e",
-      "matching_payload_files": 1064,
-      "codex_entrypoints": 88,
-      "sha256": {
-        "evo-inquiry-1.5.0.tar.gz": "5d767558b571c2ed90219dd84c88224ab4ec33121ab82ba729ae08a7ded90016",
-        "evo-inquiry-1.5.0.zip": "fecad9470e8ae080484dd91ace3677d8b0fe53592fcf7564dd226cd551e4eeaa"
-      },
-      "receipt": {
-        "path": "validation/release-1.5.0/publication-verification.json",
-        "sha256": "67909250a980671a925fd98c0a0acdbeb8418d5e0b98a6af0684f31b7aeda6e2"
-      },
-      "scope": "Actual public tar/zip downloads, SHA256SUMS and manifest verified; all file hashes match locally built committed source, bilingual notes match and private state is excluded."
+      "scope": "Publishing does not replace the enabled plugin or change a training environment"
     }
   },
-  "validation_record": "docs/VALIDATION_1_5_0.md",
+  "retained_failures": [
+    {
+      "kind": "harness-duration-mismatch",
+      "execution": "model-followup",
+      "scope": "Cancelled; excluded from fair comparison; corrected by exact 12-second followup"
+    },
+    {
+      "kind": "recovery-process-timeout",
+      "execution": "active-stop-witness-resume-check",
+      "scope": "Replay hashes matched but process exceeded 35 seconds during exit cleanup. Failed attempt preserved; bounded 90-second retry completed normally."
+    },
+    {
+      "kind": "preflight-and-regression-fixture-failures",
+      "scope": "Environment incompatibility, earlier failed fixtures and interrupted suites remain source-specific in validation record, not promoted to passing runs"
+    }
+  ],
+  "validation_record": "docs/VALIDATION_1_6_0.md",
   "limitations": [
-    "Public development fixtures and same-family assessments do not establish independent scientific acceptance.",
-    "No general superiority over 1.4.0, full RSI or unattended research over hours or days is established.",
-    "Earlier timeouts, infrastructure interruption, no-clear-gain comparison and failed probes remain in source-specific records.",
-    "Initial setup and warm continuation costs are distinct; no portable speedup claim.",
-    "Local validation receipts are intentionally ignored and not bundled in source assets; repository validation records preserve scopes and local receipt hashes.",
-    "Native macOS/Windows results from the ancestor do not certify later changes.",
-    "Optional external providers, distributed training, network filesystems and power-loss recovery are not newly guaranteed."
+    "No general defense against local optima, independent scientific acceptance or model-driven unattended hour endurance is established.",
+    "Configured boundaries need existing monitor inspection; installed skills do not create a resident watchdog or implicit session hook.",
+    "Actual stop evidence covers bound local Linux/POSIX execution; Windows descendant trees, SSH, schedulers and distributed execution require their own checks.",
+    "Model use was explicitly guided and same-family provisional; implicit skill selection and toolkit superiority were not measured.",
+    "Local raw receipts, model traces and checkpoint states remain ignored; release assets contain committed public source only.",
+    "Negative results, control regressions and timeouts remain retained; later success does not erase an earlier failure."
   ],
   "publication": {
-    "tag": "v1.5.0",
-    "commit": "16abc3ac47eee77f9daf7584cc964ced0fd1521e",
-    "url": "https://github.com/Soceremite/EvoInquiry/releases/tag/v1.5.0",
-    "published_at": "2026-10-19T11:06:31Z",
-    "latest": true,
-    "draft": false,
-    "prerelease": false,
-    "scope": "Applies to the immutable published tag and its public downloads. This later documentation record is separate from the frozen source assets."
+    "tag": "v1.6.0",
+    "url": "https://github.com/Soceremite/EvoInquiry/releases/tag/v1.6.0",
+    "status": "pending-tag-ci"
   }
 }

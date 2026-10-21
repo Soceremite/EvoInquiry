@@ -8,8 +8,8 @@
 [静态封面](docs/assets/evo-inquiry-hero.svg)
 
 <p align="center">
-  <a href="https://github.com/Soceremite/EvoInquiry/releases/tag/v1.5.0"><img src="https://img.shields.io/badge/release-1.5.0-FF927E?style=flat&amp;labelColor=7862E8" alt="版本 1.5.0"></a>
-  <a href="docs/SKILLS_CATALOG.md"><img src="https://img.shields.io/badge/Codex_skills-88-59C7A7?style=flat&amp;labelColor=7862E8" alt="88 个 Codex skill"></a>
+  <a href="https://github.com/Soceremite/EvoInquiry/releases/tag/v1.6.0"><img src="https://img.shields.io/badge/release-1.6.0-FF927E?style=flat&amp;labelColor=7862E8" alt="版本 1.6.0"></a>
+  <a href="docs/SKILLS_CATALOG.md"><img src="https://img.shields.io/badge/Codex_skills-89-59C7A7?style=flat&amp;labelColor=7862E8" alt="89 个 Codex skill"></a>
   <a href="https://github.com/Soceremite/EvoInquiry/actions/workflows/test-suite.yml"><img src="https://github.com/Soceremite/EvoInquiry/actions/workflows/test-suite.yml/badge.svg" alt="回归测试状态"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-FFD95E?style=flat&amp;labelColor=7862E8" alt="MIT 许可证"></a>
 </p>
@@ -25,7 +25,7 @@
 等实验跑起来了，又要管资源、看结果、找原因，最后还要把这些工作写成一篇有说服力的论文。
 这里面的每一步，都需要下功夫。
 
-所以，我们把 **88 个 Codex skill** 组织成一套科研工作流。从头脑风暴、文献检索，到实验设计、
+所以，我们把 **89 个 Codex skill** 组织成一套科研工作流。从头脑风暴、文献检索，到实验设计、
 运行监控，再到结果分析和论文写作，让前一步留下的证据，能够接得上后一步的工作。
 既可以按需完成一个具体任务，也可以组成更长的科研流程。下一步由研究问题、已有证据与项目约束共同决定。
 
@@ -36,20 +36,23 @@
 **我们最看重的，还是客观。** 有提升，就把提升讲清楚；有退步，也把退步摆出来；
 证据还不够，就继续验证。科研工具要帮助我们把问题看得更清楚。
 
-**EvoInquiry 1.5.0，继续开源。** 欢迎大家用自己的研究任务试一试，把真实的问题和建议带给我们。
+**EvoInquiry 1.6.0，继续开源。** 欢迎大家用自己的研究任务试一试，把真实的问题和建议带给我们。
 我们一起，把这个科研搭档做得更扎实、更好用。
 
-**[1.5.0 新增](RELEASE_NOTES.md)：**
-在原始预算内持续推进已授权的研究，核对中断任务、复用带证据的决策，
-按波次保存结果和案例，并交付可核验的收尾与交接。
+**[1.6.0 新增](RELEASE_NOTES.md)：** 在对比块、调参批次和大里程碑之间回顾原研究问题。
+用 `problem-synthesis` 检验多个问题是否存在共同解释，或应该保持分离。
+可配置的任务数和时间边界请求真实判断；转向时保留刹车，等待修订计划交接。
+STOP 能传递到已绑定的本地训练，核实实际退出并保留恢复点。
+科研评审与资源限制继续由原有工作流负责。
 
 ## 从模糊方向走向有证据的下一步
 
-用 `scientific-brainstorming` 探索竞争解释和可检验的问题，用 `research-manager`
+用 `scientific-brainstorming` 探索竞争解释和可检验的问题；当多个未解决问题可能
+有共同原因时，用 `problem-synthesis` 做层级反思；再用 `research-manager`
 在已有项目记录中跟踪决策、未解决问题与交接。文献记录保留身份、版本和阅读层级；图件记录关联
 真实输入、可编辑源文件与图注。已有公平比较、权重保留和审阅门槛继续使用。
 具体能力见[版本说明](RELEASE_NOTES.md)，实际验证范围见
-[1.5.0 验证记录](docs/VALIDATION_1_5_0.md)。
+[1.6.0 验证记录](docs/VALIDATION_1_6_0.md)。
 
 可以直接说：“探索低成本记忆的研究问题，先不训练”“检查这些均值能支持
 什么结论”“把CSV画成图，保留脚本、失败运行和误差定义”。明确需要时再运行
@@ -76,14 +79,14 @@
 
 ## 快速开始
 
-从 [正式版 Release](https://github.com/Soceremite/EvoInquiry/releases/tag/v1.5.0)
-下载并解压 `evo-inquiry-1.5.0.tar.gz` 或 `.zip`。
+从 [正式版 Release](https://github.com/Soceremite/EvoInquiry/releases/tag/v1.6.0)
+下载并解压 `evo-inquiry-1.6.0.tar.gz` 或 `.zip`。
 下载包将在对应版本的发布门禁通过后提供。
 请使用提供 `codex plugin` 命令的 Codex 版本；插件安装已在 Linux 上使用
 Codex CLI **0.163.0** 验证。
 
 ```sh
-cd /path/to/evo-inquiry-1.5.0
+cd /path/to/evo-inquiry-1.6.0
 codex plugin marketplace add "$PWD"
 codex plugin add evo-inquiry@evo-inquiry
 ```
@@ -106,7 +109,7 @@ skill 使用 `evo-inquiry:` 命名空间。安装插件使技能可用；
 <summary><strong>源码开发与干净安装</strong></summary>
 
 需要查看和开发源码时，可以使用
-`git clone --branch v1.5.0 https://github.com/Soceremite/EvoInquiry.git EvoInquiry`。
+`git clone --branch v1.6.0 https://github.com/Soceremite/EvoInquiry.git EvoInquiry`。
 安装插件时使用干净的 Release 解压目录。Codex CLI 0.162.1 也会复制来源目录中的
 未跟踪文件；Release 包可以避免把私有验证记录、构建产物和 Git 历史带入安装缓存。
 
@@ -232,10 +235,12 @@ python tools/configure_research_guidance.py --project /path/to/project
 本项目提供的 EvoInquiry 安装方式是上面的 Codex 插件。
 保留的后端与客户端兼容资源用于支持已有流程约定，按需启用并单独配置。
 
-当前检查及其适用范围见[1.5.0 验证记录](docs/VALIDATION_1_5_0.md)。
-本地实践包括约 36 分钟的四轮科研推进、21 次新增 CPU 拟合、主动案例分析，以及
-使用独立代码重算原始预测。公开开发测试保留未完成尝试与评审限制，不能据此宣称
-普遍优于旧版或已验证数小时、数天无人值守。[1.4.0 发布记录](docs/VALIDATION_1_4_0.md)单独保留。
+当前检查及其适用范围见[1.6.0 验证记录](docs/VALIDATION_1_6_0.md)。
+最新本地回归通过 1,349 项测试；真实一小时 CUDA 工程运行验证有界恢复存储和数值
+故障处理，另一段有界模型实测观察到 REPLAN、STOP 实际停止训练和完整状态重放。
+失败尝试及对照组退化均保留。构造场景与显式引导的结果不证明普遍优于旧版、默认
+常驻 watchdog 或数小时、数天无人值守科研。[1.5.0 实践记录](docs/VALIDATION_1_5_0.md)
+和[1.4.0 发布记录](docs/VALIDATION_1_4_0.md)单独保留。
 历史记录见[治理验收](docs/UPGRADE_VALIDATION_CN.md)和[兼容性验收](docs/PORTABILITY_VALIDATION_CN.md)。
 [离线行为评估](docs/SKILL_BEHAVIOR_EVAL.md)使用冻结案例和实际执行轨迹比较自然请求表现。
 下载包需要 Linux、macOS 完整 CI，以及 `powershell.exe`、`pwsh` 两组 Windows 原生安装与治理验收全部通过后发布。

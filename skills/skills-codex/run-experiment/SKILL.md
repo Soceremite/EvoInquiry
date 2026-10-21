@@ -20,6 +20,7 @@ When executing comparisons, load [comparative-experiments](../shared-references/
 When the evaluation produces sample evidence, persist its compact prediction/selection records and the planned small output subset with the run's results before temporary storage or weights are released. Apply [case-study-analysis](../shared-references/case-study-analysis.md) for the relevant identities and storage limits. Do not add evaluation runs, regenerate missing samples or copy whole datasets merely to fill a case panel.
 
 For sustained execution or recovery, use [bounded inquiry](../shared-references/bounded-inquiry.md). Preserve the original owner/budget: reserve before launch, settle from terminal evidence and keep unfinished work visible. Registered executions can use its `settle-execution` helper; it never relaunches or accepts research gates.
+For a bound local run, follow [bounded inquiry](../shared-references/bounded-inquiry.md): the existing launcher enforces recorded workflow stops, single-execution requests and original timeout limits. Verify its actual terminal receipt before releasing the reservation; normal reflection does not interrupt healthy training.
 <!-- EVO-INQUIRY:END -->
 
 

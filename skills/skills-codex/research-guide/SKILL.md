@@ -66,19 +66,32 @@ adequate investigation and state what its result will change. Useful routes:
 | Current need | Execution skill |
 | --- | --- |
 | Vague direction, problem framing or a research pivot | [scientific-brainstorming](../scientific-brainstorming/SKILL.md) |
+| Several open problems may share a cause, or local fixes are multiplying | [problem-synthesis](../problem-synthesis/SKILL.md) |
 | Record decisions, pivots or a research handoff | [research-manager](../research-manager/SKILL.md) |
 | Related work or understanding supplied papers | [research-lit](../research-lit/SKILL.md) |
+| Concrete method candidates within an established problem | [idea-creator](../idea-creator/SKILL.md) |
 | Focused method proposal | [research-refine](../research-refine/SKILL.md) |
 | Evidence design for a fixed method | [experiment-plan](../experiment-plan/SKILL.md) |
 | Numerical analysis of existing runs | [analyze-results](../analyze-results/SKILL.md) |
-| What results support or experimental integrity | [result-to-claim](../result-to-claim/SKILL.md), [experiment-audit](../experiment-audit/SKILL.md) |
+| Requested formal judgment of a specified claim | [result-to-claim](../result-to-claim/SKILL.md) |
+| Comparative fairness or execution integrity | [experiment-audit](../experiment-audit/SKILL.md) |
 | Single critical review or paper-number audit | [research-review](../research-review/SKILL.md), [paper-claim-audit](../paper-claim-audit/SKILL.md) |
 | Implement an existing experiment plan | [experiment-bridge](../experiment-bridge/SKILL.md) |
+| New poster, including an old `/paper-poster` call | [paper-poster-html](../paper-poster-html/SKILL.md); the old name only forwards arguments |
 | Explicit full research lifecycle | [research-pipeline](../research-pipeline/SKILL.md) |
 
 These routes are examples; select other available skills when they better match
 the task. Resolve sibling paths from this installed SKILL.md, not a guessed
 checkout or a previous installation. Do not load the whole catalog.
+
+Keep one owner for the requested output. Ordinary trajectory review stays with
+the active workflow; multiple unresolved problems can use `problem-synthesis`
+for their structure, then return to the existing planner or executor. The guide
+routes, the manager records decisions, and the wiki stores and queries relationships.
+An ordinary numerical question does not automatically require claim adjudication.
+Composition workflows reuse valid child artifacts and completed reviews rather
+than redoing them. Select one review-loop backend for a run, preserving its
+identity and pending work when resuming through a compatibility entrypoint.
 
 Read the selected SKILL.md before execution. Check its inputs, dependencies,
 outputs, reviewer requirements, recovery rules, and blocking checkpoints. Carry

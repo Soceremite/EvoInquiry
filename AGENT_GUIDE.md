@@ -1,7 +1,8 @@
 # EvoInquiry agent guide
 
-Full catalog: [skill catalog](docs/SKILLS_CATALOG.md) — **88 skills** in the development tree:
-83 retained workflows, research-guide, project-governance and environment-maintenance.
+Full catalog: [skill catalog](docs/SKILLS_CATALOG.md) — **89 skills** in EvoInquiry 1.6.0:
+83 retained workflows plus the research routing, governance, problem-synthesis and
+manager extensions.
 Install and invoke the Codex plugin using [README.md](README.md).
 
 The plugin discovers `skills/skills-codex/<name>/SKILL.md`. Read the selected
@@ -27,5 +28,5 @@ it does not establish independent validation or research correctness.
 
 Project state uses the shared .ei resolver. Read the
 [upgrade implementation plan](docs/UPGRADE_IMPLEMENTATION_CN.md) for governance,
-environment, code reuse and compatibility boundaries. Stable 1.0.0 installations
-remain independent of this development checkout.
+environment, code reuse and compatibility boundaries. Existing installations
+remain independent until explicitly upgraded from a clean release package.

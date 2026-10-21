@@ -4,14 +4,170 @@ import multiprocessing
 from pathlib import Path
 import subprocess
 import sys
+import time
+from concurrent.futures import ThreadPoolExecutor
 
 import pytest
 
 from tests.governance_helpers import make_environment, make_sources, make_spec
 from tools.code_map import build_map, check_freshness, resolve_symbol
 from tools.execution_registry import (freeze_snapshot, launch_execution, select_attempts,
-                                      start_execution, verify_snapshot, clone_attempt, reconcile_execution)
-from tools.registry_common import RegistryError, fixed_ref, read_record
+                                      start_execution, verify_snapshot, clone_attempt, reconcile_execution,
+                                      request_stop_execution, register_spec, spec_digest)
+from tools.registry_common import RegistryError, atomic_write, fixed_ref, now, read_record
+from tools import research_control, run_state
+
+
+def _prepare_observable_worker(root, *, seconds=15, interval=None, graceful=False):
+    sources, spec, environment = make_sources(root), make_spec(root), make_environment(root)
+    (root / 'src/train.py').write_text('''import json, os, pathlib, signal, subprocess, sys, time
+output=pathlib.Path(sys.argv[1]); output.mkdir(parents=True,exist_ok=True)
+if GRACEFUL:
+    def on_stop(signum, frame):
+        (output/'saved-before-stop.json').write_text(json.dumps({'signal':signum}))
+        raise SystemExit(0)
+    signal.signal(signal.SIGTERM,on_stop)
+child_code="import pathlib, signal, sys, time; signal.signal(signal.SIGTERM,signal.SIG_IGN); pathlib.Path(sys.argv[1]).write_text('ready'); time.sleep(60)"
+child=subprocess.Popen([sys.executable,'-I','-c',child_code,str(output/'child-ready')]) if os.name=='posix' else None
+while child is not None and not (output/'child-ready').exists(): time.sleep(0.01)
+(output/'ready.json').write_text(json.dumps({'pid':os.getpid(),'child_pid':child.pid if child else None}))
+time.sleep(60)
+'''.replace('GRACEFUL', repr(graceful)))
+    if seconds != 15:
+        record = read_record(root / spec['path'])
+        record.update(experiment_id='timeout-fixture', budget={'max_seconds_per_attempt':seconds})
+        record['spec_sha256'] = spec_digest(record)
+        spec = register_spec(root, record)
+    run_state.start_run(str(root), 'owned-workflow', ['explore'])
+    research_control.configure(root, 'owned-workflow', 'observe owned stop', {
+        'max_actions':4,'wall_seconds':120,'max_attempts_per_key':1,
+        'resources':{'cpu_seconds':60}}, reflection_interval_seconds=interval)
+    output = root / 'runs/owned/outputs'
+    args = [str(output)]
+    snapshot = freeze_snapshot(root, 'owned', spec, environment, sources,
+        {'variant':{'augmentation':0.1},'seed':22}, 'src/train.py','method-b',22,
+        arguments=args,output_argument_indices=[0])
+    start_execution(root,'owned',snapshot,workflow_run_id='owned-workflow')
+    action = research_control.claim_action(root,'owned-workflow','owned','explore',
+        'Observe actual cancellation',costs={'cpu_seconds':30},input_refs=[snapshot])['action']
+    return args, output, action
+
+
+def _await_file(path, future, seconds=10):
+    deadline=time.monotonic()+seconds
+    while not path.exists() and time.monotonic()<deadline:
+        if future.done():
+            raise AssertionError(f'Worker exited before observation: {future.result()}')
+        time.sleep(0.02)
+    assert path.exists(), path
+
+
+def _linux_running(pid):
+    path=Path('/proc')/str(pid)/'stat'
+    return path.exists() and path.read_text().split(') ',1)[1][0]!='Z'
+
+
+@pytest.mark.skipif(sys.platform!='linux', reason='Owned process-group observation uses Linux procfs')
+@pytest.mark.parametrize('source',['workflow','execution','elapsed-review'])
+def test_stop_intent_reaches_the_owned_process_group_and_preserves_other_work(tmp_path,source):
+    args, output, action = _prepare_observable_worker(tmp_path, interval=0.1 if source=='elapsed-review' else None)
+    unrelated=subprocess.Popen([sys.executable,'-I','-c','import time; time.sleep(60)'])
+    try:
+        with ThreadPoolExecutor(max_workers=1) as pool:
+            future=pool.submit(launch_execution,tmp_path,'owned',args)
+            _await_file(output/'ready.json',future)
+            identities=read_record(output/'ready.json')
+            if source=='elapsed-review':
+                inspection=research_control.inspect(tmp_path,'owned-workflow')
+                assert inspection['reflection_gate']['reasons']==['elapsed_review_interval']
+                assert _linux_running(identities['pid']) and _linux_running(identities['child_pid'])
+            started=time.monotonic()
+            if source=='execution':
+                request=request_stop_execution(tmp_path,'owned','This attempt no longer answers the question')
+                assert request_stop_execution(tmp_path,'owned','This attempt no longer answers the question')==request
+            else:
+                research_control.stop(tmp_path,'owned-workflow','No further training is justified')
+            result=future.result(timeout=12)
+            assert time.monotonic()-started<10
+        terminal=read_record(tmp_path/'runs/owned/execution.final.json')
+        receipt=read_record(tmp_path/'runs/owned/termination.json')
+        assert result['exit_code']!=0 and terminal['status']=='stopped'
+        assert receipt['cause']==('execution_stop' if source=='execution' else 'workflow_stop')
+        assert receipt['parent_exited'] and receipt['pid']==identities['pid']
+        assert not _linux_running(identities['pid'])
+        deadline=time.monotonic()+3
+        while _linux_running(identities['child_pid']) and time.monotonic()<deadline:
+            time.sleep(0.02)
+        assert not _linux_running(identities['child_pid'])
+        assert unrelated.poll() is None
+        assert research_control.inspect(tmp_path,'owned-workflow')['status']=='RECONCILE'
+        settled=research_control.settle_execution(tmp_path,'owned-workflow',action['id'],'owned',
+            actual_costs={'cpu_seconds':1},reason='Actual owned process group stopped')
+        assert settled['actions'][0]['status']=='cancelled'
+        assert research_control.inspect(tmp_path,'owned-workflow')['status']==('READY' if source=='execution' else 'STOPPED')
+    finally:
+        unrelated.terminate(); unrelated.wait(timeout=5)
+
+
+@pytest.mark.skipif(sys.platform!='linux', reason='Cooperative SIGTERM acceptance uses Linux process groups')
+def test_cooperative_zero_exit_is_cancelled_and_excluded_from_successful_aggregation(tmp_path):
+    args,output,action=_prepare_observable_worker(tmp_path,graceful=True)
+    with ThreadPoolExecutor(max_workers=1) as pool:
+        future=pool.submit(launch_execution,tmp_path,'owned',args)
+        _await_file(output/'ready.json',future)
+        request_stop_execution(tmp_path,'owned','Stop after saving the latest state')
+        result=future.result(timeout=12)
+    terminal=read_record(tmp_path/'runs/owned/execution.final.json')
+    receipt=read_record(tmp_path/'runs/owned/termination.json')
+    assert (output/'saved-before-stop.json').is_file()
+    assert result['exit_code']==receipt['exit_code']==0
+    assert terminal['status']=='stopped' and receipt['parent_exited']
+    settled=research_control.settle_execution(tmp_path,'owned-workflow',action['id'],'owned',
+        actual_costs={'cpu_seconds':1},reason='Cooperative cancellation, not successful completion')
+    assert settled['actions'][0]['status']=='cancelled'
+    selection=select_attempts(tmp_path,terminal['spec_ref'],[result['execution_ref']])
+    assert selection['attempts'][0]['included'] is False
+    assert selection['attempts'][0]['reason']=='stopped'
+    assert ('method-b',22) in selection['missing_slots']
+
+
+@pytest.mark.parametrize('cancelled',[True,False,None])
+def test_observed_zero_exit_recovery_preserves_explicit_cancellation_and_legacy_completion(tmp_path,cancelled):
+    sources,spec,environment=make_sources(tmp_path),make_spec(tmp_path),make_environment(tmp_path)
+    prepare(tmp_path,'observed',spec,environment,sources)
+    # Simulate interrupted terminal metadata after an independent observer has
+    # established actual exit. No process is launched by reconciliation.
+    path=tmp_path/'runs/observed/execution.json'
+    record=read_record(path); record['status']='running'; atomic_write(path,record)
+    receipt=dict(execution_run_id='observed',job_ref=None,process_alive=False,queued=False,
+                 confirmed_at=now(),source='independent-test-observer',exit_code=0)
+    if cancelled is not None: receipt['stopped']=cancelled
+    atomic_write(tmp_path/'observed-exit.json',receipt)
+    reference=reconcile_execution(tmp_path,'observed',termination_ref=fixed_ref(tmp_path,'observed-exit.json'))
+    final=read_record(tmp_path/reference['path'])
+    assert final['status']==('stopped' if cancelled else 'completed')
+    selection=select_attempts(tmp_path,spec,[reference])
+    assert selection['attempts'][0]['included'] is (cancelled is not True)
+
+
+def test_spec_timeout_is_enforced_when_the_caller_omits_a_timeout(tmp_path):
+    args,output,action=_prepare_observable_worker(tmp_path,seconds=0.5)
+    result=launch_execution(tmp_path,'owned',args)
+    receipt=read_record(tmp_path/'runs/owned/termination.json')
+    assert result['exit_code']!=0 and receipt['cause']=='timeout'
+    assert read_record(tmp_path/'runs/owned/process.json')['effective_timeout_seconds']==0.5
+
+
+def test_stopped_workflow_and_invalid_timeouts_never_launch_a_prepared_execution(tmp_path):
+    args,_,_=_prepare_observable_worker(tmp_path)
+    for timeout in (0,-1,True,float('nan'),float('inf')):
+        with pytest.raises(RegistryError,match='finite and positive'):
+            launch_execution(tmp_path,'owned',args,timeout=timeout)
+    research_control.stop(tmp_path,'owned-workflow','Stop before actual launch')
+    with pytest.raises(RegistryError,match='already stopped'):
+        launch_execution(tmp_path,'owned',args)
+    assert not (tmp_path/'runs/owned/process.json').exists()
+    assert read_record(tmp_path/'runs/owned/execution.json')['status']=='prepared'
 
 
 def prepare(root, run_id, spec, environment, sources, *, failure=False, parent=None):

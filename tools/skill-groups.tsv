@@ -54,6 +54,7 @@ skill	research-refine-pipeline	ideation	research-refine,experiment-plan	refine+�
 skill	research-wiki	ideation	-	跨生命周期研究知识库
 skill	wiki-enrich	ideation	research-wiki	补全 wiki 论文页 TODO
 skill	research-pipeline	ideation	idea-discovery,experiment-bridge,auto-review-loop,render-html	端到端总 pipeline:找 idea→实验→论文
+skill	problem-synthesis	ideation	-	长程研究中的问题合并、保持分离与抽象层级反思
 skill	research-review	review-loop	-	研究方案/结果批判性评审
 skill	auto-review-loop	review-loop	result-to-claim,training-check,render-html	外部模型多轮 review→修复循环
 skill	auto-review-loop-llm	review-loop	-	用任意 OpenAI 兼容 API 做 review

@@ -39,6 +39,14 @@ REQUIRED_RESEARCH_RESOURCES = (
     'skills/skills-codex/shared-references/case-study-analysis.md',
 )
 
+REQUIRED_REFLECTION_RESOURCES = (
+    'tools/problem_synthesis.py',
+    'skills/problem-synthesis/references/record-format.md',
+    'skills/skills-codex/problem-synthesis/references/record-format.md',
+    'skills/shared-references/research-review-cycle.md',
+    'skills/skills-codex/shared-references/research-review-cycle.md',
+)
+
 
 def verify(root: Path, baseline: Path | None = None) -> dict:
     errors: list[str] = []
@@ -107,10 +115,14 @@ def verify(root: Path, baseline: Path | None = None) -> dict:
     for required in REQUIRED_COMPARISON_RESOURCES:
         if not (root / required).is_file():
             errors.append(f'Missing required comparison/routing resource {required}')
-    if contract.get('schema_version') == 3:
+    if contract.get('schema_version', 0) >= 3:
         for required in REQUIRED_RESEARCH_RESOURCES:
             if not (root / required).is_file():
                 errors.append(f'Missing required research resource {required}')
+    if contract.get('schema_version', 0) >= 4:
+        for required in REQUIRED_REFLECTION_RESOURCES:
+            if not (root / required).is_file():
+                errors.append(f'Missing required reflection resource {required}')
     if baseline is not None:
         # Retire only individually audited public materials. The frozen contract
         # checks current protected bytes, including registered adaptations and

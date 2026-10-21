@@ -4,7 +4,10 @@ import shutil
 
 import pytest
 
-from tools.verify_evo_inquiry import REQUIRED_COMPARISON_RESOURCES, REQUIRED_RESEARCH_RESOURCES, verify
+from tools.verify_evo_inquiry import (
+    REQUIRED_COMPARISON_RESOURCES, REQUIRED_RESEARCH_RESOURCES,
+    REQUIRED_REFLECTION_RESOURCES, verify,
+)
 from tools import check_skills_inventory as inventory
 from tools.skill_contracts import contract_errors, load_contract, normalize_namespace
 
@@ -14,7 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 def test_package_preserves_skill_inventory_and_resolves_shared_reference():
     report = verify(ROOT)
     assert report['status'] == 'PASS', report['errors']
-    assert report['skill_entrypoints'] == 88
+    assert report['skill_entrypoints'] == 89
 
 
 def test_missing_principles_are_detected(tmp_path):
@@ -81,7 +84,7 @@ def frozen_package(tmp_path_factory):
         'tools/skill-contracts.json', '.codex-plugin/plugin.json', 'VERSION', 'LICENSE',
         'tools/check_skills_inventory.py', 'tools/run_state.py', 'tools/research_wiki.py',
         'skills/skills-codex/shared-references/evo-inquiry.md',
-    } | set(REQUIRED_COMPARISON_RESOURCES) | set(REQUIRED_RESEARCH_RESOURCES)
+    } | set(REQUIRED_COMPARISON_RESOURCES) | set(REQUIRED_RESEARCH_RESOURCES) | set(REQUIRED_REFLECTION_RESOURCES)
     paths.update(inventory_publication_references())
     records = list(contract.get('workflow_adaptations', {}).values()) + list(contract.get('approved_upgrade_files', {}).values())
     for record in records:
@@ -220,3 +223,31 @@ def test_broken_hook_link_is_detected(tmp_path):
     report = verify(package)
     assert not report['shared_reference_resolves']
     assert any('reference does not resolve' in error for error in report['errors'])
+
+
+@pytest.mark.parametrize('relative', REQUIRED_REFLECTION_RESOURCES)
+def test_package_requires_the_executable_reflection_contract(frozen_package, relative):
+    path = frozen_package / relative
+    original = path.read_bytes()
+    try:
+        path.unlink()
+        report = verify(frozen_package)
+        assert report['status'] == 'FAIL'
+        assert any('Missing required reflection resource ' + relative == error for error in report['errors'])
+    finally:
+        path.write_bytes(original)
+
+
+def test_contract_loader_keeps_schema_three_extensions_backward_compatible(frozen_package):
+    import json
+    path = frozen_package / 'tools/skill-contracts.json'
+    original = path.read_bytes()
+    contract = json.loads(original)
+    contract['schema_version'] = 3
+    contract['added_skills'].remove('problem-synthesis')
+    contract['mainline_added_skills'].remove('problem-synthesis')
+    try:
+        path.write_text(json.dumps(contract), encoding='utf-8')
+        assert load_contract(frozen_package)['schema_version'] == 3
+    finally:
+        path.write_bytes(original)

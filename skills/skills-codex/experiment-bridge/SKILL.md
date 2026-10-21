@@ -221,6 +221,12 @@ For each milestone:
 1. Deploy experiments in parallel (up to MAX_PARALLEL_RUNS for `/run-experiment`, or `max_parallel` from the queue manifest for `/experiment-queue`)
 2. Use `/monitor-experiment` to track progress; if `/experiment-queue` is active, monitor `queue_state.json`
 3. Collect results as experiments complete
+4. Before the next milestone or a changed-plan wave, perform the trajectory
+   checkpoint in [bounded-inquiry](../shared-references/bounded-inquiry.md).
+   Route related open problems to `/problem-synthesis` and fairness drift to
+   `/experiment-audit`. For configured continuation, set the existing action
+   brake before handing off; reconcile live jobs and wait for any required plan
+   revision/review. Return control to the pipeline when direction changes.
 
 Backend lifecycle rules:
 - **Vast.ai**: record instance id, SSH endpoint, mounted data/checkpoints, estimated hourly cost, and cleanup policy. If `auto_destroy` is configured, write the exact cleanup command before launch.

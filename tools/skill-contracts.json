@@ -1,5 +1,5 @@
 {
-  "schema_version": 3,
+  "schema_version": 4,
   "source_commit": "b9c7861fd22cd2f5471765d583c593f083fa12cc",
   "upstream_commit": "3b19a22dc5a64c983d2eafd6c2c94000fadc4f8d",
   "allowed_edits": "Original baseline hashes stay immutable. Retained descriptions and marked hooks, namespace normalization and individually digest-pinned directed adaptations with rationale and local review/test references are allowed; all other changes fail.",
@@ -342,7 +342,8 @@
     "project-governance",
     "environment-maintenance",
     "scientific-brainstorming",
-    "research-manager"
+    "research-manager",
+    "problem-synthesis"
   ],
   "protected_files": {
     ".agents/plugins/marketplace.json": "ed27a3ee7750fe22a6202db14dbea9cc946672de325259c44089834222fcbb57",
@@ -810,7 +811,8 @@
     "project-governance",
     "environment-maintenance",
     "scientific-brainstorming",
-    "research-manager"
+    "research-manager",
+    "problem-synthesis"
   ],
   "upgrade_source_commit": "69cfbc5dc5fc34c4d7e6146fe66f5520866f7dfe",
   "approved_upgrade_files": {
@@ -900,10 +902,20 @@
       "upgrade_baseline_sha256": "2b9ff14c6143583625d4bbf1399d8622664965ddbc885c39425975535031f229"
     },
     "tools/iteration_log.py": {
-      "sha256": "c9809132c352d10b5c9291a9ed17c2478c3a03efa704284fd10e66e946f0a6de",
+      "sha256": "5767d8e76ce199cc1b8b043f0b21b345808e4242a73311c6fdf4a409eff0bfb7",
       "baseline_sha256": "819c22ba20bb270e0a514edb2626e7e3a1c4bade36f809e3ee9571cc076f7cb0",
-      "reason": "Governance upgrade: reviewed resolver, publication, execution/queue integration, catalog or current-inventory regression adaptation",
-      "upgrade_baseline_sha256": "819c22ba20bb270e0a514edb2626e7e3a1c4bade36f809e3ee9571cc076f7cb0"
+      "reason": "Trajectory checkpoints and problem-synthesis handoffs through the existing action owner, ledger, phases and review gates.",
+      "upgrade_baseline_sha256": "819c22ba20bb270e0a514edb2626e7e3a1c4bade36f809e3ee9571cc076f7cb0",
+      "previous_sha256": "c9809132c352d10b5c9291a9ed17c2478c3a03efa704284fd10e66e946f0a6de",
+      "adaptation_version": "1.6.0",
+      "review_ref": "docs/VALIDATION_1_6_0.md#verification-record",
+      "test_refs": [
+        "tests/test_problem_synthesis.py",
+        "tests/test_iteration_log.py",
+        "tests/test_research_control.py",
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_evo_inquiry.py"
+      ]
     },
     "tools/meta_opt/check_ready.sh": {
       "sha256": "ffd8976707c77e312d9458b91110a90f7496fff05db9efd7fc89d0db3498cd2a",
@@ -944,9 +956,9 @@
       "upgrade_baseline_sha256": "052896125aa6f655ff1b6c5f8262766fa6f3c3f758cb5b0ec142f46ee38a9de0"
     },
     "tools/skill-groups.tsv": {
-      "sha256": "2a9e7db67f36eacaa813437e8dc6820e9864da017bb9d45739373902ce0ef1c4",
+      "sha256": "8ba0e5dfd11ad33d678d71f276c04ee4f8b2b0974e07fe57ded5184c83ee8c7a",
       "baseline_sha256": "403397ba3d9c04a6c7698f40fdf130534f9eefe9c119f403ebdbe82496ae32e6",
-      "reason": "Directed 1.4.0 evidence, workflow, figure or distribution adaptation; see scoped implementation review.",
+      "reason": "1.6.0 bounded problem-synthesis integration: append reflection records to the existing iteration ledger and catalog the new optional skill without adding a scheduler or state database.",
       "upgrade_baseline_sha256": "403397ba3d9c04a6c7698f40fdf130534f9eefe9c119f403ebdbe82496ae32e6",
       "previous_adaptations": [
         {
@@ -954,15 +966,16 @@
           "reason": "Governance upgrade: reviewed resolver, publication, execution/queue integration, catalog or current-inventory regression adaptation"
         }
       ],
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "adaptation_version": "1.6.0",
+      "review_ref": "docs/VALIDATION_1_6_0.md#verification-record",
       "test_refs": [
-        "tests/test_evo_inquiry.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_literature_records.py",
-        "tests/test_research_decisions.py",
-        "tests/test_figure_evidence.py"
-      ]
+        "tests/test_problem_synthesis.py",
+        "tests/test_iteration_log.py",
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_skill_groups.py",
+        "tests/test_evo_inquiry.py"
+      ],
+      "previous_sha256": "2a9e7db67f36eacaa813437e8dc6820e9864da017bb9d45739373902ce0ef1c4"
     },
     "tools/verify_paper_audits.sh": {
       "sha256": "bf37d78d065bfc1f3e08bcd18997088c5297301d0aa87e27ab4e4189d7397065",
@@ -1061,45 +1074,49 @@
     },
     "skills/auto-review-loop-llm/SKILL.md": {
       "baseline_sha256": "f46c40b1a3edcc63b07cf263253fc01e706d2335bd851d672d66099b29774cf8",
-      "sha256": "23afabc28fe62ecb70355d1524fc88ee91ffb0f5becaa9713c619b525d4a4ca3",
-      "reason": "User-directed conditional reuse of the shared interface/documentation contract during research-code changes. Original workflow body, frontmatter and frozen baseline remain unchanged.",
-      "adaptation_version": "1.5.0",
-      "review_ref": "docs/VALIDATION_1_5_0.md#interface-and-closeout-follow-up",
+      "sha256": "5e5586ac52a4c873e183bb3731659bc5630a880593acec7ace2d4708873d4c10",
+      "reason": "User-approved 1.6.0 functional consolidation: share review-cycle/recovery rules across backends, retain backend gates and receipt sites, keep the poster compatibility alias, and remove age-based deletion/budget resets. Frozen baseline identities remain unchanged.",
+      "adaptation_version": "1.6.0",
+      "review_ref": "docs/VALIDATION_1_6_0.md#functional-consolidation-and-hourly-run",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py"
+        "tests/test_claude_review_generator.py",
+        "tests/test_evo_inquiry.py",
+        "tests/test_review_gate.py",
+        "tests/test_review_loop_adapters.py"
       ],
-      "prior_candidate_sha256": "838c2826a85c5004bc4c7260cfbcb2c8490652cbabea679e65307da600c4d512"
+      "prior_candidate_sha256": "838c2826a85c5004bc4c7260cfbcb2c8490652cbabea679e65307da600c4d512",
+      "previous_sha256": "23afabc28fe62ecb70355d1524fc88ee91ffb0f5becaa9713c619b525d4a4ca3"
     },
     "skills/auto-review-loop-minimax/SKILL.md": {
       "baseline_sha256": "70f4952522747030f4ee8011c0e29c7670a289bd0bff73fffbcb9bac232a4102",
-      "sha256": "a5b7e7a90f45d664c79ff5ecccc13b5f3a4dff2a4e16cfe6578d3d1a9000c310",
-      "reason": "User-directed conditional reuse of the shared interface/documentation contract during research-code changes. Original workflow body, frontmatter and frozen baseline remain unchanged.",
-      "adaptation_version": "1.5.0",
-      "review_ref": "docs/VALIDATION_1_5_0.md#interface-and-closeout-follow-up",
+      "sha256": "1026b8729a5a34d0e456bb07d6ebfa1003dbadd695db186414259b85bb111775",
+      "reason": "User-approved 1.6.0 functional consolidation: share review-cycle/recovery rules across backends, retain backend gates and receipt sites, keep the poster compatibility alias, and remove age-based deletion/budget resets. Frozen baseline identities remain unchanged.",
+      "adaptation_version": "1.6.0",
+      "review_ref": "docs/VALIDATION_1_6_0.md#functional-consolidation-and-hourly-run",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py"
+        "tests/test_claude_review_generator.py",
+        "tests/test_evo_inquiry.py",
+        "tests/test_review_gate.py",
+        "tests/test_review_loop_adapters.py"
       ],
-      "prior_candidate_sha256": "9d8335be5da4217a1707121ad8424a16f412923f2ec7df96d6191dc1523c312e"
+      "prior_candidate_sha256": "9d8335be5da4217a1707121ad8424a16f412923f2ec7df96d6191dc1523c312e",
+      "previous_sha256": "a5b7e7a90f45d664c79ff5ecccc13b5f3a4dff2a4e16cfe6578d3d1a9000c310"
     },
     "skills/auto-review-loop/SKILL.md": {
       "baseline_sha256": "071a28ed4653dd20604b0933cee34eb1337e272ecbe6b93fc86ee698a327d298",
-      "sha256": "90cb069d6686e2fb1fb0b9c3f2976cef91fea63108b4131dd329899170359a60",
-      "reason": "User-directed conditional reuse of the shared interface/documentation contract during research-code changes. Original workflow body, frontmatter and frozen baseline remain unchanged.",
-      "adaptation_version": "1.5.0",
-      "review_ref": "docs/VALIDATION_1_5_0.md#interface-and-closeout-follow-up",
+      "sha256": "1115e20c49f45626721091e05e083fcb2eaa74e9a405ab3af1dd7d2ee5e6b775",
+      "reason": "User-approved 1.6.0 functional consolidation: share review-cycle/recovery rules across backends, retain backend gates and receipt sites, keep the poster compatibility alias, and remove age-based deletion/budget resets. Frozen baseline identities remain unchanged.",
+      "adaptation_version": "1.6.0",
+      "review_ref": "docs/VALIDATION_1_6_0.md#functional-consolidation-and-hourly-run",
       "test_refs": [
-        "tests/test_research_control.py",
-        "tests/test_research_events.py",
-        "tests/test_research_pilots.py",
-        "tests/test_candidate_comparison.py"
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_generator.py",
+        "tests/test_evo_inquiry.py",
+        "tests/test_review_gate.py"
       ],
-      "previous_sha256": "2a8e80aa7dc079781b2ae476e9c357575f31fb5a9af0cfcca4763d0d8c04be8c",
+      "previous_sha256": "90cb069d6686e2fb1fb0b9c3f2976cef91fea63108b4131dd329899170359a60",
       "prior_candidate_sha256": "d7475f85beb20786591747862cc215e8d2879f138442e13ba83a73bbc13efbc4"
     },
     "skills/citation-audit/SKILL.md": {
@@ -1117,34 +1134,34 @@
     },
     "skills/experiment-bridge/SKILL.md": {
       "baseline_sha256": "595d41fee920c7dafb920e89d8e33c0c3967704f84457786432aaadc920767a0",
-      "sha256": "bd60a45f26cd3f8ebee803eb6f0a1a23c70541f20d6e64c1c0f6ecbccdf5135f",
-      "reason": "Keep common research guidance and existing execution/review contracts; add bounded sample-evidence instrumentation of the authorized evaluation without inventing new experiments. User-directed concise interface documentation and evidence-based assessment follow-up; original workflow body and frozen baseline retained.",
-      "adaptation_version": "1.5.0",
-      "review_ref": "docs/VALIDATION_1_5_0.md#interface-and-closeout-follow-up",
+      "sha256": "5119e2f0f5c5c84d066d411328616981741e3ddb73077dabcde13c1749a6ead4",
+      "reason": "Trajectory checkpoints and problem-synthesis handoffs through the existing action owner, ledger, phases and review gates.",
+      "adaptation_version": "1.6.0",
+      "review_ref": "docs/VALIDATION_1_6_0.md#verification-record",
       "test_refs": [
+        "tests/test_problem_synthesis.py",
+        "tests/test_iteration_log.py",
+        "tests/test_research_control.py",
         "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py",
-        "tests/behavior/evo-inquiry-case-study-cases.json",
-        "tests/test_comparison_packaging.py",
-        "tests/behavior/evo-inquiry-v150-followup-cases.json"
+        "tests/test_evo_inquiry.py"
       ],
-      "prior_candidate_sha256": "424a424711e26260123dafad47f1ae6836586e30ce393d40efdce47a20852e6c"
+      "prior_candidate_sha256": "424a424711e26260123dafad47f1ae6836586e30ce393d40efdce47a20852e6c",
+      "previous_sha256": "bd60a45f26cd3f8ebee803eb6f0a1a23c70541f20d6e64c1c0f6ecbccdf5135f"
     },
     "skills/experiment-plan/SKILL.md": {
       "baseline_sha256": "c5b53692ff95b0b55e80702e33afc79d9fe8d4f55a69e2a39714013f97ac595e",
-      "sha256": "113aeb8ff2b17a1fd70ca40cbf6668e758e677ae6072b84bd52767c385435ea9",
-      "reason": "User-approved 1.5.0 bounded research implementation; preserve the frozen original digest and existing public workflow interfaces.",
-      "adaptation_version": "1.5.0",
-      "review_ref": "docs/VALIDATION_1_5_0.md#directed-adaptations",
+      "sha256": "ca42d921ba9d62bc0d018595b21d1acee88ef89680ae11874eda5895765bb9a8",
+      "reason": "Trajectory checkpoints and problem-synthesis handoffs through the existing action owner, ledger, phases and review gates.",
+      "adaptation_version": "1.6.0",
+      "review_ref": "docs/VALIDATION_1_6_0.md#verification-record",
       "test_refs": [
+        "tests/test_problem_synthesis.py",
+        "tests/test_iteration_log.py",
         "tests/test_research_control.py",
-        "tests/test_research_events.py",
-        "tests/test_research_pilots.py",
-        "tests/test_candidate_comparison.py"
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_evo_inquiry.py"
       ],
-      "previous_sha256": "d1ad655f8ef6b262db1af1277041d388c429826fadf033d5be04a8e1c5f266a9"
+      "previous_sha256": "113aeb8ff2b17a1fd70ca40cbf6668e758e677ae6072b84bd52767c385435ea9"
     },
     "skills/figure-spec/SKILL.md": {
       "baseline_sha256": "090a28a1b6464d3b88cf32b9bf59f6a1008e7e63d638801070f0b888c3ef9c5b",
@@ -1341,17 +1358,18 @@
     },
     "skills/research-pipeline/SKILL.md": {
       "baseline_sha256": "3dd1f071770ffd700c55e607f8a6f641b7be5d4fbd3c2e0ab203bbfe22fd2d3b",
-      "sha256": "a13d969dfba4a09e70e29f4888cd0c8771999613e07fe72fb780936a63a332aa",
-      "reason": "User-approved 1.5.0 bounded research implementation; preserve the frozen original digest and existing public workflow interfaces.",
-      "adaptation_version": "1.5.0",
-      "review_ref": "docs/VALIDATION_1_5_0.md#directed-adaptations",
+      "sha256": "ebac1e7a8c88868c3a35b92289a7a084fd03e9e1ebed4ce74f36231f93157e9c",
+      "reason": "Trajectory checkpoints and problem-synthesis handoffs through the existing action owner, ledger, phases and review gates.",
+      "adaptation_version": "1.6.0",
+      "review_ref": "docs/VALIDATION_1_6_0.md#verification-record",
       "test_refs": [
+        "tests/test_problem_synthesis.py",
+        "tests/test_iteration_log.py",
         "tests/test_research_control.py",
-        "tests/test_research_events.py",
-        "tests/test_research_pilots.py",
-        "tests/test_candidate_comparison.py"
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_evo_inquiry.py"
       ],
-      "previous_sha256": "93a0c0836eb63fe12b26536e7e8ff3d8dae0b0e7c5bdd95f6b739491879380a2"
+      "previous_sha256": "a13d969dfba4a09e70e29f4888cd0c8771999613e07fe72fb780936a63a332aa"
     },
     "skills/research-review/SKILL.md": {
       "baseline_sha256": "85c75d2bef1f08e2e7d2e6a7f6bc0ae42faecf942d5314d25f17376e1292597f",
@@ -1417,15 +1435,16 @@
     },
     "skills/skills-codex-claude-review/auto-review-loop/SKILL.md": {
       "baseline_sha256": "cd2e877606a8b3eb2d636edff19f8ff068a2ef021928abcd17ece0fbfff2917b",
-      "sha256": "5b104d442f8ac309440a848c91b3dd5876684af177d26aa3635b00234f9735b7",
-      "adaptation_version": "1.5.0",
-      "previous_sha256": "a01c93e05fa8e419d35c3c4d97a0a7967e8f66345c07bdc2714cff67b8b402a4",
-      "reason": "User-approved 1.5.0: regenerate the dependent reviewer overlay, or allow only the exact synthetic recovery fixture while keeping private runtime state ignored.",
-      "review_ref": "docs/VALIDATION_1_5_0.md#directed-adaptations",
+      "sha256": "90a1dbb513d62084a7698c59da1aed3a66512e23e720e7994ca4304001553c7d",
+      "adaptation_version": "1.6.0",
+      "previous_sha256": "5b104d442f8ac309440a848c91b3dd5876684af177d26aa3635b00234f9735b7",
+      "reason": "User-approved 1.6.0 functional consolidation: share review-cycle/recovery rules across backends, retain backend gates and receipt sites, keep the poster compatibility alias, and remove age-based deletion/budget resets. Frozen baseline identities remain unchanged.",
+      "review_ref": "docs/VALIDATION_1_6_0.md#functional-consolidation-and-hourly-run",
       "test_refs": [
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_comparison_packaging.py",
-        "tests/test_evo_inquiry.py"
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_generator.py",
+        "tests/test_evo_inquiry.py",
+        "tests/test_review_gate.py"
       ]
     },
     "skills/skills-codex-claude-review/novelty-check/SKILL.md": {
@@ -1647,18 +1666,17 @@
     },
     "skills/skills-codex-gemini-review/auto-review-loop/SKILL.md": {
       "baseline_sha256": "b98a321c39d4285ff8383b76881077466ca2b45d6f4cc9cf4dddd8524e7d1771",
-      "sha256": "5e2d2ae69f03e8874f1e078fe8a1b1343733bc6714201543993197543c6401f2",
-      "reason": "Directed 1.4.0 follow-up: evidence fidelity in paper improvements, real read-only reviewer access, common principles and conditional review receipts across overlays, and mechanical v2 framing completion without semantic acceptance. Correct shared output protocol links to the installed Codex reference tree; do not mix mainline manifest or versioning policy into Codex and reviewer overlays.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "4bae2a6dd599163193ba9d22d48f58a198f9c6ea5e07adeb4cb371027fef843f",
+      "reason": "User-approved 1.6.0 functional consolidation: share review-cycle/recovery rules across backends, retain backend gates and receipt sites, keep the poster compatibility alias, and remove age-based deletion/budget resets. Frozen baseline identities remain unchanged.",
+      "adaptation_version": "1.6.0",
+      "review_ref": "docs/VALIDATION_1_6_0.md#functional-consolidation-and-hourly-run",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py",
         "tests/test_claude_review_generator.py",
-        "tests/test_evo_inquiry.py"
-      ]
+        "tests/test_evo_inquiry.py",
+        "tests/test_review_gate.py"
+      ],
+      "previous_sha256": "5e2d2ae69f03e8874f1e078fe8a1b1343733bc6714201543993197543c6401f2"
     },
     "skills/skills-codex-gemini-review/grant-proposal/SKILL.md": {
       "baseline_sha256": "8e834ea2ce5fc82591140bf57d7a723a5e74b6232039fb793fe3d9f8a025a72c",
@@ -1946,15 +1964,14 @@
     },
     "skills/dse-loop/SKILL.md": {
       "baseline_sha256": "ae8e147011f7c1a6add208b6cecb218d03a83949fba0ef9b0b1936e4b0ee18bf",
-      "sha256": "a61cd50903e7dc8cd507426a8cf6580b27afa69d15f7e8549080143696d359ac",
-      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "a5fe9bba9933400248656a0d0b6ec33997140b4f44fcbf350c72b5ecd2ca8b66",
+      "reason": "Link sustained tuning batches to the shared trajectory checkpoint while retaining DSE search bounds and stopping rules.",
+      "adaptation_version": "1.6.0",
+      "review_ref": "docs/VALIDATION_1_6_0.md#verification-record",
       "test_refs": [
+        "tests/test_problem_synthesis.py",
         "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py"
+        "tests/test_evo_inquiry.py"
       ]
     },
     "skills/embodiment-description/SKILL.md": {
@@ -2207,16 +2224,17 @@
     },
     "skills/paper-poster/SKILL.md": {
       "baseline_sha256": "7dec9b7f9bc2d12df23148cd38f51ea344b0b23370051ef6e03779ed41e97260",
-      "sha256": "808ffadc190695e3cbf8cfe8eafd14d98d0c760a70231247bff7a12193df3d8a",
-      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "344dcb1460eb94fd84dee02aabfcdfd232143e1649ed1aaf4c4820e40c4141c8",
+      "reason": "User-approved 1.6.0 functional consolidation: share review-cycle/recovery rules across backends, retain backend gates and receipt sites, keep the poster compatibility alias, and remove age-based deletion/budget resets. Frozen baseline identities remain unchanged.",
+      "adaptation_version": "1.6.0",
+      "review_ref": "docs/VALIDATION_1_6_0.md#functional-consolidation-and-hourly-run",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py"
-      ]
+        "tests/test_claude_review_generator.py",
+        "tests/test_evo_inquiry.py",
+        "tests/test_review_gate.py"
+      ],
+      "previous_sha256": "808ffadc190695e3cbf8cfe8eafd14d98d0c760a70231247bff7a12193df3d8a"
     },
     "skills/paper-slides/SKILL.md": {
       "baseline_sha256": "e887b9b393753f9e8af1aabfc1ce93e9b01a500ebf2c2ace775b45a3f93fd3fc",
@@ -2429,18 +2447,22 @@
     },
     "skills/run-experiment/SKILL.md": {
       "baseline_sha256": "4d481ce95d8bcadb93b095c3dd9bda51d68b6edea6b710316d6c0c74bb5bcfa8",
-      "sha256": "03f264ba4f5ee500078debc542646aad8aa3c6763b1025a85aa07d2dc0fcf24d",
-      "reason": "Keep common research guidance and existing execution/review contracts; add bounded sample-evidence collection before temporary storage/weights are released, without extra inference or whole-dataset copies.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "5d0d47b38966d0de9b6018b3bc289b6e6d4d175825cb97c8f23546bd64753745",
+      "reason": "Keep common research guidance and existing execution/review contracts; add bounded sample-evidence collection before temporary storage/weights are released, without extra inference or whole-dataset copies.; extend only the common hook with bound local stop enforcement and truthful termination evidence; retain the original workflow owner and monitoring body",
+      "adaptation_version": "1.6.0",
+      "review_ref": "docs/VALIDATION_1_6_0.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
         "tests/test_claude_review_artifact_tools.py",
         "tests/test_workflow_contract_versions.py",
         "tests/test_idea_discovery_gate.py",
         "tests/behavior/evo-inquiry-case-study-cases.json",
-        "tests/test_comparison_packaging.py"
-      ]
+        "tests/test_comparison_packaging.py",
+        "tests/test_research_control.py",
+        "tests/test_execution_governance.py",
+        "tests/test_problem_synthesis.py"
+      ],
+      "previous_sha256": "03f264ba4f5ee500078debc542646aad8aa3c6763b1025a85aa07d2dc0fcf24d"
     },
     "skills/semantic-scholar/SKILL.md": {
       "baseline_sha256": "41be9cd7d08d2d795d4fe0c87d23288712febd2807b8d4d38a2ea9c54ebb31e8",
@@ -2509,16 +2531,20 @@
     },
     "skills/training-check/SKILL.md": {
       "baseline_sha256": "b4f27bbc58aaae314d8c51fe309fb41e42f47dce4f69ba07fac1ce7f0080c789",
-      "sha256": "7ca2087efae01c5deead475aff24f3dc85e96c841ba31780492730b85e3feecf",
-      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "01b53be957fb7b3ba5d988fe192399fd485cc9b923cdb7c721b2b9bc50b1a2db",
+      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.; extend only the common hook with bound local stop enforcement and truthful termination evidence; retain the original workflow owner and monitoring body",
+      "adaptation_version": "1.6.0",
+      "review_ref": "docs/VALIDATION_1_6_0.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
         "tests/test_claude_review_artifact_tools.py",
         "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py"
-      ]
+        "tests/test_idea_discovery_gate.py",
+        "tests/test_research_control.py",
+        "tests/test_execution_governance.py",
+        "tests/test_problem_synthesis.py"
+      ],
+      "previous_sha256": "7ca2087efae01c5deead475aff24f3dc85e96c841ba31780492730b85e3feecf"
     },
     "skills/vast-gpu/SKILL.md": {
       "baseline_sha256": "69aabce36540fd6fce55bf47b6f043166fc118fd708d03efddb57d168a99f4e5",
@@ -2678,41 +2704,47 @@
   "workflow_adaptations": {
     "auto-review-loop-llm": {
       "baseline_body_sha256": "c3ae350a727daf707b640808e6532ebe2f03fba897567c3ab990897d8cc473c6",
-      "body_sha256": "d97a9d114cc8cad6109ebad30ef416715690ed7db9705e0de3da5ac334770cab",
-      "reason": "Evidence-calibrated, scoped review or writing; retain original inputs, outputs, enums, independence and resource boundaries. Correct shared output protocol links to the installed Codex reference tree; do not mix mainline manifest or versioning policy into Codex and reviewer overlays.",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "body_sha256": "19e4639f6e7be115cf54ec98d254ce48766bfe7c382710993bc8917cdbc5fee6",
+      "reason": "User-approved 1.6.0 functional consolidation: share review-cycle/recovery rules across backends, retain backend gates and receipt sites, keep the poster compatibility alias, and remove age-based deletion/budget resets. Frozen baseline identities remain unchanged.",
+      "review_ref": "docs/VALIDATION_1_6_0.md#functional-consolidation-and-hourly-run",
       "test_refs": [
-        "tests/behavior/evo-inquiry-v140-development-cases.json",
-        "tests/test_evo_inquiry.py",
         "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_generator.py"
-      ]
+        "tests/test_claude_review_generator.py",
+        "tests/test_evo_inquiry.py",
+        "tests/test_review_gate.py",
+        "tests/test_review_loop_adapters.py"
+      ],
+      "previous_body_sha256": "d97a9d114cc8cad6109ebad30ef416715690ed7db9705e0de3da5ac334770cab",
+      "adaptation_version": "1.6.0"
     },
     "auto-review-loop-minimax": {
       "baseline_body_sha256": "5627f765f5b3c74c472fb2dee67a4bf6e02bfebedf88cc6da391c7c6848f4644",
-      "body_sha256": "d5c4373a28cb16157e5751ec75845fa7871477b99864699b342c66b3614213f1",
-      "reason": "Evidence-calibrated, scoped review or writing; retain original inputs, outputs, enums, independence and resource boundaries. Correct shared output protocol links to the installed Codex reference tree; do not mix mainline manifest or versioning policy into Codex and reviewer overlays.",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "body_sha256": "d9a2c854b59ec31ccc52243e78cb9a3517cff1beee1132bf7c6bf28d63104b3f",
+      "reason": "User-approved 1.6.0 functional consolidation: share review-cycle/recovery rules across backends, retain backend gates and receipt sites, keep the poster compatibility alias, and remove age-based deletion/budget resets. Frozen baseline identities remain unchanged.",
+      "review_ref": "docs/VALIDATION_1_6_0.md#functional-consolidation-and-hourly-run",
       "test_refs": [
-        "tests/behavior/evo-inquiry-v140-development-cases.json",
-        "tests/test_evo_inquiry.py",
         "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_generator.py"
-      ]
+        "tests/test_claude_review_generator.py",
+        "tests/test_evo_inquiry.py",
+        "tests/test_review_gate.py",
+        "tests/test_review_loop_adapters.py"
+      ],
+      "previous_body_sha256": "d5c4373a28cb16157e5751ec75845fa7871477b99864699b342c66b3614213f1",
+      "adaptation_version": "1.6.0"
     },
     "auto-review-loop": {
       "baseline_body_sha256": "fc4f79364d869e0c8e91a35aa00d621e4e3ed9ca4a4b13ad13a25f779fb56512",
-      "body_sha256": "dc56291321fe7484a96f4f822c8281c215ebe55af024661c1498fd3a7fc3f373",
-      "reason": "1.5.0 approved bounded research upgrade: optional continuation, source-bound decision reuse and measured candidate optimization; original stage, scope and review contracts remain authoritative.",
-      "review_ref": "docs/VALIDATION_1_5_0.md#directed-adaptations",
+      "body_sha256": "a8b3cea07c2492159f2d6451644c75e34b587180e74cc379df4ce5cb233b70e7",
+      "reason": "User-approved 1.6.0 functional consolidation: share review-cycle/recovery rules across backends, retain backend gates and receipt sites, keep the poster compatibility alias, and remove age-based deletion/budget resets. Frozen baseline identities remain unchanged.",
+      "review_ref": "docs/VALIDATION_1_6_0.md#functional-consolidation-and-hourly-run",
       "test_refs": [
-        "tests/test_research_control.py",
-        "tests/test_research_pilots.py",
-        "tests/test_candidate_comparison.py",
-        "tests/behavior/evo-inquiry-v150-development-cases.json"
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_generator.py",
+        "tests/test_evo_inquiry.py",
+        "tests/test_review_gate.py"
       ],
-      "adaptation_version": "1.5.0",
-      "previous_body_sha256": "8ad307e7b4e6d6945c1a60d4c6a4fcf8cf6df2a770b73390e53013b356a69055"
+      "adaptation_version": "1.6.0",
+      "previous_body_sha256": "dc56291321fe7484a96f4f822c8281c215ebe55af024661c1498fd3a7fc3f373"
     },
     "citation-audit": {
       "baseline_body_sha256": "69d870b26a3c44b07252984af52f9269632f72435715ab601856387b64f0b917",
@@ -2726,29 +2758,33 @@
     },
     "experiment-bridge": {
       "baseline_body_sha256": "b399da10c24b39f203f5f574ecdf00b89ed64bbf1c729126efc3516c8e14ee76",
-      "body_sha256": "e86e9a64aaf91502cd2a55f1d5a1b5c0d70deb7b251cfcaaf7f6db72de9f3fb4",
-      "reason": "Evidence-calibrated, scoped review or writing; retain original inputs, outputs, enums, independence and resource boundaries. Correct shared output protocol links to the installed Codex reference tree; do not mix mainline manifest or versioning policy into Codex and reviewer overlays.",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "body_sha256": "438c5cf7919b26a7d9ef2aa51803a59c0e4723566b9f57ffd10933f3dbe2e307",
+      "reason": "1.6.0 problem-level reflection checkpoint: preserve the existing execution, planning, review and run-state owners while routing structural synthesis through the new bounded skill.",
+      "review_ref": "docs/VALIDATION_1_6_0.md#verification-record",
       "test_refs": [
-        "tests/behavior/evo-inquiry-v140-development-cases.json",
-        "tests/test_evo_inquiry.py",
+        "tests/test_problem_synthesis.py",
+        "tests/test_iteration_log.py",
         "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_generator.py"
-      ]
+        "tests/test_skill_groups.py",
+        "tests/test_evo_inquiry.py"
+      ],
+      "previous_body_sha256": "e86e9a64aaf91502cd2a55f1d5a1b5c0d70deb7b251cfcaaf7f6db72de9f3fb4",
+      "adaptation_version": "1.6.0"
     },
     "experiment-plan": {
       "baseline_body_sha256": "aa1c87c9c2836d7276a3e19932916f2eb6157705a45e1a16f7f3cc2b70c5687f",
-      "body_sha256": "8701a2458928e0a39761c6c3f54d83a16ee6df32c6f278b1d7018c9a06abcc45",
-      "reason": "1.5.0 approved bounded research upgrade: optional continuation, source-bound decision reuse and measured candidate optimization; original stage, scope and review contracts remain authoritative.",
-      "review_ref": "docs/VALIDATION_1_5_0.md#directed-adaptations",
+      "body_sha256": "fc434b16232c8bdb6ac6ebce8397f9bfeb0a21aa7b8df9fa2da5eaa4a91fd11b",
+      "reason": "1.6.0 problem-level reflection checkpoint: preserve the existing execution, planning, review and run-state owners while routing structural synthesis through the new bounded skill.",
+      "review_ref": "docs/VALIDATION_1_6_0.md#verification-record",
       "test_refs": [
-        "tests/test_research_control.py",
-        "tests/test_research_pilots.py",
-        "tests/test_candidate_comparison.py",
-        "tests/behavior/evo-inquiry-v150-development-cases.json"
+        "tests/test_problem_synthesis.py",
+        "tests/test_iteration_log.py",
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_skill_groups.py",
+        "tests/test_evo_inquiry.py"
       ],
-      "adaptation_version": "1.5.0",
-      "previous_body_sha256": "54d7d0496114edb9efa59fcc9ae835c84c1df31c945c167ca782b969b4a7b84d"
+      "adaptation_version": "1.6.0",
+      "previous_body_sha256": "8701a2458928e0a39761c6c3f54d83a16ee6df32c6f278b1d7018c9a06abcc45"
     },
     "figure-spec": {
       "baseline_body_sha256": "2426de32a23ba21cfbde3eb94f6ca53e2431eda73b95df267a65f7ee9a460d89",
@@ -2896,17 +2932,18 @@
     },
     "research-pipeline": {
       "baseline_body_sha256": "fd923d4b77b6a23b5f4627a7bd0a95f7f1dca7892037298173a4d43877043485",
-      "body_sha256": "b4b1667a26790a8d57d3235b98681f6d39ee6ccf1c6c28e6b7e07ff5b0816bfe",
-      "reason": "1.5.0 approved bounded research upgrade: optional continuation, source-bound decision reuse and measured candidate optimization; original stage, scope and review contracts remain authoritative.",
-      "review_ref": "docs/VALIDATION_1_5_0.md#directed-adaptations",
+      "body_sha256": "16ed638f8849b97703334192c78ec6240b3df171eb80dd3fa4149d2f7d8ce05f",
+      "reason": "1.6.0 problem-level reflection checkpoint: preserve the existing execution, planning, review and run-state owners while routing structural synthesis through the new bounded skill.",
+      "review_ref": "docs/VALIDATION_1_6_0.md#verification-record",
       "test_refs": [
-        "tests/test_research_control.py",
-        "tests/test_research_pilots.py",
-        "tests/test_candidate_comparison.py",
-        "tests/behavior/evo-inquiry-v150-development-cases.json"
+        "tests/test_problem_synthesis.py",
+        "tests/test_iteration_log.py",
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_skill_groups.py",
+        "tests/test_evo_inquiry.py"
       ],
-      "adaptation_version": "1.5.0",
-      "previous_body_sha256": "72bc9ec345b048d6dd24cda610448da68a11978f24e7376b52848e25ea39e298"
+      "adaptation_version": "1.6.0",
+      "previous_body_sha256": "b4b1667a26790a8d57d3235b98681f6d39ee6ccf1c6c28e6b7e07ff5b0816bfe"
     },
     "research-review": {
       "baseline_body_sha256": "0ccbc315d33966e1d24b39b684afbe5bad51df263d84c05ffa306922a3930195",
@@ -3064,6 +3101,20 @@
       ],
       "adaptation_version": "1.5.0",
       "previous_body_sha256": null
+    },
+    "paper-poster": {
+      "baseline_body_sha256": "c380aa421bb37a0f8afaaf17d8e60af76917bf5ddbafce863c69354a2a1229b4",
+      "previous_body_sha256": "c380aa421bb37a0f8afaaf17d8e60af76917bf5ddbafce863c69354a2a1229b4",
+      "body_sha256": "6bf3f980e94b8c6e37dff0cffc2f19e350135531fc94460011ef66706c2a7046",
+      "reason": "User-approved 1.6.0 functional consolidation: share review-cycle/recovery rules across backends, retain backend gates and receipt sites, keep the poster compatibility alias, and remove age-based deletion/budget resets. Frozen baseline identities remain unchanged.",
+      "adaptation_version": "1.6.0",
+      "review_ref": "docs/VALIDATION_1_6_0.md#functional-consolidation-and-hourly-run",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_claude_review_generator.py",
+        "tests/test_evo_inquiry.py",
+        "tests/test_review_gate.py"
+      ]
     }
   }
 }

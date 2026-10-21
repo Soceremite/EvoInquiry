@@ -22,26 +22,11 @@ Autonomously iterate: review → implement fixes → re-review, until the extern
 
 ## Context: $ARGUMENTS
 
-## Evidence closure and bounded stopping
+## Shared cycle and recovery
 
-Scores and verdicts remain required interface fields. A positive threshold is
-necessary, and every material issue must also have a checked disposition: fixed
-with evidence, or excluded with a specific, evidenced scope reason. Reviewer
-agreement alone does not resolve an issue. Keep strengths that the evidence
-supports; do not invent objections to make another round appear useful.
-
-Apply this closure condition at every positive stop and any review receipt this workflow produces.
-An unresolved critical issue prevents a positive receipt even when the score is
-high. Preserve existing independent-review requirements and same-family
-provisional status. File checks do not establish scientific support.
-
-Before iterating, use the authorized round, time, experiment and cost budgets.
-Track which decision-relevant uncertainty each action can resolve. Stop when a
-budget is reached or successive rounds produce no new evidence or actionable
-change; record the reason and remaining unknowns. A budget/stall/user stop is
-completion of the loop, not research acceptance, and grants no acquittal.
-Never hide an unfavorable primary result by adding a favorable metric or by
-renaming the original hypothesis. Label any exploratory reframing explicitly.
+Read [research-review-cycle](../shared-references/research-review-cycle.md)
+before iterating or resuming. It owns issue closure, original budgets and state
+preservation; retain this entrypoint's Gemini calling and acceptance rules.
 
 ## Constants
 
@@ -60,6 +45,7 @@ Long-running loops may hit the context window limit, triggering automatic compac
 
 ```json
 {
+  "run_id": "run_20261021_a1b2c3d4",
   "round": 2,
   "thread_id": "019cd392-...",
   "status": "in_progress",
@@ -81,13 +67,9 @@ Long-running loops may hit the context window limit, triggering automatic compac
 1. **Check for `review-stage/REVIEW_STATE.json`** *(fall back to `./REVIEW_STATE.json` if not found — legacy path)*:
    - If neither path exists: **fresh start** (normal case, identical to behavior before this feature existed)
    - If it exists AND `status` is `"completed"`: **fresh start** (previous loop finished normally)
-   - If it exists AND `status` is `"in_progress"` AND `timestamp` is older than 24 hours: **fresh start** (stale state from a killed/abandoned run — delete the file and start over)
-   - If it exists AND `status` is `"in_progress"` AND `timestamp` is within 24 hours: **resume**
-     - Read the state file to recover `round`, `thread_id`, `last_score`, `pending_experiments`
-     - Read `review-stage/AUTO_REVIEW.md` to restore full context of prior rounds *(fall back to `./AUTO_REVIEW.md`)*
-     - If `pending_experiments` is non-empty, check if they have completed (e.g., check screen sessions)
-     - Resume from the next round (round = saved round + 1)
-     - Log: "Recovered from context compaction. Resuming at Round N."
+   - If `status` is `"in_progress"`: reconcile pending work and resume the same run regardless of timestamp age. Preserve original limits, round and `thread_id`; never delete old state to start over.
+     - Preserve `run_id`, assigning a legacy missing ID once with a recorded migration. Read the cumulative log and actual pending-job evidence before continuing.
+   - Malformed or conflicting state: preserve it and report the specific recovery issue rather than starting a replacement loop.
 2. Read project narrative documents, memory files, and any prior review documents
 3. Read recent experiment results (check output directories, logs)
 4. Identify current weaknesses and open TODOs from prior reviews

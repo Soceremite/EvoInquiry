@@ -5,6 +5,9 @@ process, creates a Codex Goal, accepts a phase, or estimates a scientific verdic
 An unresolved reservation requires inspection of the actual execution before
 retry. Resource amounts are caller-supplied bounds/observations, not billing or
 GPU telemetry. Existing checkpoint policy owns retained storage and save peaks.
+An optional reflection gate uses the same coordination record to pause new
+actions until the workflow owner records a trajectory or problem-synthesis
+reflection in the existing iteration ledger. It is not a scientific verdict.
 """
 from __future__ import annotations
 
@@ -15,17 +18,18 @@ import math
 from pathlib import Path
 import re
 import sys
+from uuid import uuid4
 
 try:
     from . import run_state
     from .registry_common import (RegistryError, configure_utf8_output, digest,
-                                  file_digest, identifier, local_path, now,
+                                  file_digest, fixed_ref, identifier, local_path, now,
                                   read_record, verify_ref)
     from .state_paths import resolve_state_root
 except ImportError:
     import run_state
     from registry_common import (RegistryError, configure_utf8_output, digest,
-                                 file_digest, identifier, local_path, now,
+                                 file_digest, fixed_ref, identifier, local_path, now,
                                  read_record, verify_ref)
     from state_paths import resolve_state_root
 
@@ -133,10 +137,43 @@ def _validate_metadata(metadata):
     if stopped is not None and (not isinstance(stopped, dict)
             or not isinstance(stopped.get('reason'), str) or not stopped['reason'].strip()):
         raise RegistryError('Invalid continuation stop record')
+    cadence = metadata.get('reflection_every_actions')
+    interval = metadata.get('reflection_interval_seconds')
+    if interval is not None:
+        _amount(interval, 'reflection_interval_seconds', positive=True)
+    if cadence is not None:
+        if type(cadence) is not int or cadence < 1:
+            raise RegistryError('Reflection cadence must be a positive action count')
+    if cadence is not None or interval is not None:
+        reviewed = metadata.get('reflection_reviewed_actions', [])
+        completed = {row['id'] for row in actions if row['status'] in ('succeeded', 'failed')}
+        if (not isinstance(reviewed, list) or any(not isinstance(item, str) for item in reviewed)
+                or len(set(reviewed)) != len(reviewed) or not set(reviewed) <= completed):
+            raise RegistryError('Invalid reviewed action identities')
+    gate = metadata.get('reflection_gate')
+    if gate is not None:
+        if (not isinstance(gate, dict) or gate.get('status') != 'required'
+                or not isinstance(gate.get('id'), str) or not re.fullmatch(r'[a-f0-9]{32}', gate['id'])
+                or gate.get('kind') not in ('synthesis', 'checkpoint')
+                or not isinstance(gate.get('phase'), str) or not gate['phase']
+                or gate.get('level') not in ('block', 'milestone', 'direction')
+                or not isinstance(gate.get('requested_at'), str)
+                or not isinstance(gate.get('reasons'), list)
+                or not gate['reasons']
+                or not all(isinstance(reason, str) and reason.strip() for reason in gate['reasons'])):
+            raise RegistryError('Invalid reflection gate')
+        _start_time(gate['requested_at'])
+        if 'action_ids' in gate:
+            ids = gate['action_ids']
+            completed = {row['id'] for row in actions if row['status'] in ('succeeded', 'failed')}
+            if (not isinstance(ids, list) or any(not isinstance(item, str) for item in ids)
+                    or len(set(ids)) != len(ids) or not set(ids) <= completed):
+                raise RegistryError('Invalid reflection action identities')
     return start
 
 
-def configure(root, run_id, objective, limits, *, started_at=None, closeout_seconds=None):
+def configure(root, run_id, objective, limits, *, started_at=None, closeout_seconds=None,
+              reflection_every_actions=None, reflection_interval_seconds=None):
     """Attach a fixed completion objective and declared bounds to an existing run.
 
     Idempotent for identical input; changed objectives or limits need a separately
@@ -148,11 +185,24 @@ def configure(root, run_id, objective, limits, *, started_at=None, closeout_seco
     Pass an existing authorized task's original started_at when attaching late;
     this records no fictional historical actions. Omitted timing options retain
     existing values on reconfigure. Old callers reserve no closeout window.
+
+    reflection_every_actions optionally fixes a positive count of settled
+    successful/failed actions between reviews. Cancellation is not evidence.
+    Settlement opens a gate, without choosing its verdict. Omission preserves
+    an existing setting; old contracts remain opt-in.
+    reflection_interval_seconds optionally fixes elapsed seconds between addressed
+    reviews. Existing monitoring calls inspect to observe it; claim checks it
+    before dispatch. This creates no background service.
     """
     if not isinstance(objective, str) or not objective.strip():
         raise RegistryError('A verifiable objective is required')
     limits = _validate_limits(limits)
     explicit_start = _start_time(started_at) if started_at is not None else None
+    if reflection_every_actions is not None and (
+            type(reflection_every_actions) is not int or reflection_every_actions < 1):
+        raise RegistryError('Reflection cadence must be a positive action count')
+    if reflection_interval_seconds is not None:
+        _amount(reflection_interval_seconds, 'reflection_interval_seconds', positive=True)
     if closeout_seconds is not None:
         _amount(closeout_seconds, 'closeout_seconds')
         if closeout_seconds > limits['wall_seconds']:
@@ -164,7 +214,11 @@ def configure(root, run_id, objective, limits, *, started_at=None, closeout_seco
                 raise RegistryError('Existing continuation objective and limits are fixed')
             if ((explicit_start is not None and _start_time(metadata['started_at']) != explicit_start)
                     or (closeout_seconds is not None
-                        and metadata.get('closeout_seconds', 0) != closeout_seconds)):
+                        and metadata.get('closeout_seconds', 0) != closeout_seconds)
+                    or (reflection_every_actions is not None
+                        and metadata.get('reflection_every_actions') != reflection_every_actions)
+                    or (reflection_interval_seconds is not None
+                        and metadata.get('reflection_interval_seconds') != reflection_interval_seconds)):
                 raise RegistryError('Existing continuation clock and closeout reserve are fixed')
             return metadata
         configured = now()
@@ -172,9 +226,68 @@ def configure(root, run_id, objective, limits, *, started_at=None, closeout_seco
                     'started_at': explicit_start.isoformat() if explicit_start is not None else configured,
                     'configured_at': configured, 'closeout_seconds': closeout_seconds or 0,
                     'actions': [], 'stopped': None}
+        if reflection_every_actions is not None:
+            metadata.update(reflection_every_actions=reflection_every_actions,
+                            reflection_reviewed_actions=[])
+        if reflection_interval_seconds is not None:
+            metadata['reflection_interval_seconds'] = reflection_interval_seconds
         _validate_metadata(metadata)
         return metadata
     return run_state.update_coordination(str(root), run_id, update)['coordination']
+
+
+def execution_directive(root, run_id):
+    """Read stop intent and original remaining dispatch time for a local launcher.
+
+    Return None for a missing/unconfigured legacy workflow; otherwise return
+    stopped (record or None) and timing (seconds/deadline). This read-only path
+    validates coordination without rehashing all research files on each poll.
+    It never settles actions or declares a process dead. Malformed state raises;
+    an already-bound launcher must fail closed if its contract disappears.
+    """
+    try:
+        state = run_state.load_run(str(root), identifier(run_id))
+    except FileNotFoundError:
+        return None
+    metadata = state.get('coordination')
+    if not metadata:
+        return None
+    start = _validate_metadata(metadata)
+    return {'stopped': metadata['stopped'], 'timing': _timing(metadata, start)}
+
+
+def _unreviewed_actions(metadata):
+    reviewed = set(metadata.get('reflection_reviewed_actions', []))
+    return [row['id'] for row in metadata['actions']
+            if row['status'] in ('succeeded', 'failed') and row['id'] not in reviewed]
+
+
+def _new_reflection_gate(metadata, state, reasons, level, kind):
+    gate = {'id': uuid4().hex, 'status': 'required', 'kind': kind,
+            'phase': run_state.first_open_phase(state)['phase'], 'level': level,
+            'reasons': reasons, 'requested_at': now()}
+    if any(metadata.get(key) is not None for key in ('reflection_every_actions', 'reflection_interval_seconds')):
+        gate['action_ids'] = _unreviewed_actions(metadata)
+    return gate
+
+
+def _automatic_reflection(metadata, state):
+    cadence = metadata.get('reflection_every_actions')
+    interval = metadata.get('reflection_interval_seconds')
+    reasons = []
+    if cadence is not None and len(_unreviewed_actions(metadata)) >= cadence:
+        reasons.append('completed_action_cadence')
+    if interval is not None:
+        last = metadata.get('last_reflection') or {}
+        start = _start_time(last.get('addressed_at', last.get('at', metadata['started_at'])))
+        if (datetime.now(timezone.utc) - start).total_seconds() >= interval:
+            reasons.append('elapsed_review_interval')
+    if (reasons and not metadata['stopped'] and not metadata.get('reflection_gate')
+            and run_state.first_open_phase(state) is not None):
+        metadata['reflection_gate'] = _new_reflection_gate(
+            metadata, state, reasons, 'block', 'checkpoint')
+        return True
+    return False
 
 
 def _inspection(root, state):
@@ -204,6 +317,12 @@ def _inspection(root, state):
                 except (RegistryError, OSError) as error:
                     violations.append({'phase': phase['phase'], 'reference': reference,
                                        'reason': str(error)})
+    handoff = metadata.get('reflection_plan_ref')
+    if handoff is not None:
+        try:
+            verify_ref(root, handoff)
+        except (RegistryError, OSError) as error:
+            violations.append({'reference': handoff, 'reason': str(error)})
     timing = _timing(metadata, start)
     elapsed = timing['elapsed_seconds']
     phase = run_state.first_open_phase(state)
@@ -229,12 +348,16 @@ def _inspection(root, state):
         status = 'RECONCILE'
     elif timing['remaining_seconds'] <= timing['closeout_seconds']:
         status = 'CLOSEOUT_REQUIRED'
+    elif metadata.get('reflection_gate'):
+        status = ('SYNTHESIS_REQUIRED' if metadata['reflection_gate']['kind'] == 'synthesis'
+                  else 'REFLECTION_REQUIRED')
     else:
         status = 'READY'
     return {'status': status, 'run_id': state['run_id'], 'phase': phase,
             'spent_or_reserved': spent, 'actions_used': len(actions),
             'elapsed_seconds': elapsed, 'unresolved_actions': unresolved,
             'timing': timing,
+            'reflection_gate': metadata.get('reflection_gate'),
             'evidence_issues': violations, 'exceeded_resources': over,
             'exhausted_resources': exhausted,
             'scientific_verdict': 'not-assessed', 'host_goal_modified': False}
@@ -245,8 +368,20 @@ def inspect(root, run_id):
 
     WORKFLOW_TERMINAL means original phase gates are terminal, not that research
     claims are true or a native Goal may be completed without its own evidence.
+    An explicitly configured elapsed-review policy may atomically open a gate;
+    old contracts remain read-only. Repeated inspection preserves the gate ID.
     """
-    return _inspection(root, run_state.load_run(str(root), run_id))
+    state = run_state.load_run(str(root), run_id)
+    metadata = state.get('coordination')
+    if metadata:
+        _validate_metadata(metadata)
+        if _automatic_reflection(metadata, state):
+            def update(current, current_state):
+                _validate_metadata(current)
+                _automatic_reflection(current, current_state)
+                return current
+            state = run_state.update_coordination(str(root), run_id, update)
+    return _inspection(root, state)
 
 
 def _watched_file(root, relative):
@@ -379,8 +514,12 @@ def claim_action(root, run_id, action_key, phase, question, *, costs=None, input
                 raise RegistryError('Completed action cannot be dispatched again')
             if len(previous) >= metadata['limits']['max_attempts_per_key']:
                 raise RegistryError('Action retry limit reached; reassess or stop')
+        opened = _automatic_reflection(metadata, state)
         decision = _inspection(root, state)
         if decision['status'] != 'READY':
+            if opened:
+                answer['blocked'] = decision['status']
+                return metadata
             raise RegistryError('Cannot dispatch: ' + decision['status'])
         if decision['phase']['phase'] != phase:
             raise RegistryError('Action must belong to the original resume phase')
@@ -399,6 +538,8 @@ def claim_action(root, run_id, action_key, phase, question, *, costs=None, input
         answer.update(claim='new', action=action)
         return metadata
     run_state.update_coordination(str(root), run_id, update)
+    if 'blocked' in answer:
+        raise RegistryError('Cannot dispatch: ' + answer['blocked'])
     return answer
 
 
@@ -433,6 +574,7 @@ def finish_action(root, run_id, action_id, outcome, *, actual_costs, result_refs
                 raise RegistryError('Terminal action history cannot be rewritten')
             return metadata
         action.update(changes, finished_at=now())
+        _automatic_reflection(metadata, state)
         return metadata
     return run_state.update_coordination(str(root), run_id, update)['coordination']
 
@@ -479,9 +621,11 @@ def settle_execution(root, run_id, action_id, execution_run_id, *, actual_costs,
 
 
 def stop(root, run_id, reason):
-    """Persist an authorized stop reason without killing jobs or releasing reservations.
+    """Persist an authorized stop that bound local launchers observe.
 
     Outstanding actions still return RECONCILE until their real execution ends.
+    The controller sends no signals or releases reservations. The local launcher
+    enforces this intent; remote/unbound jobs still require their execution owner.
     This does not pause or complete a Codex native Goal.
     """
     if not isinstance(reason, str) or not reason.strip():
@@ -497,6 +641,205 @@ def stop(root, run_id, reason):
     return run_state.update_coordination(str(root), run_id, update)['coordination']
 
 
+def require_reflection(root, run_id, reasons, *, level='block', kind='synthesis'):
+    """Pause new claims at an existing workflow boundary, without changing phases.
+
+    The gate ID binds a later reflection to this checkpoint. Ordinary trajectory
+    reviews use kind=checkpoint; only multi-problem synthesis uses synthesis.
+    Repeated requests merge reasons without opening another gate or resetting costs.
+    """
+    if level not in ('block', 'milestone', 'direction') or kind not in ('synthesis', 'checkpoint'):
+        raise RegistryError('Invalid reflection level or kind')
+    if (not isinstance(reasons, list) or not reasons
+            or not all(isinstance(reason, str) and reason.strip() for reason in reasons)):
+        raise RegistryError('Reflection gate needs non-empty reasons')
+    normalized = sorted({reason.strip() for reason in reasons})
+
+    def update(metadata, state):
+        if not metadata:
+            raise RegistryError('No continuation contract; reflection gate is unavailable')
+        _validate_metadata(metadata)
+        existing = metadata.get('reflection_gate')
+        if existing:
+            if existing['kind'] != kind:
+                raise RegistryError('Resolve the active reflection before changing its kind')
+            existing['reasons'] = sorted(set(existing['reasons']) | set(normalized))
+            order = ('block', 'milestone', 'direction')
+            existing['level'] = max((level, existing['level']), key=order.index)
+            return metadata
+        phase = run_state.first_open_phase(state)
+        if phase is None:
+            raise RegistryError('Cannot request reflection on a terminal workflow')
+        metadata['reflection_gate'] = _new_reflection_gate(metadata, state, normalized, level, kind)
+        return metadata
+    return run_state.update_coordination(str(root), run_id, update)['coordination']
+
+
+def _validate_reflection(payload):
+    """Validate structure only; evidence truth and scientific review stay with skills."""
+    if not isinstance(payload, dict):
+        raise RegistryError('Reflection must be an object')
+    if payload.get('kind', 'synthesis') == 'synthesis':
+        try:
+            from .problem_synthesis import validate_request
+        except ImportError:
+            from problem_synthesis import validate_request
+        return validate_request(payload)
+    allowed = {'kind', 'schema_version', 'gate_id', 'decision', 'reason',
+               'evidence_refs', 'next_action', 'blocker'}
+    if (payload.get('kind') != 'checkpoint' or set(payload) - allowed
+            or type(payload.get('schema_version')) is not int or payload['schema_version'] != 1
+            or payload.get('decision') not in ('CONTINUE', 'REPLAN', 'DEFER', 'BLOCKED', 'STOP')):
+        raise RegistryError('Invalid workflow checkpoint schema/decision')
+    for field in ('reason',):
+        if not isinstance(payload.get(field), str) or not payload[field].strip():
+            raise RegistryError(f'Checkpoint requires {field}')
+    refs = payload.get('evidence_refs')
+    if not isinstance(refs, list) or not refs or not all(isinstance(ref, str) and ref.strip() for ref in refs):
+        raise RegistryError('Checkpoint requires evidence references')
+    gate_id = payload.get('gate_id')
+    if gate_id is not None and (not isinstance(gate_id, str) or not re.fullmatch(r'[a-f0-9]{32}', gate_id)):
+        raise RegistryError('Invalid checkpoint gate_id')
+    if payload['decision'] in ('DEFER', 'BLOCKED'):
+        if not isinstance(payload.get('blocker'), str) or not payload['blocker'].strip():
+            raise RegistryError('Deferred/blocked checkpoint requires a blocker')
+    if payload['decision'] in ('CONTINUE', 'REPLAN'):
+        action = payload.get('next_action')
+        if (not isinstance(action, dict) or set(action) != {'skill', 'description'}
+                or not all(isinstance(value, str) and value.strip() for value in action.values())):
+            raise RegistryError('Checkpoint requires the next skill and action')
+    return json.loads(json.dumps(payload, allow_nan=False))
+
+
+def _latest_reflection(root, run_id, gate):
+    """Read a valid envelope for this gate and phase; unrelated records cannot clear it."""
+    try:
+        from .iteration_log import show
+    except ImportError:
+        from iteration_log import show
+    latest = None
+    for line in show(str(root), run_id).splitlines():
+        try:
+            row = json.loads(line)
+            if not isinstance(row, dict) or row.get('event') != 'reflection':
+                continue
+            payload = row.get('reflection')
+            if (not isinstance(payload, dict) or payload.get('gate_id') != gate['id']
+                    or payload.get('kind') != gate['kind'] or row.get('phase') != gate['phase']):
+                continue
+            if (_validate_reflection(payload) != payload or row.get('reflection_id') !=
+                    digest({'phase': row['phase'], 'reflection': payload})):
+                continue
+            latest = row
+        except (ValueError, KeyError, TypeError):
+            continue
+    return latest
+
+
+def _resolve_reflection(root, run_id, metadata, *, handoff_ref=None, state=None):
+    """Resolve under the run lock. The ledger append may precede an interrupted save."""
+    gate = metadata.get('reflection_gate')
+    if not gate:
+        if handoff_ref is not None:
+            previous = (metadata.get('last_reflection') or {}).get('handoff_ref')
+            if previous != handoff_ref:
+                raise RegistryError('No active reflection accepts this handoff')
+            verify_ref(root, handoff_ref)
+        return metadata
+    latest = _latest_reflection(root, run_id, gate)
+    if latest is None:
+        raise RegistryError('Reflection ledger has no valid record for the active gate')
+    payload = latest['reflection']
+    decision = payload['decision']
+    gate.pop('blocker', None)
+    gate.pop('handoff_required', None)
+    gate['decision'] = decision
+    gate['reflection_id'] = latest['reflection_id']
+    if decision in ('DEFER', 'BLOCKED'):
+        if handoff_ref is not None:
+            raise RegistryError('Resolve the blocker with a new reflection before handing off')
+        gate['blocker'] = payload['blocker']
+        return metadata
+    if decision in ('MERGE', 'ABSTRACTION_PIVOT', 'REPLAN') and handoff_ref is None:
+        gate['handoff_required'] = True
+        return metadata
+    if handoff_ref is not None:
+        if decision not in ('MERGE', 'ABSTRACTION_PIVOT', 'REPLAN'):
+            raise RegistryError('This reflection does not request a revised plan')
+        verify_ref(root, handoff_ref)
+    receipt = {'id': latest['reflection_id'], 'gate_id': gate['id'],
+               'at': latest['ts'], 'decision': decision,
+               'ledger': (resolve_state_root(root, 'read') / 'runs' /
+                          f'{run_id}.iterations.jsonl').relative_to(Path(root).resolve()).as_posix()}
+    if handoff_ref is not None:
+        receipt['handoff_ref'] = handoff_ref
+        # Later CONTINUE/KEEP_SEPARATE records must not forget the active plan.
+        metadata['reflection_plan_ref'] = handoff_ref
+    if decision == 'STOP':
+        metadata['stopped'] = metadata['stopped'] or {'reason': payload['reason'], 'at': now()}
+    metadata['last_reflection'] = receipt
+    if any(metadata.get(key) is not None for key in ('reflection_every_actions', 'reflection_interval_seconds')):
+        addressed = gate.get('action_ids', [])
+        metadata['reflection_reviewed_actions'] = list(dict.fromkeys(
+            metadata.get('reflection_reviewed_actions', []) + addressed))
+        receipt['action_ids'] = list(addressed)
+        receipt['addressed_at'] = now()
+    metadata.pop('reflection_gate')
+    if state is not None:
+        _automatic_reflection(metadata, state)
+    return metadata
+
+
+def record_reflection(root, run_id, phase, payload):
+    """Record a checkpoint for an existing run; never initialize state for a short task.
+
+    A configured gate requires its exact ID/kind/phase. Append-before-save makes
+    crash recovery possible: repeating the same request reuses the ledger entry.
+    DEFER/BLOCKED retain the brake; merge/pivot/replan wait for a fixed plan handoff.
+    """
+    try:
+        from .iteration_log import record_reflection as append
+    except ImportError:
+        from iteration_log import record_reflection as append
+    payload = _validate_reflection(payload)
+    state = run_state.load_run(str(root), run_id)
+    if phase not in [row['phase'] for row in state['phases']]:
+        raise RegistryError('Reflection phase must belong to the existing run')
+    if not state.get('coordination'):
+        if payload.get('gate_id') is not None:
+            raise RegistryError('No active reflection gate for this record')
+        return {**append(str(root), run_id, phase, payload), 'reflection_gate': 'unconfigured'}
+    answer = {}
+    def update(metadata, snapshot):
+        _validate_metadata(metadata)
+        gate = metadata.get('reflection_gate')
+        previous = metadata.get('last_reflection') or {}
+        reflection_id = digest({'phase': phase, 'reflection': payload})
+        if gate:
+            if (payload.get('gate_id') != gate['id'] or payload['kind'] != gate['kind']
+                    or phase != gate['phase']):
+                raise RegistryError('Reflection must match the active gate ID, kind and phase')
+        elif payload.get('gate_id') is not None and previous.get('id') != reflection_id:
+            raise RegistryError('Reflection does not match an active gate or completed record')
+        answer.update(append(str(root), run_id, phase, payload))
+        if gate:
+            _resolve_reflection(root, run_id, metadata, state=state)
+        answer['reflection_gate'] = 'required' if metadata.get('reflection_gate') else 'cleared'
+        return metadata
+    run_state.update_coordination(str(root), run_id, update)
+    return answer
+
+
+def clear_reflection(root, run_id, *, handoff_ref=None):
+    """Reconcile a recorded reflection; a changed frame requires a fixed plan handoff."""
+    def update(metadata, state):
+        if not metadata:
+            raise RegistryError('No continuation contract')
+        _validate_metadata(metadata)
+        return _resolve_reflection(root, run_id, metadata, handoff_ref=handoff_ref, state=state)
+    return run_state.update_coordination(str(root), run_id, update)['coordination']
+
+
 def main():
     configure_utf8_output()
     parser = argparse.ArgumentParser(description=__doc__)
@@ -508,6 +851,10 @@ def main():
     create.add_argument('--limits', required=True, help='Path to JSON with explicit bounds/units')
     create.add_argument('--started-at', help='Original authorized task start (timezone-aware ISO timestamp)')
     create.add_argument('--closeout-seconds', type=float, help='Reserve inside the original wall budget')
+    create.add_argument('--reflection-every-actions', type=int,
+                        help='Fixed settled-success/failure cadence; old contracts stay opt-in')
+    create.add_argument('--reflection-interval-seconds', type=float,
+                        help='Fixed interval observed by monitor/claim calls; no background scheduler')
     sub.add_parser('inspect')
     handoff = sub.add_parser('handoff')
     handoff.add_argument('--watch', action='append', default=[], help='Selected project-relative file; may be absent')
@@ -522,11 +869,22 @@ def main():
                         help='JSON object: action_id, execution_run_id, actual_costs, optional result_refs/reason')
     end = sub.add_parser('stop')
     end.add_argument('--reason', required=True)
+    gate = sub.add_parser('require-reflection')
+    gate.add_argument('--reason', action='append', required=True)
+    gate.add_argument('--level', choices=('block', 'milestone', 'direction'), default='block')
+    gate.add_argument('--kind', choices=('synthesis', 'checkpoint'), default='synthesis')
+    reflect = sub.add_parser('record-reflection')
+    reflect.add_argument('--phase', required=True)
+    reflect.add_argument('--request', required=True, help='Path to a checkpoint JSON artifact')
+    clear = sub.add_parser('clear-reflection')
+    clear.add_argument('--handoff', help='Project-relative revised plan after merge/pivot/replan')
     args = parser.parse_args()
     try:
         if args.command == 'configure':
             result = configure(args.root, args.run_id, args.objective, read_record(args.limits),
-                               started_at=args.started_at, closeout_seconds=args.closeout_seconds)
+                               started_at=args.started_at, closeout_seconds=args.closeout_seconds,
+                               reflection_every_actions=args.reflection_every_actions,
+                               reflection_interval_seconds=args.reflection_interval_seconds)
         elif args.command == 'inspect':
             result = inspect(args.root, args.run_id)
         elif args.command == 'handoff':
@@ -539,6 +897,13 @@ def main():
             result = finish_action(args.root, args.run_id, **read_record(args.request))
         elif args.command == 'settle-execution':
             result = settle_execution(args.root, args.run_id, **read_record(args.request))
+        elif args.command == 'require-reflection':
+            result = require_reflection(args.root, args.run_id, args.reason, level=args.level, kind=args.kind)
+        elif args.command == 'record-reflection':
+            result = record_reflection(args.root, args.run_id, args.phase, read_record(args.request))
+        elif args.command == 'clear-reflection':
+            result = clear_reflection(args.root, args.run_id, handoff_ref=(
+                fixed_ref(args.root, args.handoff) if args.handoff else None))
         else:
             result = stop(args.root, args.run_id, args.reason)
         print(json.dumps(result, ensure_ascii=False, indent=2, allow_nan=False))

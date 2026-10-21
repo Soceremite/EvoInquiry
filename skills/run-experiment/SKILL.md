@@ -12,6 +12,7 @@ principles within the user's scope and this skill's existing outputs, review
 standards, and recovery contracts. Carry them into nested research tasks and
 reviewer briefs. Continue authorized work through its necessary steps; honor
 budgets, blocking checkpoints, and stopping conditions.
+For a bound local run, follow [bounded inquiry](../shared-references/bounded-inquiry.md): the existing launcher enforces recorded workflow stops, single-execution requests and original timeout limits. Verify its actual terminal receipt before releasing the reservation; normal reflection does not interrupt healthy training.
 <!-- EVO-INQUIRY:END -->
 
 

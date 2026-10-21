@@ -6,7 +6,10 @@ import pytest
 
 from tools.publication_policy import load_policy
 from tools.skill_contracts import load_contract
-from tools.verify_evo_inquiry import REQUIRED_COMPARISON_RESOURCES, REQUIRED_RESEARCH_RESOURCES, verify
+from tools.verify_evo_inquiry import (
+    REQUIRED_COMPARISON_RESOURCES, REQUIRED_RESEARCH_RESOURCES,
+    REQUIRED_REFLECTION_RESOURCES, verify,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -17,7 +20,7 @@ def package(tmp_path_factory):
     contract = load_contract(ROOT)
     paths = set(contract['protected_files']) | set(contract['approved_upgrade_files'])
     paths |= set(load_policy(ROOT)['required_reference_files']) | set(REQUIRED_COMPARISON_RESOURCES)
-    paths |= set(REQUIRED_RESEARCH_RESOURCES)
+    paths |= set(REQUIRED_RESEARCH_RESOURCES) | set(REQUIRED_REFLECTION_RESOURCES)
     for record in list(contract.get('workflow_adaptations', {}).values()) + list(contract['approved_upgrade_files'].values()):
         paths.update(ref.split('#', 1)[0] for ref in [record.get('review_ref')] + record.get('test_refs', []) if ref)
     paths |= {'tools/skill-contracts.json', 'tools/publication-policy.json',

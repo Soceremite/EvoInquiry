@@ -64,11 +64,11 @@ It requires an existing run, creates no scheduler and leaves review statuses int
 | Command | Contract |
 | --- | --- |
 | `configure --objective <deliverable> --limits <limits.json>` | Limits: `max_actions`, `wall_seconds`, `max_attempts_per_key`, `resources` (unit → bound). Optional `--started-at <timezone-aware-ISO>` and `--closeout-seconds <seconds>`. Existing clock/limits stay fixed; old callers reserve zero closeout time. |
-| `inspect` | Read current phase, evidence, reservations and original timing. Bound actual process/reviewer timeouts by `timing.dispatch_seconds_remaining`. `READY` is neither resource authorization nor success. |
+| `inspect` | Read phase, evidence, reservations and original timing; an explicitly configured elapsed-review policy may open a gate. Bound process/reviewer timeouts by `timing.dispatch_seconds_remaining`. `READY` is neither resource authorization nor success. |
 | `claim --request <action.json>` | Fields: `action_key`, `phase`, `question`, `costs` for every unit, optional fixed `input_refs`. Only `claim=new` permits dispatch; `existing` requires inspecting that attempt. |
 | `finish --request <completion.json>` | Fields: `action_id`, terminal `outcome` (`succeeded`, `failed`, `cancelled`), observed `actual_costs`, fixed `result_refs`, `reason`. Verify actual termination first. Success requires evidence; costs are observations, not estimates clipped to reservations. |
 | `settle-execution --request <settlement.json>` | For registered executions: `action_id`, `execution_run_id`, observed `actual_costs`, optional `result_refs`/`reason`. Verifies the existing terminal execution and derives its process outcome; never launches. |
-| `stop --reason <reason>` | Records a stop; does not kill jobs, release live reservations, accept phases or modify a native Goal. |
+| `stop --reason <reason>` | Records workflow stop intent. Bound local launchers observe it and terminate their owned jobs; retain live reservations until actual terminal evidence. Remote/unbound jobs require their execution owner. No phase or native Goal acceptance. |
 
 For registered execution, prepare its frozen snapshot with the existing
 `execution_registry.py prepare --request <request.json>`, binding
@@ -93,6 +93,80 @@ bound still permits zero-cost use of that unit, while an overrun blocks new work
 reconcile. Use the reserve to save results/blockers and handoff, not expand the
 investigation or wait out the clock. Completion, budget stop and claim support
 remain separate; `WORKFLOW_TERMINAL` is not a scientific verdict.
+
+## Trajectory brakes and problem synthesis
+
+At a completed comparison block, tuning batch, large milestone or direction
+boundary, check whether the next action still answers the original question.
+Also look back after repeated local repairs, weak information gain, growing
+branches, conflicting evidence or changed data/evaluation. Review progress at
+the appropriate scale; do not interrupt every parameter trial or invent a fixed
+minimum number of experiments. Set cadence in the existing plan for its cost
+and uncertainty. Count new findings by information gained, not improved scores.
+
+Compare continued local tuning with a discriminating test, a simpler model,
+a different framing or stopping. Keep the original objective, counterevidence,
+resource use, unresolved problems and a concrete next action in a compact
+checkpoint. A contradiction is a reason to inspect, not to force a pivot.
+With two or more potentially related problems, use `/problem-synthesis`;
+with zero or one, the active owner performs this review. Fairness drift goes
+to `/experiment-audit`. Recording or reviewing never grants resource permission.
+
+For newly configured sustained work, choose a cadence matching comparison blocks
+and the cost of a wrong next step. `configure --reflection-every-actions <N>`
+fixes the number of settled successful/failed actions between reviews; cancelled
+work does not count. `--reflection-interval-seconds <seconds>` also permits a
+review during one long job, observed by existing monitor `inspect` calls and
+before new claims. Settlement or observation opens a gate without selecting a
+verdict. Old contracts stay opt-in; recovery cannot change their original cadence
+or budget. A gate binds the completed action IDs it covers; results arriving
+during review remain unreviewed. Read actual outputs and alternatives before
+CONTINUE, a revised plan or STOP; an automatic gate alone is not reflection.
+
+Optional deterministic signals: `python <package>/tools/problem_synthesis.py due
+<context.json>` accepts nonnegative counts `open_problem_count`,
+`completed_blocks`, `local_repairs`, `stale_count`, `branch_count`,
+`overlapping_failures` and booleans `user_requested`, `milestone_complete`,
+`direction_boundary`, `fairness_drift`. Counts describe work since the last
+addressed checkpoint; retain the original cumulative resource accounting.
+The returned `kind`, `skill`, `level` and `reasons` route a review; `skill: null`
+keeps an ordinary checkpoint with its current owner in either runtime. These
+signals do not measure research quality. The owner records which boundary was addressed so it
+does not reopen the same checkpoint without new work or evidence.
+
+For a run with an existing continuation contract, before dependent dispatch:
+
+```text
+python <package>/tools/research_control.py --root <project> --run-id <id> require-reflection --kind checkpoint --level milestone --reason milestone_complete
+python <package>/tools/research_control.py --root <project> --run-id <id> inspect
+python <package>/tools/research_control.py --root <project> --run-id <id> record-reflection --phase <phase> --request <checkpoint.json>
+```
+
+Use `--kind synthesis` and the synthesis recorder for a multi-problem decision.
+Ordinary checkpoint JSON contains `kind: "checkpoint"`, `schema_version: 1`,
+`gate_id` from inspect, `decision` (`CONTINUE`, `REPLAN`, `DEFER`, `BLOCKED`,
+`STOP`), `reason`, `evidence_refs` and a `next_action` object with `skill` and
+`description` for continue/replan; defer/blocked need `blocker` and a revisit
+condition. `SYNTHESIS_REQUIRED` / `REFLECTION_REQUIRED` block new claims while
+real process reconciliation and review remain available. No run or contract
+is needed for advice or a small task; do not initialize one just for reflection.
+
+A merge, abstraction pivot or `REPLAN` retains the brake while its owner revises
+the plan. Complete that handoff with `clear-reflection --handoff <project-relative-plan>`;
+this binds the plan's current identity, not its scientific correctness. Changed
+method/data/evaluation still needs its existing review. `DEFER` / `BLOCKED` keep
+the brake until a new gate-bound reflection resolves them. `STOP` records intent;
+the bound local launcher now observes it. For one obsolete attempt while research
+continues, use `execution_registry.py --root <project> stop --execution-id <id>
+--reason <reason>` through its execution owner. The request binds snapshot and
+process identities; it is not proof of exit. The launcher retains actual exit
+and cause in `termination.json` and the final execution record. Its timeout is
+capped by an explicit bound, spec `max_seconds_per_attempt` and the original
+workflow dispatch time. Preserve the latest valid resume state and settle only
+after terminal evidence. POSIX targets the owned group; native Windows currently
+certifies the parent only. Ordinary review leaves healthy training running. Retry an interrupted record with the same gate ID and
+payload; never reuse an older reflection for a new gate. Review, closeout,
+resource exhaustion and unresolved processes retain their original precedence.
 
 ## Review and hand off within scope
 

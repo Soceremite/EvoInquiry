@@ -60,7 +60,7 @@ def skill_parts(text: str) -> tuple[str, str, str]:
 def load_contract(root: Path) -> dict:
     data = json.loads((root / "tools/skill-contracts.json").read_text(encoding="utf-8"))
     version = data.get('schema_version')
-    if data.get("source_commit") != SOURCE_COMMIT or version not in (2, 3):
+    if data.get("source_commit") != SOURCE_COMMIT or version not in (2, 3, 4):
         raise ValueError("contract source or schema differs from the frozen beta.3 baseline")
     retained = data.get("retained_skills", {})
     for records, expected in ((retained, FROZEN_RETAINED_SHA256),
@@ -69,9 +69,12 @@ def load_contract(root: Path) -> dict:
             raise ValueError('Frozen original digests changed; adaptations must not replace the baseline')
     additions = ['research-guide', 'project-governance', 'environment-maintenance']
     mainline_additions = ['project-governance', 'environment-maintenance']
-    if version == 3:
+    if version >= 3:
         additions += ['scientific-brainstorming', 'research-manager']
         mainline_additions += ['scientific-brainstorming', 'research-manager']
+    if version >= 4:
+        additions += ['problem-synthesis']
+        mainline_additions += ['problem-synthesis']
     if (len(retained) != 83 or data.get('added_skills') != additions
             or data.get('mainline_added_skills') != mainline_additions
             or data.get('upgrade_source_commit') != UPGRADE_SOURCE_COMMIT):
@@ -80,7 +83,7 @@ def load_contract(root: Path) -> dict:
     if not isinstance(adaptations, dict) or set(adaptations) - set(retained):
         raise ValueError('workflow adaptation refers to an unretained skill')
     for name, record in adaptations.items():
-        if version != 3 or not isinstance(record, dict):
+        if version < 3 or not isinstance(record, dict):
             raise ValueError(f'{name}: invalid workflow adaptation')
         if record.get('baseline_body_sha256') != retained[name]['body_without_hook_sha256']:
             raise ValueError(f'{name}: adaptation baseline differs from the frozen body')
@@ -99,7 +102,7 @@ def load_contract(root: Path) -> dict:
             raise ValueError(f'{relative}: invalid protected-file adaptation')
         if record.get('baseline_sha256') != data['protected_files'][relative]:
             raise ValueError(f'{relative}: protected-file baseline mismatch')
-        if record.get('adaptation_version') in ('1.4.0', '1.5.0'):
+        if record.get('adaptation_version') in ('1.4.0', '1.5.0', '1.6.0'):
             refs = record.get('test_refs')
             if (not isinstance(refs, list) or not refs
                     or not all(_local_reference(root, ref) for ref in [record.get('review_ref')] + refs)):

@@ -182,6 +182,32 @@ Act on `pivot`:
 The heartbeat may say "keep going / change direction," never "good enough" — every
 quality verdict still terminates in the cross-model jury (`acceptance-gate.md`).
 
+## Trajectory reflection and problem synthesis
+
+At the plan's comparison/tuning boundaries and before the next major milestone,
+review progress against the original question using
+[bounded-inquiry](../shared-references/bounded-inquiry.md). Inspect new evidence,
+cases, counterevidence and resource use; compare another local fix with a
+simpler test, broader framing or stopping. Repeated local repairs, stale
+information, branch growth or changed evaluation can bring this review forward.
+
+For an existing configured run, set its reflection brake before dependent
+dispatch. Ordinary review stays here; use `/problem-synthesis` when several open
+problems may share a cause, and `/experiment-audit` for fairness drift.
+
+```text
+/problem-synthesis → MERGE/ABSTRACTION_PIVOT → /research-refine → /experiment-plan
+                   KEEP_SEPARATE → /research-manager → existing phase owner
+                   DEFER/BLOCKED → preserve the blocker and stop dependent dispatch
+```
+
+Preserve prior branches and negative evidence. A merge is provisional until its
+joint prediction is tested; record the revised plan handoff before releasing the
+brake. Keep the existing `run_state.py` phases, iteration ledger, queue and review
+gates. Reflection never resets budget, accepts results or overrides the original
+stale-progress escalation. Save a compact decision and next-step handoff so a
+resumed session can reconstruct the trajectory without rereading all dialogue.
+
 ## Bounded continuation and host modes
 
 For a sustained authorized investigation, use

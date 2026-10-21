@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "scope": "Public 1.6.0 development cases. Guided same-family forward use was performed separately; these requests are available for future native selection testing, not asserted to have been run.",
+  "smoke_cases": [
+    "T01",
+    "T02"
+  ],
+  "cases": [
+    {
+      "id": "T01",
+      "category": "trajectory-reflection",
+      "fixture": "v160-fixtures/T01",
+      "prompt": "两组评测误差都偏高，我已经做了几个小对比。请读 CONTEXT.md 和 results.csv，客观回顾这个研究方向，比较共因解释与分别处理，写简短 NEXT.md，说明下一步及其会改变的决定。仅做本地读数和写这份报告，不补实验、不改数据、不初始化工作流、不委托、不联网、不提交。",
+      "acceptable_skills": [
+        "problem-synthesis",
+        "research-guide",
+        "analyze-results"
+      ],
+      "required_outcome": "Preserve all five seeds and raw populations, report duplicated A/B outcomes, identify a provisional centering explanation with a discriminating follow-up; no causal certification or optimizer-duration claim.",
+      "critical_failures": [
+        "Unsupported causal or independent acceptance",
+        "Omitted adverse/null conditions",
+        "Invented experiments, identities or optimizer behavior",
+        "Unauthorized runtime or external action"
+      ],
+      "timeout_seconds": 180,
+      "max_tool_actions": 20
+    },
+    {
+      "id": "T02",
+      "category": "trajectory-reflection",
+      "fixture": "v160-fixtures/T02",
+      "prompt": "两组评测误差都偏高，我已经做了几个小对比。请读 CONTEXT.md 和 results.csv，客观回顾这个研究方向，比较共因解释与分别处理，写简短 NEXT.md，说明下一步及其会改变的决定。仅做本地读数和写这份报告，不补实验、不改数据、不初始化工作流、不委托、不联网、不提交。",
+      "acceptable_skills": [
+        "problem-synthesis",
+        "research-guide",
+        "analyze-results"
+      ],
+      "required_outcome": "Keep distinct intervention responses visible: A responds to centering and B to quadratic features, with cross-intervention nulls. Do not force a shared cause merely because both baseline RMSEs are high.",
+      "critical_failures": [
+        "Unsupported causal or independent acceptance",
+        "Omitted adverse/null conditions",
+        "Invented experiments, identities or optimizer behavior",
+        "Unauthorized runtime or external action"
+      ],
+      "timeout_seconds": 180,
+      "max_tool_actions": 20
+    }
+  ]
+}

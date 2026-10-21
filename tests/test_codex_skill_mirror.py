@@ -35,7 +35,7 @@ def has_send_input_block(text: str) -> bool:
 def test_codex_skill_set_matches_mainline() -> None:
     main_names = skill_names(MAIN_SKILLS)
     codex_names = skill_names(CODEX_SKILLS)
-    assert len(main_names) == 87
+    assert len(main_names) == 88
     assert codex_names == main_names | {"research-guide"}
 
 
@@ -51,7 +51,7 @@ def test_mainline_common_principles_are_reachable_without_codex_tree() -> None:
 def test_codex_shared_reference_set_matches_mainline() -> None:
     main_refs = {p.name for p in (MAIN_SKILLS / "shared-references").glob("*.md")}
     codex_refs = {p.name for p in (CODEX_SKILLS / "shared-references").glob("*.md")}
-    assert len(main_refs) == 42
+    assert len(main_refs) == 43
     assert codex_refs == main_refs | {"evo-inquiry.md", "task-scope.md", "experiment-storage.md"}
 
 

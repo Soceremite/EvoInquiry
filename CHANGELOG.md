@@ -1,5 +1,33 @@
 # Changelog
 
+## 1.6.0 — 2026-10-21
+
+### Added
+
+- Add `problem-synthesis` to compare shared-cause hypotheses with keeping problems separate, using observations, counterevidence, joint predictions and discriminating checks.
+- Add trajectory checkpoints at comparison blocks, tuning batches, large milestones and direction changes. Ordinary reviews need no invented second problem; fairness drift routes to the existing audit skill.
+- Add gate-bound reflection records and an optional brake in the existing action controller, with revised-plan handoff and recovery commands. Short advice does not initialize runtime state.
+- Add public synthetic trajectory fixtures and a three-wave CPU integration exercise using the existing study runner.
+- Add opt-in review boundaries by settled action count or elapsed time in the existing controller. Boundaries request an evidence-based judgment and preserve the original clock, rather than selecting a verdict.
+- Connect bound local execution to workflow STOP and snapshot/process-bound cancellation requests, with actual termination receipts and owned POSIX process-group cleanup. Ordinary reflection leaves healthy training running.
+
+### Fixed
+
+- Retain the brake for deferred/blocked decisions and while a changed frame awaits a plan handoff. Unrelated or older reflections cannot clear a later checkpoint.
+- Recover an interrupted ledger-to-coordination update without duplicate reflection entries. Keep reflection payloads separate from stale-progress counters.
+- Preserve the active revised-plan identity across later ordinary reflections; changed plans continue to require evidence reconciliation.
+- Use the existing portable file-lock primitive for iteration-ledger writes and include reflection checks in both native Windows CI shell gates.
+- Reconcile aged review state without deleting its identity, pending work or original limits. Preserve the mainline legacy Codex backend defaults, the documented MCP `prompt` argument and the external-timer boundary.
+- Bound local execution by the smallest explicit timeout, experiment attempt limit and original remaining workflow dispatch time. Preserve cooperative zero-exit cancellations as stopped, exclude them from successful aggregation, and support explicit cancellation in independent termination recovery receipts.
+
+### Changed
+
+- Keep routing, decisions, planning, execution, queues and scientific review with their existing owners. Link shared checkpoint guidance from pipeline, planning, bridging, tuning and handoff skills without duplicating a scheduler or research database.
+- Extend the Codex inventory to 89 and mainline inventory to 88. Use contract schema 4 for the new entrypoint while preserving schema 2/3 loading and frozen retained baselines.
+- Share review-cycle and recovery instructions across the three review-loop entrypoints while retaining backend adapters and stricter gates. Forward the deprecated poster entrypoint's unchanged arguments to `paper-poster-html` and clarify adjacent skills' output ownership and artifact reuse.
+
+See [1.6.0 local validation](docs/VALIDATION_1_6_0.md) for the latest 1,349 passing tests, preserved failed attempts and the earlier real one-hour CUDA engineering witness. A supplemental bounded observation used real native-model reviews to replan from paired results, stop an active owned CUDA job and verify full-state recovery. These constructed, guided local checks do not establish a product-default unified emergency watchdog or model-driven long-duration scientific discovery.
+
 ## 1.5.0 — 2026-10-19
 
 ### Added

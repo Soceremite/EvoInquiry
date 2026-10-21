@@ -15,6 +15,10 @@ If iterations produce large artifacts, apply [experiment storage](../shared-refe
 
 For this stage, read [project-governance](../shared-references/project-governance.md). Reuse tested evaluator/data contracts and record a distinct frozen execution per actual candidate/retry. Keep authorized search bounds and all negative/failed attempts.
 Use [code-reuse-and-docs](../shared-references/code-reuse-and-docs.md) for code changes and [environment-stewardship](../shared-references/environment-stewardship.md) for dependency changes.
+For sustained research tuning, review the trajectory at planned batches using
+[bounded-inquiry](../shared-references/bounded-inquiry.md), while keeping this
+loop's search bounds and stopping rules. Surface related unresolved problems to
+`/problem-synthesis`; changing the objective or bounds returns to the plan owner.
 <!-- EVO-INQUIRY:END -->
 
 
