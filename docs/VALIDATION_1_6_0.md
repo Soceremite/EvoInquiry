@@ -1,4 +1,4 @@
-# EvoInquiry 1.6.0 local validation
+# EvoInquiry 1.6.0 validation and publication
 
 This record distinguishes local implementation evidence from publication and
 scientific acceptance. The implementation uses the existing workflow owners,
@@ -123,14 +123,16 @@ reviewer repeated the failure path and observed `EVIDENCE_CHANGED`; a regression
 check covers it. The sweep remains same-family/provisional, not an assertion
 that the implementation or research is certified clean.
 
-## Remaining acceptance boundaries
+## Acceptance boundaries at the initial local stage
 
-Native Windows/macOS execution and a bounded long-duration model-driven research
-trajectory remain unperformed for this candidate. Both Windows CI shell lists
-include the new reflection test file. No power-loss guarantee, universal defense
-against local optima, general causal validity, automatic skill-selection rate or
-full RSI capability is established by these checks. No commit, push, release or
-stable installation replacement was performed as part of this work.
+At this initial local stage, native Windows/macOS execution and a bounded
+long-duration model-driven research trajectory had not been performed. Both
+Windows CI shell lists included the new reflection test file. Subsequent local
+observations and native publication CI are recorded below; this paragraph
+preserves the scope of the earlier checks. No power-loss guarantee, universal
+defense against local optima, general causal validity, automatic skill-selection
+rate or full RSI capability is established. No commit, push, release or stable
+installation replacement was performed during that initial stage.
 
 ## Follow-up: real CUDA stop behavior and functional overlap
 
@@ -372,3 +374,34 @@ assets are built from committed Git files; ignored validation traces, checkpoint
 credentials and local research state remain outside the package. Native CI and
 the actual tag, release and public download checks are recorded separately from
 the local evidence. Existing installations and training environments are unchanged.
+
+## Verified publication
+
+On 2026-10-21, the accepted source at
+`3593c15a1319d4ea2a99ca35228632cba5283bf7` passed the
+[acceptance-branch test workflow](https://github.com/Soceremite/EvoInquiry/actions/runs/39575072542),
+was fast-forward integrated into `main`, and was tagged `v1.6.0`. No pull-request
+merge action was required from the user. The tag's
+[release workflow](https://github.com/Soceremite/EvoInquiry/actions/runs/39576048972)
+passed the Ubuntu and macOS full suites, both native Windows shell gates
+(`powershell.exe` and `pwsh`), and the dependent publication job.
+
+[EvoInquiry 1.6.0](https://github.com/Soceremite/EvoInquiry/releases/tag/v1.6.0)
+was published at **2026-10-21 09:23:58 UTC** as a stable, non-draft release;
+the public latest-release endpoint identifies the same release. Its bilingual
+description matches the committed `RELEASE_NOTES.md`, including capabilities,
+fixes, practical validation and the remaining scope limits.
+
+All four public assets were independently downloaded. The tar.gz and ZIP hashes
+match `SHA256SUMS`, `release-manifest.json` and GitHub's asset digests. Each
+archive contains the same **1,082 committed files**; every payload hash matches
+the locally built release source. The extracted public package passes the
+package verifier with **89 Codex entrypoints and 83 retained workflow contracts**.
+The local verification receipt is
+`validation/release-1.6.0/publication-verification.json`; raw traces remain ignored.
+
+This publication record is a documentation follow-up on `main`. The tag and
+published assets retain their original source commit and pre-publication record;
+neither was replaced. Native CI closes the earlier native test-suite gap but
+does not establish cross-platform GPU endurance or remove the scientific scope
+limits above. The enabled local plugin and training environments were not changed.

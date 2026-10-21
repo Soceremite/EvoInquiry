@@ -2,8 +2,8 @@
   "schema_version": 1,
   "version": "1.6.0",
   "release_kind": "stable",
-  "status": "locally-validated-awaiting-native-ci",
-  "assessed_at": "2026-10-21T09:06:05.084695+00:00",
+  "status": "published-verified",
+  "assessed_at": "2026-10-21T09:45:29.959883+00:00",
   "source_base": {
     "version": "1.5.0",
     "commit": "d50a6a573b2e692ba1ede53ad6d407b9eaaf2016"
@@ -135,20 +135,87 @@
       "scope": "Both zero-exit cancellation paths repaired; all 19 execution-governance checks pass. Final observer repair has deterministic checks, no third fresh sweep or independent CLEAN verdict."
     },
     "native_release_ci": {
-      "status": "REQUIRED_BEFORE_PUBLICATION",
+      "status": "PASS",
       "workflow": ".github/workflows/release-beta.yml",
-      "url": "https://github.com/Soceremite/EvoInquiry/actions/workflows/release-beta.yml",
-      "required": [
-        "ubuntu-latest full suite",
-        "macos-latest full suite",
-        "windows-latest powershell.exe",
-        "windows-latest pwsh"
+      "url": "https://github.com/Soceremite/EvoInquiry/actions/runs/39576048972",
+      "commit": "3593c15a1319d4ea2a99ca35228632cba5283bf7",
+      "jobs": [
+        {
+          "name": "windows (pwsh)",
+          "conclusion": "success",
+          "url": "https://github.com/Soceremite/EvoInquiry/actions/runs/39576048972/job/119141720977"
+        },
+        {
+          "name": "test (macos-latest)",
+          "conclusion": "success",
+          "url": "https://github.com/Soceremite/EvoInquiry/actions/runs/39576048972/job/119141721130"
+        },
+        {
+          "name": "test (ubuntu-latest)",
+          "conclusion": "success",
+          "url": "https://github.com/Soceremite/EvoInquiry/actions/runs/39576048972/job/119141721133"
+        },
+        {
+          "name": "windows (powershell.exe)",
+          "conclusion": "success",
+          "url": "https://github.com/Soceremite/EvoInquiry/actions/runs/39576048972/job/119141721327"
+        },
+        {
+          "name": "publish",
+          "conclusion": "success",
+          "url": "https://github.com/Soceremite/EvoInquiry/actions/runs/39576048972/job/119143582565"
+        }
       ],
-      "scope": "Tag workflow requires all four native gates before publication; earlier-version CI is not current-source acceptance"
+      "scope": "Four native CI gates and the dependent publication job completed successfully on the exact tagged source. CI is not a native cross-platform GPU endurance test."
     },
     "formal_installation": {
       "status": "UNCHANGED",
       "scope": "Publishing does not replace the enabled plugin or change a training environment"
+    },
+    "prepublication_branch_ci": {
+      "status": "PASS",
+      "url": "https://github.com/Soceremite/EvoInquiry/actions/runs/39575072542",
+      "commit": "3593c15a1319d4ea2a99ca35228632cba5283bf7",
+      "scope": "The acceptance branch passed the four-platform test workflow before fast-forward integration into main."
+    },
+    "public_release_assets": {
+      "status": "PASS",
+      "release_id": 419367659,
+      "identical_payload_files": 1082,
+      "codex_entrypoints": 89,
+      "retained_workflow_contracts": 83,
+      "release_body_matches_source": true,
+      "assets": [
+        {
+          "name": "evo-inquiry-1.6.0.tar.gz",
+          "bytes": 3312574,
+          "sha256": "7c42c9c8399a60653991e928e8b0e5b61023c38a41e19bb8efd6de21af06aa8e",
+          "url": "https://github.com/Soceremite/EvoInquiry/releases/download/v1.6.0/evo-inquiry-1.6.0.tar.gz"
+        },
+        {
+          "name": "evo-inquiry-1.6.0.zip",
+          "bytes": 4092984,
+          "sha256": "b0ebe7abe31e609ef0575f665388ca967af17f46e5945338bd42b8636ad809ea",
+          "url": "https://github.com/Soceremite/EvoInquiry/releases/download/v1.6.0/evo-inquiry-1.6.0.zip"
+        },
+        {
+          "name": "release-manifest.json",
+          "bytes": 406,
+          "sha256": "ea2839e957a78e3c151c75f794b5a3195922db8eb09dafe99b8ba6ac5e9e730d",
+          "url": "https://github.com/Soceremite/EvoInquiry/releases/download/v1.6.0/release-manifest.json"
+        },
+        {
+          "name": "SHA256SUMS",
+          "bytes": 179,
+          "sha256": "c7e84b49a665f5b0a0ef3e0915282a829030c5668cec1b6216a2b7e6ed715aeb",
+          "url": "https://github.com/Soceremite/EvoInquiry/releases/download/v1.6.0/SHA256SUMS"
+        }
+      ],
+      "receipt": {
+        "path": "validation/release-1.6.0/publication-verification.json",
+        "sha256": "14ab8a8b7c3494c4235da353de1b8815e314bcab292464281fa00314f1137172"
+      },
+      "scope": "All four public assets downloaded and checked against GitHub asset digests; archive checksums also match SHA256SUMS and release-manifest.json. Both archives contain the identical committed payload. The extracted public package passes preservation verification."
     }
   },
   "retained_failures": [
@@ -178,7 +245,14 @@
   ],
   "publication": {
     "tag": "v1.6.0",
+    "commit": "3593c15a1319d4ea2a99ca35228632cba5283bf7",
+    "release_id": 419367659,
     "url": "https://github.com/Soceremite/EvoInquiry/releases/tag/v1.6.0",
-    "status": "pending-tag-ci"
+    "status": "published",
+    "published_at": "2026-10-21T09:23:58Z",
+    "latest": true,
+    "draft": false,
+    "prerelease": false,
+    "record_scope": "Post-publication documentation records verification. The immutable tag and its four assets retain the source and pre-publication record at the release commit; no retagging or asset replacement was performed."
   }
 }
