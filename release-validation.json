@@ -34,7 +34,7 @@
       "elapsed_seconds": 48.834,
       "phase": "initial-local-validation-before-windows-lock-followup"
     },
-    "distinct_tests_passed": 282,
+    "distinct_tests_passed": 304,
     "package_preservation": {
       "status": "PASS",
       "retained_workflows": 83,
@@ -53,9 +53,20 @@
       "errors": 0,
       "skipped": 0,
       "elapsed_seconds": 184.313,
-      "new_lock_regressions": 7
+      "new_lock_regressions": 7,
+      "phase": "before-per-run-lock-followup"
     },
-    "distinct_test_scope": "Union of 242 initial Linux cases and the 66-test lock/execution/migration follow-up; 26 cases repeat."
+    "distinct_test_scope": "Union of 135 initial runtime, 107 compatibility, 66 lock/execution/migration and 76 per-run/concurrency cases; repeated JUnit identities count once.",
+    "per_run_lock_followup_on_linux": {
+      "artifact": "validation/release-1.6.1/run-lock-runtime.xml",
+      "sha256": "1a4fee1e24e9959a8029a90ec4b741b3e383dafdeec6ccdac53b38f66e272d8d",
+      "tests": 76,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "elapsed_seconds": 81.379,
+      "new_concurrency_regressions": 2
+    }
   },
   "validation_record": "docs/VALIDATION_1_6_1.md",
   "limitations": [
@@ -69,7 +80,7 @@
     "version": "1.6.0",
     "validation_ref": "https://github.com/Soceremite/EvoInquiry/blob/v1.6.0/release-validation.json"
   },
-  "assessed_at": "2026-10-24T05:11:54.736297+00:00",
+  "assessed_at": "2026-10-24T05:24:45.478089+00:00",
   "practice": {
     "actual_local_cpu_jobs": 18,
     "complete_comparison_blocks": 3,
@@ -161,6 +172,30 @@
       "workflow_run": "https://github.com/Soceremite/EvoInquiry/actions/runs/40064421779",
       "check_run_id": 120784561842,
       "reason": "Windows exclusive CRT fallback blocked a concurrent shared namespace guard during live-worker review; publish job skipped."
+    },
+    {
+      "artifact": "validation/release-1.6.1/windows-lock-powershell-followup-failed-annotations.json",
+      "sha256": "9bcae2c7dc1741e28035ebf9492eee464feb210ed50dd533cefbbfb6ecfe0e05",
+      "platform": "windows-latest",
+      "shell": "powershell.exe",
+      "passed": 504,
+      "skipped": 9,
+      "failures": 1,
+      "workflow_run": "https://github.com/Soceremite/EvoInquiry/actions/runs/40065475352",
+      "check_run_id": 120787701711,
+      "reason": "Native shared locks passed, but the old Windows per-run no-op lock allowed duplicate action claims; publish job skipped."
+    },
+    {
+      "artifact": "validation/release-1.6.1/windows-lock-followup-failed-annotations.json",
+      "sha256": "9bcae2c7dc1741e28035ebf9492eee464feb210ed50dd533cefbbfb6ecfe0e05",
+      "platform": "windows-latest",
+      "shell": "pwsh",
+      "passed": 504,
+      "skipped": 9,
+      "failures": 1,
+      "workflow_run": "https://github.com/Soceremite/EvoInquiry/actions/runs/40065475352",
+      "check_run_id": 120787701697,
+      "reason": "Native shared locks passed, but the old Windows per-run no-op lock allowed duplicate action claims; publish job skipped."
     }
   ],
   "publication": {
@@ -169,11 +204,18 @@
     "authorized": true,
     "tag": "v1.6.1",
     "method": "tag-triggered-release-workflow",
-    "superseded_unpublished_tag": {
-      "object": "690d82d5ddabf198933f95c7b3177bc539f54e1b",
-      "commit": "c3babba1e385f6d3357703b757f728da33b44ce5",
-      "reason": "Both native Windows shells failed; no release published."
-    }
+    "superseded_unpublished_tags": [
+      {
+        "object": "690d82d5ddabf198933f95c7b3177bc539f54e1b",
+        "commit": "c3babba1e385f6d3357703b757f728da33b44ce5",
+        "reason": "Both native Windows shells failed; no release published."
+      },
+      {
+        "object": "12a5c02db90d1acebcf0edc7603a4fde697d305c",
+        "commit": "97291ed14cdc1e48e743a2ebba28d787996bca50",
+        "reason": "Both native Windows shells exposed duplicate action claims; no release published."
+      }
+    ]
   },
   "runtime_sha256": {
     "VERSION": "6430a242e9486093ef6f71d9086d48f61ba102f0d2fb0f5b95334c6007a46db3",
@@ -182,7 +224,7 @@
     "tools/execution_registry.py": "ca6af30953e21c4dc42702de2e4f7486073cc1745193e830c779a9f192f46997",
     "tools/iteration_log.py": "f9d709ec75b3d481b43a72133243e70e569ffabf4339ad53ef77039e03f6de9f",
     "tools/skill_contracts.py": "7508121e688fee61c77d4b779fd99de4bf018e4d57a730048e8e0d4646344835",
-    "tools/skill-contracts.json": "f2ef2aaafc9ec6cd62297c7fbd1be9f135724c613dfb3c9353a4648c97c25090",
+    "tools/skill-contracts.json": "572f6c846a74df3c62de73e45bc8dfbb8fc9129f51776c21d2afb6bccea2a3fa",
     "skills/shared-references/bounded-inquiry.md": "972b9addf7d7e0edd102e8358053bf331d32426fd17ddb5a39b2126982dba667",
     "skills/skills-codex/shared-references/bounded-inquiry.md": "972b9addf7d7e0edd102e8358053bf331d32426fd17ddb5a39b2126982dba667",
     "skills/shared-references/external-cadence.md": "5ad507aafade32e1b111a6746b8e738324320d145d594a485b98cabc86962baa",
@@ -194,6 +236,8 @@
     "tests/test_execution_governance.py": "66351af923863192e5ff9b85a121033a699b0dd4d09ce6683c5cace5bf50cedf",
     "tests/test_experiment_block_reflection.py": "e50208f4c4e87215ce43b055acaa27798c01ebcef320e5011400b484ef0dc629",
     "tools/registry_common.py": "2b3a5a053f1299d58e7aab1be324a42ce31c3e43a6b0764ab0282367430d59ef",
-    "tests/test_filesystem_doctor.py": "f82c36a4d55c27c3e78f42ba283f42bcdcf666b4f9c2f3d7363108309f1d8b1c"
+    "tests/test_filesystem_doctor.py": "f82c36a4d55c27c3e78f42ba283f42bcdcf666b4f9c2f3d7363108309f1d8b1c",
+    "tools/run_state.py": "fb88eabe4726767c35ab481fbdbc27a4d805c939b889963c7773f07d1086d77f",
+    "tests/test_run_state.py": "37bdf37d45ce2a8f88121dc8d2e4d8c5db35aa74ce7a0670da0285e3f96ccb5b"
   }
 }

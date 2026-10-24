@@ -31,9 +31,10 @@ REQUIRE a verdict id + reviewer AND that
 the phase already be `done` (use --force to override) — you cannot acquit a phase
 that never ran, nor mark one accepted without recording who acquitted it.
 
-State at ``<root>/.ei/runs/<run_id>.json`` (file-based, no DB). Single-writer
-contract (one orchestrator per run); a best-effort flock guards against a
-concurrent resumer. See shared-references/resumable-runs.md.
+State at ``<root>/.ei/runs/<run_id>.json`` (file-based, no DB). The single-writer
+contract (one orchestrator per run) remains; a portable exclusive OS lock
+serializes cooperating updates inside the shared namespace guard. See
+shared-references/resumable-runs.md.
 """
 
 from __future__ import annotations
@@ -50,20 +51,15 @@ from typing import Callable, Iterator, Optional
 
 try:
     from .state_paths import resolve_state_root, state_writer
-    from .registry_common import verify_ref
+    from .registry_common import file_lock, verify_ref
 except ImportError:
     from state_paths import resolve_state_root, state_writer
-    from registry_common import verify_ref
+    from registry_common import file_lock, verify_ref
 
 try:
     from provenance import model_family
 except ImportError:  # package import: ``from tools import run_state``
     from tools.provenance import model_family
-
-try:
-    import fcntl  # POSIX
-except ImportError:  # pragma: no cover - Windows
-    fcntl = None  # type: ignore
 
 EXECUTOR_STATUSES = {"pending", "running", "done", "failed", "skipped"}
 GATE_VERDICTS = {"PASS", "BLOCKED"}
@@ -96,11 +92,7 @@ def _run_path(root: str, run_id: str, mode: str = 'read') -> Path:
 
 @contextmanager
 def _lock(root: str, run_id: str) -> Iterator[None]:
-    """Best-effort advisory lock for the load-modify-save of one run.
-
-    Single-writer is the contract; this only guards against a stray concurrent
-    resumer. No-op where fcntl is unavailable.
-    """
+    """Hold namespace protection and one exclusive run lock for load-modify-save."""
     with state_writer(root):
         with _run_file_lock(root, run_id):
             yield
@@ -109,20 +101,8 @@ def _lock(root: str, run_id: str) -> Iterator[None]:
 @contextmanager
 def _run_file_lock(root: str, run_id: str) -> Iterator[None]:
     p = _run_path(root, run_id, 'write')
-    p.parent.mkdir(parents=True, exist_ok=True)
-    if fcntl is None:
+    with file_lock(p.with_suffix('.lock')):
         yield
-        return
-    lock_path = p.with_suffix(".lock")
-    fh = open(lock_path, "w")
-    try:
-        fcntl.flock(fh, fcntl.LOCK_EX)
-        yield
-    finally:
-        try:
-            fcntl.flock(fh, fcntl.LOCK_UN)
-        finally:
-            fh.close()
 
 
 def _load(root: str, run_id: str, mode: str = 'read') -> dict:

@@ -937,17 +937,20 @@
     },
     "tools/run_state.py": {
       "baseline_sha256": "5fc466462e2d4c26c6de078dcb04100bafa3a9c56df9a0dc4e38f316a33df5b5",
-      "sha256": "f8f0a6299f04610ae3e9d468fd01a5584c79713411264cde9f7d731055fd0d97",
-      "reason": "User-approved 1.5.0 bounded research implementation; preserve the frozen original digest and existing public workflow interfaces.",
-      "adaptation_version": "1.5.0",
-      "review_ref": "docs/VALIDATION_1_5_0.md#directed-adaptations",
+      "sha256": "fb88eabe4726767c35ab481fbdbc27a4d805c939b889963c7773f07d1086d77f",
+      "reason": "Serialize per-run load-modify-save with the existing portable exclusive lock on Windows and POSIX; preserve namespace migration guards, phase acceptance and public interfaces.",
+      "adaptation_version": "1.6.1",
+      "review_ref": "docs/VALIDATION_1_6_1.md#release-ci-follow-up",
       "test_refs": [
         "tests/test_research_control.py",
         "tests/test_research_events.py",
         "tests/test_research_pilots.py",
-        "tests/test_candidate_comparison.py"
+        "tests/test_candidate_comparison.py",
+        "tests/test_run_state.py",
+        "tests/test_execution_governance.py",
+        "tests/test_filesystem_doctor.py"
       ],
-      "previous_sha256": "1dc45ea2740118e4040d781f44503483d0a62220bd91b8ccd9171d1d3bda5466"
+      "previous_sha256": "f8f0a6299f04610ae3e9d468fd01a5584c79713411264cde9f7d731055fd0d97"
     },
     "tools/save_trace.sh": {
       "sha256": "f6222ec6df378707905c9824478040e92bf6f7c182ccea440481a89d22bdc752",
@@ -2728,6 +2731,18 @@
         "tests/test_iteration_log.py",
         "tests/test_codex_skill_mirror.py",
         "tests/test_evo_inquiry.py"
+      ]
+    },
+    "tests/test_run_state.py": {
+      "baseline_sha256": "13249453e06805395caff797603d531bdad93e363ac1460e815fc0ce269b755c",
+      "previous_sha256": "832ac02c7c979728d663f76bcf34c637188eea7cd0488f96ee5f27280b783be9",
+      "sha256": "37bdf37d45ce2a8f88121dc8d2e4d8c5db35aa74ce7a0670da0285e3f96ccb5b",
+      "adaptation_version": "1.6.1",
+      "reason": "Add actual concurrent-update and independent-run regressions while preserving all existing phase/review tests.",
+      "review_ref": "docs/VALIDATION_1_6_1.md#release-ci-follow-up",
+      "test_refs": [
+        "tests/test_run_state.py",
+        "tests/test_research_control.py"
       ]
     }
   },

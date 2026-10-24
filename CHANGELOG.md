@@ -15,6 +15,7 @@
 - Distinguish one-attempt cancellation, workflow STOP and host Goal pause. Preserve process ownership, actual exit verification and original accounting.
 - Clarify observation-only Plan monitoring: report anomalies without launching, changing configurations, persisting research state or executing stop commands.
 - Use native Windows shared/exclusive file locks so review writers can coexist with healthy training while exclusive migration stays blocked. Preserve nonblocking contention errors and release locks when an owner exits.
+- Serialize Windows run-state transactions with the portable per-run lock instead of a no-op, preventing duplicate action claims and lost updates while independent runs can still proceed.
 
 ### Changed
 

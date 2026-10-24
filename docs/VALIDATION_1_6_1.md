@@ -28,10 +28,11 @@ entrypoint hooks; original retained workflow bodies remain frozen.
 
 ## Verification record
 
-Local Linux validation passed **282 distinct tests** across the initial 135
+Local Linux validation passed **304 distinct tests** across the initial 135
 control, block-review, execution and iteration-ledger checks, 107 handoff, pilot,
-guidance, mirror, package, queue, version and release-workflow checks, and the
-66-test lock/execution/migration follow-up (26 repeat cases). The two existing queue
+guidance, mirror, package, queue, version and release-workflow checks, the
+66-test lock/execution/migration follow-up, and the 76-test per-run/concurrency
+follow-up. The suites overlap; the total counts unique JUnit case identities. The two existing queue
 `datetime.utcnow` deprecation warnings remain. The current machine-readable status
 is [release-validation.json](../release-validation.json); it is not a publication
 receipt or a reuse of 1.6.0 release results.
@@ -99,3 +100,23 @@ live-worker review case and existing migration protection checks. Its JUnit
 receipt is `validation/release-1.6.1/lock-runtime.xml`. The legacy-state read
 warning is expected for its explicit migration test. Native acceptance must
 come from the corrected release workflow, not from the Linux checks alone.
+
+The [second release CI attempt](https://github.com/Soceremite/EvoInquiry/actions/runs/40065475352)
+passed all seven lock regressions and the live-worker review test in both native
+Windows shells, but exposed a second defect: two cooperating processes both
+returned a new claim for the same action (504 passed, 9 skipped and 1 failed per
+shell). Its annotations are also retained; publishing remained blocked. The
+previous Windows-exclusive namespace fallback had masked the per-run lock's
+no-op behavior on systems without fcntl.
+
+Run-state transactions now use the existing portable exclusive lock for each
+run, inside the shared namespace guard. This preserves the original lock order
+and public phase/review interfaces. Two new real-process tests check that nine
+concurrent updates preserve all observations and phase policy, and that a held
+run lock still permits updates to a different run. The original duplicate-claim
+and live-worker review tests remain unchanged. The protected upstream digest is
+preserved; the targeted adaptation is registered separately.
+
+The per-run repair passed all 76 local follow-up tests with no skips or warnings;
+its JUnit receipt is `validation/release-1.6.1/run-lock-runtime.xml`. Native
+Windows/macOS acceptance still requires the next corrected release workflow.

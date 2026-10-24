@@ -1,5 +1,7 @@
 """Tests for tools/run_state.py — resumable run-state with the done/accepted split."""
 
+import json
+import subprocess
 import sys
 import tempfile
 from pathlib import Path
@@ -8,6 +10,65 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
 import run_state as rs  # noqa: E402
 
 PHASES = ["W1", "W1.5", "W2", "W3"]
+
+
+def test_concurrent_coordination_updates_preserve_all_values_and_phases(tmp_path):
+    before = rs.start_run(str(tmp_path), 'parallel', PHASES)
+    program = '''
+from tools import run_state
+import json,sys,time
+observed=[]
+for step in range(3):
+    token=sys.argv[2]+'-'+str(step)
+    def transition(metadata,state):
+        values=metadata.setdefault('observations',[])
+        time.sleep(.02)
+        values.append(token)
+        observed.append(len(values))
+        return metadata
+    run_state.update_coordination(sys.argv[1],'parallel',transition)
+print(json.dumps(observed))
+'''
+    children = [subprocess.Popen([sys.executable, '-B', '-c', program,
+                                 str(tmp_path), str(worker)],
+                                cwd=Path(__file__).resolve().parents[1],
+                                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                for worker in range(3)]
+    observed = []
+    try:
+        for child in children:
+            output, errors = child.communicate(timeout=15)
+            assert child.returncode == 0, errors.decode()
+            observed.extend(json.loads(output))
+    finally:
+        for child in children:
+            if child.poll() is None:
+                child.kill()
+                child.communicate(timeout=10)
+    after = rs.load_run(str(tmp_path), 'parallel')
+    assert sorted(observed) == list(range(1, 10))
+    assert sorted(after['coordination']['observations']) == [
+        f'{worker}-{step}' for worker in range(3) for step in range(3)]
+    assert after['phases'] == before['phases']
+    assert after['gates'] == before['gates']
+    assert after['policy'] == before['policy']
+
+
+def test_run_lock_allows_independent_run_updates(tmp_path):
+    before = rs.start_run(str(tmp_path), 'held', PHASES)
+    rs.start_run(str(tmp_path), 'independent', PHASES)
+    program = '''
+from tools import run_state
+import sys
+run_state.update_coordination(sys.argv[1],'independent',lambda metadata,state: {'value':1})
+'''
+    with rs._lock(str(tmp_path), 'held'):
+        result = subprocess.run([sys.executable, '-B', '-c', program, str(tmp_path)],
+                                cwd=Path(__file__).resolve().parents[1],
+                                capture_output=True, text=True, timeout=15)
+        assert result.returncode == 0, result.stderr
+        assert rs.load_run(str(tmp_path), 'independent')['coordination'] == {'value': 1}
+    assert rs.load_run(str(tmp_path), 'held') == before
 
 
 def _tmp():
