@@ -1,5 +1,25 @@
 # Changelog
 
+## 1.6.1 — 2026-10-24
+
+### Added
+
+- Add progress-based reflection after N complete experimental blocks. A full comparison, including its planned methods, seeds and analysis, counts once; retries and preparation do not inflate the count.
+- Support explicit null total wall/action caps for ongoing authorized research, while retaining declared resource ceilings, retry bounds and per-attempt timeouts.
+- Add `inspect --read-only` to observe existing and due review without changing run state or the iteration ledger, for Plan monitoring and live observation.
+
+### Fixed
+
+- Block prepared execution at launch when reflection is pending or due, including a review that becomes due during environment verification. Preserve the prepared identity for launch after review.
+- Keep healthy in-flight jobs running through ordinary reflection. Separate waiting for long training from completed zero-finding investigations and native Goal blocked/stalled status.
+- Distinguish one-attempt cancellation, workflow STOP and host Goal pause. Preserve process ownership, actual exit verification and original accounting.
+- Clarify observation-only Plan monitoring: report anomalies without launching, changing configurations, persisting research state or executing stop commands.
+
+### Changed
+
+- Keep status checks, ongoing monitoring, planning, execution and decision recording with their existing owners; add no new skill or scheduler.
+- Add whole-comparison and monitoring regression coverage to both native Windows CI shell gates. Local tests do not establish native Goal continuation or native Windows/macOS acceptance; see [validation scope](docs/VALIDATION_1_6_1.md).
+
 ## 1.6.0 — 2026-10-21
 
 ### Added

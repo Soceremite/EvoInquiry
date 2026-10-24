@@ -1,258 +1,155 @@
 {
   "schema_version": 1,
-  "version": "1.6.0",
+  "version": "1.6.1",
   "release_kind": "stable",
-  "status": "published-verified",
-  "assessed_at": "2026-10-21T09:45:29.959883+00:00",
+  "status": "local-focused-validation-passed-ci-pending",
   "source_base": {
-    "version": "1.5.0",
-    "commit": "d50a6a573b2e692ba1ede53ad6d407b9eaaf2016"
+    "version": "1.6.0",
+    "commit": "b66137f3d84cd71d5c411e8d22c26f57bac17cfb"
   },
   "runtime_changed": true,
   "inventory": {
-    "codex_entrypoints": 89,
-    "mainline_entries": 88,
-    "retained_workflow_baselines": 83,
-    "protected_resources": 450,
-    "directed_workflow_adaptations": 35,
-    "mainline_shared_references": 43,
-    "codex_shared_references": 43,
-    "new_codex_skills_since_1_5_0": [
-      "problem-synthesis"
-    ],
-    "frozen_maps_unchanged": true
-  },
-  "runtime_sha256": {
-    "tools/research_control.py": "0d0dc1bd404e6621514c4942ed6f2525569b8df7893a74f4de370d4f70e981ed",
-    "tools/execution_registry.py": "5ae210ea87ce54a0d4fb2e650369d1e659342a519fc6af3f367e1caca42598e3",
-    "tools/iteration_log.py": "5767d8e76ce199cc1b8b043f0b21b345808e4242a73311c6fdf4a409eff0bfb7",
-    "tools/problem_synthesis.py": "ec075d147d170aa5d1821f824c570f200e031b9b41f6af96392e1776fde71f5e",
-    "tools/run_state.py": "f8f0a6299f04610ae3e9d468fd01a5584c79713411264cde9f7d731055fd0d97",
-    "tools/checkpoint_retention.py": "a543315153827fd854150829eca86209e9748f168980f47702daa3df5857c133",
-    "skills/skills-codex/shared-references/bounded-inquiry.md": "ff305cd973bd0b2470d894fb60fa590f72dfb0c5bd1c38ae2467b722f63b0441",
-    "skills/skills-codex/shared-references/research-review-cycle.md": "1bd03163b051a9947f597b3759089e6ea8b0b024bda20ec7d24971fbe19c54e9",
-    "skills/skills-codex/problem-synthesis/SKILL.md": "3a56dc66583c6a60e34f0526812348a5cc41111096c880ddbe502c953c847242"
+    "codex_skill_entrypoints": 89,
+    "mainline_skills": 88,
+    "retained_workflows": 83
   },
   "current_checks": {
-    "full_local_regression": {
-      "status": "PASS_WITH_SKIPS",
-      "python": "3.12.14",
-      "platform": "Linux",
-      "passed": 1349,
-      "skipped": 36,
+    "runtime": {
+      "artifact": "validation/experiment-block-reflection/runtime-final.xml",
+      "sha256": "3e10bb7e9408b0d6ce174b5c7b26d4a5c45c7be1028863467ecacc9cedf084f4",
+      "tests": 135,
       "failures": 0,
       "errors": 0,
-      "warnings": 3,
-      "passing_subtests": 46,
-      "duration_seconds": 2402.06,
-      "receipt": {
-        "path": "validation/v160/autonomous-brake/full-suite.xml",
-        "sha256": "e8d41150340b992efa0bd856f9bf873f27826b0ed3ad4391bac2bf55ca7a8bff"
-      },
-      "summary": {
-        "path": "validation/v160/autonomous-brake/regression-result.json",
-        "sha256": "bdb1bcb33ded241f83c963f01227512f67b3154389e819610d4ad77d478fb38e"
-      },
-      "source_manifest": {
-        "path": "validation/v160/autonomous-brake/final-python-sources.json",
-        "sha256": "c337b3f39a32614c05fea6a3bde226b6e776321a4d9e645c4dfddb43e5d5cf6d"
-      },
-      "scope": "192 Python file identities unchanged through final regression and observation; local Linux only"
+      "skipped": 0,
+      "elapsed_seconds": 308.084
     },
+    "compatibility": {
+      "artifact": "validation/experiment-block-reflection/compat-final.xml",
+      "sha256": "6991944b399071fadf3bdc43c8ae2ee323fe7eb76c0ffe9830b9db152a254ed9",
+      "tests": 107,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "elapsed_seconds": 48.834
+    },
+    "distinct_tests_passed": 242,
     "package_preservation": {
       "status": "PASS",
-      "receipt": {
-        "path": "validation/v160/autonomous-brake/package-post-ci.json",
-        "sha256": "5134c86851eb34af3d9435301eaa25f9b968812f347053532cd0ec6c43e17ead"
+      "retained_workflows": 83,
+      "artifact": "validation/experiment-block-reflection/package-final.json",
+      "sha256": "5134c86851eb34af3d9435301eaa25f9b968812f347053532cd0ec6c43e17ead"
+    },
+    "release_note_wrapping": "passed",
+    "git_diff_check": "passed",
+    "native_platform_ci": "pending-release-workflow",
+    "native_goal_plan_sessions": "not-tested"
+  },
+  "validation_record": "docs/VALIDATION_1_6_1.md",
+  "limitations": [
+    "Native Codex Goal continuation and Plan watch behavior not exercised.",
+    "The repository mount fails required cross-process lock exclusion; runtime validation used verified local /tmp.",
+    "Review admission checks do not atomically span concurrent gate changes and process creation.",
+    "Two existing queue datetime.utcnow deprecation warnings remain.",
+    "Local tests do not substitute for release CI; native platform receipts are recorded after workflow completion."
+  ],
+  "previous_release": {
+    "version": "1.6.0",
+    "validation_ref": "https://github.com/Soceremite/EvoInquiry/blob/v1.6.0/release-validation.json"
+  },
+  "assessed_at": "2026-10-24T04:49:27.995239+00:00",
+  "practice": {
+    "actual_local_cpu_jobs": 18,
+    "complete_comparison_blocks": 3,
+    "methods_per_block": 2,
+    "seeds_per_method": 3,
+    "simulated_original_start_hours_ago": 3,
+    "hour_scale_training": "not-run-for-this-patch",
+    "witnesses": [
+      {
+        "test": "test_plan_inspection_reports_due_review_without_mutating_state_or_stall_ledger",
+        "seconds": 0.499,
+        "status": "passed"
       },
-      "scope": "89 discoverable Codex entrypoints, 83 frozen retained workflow baselines and resolved shared references"
-    },
-    "native_windows_ci_wiring": {
-      "status": "PASS_LOCAL_WIRING_ONLY",
-      "passed": 3,
-      "receipt": {
-        "path": "validation/v160/autonomous-brake/ci-wiring.xml",
-        "sha256": "aa35809741b3f6b168858b1feea560ee7aa5bacbe19b5a653494bb7750fc7239"
+      {
+        "test": "test_real_cpu_comparisons_resume_after_progress_review_without_a_wall_deadline",
+        "seconds": 50.696,
+        "status": "passed"
       },
-      "scope": "Both Windows shells cover reflection and execution governance; not a native Windows execution result"
-    },
-    "hourly_cuda_engineering": {
-      "status": "PASS_WITH_SCOPE_LIMITATIONS",
-      "training_seconds": 3600.003729,
-      "optimizer_steps": 2145720,
-      "full_state_publications": 30,
-      "retained_recovery_points": 2,
-      "retained_bytes": 336100,
-      "receipt": {
-        "path": "validation/v160/hourly/observed-summary.json",
-        "sha256": "b0539e02b2841c9f501f9ff43cd3bb154f8625a095bdbf8877c056520d1c432f"
+      {
+        "test": "test_reflection_blocks_prepared_dispatch_until_review_then_reuses_identity[before-validation]",
+        "seconds": 7.408,
+        "status": "passed"
       },
-      "scope": "Constructed Linux/H100 engineering endurance, injected numerical failure and deterministic full-state replay; three programmed reviews, not LLM research decisions"
-    },
-    "native_model_trajectory_and_stop": {
-      "status": "REQUESTED_BEHAVIORS_OBSERVED",
-      "duration_seconds": 2632.38561,
-      "maximum_seconds": 3600,
-      "original_deadline_preserved": true,
-      "decisions": [
-        "REPLAN",
-        "STOP"
-      ],
-      "stop_delivery_seconds": 3.505249,
-      "actual_exit_code": 0,
-      "actual_status": "stopped",
-      "full_state_replay_identical": true,
-      "aggregate_gpu_allocation_seconds": 781.8702230378985,
-      "actions": 7,
-      "receipt": {
-        "path": "validation/v160/autonomous-brake/final-observed-summary.json",
-        "sha256": "31290a3cb90b94a3fa18806b0b127318580593595cbc2afd49c4aa03d1baaaca"
+      {
+        "test": "test_reflection_blocks_prepared_dispatch_until_review_then_reuses_identity[during-validation]",
+        "seconds": 10.294,
+        "status": "passed"
       },
-      "evidence_manifest": {
-        "path": "validation/v160/autonomous-brake/runtime-evidence-sha256.json",
-        "sha256": "bd803e28d73640b49abc5595ae8976c0b765690c6be43e50e68120d0bf681b66"
+      {
+        "test": "test_reflection_blocks_prepared_dispatch_until_review_then_reuses_identity[due-before-validation]",
+        "seconds": 7.472,
+        "status": "passed"
       },
-      "paired_cases": {
-        "path": "validation/v160/autonomous-brake/paired-case-audit.json",
-        "sha256": "7ae1fb6f4a2d3511d2055f416b9565772f28146ac285d0d7ba40fcb1c4f243d7"
+      {
+        "test": "test_reflection_blocks_prepared_dispatch_until_review_then_reuses_identity[due-during-validation]",
+        "seconds": 9.279,
+        "status": "passed"
       },
-      "scope": "Constructed three-domain/two-initialization-seed cohort, fixed paired validation, explicitly guided candidate use; same-family provisional, not matched toolkit comparison"
-    },
-    "assumption_sweep": {
-      "status": "GAPS_REPAIRED_WITH_SCOPE_LIMITATIONS",
-      "review_independence": "same-family/provisional",
-      "rounds": 2,
-      "reports": [
-        {
-          "path": "validation/v160/autonomous-brake/implement-stage/SILENT_ASSUMPTION_SWEEP.json",
-          "sha256": "b3dda873de080a2e436d8dc5371d06c8400ee49896c9b2d4dedb1bf1b031bdbf"
-        },
-        {
-          "path": "validation/v160/autonomous-brake/implement-stage/SILENT_ASSUMPTION_SWEEP_FOLLOWUP.json",
-          "sha256": "dbff1edd6953edaecc636e35f7b59bf774dc4521255ef1f3740e099e4efd65b9"
-        }
-      ],
-      "scope": "Both zero-exit cancellation paths repaired; all 19 execution-governance checks pass. Final observer repair has deterministic checks, no third fresh sweep or independent CLEAN verdict."
-    },
-    "native_release_ci": {
-      "status": "PASS",
-      "workflow": ".github/workflows/release-beta.yml",
-      "url": "https://github.com/Soceremite/EvoInquiry/actions/runs/39576048972",
-      "commit": "3593c15a1319d4ea2a99ca35228632cba5283bf7",
-      "jobs": [
-        {
-          "name": "windows (pwsh)",
-          "conclusion": "success",
-          "url": "https://github.com/Soceremite/EvoInquiry/actions/runs/39576048972/job/119141720977"
-        },
-        {
-          "name": "test (macos-latest)",
-          "conclusion": "success",
-          "url": "https://github.com/Soceremite/EvoInquiry/actions/runs/39576048972/job/119141721130"
-        },
-        {
-          "name": "test (ubuntu-latest)",
-          "conclusion": "success",
-          "url": "https://github.com/Soceremite/EvoInquiry/actions/runs/39576048972/job/119141721133"
-        },
-        {
-          "name": "windows (powershell.exe)",
-          "conclusion": "success",
-          "url": "https://github.com/Soceremite/EvoInquiry/actions/runs/39576048972/job/119141721327"
-        },
-        {
-          "name": "publish",
-          "conclusion": "success",
-          "url": "https://github.com/Soceremite/EvoInquiry/actions/runs/39576048972/job/119143582565"
-        }
-      ],
-      "scope": "Four native CI gates and the dependent publication job completed successfully on the exact tagged source. CI is not a native cross-platform GPU endurance test."
-    },
-    "formal_installation": {
-      "status": "UNCHANGED",
-      "scope": "Publishing does not replace the enabled plugin or change a training environment"
-    },
-    "prepublication_branch_ci": {
-      "status": "PASS",
-      "url": "https://github.com/Soceremite/EvoInquiry/actions/runs/39575072542",
-      "commit": "3593c15a1319d4ea2a99ca35228632cba5283bf7",
-      "scope": "The acceptance branch passed the four-platform test workflow before fast-forward integration into main."
-    },
-    "public_release_assets": {
-      "status": "PASS",
-      "release_id": 419367659,
-      "identical_payload_files": 1082,
-      "codex_entrypoints": 89,
-      "retained_workflow_contracts": 83,
-      "release_body_matches_source": true,
-      "assets": [
-        {
-          "name": "evo-inquiry-1.6.0.tar.gz",
-          "bytes": 3312574,
-          "sha256": "7c42c9c8399a60653991e928e8b0e5b61023c38a41e19bb8efd6de21af06aa8e",
-          "url": "https://github.com/Soceremite/EvoInquiry/releases/download/v1.6.0/evo-inquiry-1.6.0.tar.gz"
-        },
-        {
-          "name": "evo-inquiry-1.6.0.zip",
-          "bytes": 4092984,
-          "sha256": "b0ebe7abe31e609ef0575f665388ca967af17f46e5945338bd42b8636ad809ea",
-          "url": "https://github.com/Soceremite/EvoInquiry/releases/download/v1.6.0/evo-inquiry-1.6.0.zip"
-        },
-        {
-          "name": "release-manifest.json",
-          "bytes": 406,
-          "sha256": "ea2839e957a78e3c151c75f794b5a3195922db8eb09dafe99b8ba6ac5e9e730d",
-          "url": "https://github.com/Soceremite/EvoInquiry/releases/download/v1.6.0/release-manifest.json"
-        },
-        {
-          "name": "SHA256SUMS",
-          "bytes": 179,
-          "sha256": "c7e84b49a665f5b0a0ef3e0915282a829030c5668cec1b6216a2b7e6ed715aeb",
-          "url": "https://github.com/Soceremite/EvoInquiry/releases/download/v1.6.0/SHA256SUMS"
-        }
-      ],
-      "receipt": {
-        "path": "validation/release-1.6.0/publication-verification.json",
-        "sha256": "14ab8a8b7c3494c4235da353de1b8815e314bcab292464281fa00314f1137172"
-      },
-      "scope": "All four public assets downloaded and checked against GitHub asset digests; archive checksums also match SHA256SUMS and release-manifest.json. Both archives contain the identical committed payload. The extracted public package passes preservation verification."
-    }
+      {
+        "test": "test_read_only_watch_and_reflection_leave_healthy_process_and_stall_count_unchanged",
+        "seconds": 7.207,
+        "status": "passed"
+      }
+    ]
   },
   "retained_failures": [
     {
-      "kind": "harness-duration-mismatch",
-      "execution": "model-followup",
-      "scope": "Cancelled; excluded from fair comparison; corrected by exact 12-second followup"
+      "artifact": "validation/experiment-block-reflection/admission-before.xml",
+      "sha256": "7389cff64e463b8c4c63d06db8fd41b32ee66f5a6112860d5b69b73480a4a41b",
+      "tests": 2,
+      "failures": 2,
+      "errors": 0,
+      "skipped": 0,
+      "elapsed_seconds": 14.612
     },
     {
-      "kind": "recovery-process-timeout",
-      "execution": "active-stop-witness-resume-check",
-      "scope": "Replay hashes matched but process exceeded 35 seconds during exit cleanup. Failed attempt preserved; bounded 90-second retry completed normally."
+      "artifact": "validation/experiment-block-reflection/compat-before-correction.xml",
+      "sha256": "ffa5f3d4d0c4464ed7c904cdd4bb9a5183f22782ab5270c65606bf6376823a5e",
+      "tests": 107,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 0,
+      "elapsed_seconds": 49.106
     },
     {
-      "kind": "preflight-and-regression-fixture-failures",
-      "scope": "Environment incompatibility, earlier failed fixtures and interrupted suites remain source-specific in validation record, not promoted to passing runs"
+      "artifact": "validation/experiment-block-reflection/results-filesystem-rejected.xml",
+      "reason": "Repository filesystem failed required cross-process lock exclusion; accepted runtime tests used local /tmp."
     }
   ],
-  "validation_record": "docs/VALIDATION_1_6_0.md",
-  "limitations": [
-    "No general defense against local optima, independent scientific acceptance or model-driven unattended hour endurance is established.",
-    "Configured boundaries need existing monitor inspection; installed skills do not create a resident watchdog or implicit session hook.",
-    "Actual stop evidence covers bound local Linux/POSIX execution; Windows descendant trees, SSH, schedulers and distributed execution require their own checks.",
-    "Model use was explicitly guided and same-family provisional; implicit skill selection and toolkit superiority were not measured.",
-    "Local raw receipts, model traces and checkpoint states remain ignored; release assets contain committed public source only.",
-    "Negative results, control regressions and timeouts remain retained; later success does not erase an earlier failure."
-  ],
   "publication": {
-    "tag": "v1.6.0",
-    "commit": "3593c15a1319d4ea2a99ca35228632cba5283bf7",
-    "release_id": 419367659,
-    "url": "https://github.com/Soceremite/EvoInquiry/releases/tag/v1.6.0",
-    "status": "published",
-    "published_at": "2026-10-21T09:23:58Z",
-    "latest": true,
-    "draft": false,
-    "prerelease": false,
-    "record_scope": "Post-publication documentation records verification. The immutable tag and its four assets retain the source and pre-publication record at the release commit; no retagging or asset replacement was performed."
+    "published": false,
+    "installed_plugin_replaced": false,
+    "authorized": true,
+    "tag": "v1.6.1",
+    "method": "tag-triggered-release-workflow"
+  },
+  "runtime_sha256": {
+    "VERSION": "6430a242e9486093ef6f71d9086d48f61ba102f0d2fb0f5b95334c6007a46db3",
+    ".codex-plugin/plugin.json": "5f48ff8f9a8e78505506aec740382fa9a5625397d672de30ea2c5862f6dc55a8",
+    "tools/research_control.py": "0dd13c0345cf8fd39bf839699933bd9f1d64362cb3c387376dc76646096cda4a",
+    "tools/execution_registry.py": "ca6af30953e21c4dc42702de2e4f7486073cc1745193e830c779a9f192f46997",
+    "tools/iteration_log.py": "f9d709ec75b3d481b43a72133243e70e569ffabf4339ad53ef77039e03f6de9f",
+    "tools/skill_contracts.py": "7508121e688fee61c77d4b779fd99de4bf018e4d57a730048e8e0d4646344835",
+    "tools/skill-contracts.json": "f2ef2aaafc9ec6cd62297c7fbd1be9f135724c613dfb3c9353a4648c97c25090",
+    "skills/shared-references/bounded-inquiry.md": "972b9addf7d7e0edd102e8358053bf331d32426fd17ddb5a39b2126982dba667",
+    "skills/skills-codex/shared-references/bounded-inquiry.md": "972b9addf7d7e0edd102e8358053bf331d32426fd17ddb5a39b2126982dba667",
+    "skills/shared-references/external-cadence.md": "5ad507aafade32e1b111a6746b8e738324320d145d594a485b98cabc86962baa",
+    "skills/skills-codex/shared-references/external-cadence.md": "8053da9eddab285df8dce10e9aa3f76a870310fffe891d7adbc0f3a9664a3dc5",
+    "skills/skills-codex/research-guide/SKILL.md": "8bf639bcf6f7bd1796c58e43020ff999bc8b3c4d73ad9326c94eb3f41a758995",
+    "skills/skills-codex/training-check/SKILL.md": "f16294c2dc34965afe059255df1ab2aa6b92b8e6900dfc86fef61838a7b47f06",
+    "skills/skills-codex/monitor-experiment/SKILL.md": "e332d8e7d3873c0087553dff8753e6d3ed9ae6cdf4894ac245ad43e2b8280733",
+    "skills/skills-codex/research-pipeline/SKILL.md": "06ab8cb9e23edc84785a845b5c4fb9ea07c734a19bf18d7795cd1660b8cf3b51",
+    "tests/test_execution_governance.py": "66351af923863192e5ff9b85a121033a699b0dd4d09ce6683c5cace5bf50cedf",
+    "tests/test_experiment_block_reflection.py": "e50208f4c4e87215ce43b055acaa27798c01ebcef320e5011400b484ef0dc629"
   }
 }

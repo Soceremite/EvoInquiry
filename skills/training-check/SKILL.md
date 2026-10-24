@@ -13,6 +13,7 @@ standards, and recovery contracts. Carry them into nested research tasks and
 reviewer briefs. Continue authorized work through its necessary steps; honor
 budgets, blocking checkpoints, and stopping conditions.
 For a governed run, use [bounded inquiry](../shared-references/bounded-inquiry.md) at the existing monitoring cadence: inspect configured trajectory gates, read actual experiment evidence, and record a reasoned decision. A STOP must reach the execution owner and be followed by actual exit verification; a saved intention is insufficient. Ordinary review does not kill healthy training.
+Apply its [monitoring and mode boundaries](../shared-references/bounded-inquiry.md#monitoring-interruption-and-host-modes): Plan observation is read-only, so stopping jobs or writing notes requires execution authority. A healthy run waiting for results does not add stall iterations or block a Goal. Retain one monitoring owner and use the host's supported observation cadence.
 <!-- EVO-INQUIRY:END -->
 
 

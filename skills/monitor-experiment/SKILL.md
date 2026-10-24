@@ -12,6 +12,7 @@ principles within the user's scope and this skill's existing outputs, review
 standards, and recovery contracts. Carry them into nested research tasks and
 reviewer briefs. Continue authorized work through its necessary steps; honor
 budgets, blocking checkpoints, and stopping conditions.
+Use the [monitoring and mode boundaries](../shared-references/bounded-inquiry.md#monitoring-interruption-and-host-modes): a status check does not stop training or reset its review cadence. Plan observation remains read-only; reuse the existing owner for an authorized ongoing watch.
 <!-- EVO-INQUIRY:END -->
 
 

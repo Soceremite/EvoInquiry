@@ -239,6 +239,9 @@ tuning of the same frame.
   Consecutive zero-finding iterations accumulate a `stale_count` in
   `.ei/runs/<run_id>.iterations.jsonl` — a sidecar that does **not** touch run_state's
   done/accepted state.
+  Count a completed investigation, not a monitoring wake-up: waiting for an active
+  job, reading progress logs and a telemetry `WAIT` do not call `note` and do not
+  advance the stale ladder. See [monitoring boundaries](bounded-inquiry.md#monitoring-interruption-and-host-modes).
 - **Forced pivot ladder** (the heartbeat reads the returned `pivot`):
   - `stale_count >= 2` → **pivot structure, not tactics**: change a structural constraint
     (frame / objective / data / representation), not a tactical parameter, and pick a

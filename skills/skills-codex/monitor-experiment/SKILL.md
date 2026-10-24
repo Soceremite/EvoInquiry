@@ -12,6 +12,7 @@ reviewer briefs. Continue authorized work through its necessary steps; honor
 budgets, blocking checkpoints, and stopping conditions.
 
 For runs saving large artifacts, use [experiment storage](../shared-references/experiment-storage.md) to report disk usage, save growth/failures, and the latest valid recovery point. A status query does not independently authorize cleanup.
+Use the [monitoring and mode boundaries](../shared-references/bounded-inquiry.md#monitoring-interruption-and-host-modes): a single check does not cancel an ongoing watch or stop training. Plan checks remain read-only; route requested continuous observation to `training-check` without adding stall iterations.
 <!-- EVO-INQUIRY:END -->
 
 

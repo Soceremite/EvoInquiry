@@ -10,6 +10,7 @@ principles within the user's scope and this skill's existing outputs, review
 standards, and recovery contracts. Carry them into nested research tasks and
 reviewer briefs. Continue authorized work through its necessary steps; honor
 budgets, blocking checkpoints, and stopping conditions.
+For ongoing training, follow the [monitoring boundaries](../shared-references/bounded-inquiry.md#monitoring-interruption-and-host-modes). A watch tick is not a completed research iteration: do not append zero findings or trigger stale-progress escalation while waiting for a healthy job. Observation-only Plan work does not launch, stop or write research state.
 
 Carry the relevant [experiment storage policy](../shared-references/experiment-storage.md) into planning, implementation, and launch phases. Reuse its budget and retention decisions rather than introducing another storage report or checkpoint state system.
 

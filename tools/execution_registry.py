@@ -465,7 +465,8 @@ def _wait_controlled(root, directory, record, process, timeout, bound_workflow):
                 if directive['stopped']:
                     cause = {'cause': 'workflow_stop', 'reason': directive['stopped']['reason'],
                              'requested_at': directive['stopped']['at']}
-                elif directive['timing']['dispatch_seconds_remaining'] <= 0:
+                elif (directive['timing']['dispatch_seconds_remaining'] is not None
+                      and directive['timing']['dispatch_seconds_remaining'] <= 0):
                     cause = {'cause': 'workflow_deadline', 'reason': 'Original dispatch budget exhausted'}
             if cause is None and timeout is not None and time.monotonic() - started >= timeout:
                 cause = {'cause': 'timeout', 'reason': 'Fixed execution time limit reached'}
@@ -496,7 +497,9 @@ def launch_execution(root, execution_run_id, arguments=(), *, timeout=None):
     The local wait observes bound workflow stops and identity-bound per-execution
     requests. Effective timeout is the minimum of an explicit bound, the spec's
     max_seconds_per_attempt and the configured workflow's original remaining
-    dispatch time. Ordinary reflection does not interrupt a healthy process.
+    dispatch time. Pending/due reflection blocks prepared dispatch, and is
+    rechecked after environment verification. It does not interrupt a healthy
+    process that was already launched.
     A termination.json receipt records actual exit and its enforcement scope;
     Windows parent termination does not certify a descendant process tree.
     """
@@ -518,6 +521,8 @@ def launch_execution(root, execution_run_id, arguments=(), *, timeout=None):
     directive = _workflow_directive(root, record)
     if directive is not None and directive['stopped']:
         raise RegistryError('Bound workflow already stopped; execution was not launched')
+    if directive is not None and (directive['reflection_gate'] or directive['reflection_due']):
+        raise RegistryError('Reflection required before launch; inspect and address the workflow review')
     try:
         from .project_registry import discover_project
     except ImportError:
@@ -529,10 +534,13 @@ def launch_execution(root, execution_run_id, arguments=(), *, timeout=None):
         directive = _workflow_directive(root, record)
         if directive is None or directive['stopped']:
             raise RegistryError('Bound workflow stopped or disappeared before launch')
+        if directive['reflection_gate'] or directive['reflection_due']:
+            raise RegistryError('Reflection required before launch; inspect and address the workflow review')
         remaining = directive['timing']['dispatch_seconds_remaining']
-        if remaining <= 0:
-            raise RegistryError('Original workflow dispatch budget exhausted before launch')
-        bounds.append(remaining)
+        if remaining is not None:
+            if remaining <= 0:
+                raise RegistryError('Original workflow dispatch budget exhausted before launch')
+            bounds.append(remaining)
     effective_timeout = min(bounds) if bounds else None
     snapshot_dir = verify_ref(root, record['snapshot_ref']).parent
     with state_writer(root) as state, file_lock(state / 'locks/executions.lock'):

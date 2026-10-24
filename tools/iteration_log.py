@@ -4,7 +4,9 @@
 Append-only per-iteration ledger for an unattended research loop. Each tick the
 orchestrator records how many NEW findings the iteration produced — where a "finding"
 is a concrete added entry (new evidence, a falsified hypothesis, a candidate direction),
-NOT a subjective "valuable result". Consecutive zero-finding iterations accumulate a
+NOT a subjective "valuable result". A monitoring poll or waiting for an active
+job is not a completed investigation and must not call ``note``. Consecutive
+zero-finding completed investigations accumulate a
 stale_count, which drives a forced pivot:
 
   stale_count >= 2  → pivot = "structural"  (change a STRUCTURAL constraint, not tactical params)
@@ -104,7 +106,11 @@ def pivot_for(stale_count: int) -> str:
 
 def note(root: str, run_id: str, phase: str, new_findings: int,
          direction: Optional[str] = None) -> dict:
-    """Record one iteration; return {stale_count, pivot}. Append-only; never blocks work."""
+    """Record a completed investigation, never a wait/poll; return {stale_count, pivot}.
+
+    Append-only; never blocks work. Monitoring uses read-only run inspection and
+    existing process/log evidence instead of inserting zero-finding iterations.
+    """
     new_findings = int(new_findings)
     if new_findings < 0:
         raise ValueError(f"new_findings must be >= 0, got {new_findings}")

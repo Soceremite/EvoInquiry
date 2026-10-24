@@ -902,17 +902,17 @@
       "upgrade_baseline_sha256": "2b9ff14c6143583625d4bbf1399d8622664965ddbc885c39425975535031f229"
     },
     "tools/iteration_log.py": {
-      "sha256": "5767d8e76ce199cc1b8b043f0b21b345808e4242a73311c6fdf4a409eff0bfb7",
+      "sha256": "f9d709ec75b3d481b43a72133243e70e569ffabf4339ad53ef77039e03f6de9f",
       "baseline_sha256": "819c22ba20bb270e0a514edb2626e7e3a1c4bade36f809e3ee9571cc076f7cb0",
-      "reason": "Trajectory checkpoints and problem-synthesis handoffs through the existing action owner, ledger, phases and review gates.",
+      "reason": "User-approved 1.6.1: distinguish monitoring waits from completed research iterations, permit supported read-only Plan observation, and retain separate execution/Goal stop scope. Frozen original baselines are preserved.",
       "upgrade_baseline_sha256": "819c22ba20bb270e0a514edb2626e7e3a1c4bade36f809e3ee9571cc076f7cb0",
-      "previous_sha256": "c9809132c352d10b5c9291a9ed17c2478c3a03efa704284fd10e66e946f0a6de",
-      "adaptation_version": "1.6.0",
-      "review_ref": "docs/VALIDATION_1_6_0.md#verification-record",
+      "previous_sha256": "5767d8e76ce199cc1b8b043f0b21b345808e4242a73311c6fdf4a409eff0bfb7",
+      "adaptation_version": "1.6.1",
+      "review_ref": "docs/VALIDATION_1_6_1.md#changes-reviewed",
       "test_refs": [
-        "tests/test_problem_synthesis.py",
+        "tests/test_execution_governance.py",
+        "tests/test_experiment_block_reflection.py",
         "tests/test_iteration_log.py",
-        "tests/test_research_control.py",
         "tests/test_codex_skill_mirror.py",
         "tests/test_evo_inquiry.py"
       ]
@@ -1358,18 +1358,18 @@
     },
     "skills/research-pipeline/SKILL.md": {
       "baseline_sha256": "3dd1f071770ffd700c55e607f8a6f641b7be5d4fbd3c2e0ab203bbfe22fd2d3b",
-      "sha256": "ebac1e7a8c88868c3a35b92289a7a084fd03e9e1ebed4ce74f36231f93157e9c",
-      "reason": "Trajectory checkpoints and problem-synthesis handoffs through the existing action owner, ledger, phases and review gates.",
-      "adaptation_version": "1.6.0",
-      "review_ref": "docs/VALIDATION_1_6_0.md#verification-record",
+      "sha256": "2027407bf7a3c30a3708f1247511399df21a566c681aed85ba48ea6da4950838",
+      "reason": "User-approved 1.6.1: distinguish monitoring waits from completed research iterations, permit supported read-only Plan observation, and retain separate execution/Goal stop scope. Frozen original baselines are preserved.",
+      "adaptation_version": "1.6.1",
+      "review_ref": "docs/VALIDATION_1_6_1.md#changes-reviewed",
       "test_refs": [
-        "tests/test_problem_synthesis.py",
+        "tests/test_execution_governance.py",
+        "tests/test_experiment_block_reflection.py",
         "tests/test_iteration_log.py",
-        "tests/test_research_control.py",
         "tests/test_codex_skill_mirror.py",
         "tests/test_evo_inquiry.py"
       ],
-      "previous_sha256": "a13d969dfba4a09e70e29f4888cd0c8771999613e07fe72fb780936a63a332aa"
+      "previous_sha256": "ebac1e7a8c88868c3a35b92289a7a084fd03e9e1ebed4ce74f36231f93157e9c"
     },
     "skills/research-review/SKILL.md": {
       "baseline_sha256": "85c75d2bef1f08e2e7d2e6a7f6bc0ae42faecf942d5314d25f17376e1292597f",
@@ -2133,16 +2133,18 @@
     },
     "skills/monitor-experiment/SKILL.md": {
       "baseline_sha256": "0527977308bb7b26139ffb56cd2d45ecc72a9dd2961073ad51fac4aac106961d",
-      "sha256": "1a6ee39eb4e55163d40a8875c2392edbd1edfb76810404ce00b2f767b38dc9ed",
-      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "11cd2bfab03979001536d3055cbbf991bdff58ec30b74aefe5f0d3adb8816759",
+      "reason": "User-approved 1.6.1: distinguish monitoring waits from completed research iterations, permit supported read-only Plan observation, and retain separate execution/Goal stop scope. Frozen original baselines are preserved.",
+      "adaptation_version": "1.6.1",
+      "review_ref": "docs/VALIDATION_1_6_1.md#changes-reviewed",
       "test_refs": [
+        "tests/test_execution_governance.py",
+        "tests/test_experiment_block_reflection.py",
+        "tests/test_iteration_log.py",
         "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py"
-      ]
+        "tests/test_evo_inquiry.py"
+      ],
+      "previous_sha256": "1a6ee39eb4e55163d40a8875c2392edbd1edfb76810404ce00b2f767b38dc9ed"
     },
     "skills/openalex/SKILL.md": {
       "baseline_sha256": "4c853b646987c4472a8360e044ad232aa9731dcfb60c7183073e8e5f3e6ac9c1",
@@ -2531,20 +2533,18 @@
     },
     "skills/training-check/SKILL.md": {
       "baseline_sha256": "b4f27bbc58aaae314d8c51fe309fb41e42f47dce4f69ba07fac1ce7f0080c789",
-      "sha256": "01b53be957fb7b3ba5d988fe192399fd485cc9b923cdb7c721b2b9bc50b1a2db",
-      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.; extend only the common hook with bound local stop enforcement and truthful termination evidence; retain the original workflow owner and monitoring body",
-      "adaptation_version": "1.6.0",
-      "review_ref": "docs/VALIDATION_1_6_0.md",
+      "sha256": "5e4e7c992ef1d68e629d7cb9981d038691ae368cb625f9300b748268779230af",
+      "reason": "User-approved 1.6.1: distinguish monitoring waits from completed research iterations, permit supported read-only Plan observation, and retain separate execution/Goal stop scope. Frozen original baselines are preserved.",
+      "adaptation_version": "1.6.1",
+      "review_ref": "docs/VALIDATION_1_6_1.md#changes-reviewed",
       "test_refs": [
-        "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py",
-        "tests/test_research_control.py",
         "tests/test_execution_governance.py",
-        "tests/test_problem_synthesis.py"
+        "tests/test_experiment_block_reflection.py",
+        "tests/test_iteration_log.py",
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_evo_inquiry.py"
       ],
-      "previous_sha256": "7ca2087efae01c5deead475aff24f3dc85e96c841ba31780492730b85e3feecf"
+      "previous_sha256": "01b53be957fb7b3ba5d988fe192399fd485cc9b923cdb7c721b2b9bc50b1a2db"
     },
     "skills/vast-gpu/SKILL.md": {
       "baseline_sha256": "69aabce36540fd6fce55bf47b6f043166fc118fd708d03efddb57d168a99f4e5",
@@ -2699,6 +2699,36 @@
         "tests/test_candidate_comparison.py"
       ],
       "previous_sha256": "b6b65bede8a5d21a5040d9543e41b71bcf2bad71990013e5b49225151f3c7c52"
+    },
+    "skills/shared-references/external-cadence.md": {
+      "baseline_sha256": "d0d8e92c9c8f5e60555c8ddf32cf15c78d0bdc61a367ef35d8b0fef8dab906f3",
+      "previous_sha256": "d0d8e92c9c8f5e60555c8ddf32cf15c78d0bdc61a367ef35d8b0fef8dab906f3",
+      "sha256": "5ad507aafade32e1b111a6746b8e738324320d145d594a485b98cabc86962baa",
+      "adaptation_version": "1.6.1",
+      "reason": "User-approved 1.6.1: distinguish monitoring waits from completed research iterations, permit supported read-only Plan observation, and retain separate execution/Goal stop scope. Frozen original baselines are preserved.",
+      "review_ref": "docs/VALIDATION_1_6_1.md#changes-reviewed",
+      "test_refs": [
+        "tests/test_execution_governance.py",
+        "tests/test_experiment_block_reflection.py",
+        "tests/test_iteration_log.py",
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_evo_inquiry.py"
+      ]
+    },
+    "skills/skills-codex/shared-references/external-cadence.md": {
+      "baseline_sha256": "f59faf54b865b0c46779cacba081f3d5e4d68a7f748915197f8de64c67a26507",
+      "previous_sha256": "f59faf54b865b0c46779cacba081f3d5e4d68a7f748915197f8de64c67a26507",
+      "sha256": "8053da9eddab285df8dce10e9aa3f76a870310fffe891d7adbc0f3a9664a3dc5",
+      "adaptation_version": "1.6.1",
+      "reason": "User-approved 1.6.1: distinguish monitoring waits from completed research iterations, permit supported read-only Plan observation, and retain separate execution/Goal stop scope. Frozen original baselines are preserved.",
+      "review_ref": "docs/VALIDATION_1_6_1.md#changes-reviewed",
+      "test_refs": [
+        "tests/test_execution_governance.py",
+        "tests/test_experiment_block_reflection.py",
+        "tests/test_iteration_log.py",
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_evo_inquiry.py"
+      ]
     }
   },
   "workflow_adaptations": {

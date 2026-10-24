@@ -55,9 +55,12 @@ def _validate_limits(limits):
             'max_actions', 'wall_seconds', 'max_attempts_per_key', 'resources'}:
         raise RegistryError('Limits require max_actions, wall_seconds, max_attempts_per_key and resources')
     for key in ('max_actions', 'max_attempts_per_key'):
+        if key == 'max_actions' and limits[key] is None:
+            continue
         if isinstance(limits[key], bool) or not isinstance(limits[key], int) or limits[key] < 1:
             raise RegistryError(f'{key} must be a positive integer')
-    _amount(limits['wall_seconds'], 'wall_seconds', positive=True)
+    if limits['wall_seconds'] is not None:
+        _amount(limits['wall_seconds'], 'wall_seconds', positive=True)
     _costs(limits['resources'])
     return json.loads(json.dumps(limits, allow_nan=False))
 
@@ -82,13 +85,19 @@ def _start_time(value):
 def _timing(metadata, start):
     limits = metadata['limits']
     reserve = _amount(metadata.get('closeout_seconds', 0), 'closeout_seconds')
+    elapsed = max(0, (datetime.now(timezone.utc) - start).total_seconds())
+    if limits['wall_seconds'] is None:
+        if reserve:
+            raise RegistryError('Closeout reserve requires a finite wall budget')
+        return {'started_at': metadata['started_at'], 'deadline_at': None,
+                'remaining_seconds': None, 'elapsed_seconds': elapsed,
+                'closeout_seconds': 0, 'dispatch_seconds_remaining': None}
     if reserve > limits['wall_seconds']:
         raise RegistryError('Closeout reserve exceeds the original wall budget')
     try:
         deadline = start + timedelta(seconds=limits['wall_seconds'])
     except (OverflowError, ValueError) as error:
         raise RegistryError('Wall budget is outside the supported datetime range') from error
-    elapsed = max(0, (datetime.now(timezone.utc) - start).total_seconds())
     remaining = max(0, limits['wall_seconds'] - elapsed)
     return {'started_at': metadata['started_at'], 'deadline_at': deadline.isoformat(),
             'remaining_seconds': remaining, 'elapsed_seconds': elapsed,
@@ -137,19 +146,30 @@ def _validate_metadata(metadata):
     if stopped is not None and (not isinstance(stopped, dict)
             or not isinstance(stopped.get('reason'), str) or not stopped['reason'].strip()):
         raise RegistryError('Invalid continuation stop record')
+    _validate_blocks(metadata)
     cadence = metadata.get('reflection_every_actions')
+    block_cadence = metadata.get('reflection_every_blocks')
     interval = metadata.get('reflection_interval_seconds')
     if interval is not None:
         _amount(interval, 'reflection_interval_seconds', positive=True)
     if cadence is not None:
         if type(cadence) is not int or cadence < 1:
             raise RegistryError('Reflection cadence must be a positive action count')
-    if cadence is not None or interval is not None:
+    if block_cadence is not None:
+        if type(block_cadence) is not int or block_cadence < 1:
+            raise RegistryError('Reflection cadence must be a positive block count')
+        if cadence is not None:
+            raise RegistryError('Choose either block or legacy action reflection cadence')
+    if cadence is not None or interval is not None or block_cadence is not None:
         reviewed = metadata.get('reflection_reviewed_actions', [])
         completed = {row['id'] for row in actions if row['status'] in ('succeeded', 'failed')}
         if (not isinstance(reviewed, list) or any(not isinstance(item, str) for item in reviewed)
                 or len(set(reviewed)) != len(reviewed) or not set(reviewed) <= completed):
             raise RegistryError('Invalid reviewed action identities')
+    completed_blocks = {row['id'] for row in metadata.get('experiment_blocks', [])
+                        if row['status'] == 'completed'}
+    _validate_id_subset(metadata.get('reflection_reviewed_blocks', []), completed_blocks,
+                        'reviewed block')
     gate = metadata.get('reflection_gate')
     if gate is not None:
         if (not isinstance(gate, dict) or gate.get('status') != 'required'
@@ -169,11 +189,52 @@ def _validate_metadata(metadata):
             if (not isinstance(ids, list) or any(not isinstance(item, str) for item in ids)
                     or len(set(ids)) != len(ids) or not set(ids) <= completed):
                 raise RegistryError('Invalid reflection action identities')
+        if 'block_ids' in gate:
+            _validate_id_subset(gate['block_ids'], completed_blocks, 'reflection block')
     return start
 
 
+def _validate_id_subset(values, allowed, name):
+    if (not isinstance(values, list) or any(not isinstance(item, str) for item in values)
+            or len(set(values)) != len(values) or not set(values) <= allowed):
+        raise RegistryError(f'Invalid {name} identities')
+
+
+def _validate_blocks(metadata):
+    """Check declared membership and terminal accounting, not experimental validity."""
+    blocks = metadata.get('experiment_blocks', [])
+    if not isinstance(blocks, list):
+        raise RegistryError('Invalid experiment blocks')
+    ids, keys = set(), set()
+    latest = {row['key']: row for row in metadata['actions']}
+    for block in blocks:
+        if not isinstance(block, dict):
+            raise RegistryError('Invalid experiment block')
+        block_id = identifier(block.get('id'))
+        members = block.get('action_keys')
+        if (block_id in ids or not isinstance(members, list) or not members
+                or any(not isinstance(key, str) for key in members)
+                or len(set(members)) != len(members) or keys.intersection(members)
+                or block.get('status') not in ('planned', 'completed')
+                or not isinstance(block.get('phase'), str) or not block['phase']
+                or not isinstance(block.get('plan_ref'), dict)):
+            raise RegistryError('Invalid or overlapping experiment block membership')
+        for key in members:
+            identifier(key)
+        ids.add(block_id)
+        keys.update(members)
+        if block['status'] == 'completed':
+            actions = [latest.get(key, {}) for key in members]
+            if (any(row.get('status') not in ('succeeded', 'failed')
+                    or row.get('phase') != block['phase'] for row in actions)
+                    or block.get('action_ids') != [row['id'] for row in actions]
+                    or not isinstance(block.get('result_refs'), list) or not block['result_refs']):
+                raise RegistryError('Completed block requires all planned terminal members and evidence')
+
+
 def configure(root, run_id, objective, limits, *, started_at=None, closeout_seconds=None,
-              reflection_every_actions=None, reflection_interval_seconds=None):
+              reflection_every_actions=None, reflection_interval_seconds=None,
+              reflection_every_blocks=None):
     """Attach a fixed completion objective and declared bounds to an existing run.
 
     Idempotent for identical input; changed objectives or limits need a separately
@@ -185,7 +246,12 @@ def configure(root, run_id, objective, limits, *, started_at=None, closeout_seco
     Pass an existing authorized task's original started_at when attaching late;
     this records no fictional historical actions. Omitted timing options retain
     existing values on reconfigure. Old callers reserve no closeout window.
+    Explicit null wall_seconds/max_actions leave that total cap unset for ongoing
+    authorized work. Resource/retry limits and individual job timeouts still apply.
 
+    reflection_every_blocks counts explicitly completed planned experiment groups,
+    so a multi-method, multi-seed comparison counts once. It is mutually exclusive
+    with legacy reflection_every_actions. Neither policy chooses a verdict.
     reflection_every_actions optionally fixes a positive count of settled
     successful/failed actions between reviews. Cancellation is not evidence.
     Settlement opens a gate, without choosing its verdict. Omission preserves
@@ -201,11 +267,18 @@ def configure(root, run_id, objective, limits, *, started_at=None, closeout_seco
     if reflection_every_actions is not None and (
             type(reflection_every_actions) is not int or reflection_every_actions < 1):
         raise RegistryError('Reflection cadence must be a positive action count')
+    if reflection_every_blocks is not None:
+        if type(reflection_every_blocks) is not int or reflection_every_blocks < 1:
+            raise RegistryError('Reflection cadence must be a positive block count')
+        if reflection_every_actions is not None:
+            raise RegistryError('Choose either block or legacy action reflection cadence')
     if reflection_interval_seconds is not None:
         _amount(reflection_interval_seconds, 'reflection_interval_seconds', positive=True)
     if closeout_seconds is not None:
         _amount(closeout_seconds, 'closeout_seconds')
-        if closeout_seconds > limits['wall_seconds']:
+        if limits['wall_seconds'] is None and closeout_seconds:
+            raise RegistryError('Closeout reserve requires a finite wall budget')
+        if limits['wall_seconds'] is not None and closeout_seconds > limits['wall_seconds']:
             raise RegistryError('Closeout reserve exceeds the original wall budget')
     def update(metadata, state):
         if metadata:
@@ -218,7 +291,9 @@ def configure(root, run_id, objective, limits, *, started_at=None, closeout_seco
                     or (reflection_every_actions is not None
                         and metadata.get('reflection_every_actions') != reflection_every_actions)
                     or (reflection_interval_seconds is not None
-                        and metadata.get('reflection_interval_seconds') != reflection_interval_seconds)):
+                        and metadata.get('reflection_interval_seconds') != reflection_interval_seconds)
+                    or (reflection_every_blocks is not None
+                        and metadata.get('reflection_every_blocks') != reflection_every_blocks)):
                 raise RegistryError('Existing continuation clock and closeout reserve are fixed')
             return metadata
         configured = now()
@@ -231,16 +306,19 @@ def configure(root, run_id, objective, limits, *, started_at=None, closeout_seco
                             reflection_reviewed_actions=[])
         if reflection_interval_seconds is not None:
             metadata['reflection_interval_seconds'] = reflection_interval_seconds
+        if reflection_every_blocks is not None:
+            metadata.update(reflection_every_blocks=reflection_every_blocks,
+                            reflection_reviewed_actions=[], reflection_reviewed_blocks=[])
         _validate_metadata(metadata)
         return metadata
     return run_state.update_coordination(str(root), run_id, update)['coordination']
 
 
 def execution_directive(root, run_id):
-    """Read stop intent and original remaining dispatch time for a local launcher.
+    """Read stop intent, pending review and original timing for a local launcher.
 
     Return None for a missing/unconfigured legacy workflow; otherwise return
-    stopped (record or None) and timing (seconds/deadline). This read-only path
+    stopped, reflection_gate, reflection_due and timing. This read-only path
     validates coordination without rehashing all research files on each poll.
     It never settles actions or declares a process dead. Malformed state raises;
     an already-bound launcher must fail closed if its contract disappears.
@@ -253,7 +331,9 @@ def execution_directive(root, run_id):
     if not metadata:
         return None
     start = _validate_metadata(metadata)
-    return {'stopped': metadata['stopped'], 'timing': _timing(metadata, start)}
+    return {'stopped': metadata['stopped'], 'timing': _timing(metadata, start),
+            'reflection_gate': metadata.get('reflection_gate'),
+            'reflection_due': [] if metadata.get('reflection_gate') else _reflection_reasons(metadata, state)}
 
 
 def _unreviewed_actions(metadata):
@@ -262,28 +342,47 @@ def _unreviewed_actions(metadata):
             if row['status'] in ('succeeded', 'failed') and row['id'] not in reviewed]
 
 
+def _unreviewed_blocks(metadata):
+    reviewed = set(metadata.get('reflection_reviewed_blocks', []))
+    return [row['id'] for row in metadata.get('experiment_blocks', [])
+            if row['status'] == 'completed' and row['id'] not in reviewed]
+
+
 def _new_reflection_gate(metadata, state, reasons, level, kind):
     gate = {'id': uuid4().hex, 'status': 'required', 'kind': kind,
             'phase': run_state.first_open_phase(state)['phase'], 'level': level,
             'reasons': reasons, 'requested_at': now()}
-    if any(metadata.get(key) is not None for key in ('reflection_every_actions', 'reflection_interval_seconds')):
+    if any(metadata.get(key) is not None for key in (
+            'reflection_every_actions', 'reflection_interval_seconds', 'reflection_every_blocks')):
         gate['action_ids'] = _unreviewed_actions(metadata)
+    if metadata.get('reflection_every_blocks') is not None:
+        gate['block_ids'] = _unreviewed_blocks(metadata)
     return gate
 
 
-def _automatic_reflection(metadata, state):
+def _reflection_reasons(metadata, state):
+    """Compute due signals without writing a gate, ledger entry or status."""
+    if metadata['stopped'] or run_state.first_open_phase(state) is None:
+        return []
     cadence = metadata.get('reflection_every_actions')
+    block_cadence = metadata.get('reflection_every_blocks')
     interval = metadata.get('reflection_interval_seconds')
     reasons = []
     if cadence is not None and len(_unreviewed_actions(metadata)) >= cadence:
         reasons.append('completed_action_cadence')
+    if block_cadence is not None and len(_unreviewed_blocks(metadata)) >= block_cadence:
+        reasons.append('completed_block_cadence')
     if interval is not None:
         last = metadata.get('last_reflection') or {}
         start = _start_time(last.get('addressed_at', last.get('at', metadata['started_at'])))
         if (datetime.now(timezone.utc) - start).total_seconds() >= interval:
             reasons.append('elapsed_review_interval')
-    if (reasons and not metadata['stopped'] and not metadata.get('reflection_gate')
-            and run_state.first_open_phase(state) is not None):
+    return reasons
+
+
+def _automatic_reflection(metadata, state):
+    reasons = _reflection_reasons(metadata, state)
+    if reasons and not metadata.get('reflection_gate'):
         metadata['reflection_gate'] = _new_reflection_gate(
             metadata, state, reasons, 'block', 'checkpoint')
         return True
@@ -323,11 +422,19 @@ def _inspection(root, state):
             verify_ref(root, handoff)
         except (RegistryError, OSError) as error:
             violations.append({'reference': handoff, 'reason': str(error)})
+    for block in metadata.get('experiment_blocks', []):
+        for reference in [block['plan_ref']] + block.get('result_refs', []):
+            try:
+                verify_ref(root, reference)
+            except (RegistryError, OSError) as error:
+                violations.append({'block_id': block['id'], 'reference': reference,
+                                   'reason': str(error)})
     timing = _timing(metadata, start)
     elapsed = timing['elapsed_seconds']
     phase = run_state.first_open_phase(state)
     unresolved = [action['id'] for action in actions if action['status'] == 'reserved']
     limits = metadata['limits']
+    reflection_due = [] if metadata.get('reflection_gate') else _reflection_reasons(metadata, state)
     over = [key for key, value in spent.items() if value > limits['resources'][key]]
     exhausted = [key for key, value in spent.items() if value >= limits['resources'][key]]
     if unresolved:
@@ -340,40 +447,50 @@ def _inspection(root, state):
         status = 'BUDGET_EXCEEDED'
     elif phase is None:
         status = 'WORKFLOW_TERMINAL'
-    elif elapsed >= limits['wall_seconds'] or len(actions) >= limits['max_actions']:
+    elif ((limits['wall_seconds'] is not None and elapsed >= limits['wall_seconds'])
+          or (limits['max_actions'] is not None and len(actions) >= limits['max_actions'])):
         status = 'BUDGET_EXHAUSTED'
     elif phase['status'] in ('done', 'provisional'):
         status = 'REVIEW_REQUIRED'
     elif phase['status'] == 'running':
         status = 'RECONCILE'
-    elif timing['remaining_seconds'] <= timing['closeout_seconds']:
+    elif (timing['remaining_seconds'] is not None
+          and timing['remaining_seconds'] <= timing['closeout_seconds']):
         status = 'CLOSEOUT_REQUIRED'
     elif metadata.get('reflection_gate'):
         status = ('SYNTHESIS_REQUIRED' if metadata['reflection_gate']['kind'] == 'synthesis'
                   else 'REFLECTION_REQUIRED')
+    elif reflection_due:
+        status = 'REFLECTION_REQUIRED'
     else:
         status = 'READY'
     return {'status': status, 'run_id': state['run_id'], 'phase': phase,
             'spent_or_reserved': spent, 'actions_used': len(actions),
             'elapsed_seconds': elapsed, 'unresolved_actions': unresolved,
+            'blocks_completed': sum(row['status'] == 'completed'
+                                    for row in metadata.get('experiment_blocks', [])),
+            'unreviewed_blocks': _unreviewed_blocks(metadata),
             'timing': timing,
             'reflection_gate': metadata.get('reflection_gate'),
+            'reflection_due': reflection_due,
             'evidence_issues': violations, 'exceeded_resources': over,
             'exhausted_resources': exhausted,
             'scientific_verdict': 'not-assessed', 'host_goal_modified': False}
 
 
-def inspect(root, run_id):
-    """Read a continuation decision without creating files or changing statuses.
+def inspect(root, run_id, *, read_only=False):
+    """Inspect continuation, optionally without any state or ledger writes.
 
     WORKFLOW_TERMINAL means original phase gates are terminal, not that research
     claims are true or a native Goal may be completed without its own evidence.
     An explicitly configured elapsed-review policy may atomically open a gate;
     old contracts remain read-only. Repeated inspection preserves the gate ID.
+    read_only=True only reports due signals; it never persists a new gate. Use
+    it for observation-only Plan work and live polling, not as launch permission.
     """
     state = run_state.load_run(str(root), run_id)
     metadata = state.get('coordination')
-    if metadata:
+    if metadata and not read_only:
         _validate_metadata(metadata)
         if _automatic_reflection(metadata, state):
             def update(current, current_state):
@@ -502,6 +619,12 @@ def claim_action(root, run_id, action_key, phase, question, *, costs=None, input
         if not metadata:
             raise RegistryError('Configure continuation before claiming actions')
         _validate_metadata(metadata)
+        for block in metadata.get('experiment_blocks', []):
+            if action_key in block['action_keys']:
+                if block['status'] == 'completed':
+                    raise RegistryError('Completed block cannot dispatch further attempts')
+                if phase != block['phase']:
+                    raise RegistryError('Action must belong to its declared experiment block phase')
         previous = [row for row in metadata['actions'] if row['key'] == action_key]
         if previous:
             latest = previous[-1]
@@ -541,6 +664,86 @@ def claim_action(root, run_id, action_key, phase, question, *, costs=None, input
     if 'blocked' in answer:
         raise RegistryError('Cannot dispatch: ' + answer['blocked'])
     return answer
+
+
+def define_block(root, run_id, block_id, action_keys, plan_ref):
+    """Declare one experiment/comparison's full membership before its first claim.
+
+    action_keys are unique planned execution keys, including all required methods
+    and seeds (or a single key for a batch runner). plan_ref binds the existing
+    plan, whose owner defines experimental completeness and authorization. This
+    adds bookkeeping to the existing run, not another experiment planner.
+    Repeating the identical declaration is idempotent; membership is immutable.
+    """
+    identifier(block_id)
+    if (not isinstance(action_keys, list) or not action_keys
+            or any(not isinstance(key, str) for key in action_keys)
+            or len(set(action_keys)) != len(action_keys)):
+        raise RegistryError('Block requires unique planned action keys')
+    for key in action_keys:
+        identifier(key)
+    verify_ref(root, plan_ref)
+    def update(metadata, state):
+        _validate_metadata(metadata)
+        blocks = metadata.get('experiment_blocks', [])
+        existing = next((block for block in blocks if block['id'] == block_id), None)
+        if existing is not None:
+            if existing['action_keys'] != action_keys or existing['plan_ref'] != plan_ref:
+                raise RegistryError('Experiment block membership and plan are fixed')
+            return metadata
+        claimed = {action['key'] for action in metadata['actions']}
+        declared = {key for block in blocks for key in block['action_keys']}
+        if claimed.intersection(action_keys) or declared.intersection(action_keys):
+            raise RegistryError('Declare disjoint block membership before claiming its actions')
+        decision = _inspection(root, dict(state, coordination=metadata))
+        if decision['status'] != 'READY':
+            raise RegistryError('Cannot define block: ' + decision['status'])
+        block = {'id': block_id, 'phase': decision['phase']['phase'],
+                 'status': 'planned', 'action_keys': list(action_keys),
+                 'plan_ref': plan_ref, 'defined_at': now()}
+        metadata.setdefault('experiment_blocks', []).append(block)
+        return metadata
+    return run_state.update_coordination(str(root), run_id, update)['coordination']
+
+
+def complete_block(root, run_id, block_id, result_refs):
+    """Count one whole block after terminal accounting and owner-supplied analysis.
+
+    result_refs bind a nonempty completion/analysis record, including failures
+    and exclusions where applicable. All planned members must have settled latest
+    attempts; cancelled/missing/live work is incomplete. Negative scientific
+    findings can count, but terminal process status alone is not scientific
+    completeness. The owner verifies the plan, fairness and analysis first.
+    Repeating the same completion never counts twice or changes its evidence.
+    """
+    identifier(block_id)
+    _verify_refs(root, result_refs)
+    if not result_refs:
+        raise RegistryError('Completed block needs fixed analysis evidence')
+    def update(metadata, state):
+        _validate_metadata(metadata)
+        block = next((row for row in metadata.get('experiment_blocks', [])
+                      if row['id'] == block_id), None)
+        if block is None:
+            raise RegistryError('Unknown experiment block')
+        verify_ref(root, block['plan_ref'])
+        if block['status'] == 'completed':
+            if block['result_refs'] != result_refs:
+                raise RegistryError('Completed block evidence is fixed')
+            return metadata
+        latest = {row['key']: row for row in metadata['actions']}
+        actions = [latest.get(key, {}) for key in block['action_keys']]
+        if any(row.get('status') not in ('succeeded', 'failed')
+               or row.get('phase') != block['phase'] for row in actions):
+            raise RegistryError('Block is incomplete: settle every planned member first')
+        for action in actions:
+            _verify_refs(root, action['input_refs'])
+            _verify_refs(root, action['result_refs'])
+        block.update(status='completed', completed_at=now(),
+                     action_ids=[row['id'] for row in actions], result_refs=result_refs)
+        _automatic_reflection(metadata, state)
+        return metadata
+    return run_state.update_coordination(str(root), run_id, update)['coordination']
 
 
 def finish_action(root, run_id, action_id, outcome, *, actual_costs, result_refs=None, reason=''):
@@ -778,12 +981,18 @@ def _resolve_reflection(root, run_id, metadata, *, handoff_ref=None, state=None)
     if decision == 'STOP':
         metadata['stopped'] = metadata['stopped'] or {'reason': payload['reason'], 'at': now()}
     metadata['last_reflection'] = receipt
-    if any(metadata.get(key) is not None for key in ('reflection_every_actions', 'reflection_interval_seconds')):
+    if any(metadata.get(key) is not None for key in (
+            'reflection_every_actions', 'reflection_interval_seconds', 'reflection_every_blocks')):
         addressed = gate.get('action_ids', [])
         metadata['reflection_reviewed_actions'] = list(dict.fromkeys(
             metadata.get('reflection_reviewed_actions', []) + addressed))
         receipt['action_ids'] = list(addressed)
         receipt['addressed_at'] = now()
+    if metadata.get('reflection_every_blocks') is not None:
+        addressed = gate.get('block_ids', [])
+        metadata['reflection_reviewed_blocks'] = list(dict.fromkeys(
+            metadata.get('reflection_reviewed_blocks', []) + addressed))
+        receipt['block_ids'] = list(addressed)
     metadata.pop('reflection_gate')
     if state is not None:
         _automatic_reflection(metadata, state)
@@ -853,15 +1062,25 @@ def main():
     create.add_argument('--closeout-seconds', type=float, help='Reserve inside the original wall budget')
     create.add_argument('--reflection-every-actions', type=int,
                         help='Fixed settled-success/failure cadence; old contracts stay opt-in')
+    create.add_argument('--reflection-every-blocks', type=int,
+                        help='Review after N whole completed experiment/comparison blocks')
     create.add_argument('--reflection-interval-seconds', type=float,
                         help='Fixed interval observed by monitor/claim calls; no background scheduler')
-    sub.add_parser('inspect')
+    inspection = sub.add_parser('inspect')
+    inspection.add_argument('--read-only', action='store_true',
+                            help='Report existing/due review without creating gates or ledger entries')
     handoff = sub.add_parser('handoff')
     handoff.add_argument('--watch', action='append', default=[], help='Selected project-relative file; may be absent')
     check = sub.add_parser('check-handoff')
     check.add_argument('--receipt', required=True, help='Path to a previously saved handoff JSON')
     claim = sub.add_parser('claim')
     claim.add_argument('--request', required=True)
+    define = sub.add_parser('define-block', help='Declare full experiment/comparison membership before claims')
+    define.add_argument('--request', required=True,
+                        help='JSON object: block_id, action_keys, fixed plan_ref')
+    complete = sub.add_parser('complete-block', help='Count a whole block after terminal accounting and analysis')
+    complete.add_argument('--request', required=True,
+                          help='JSON object: block_id, fixed result_refs containing completion analysis')
     finish = sub.add_parser('finish')
     finish.add_argument('--request', required=True)
     settle = sub.add_parser('settle-execution', help='Settle from a pre-bound registered terminal execution; never relaunch')
@@ -884,15 +1103,20 @@ def main():
             result = configure(args.root, args.run_id, args.objective, read_record(args.limits),
                                started_at=args.started_at, closeout_seconds=args.closeout_seconds,
                                reflection_every_actions=args.reflection_every_actions,
-                               reflection_interval_seconds=args.reflection_interval_seconds)
+                               reflection_interval_seconds=args.reflection_interval_seconds,
+                               reflection_every_blocks=args.reflection_every_blocks)
         elif args.command == 'inspect':
-            result = inspect(args.root, args.run_id)
+            result = inspect(args.root, args.run_id, read_only=args.read_only)
         elif args.command == 'handoff':
             result = handoff_snapshot(args.root, args.run_id, watch_paths=args.watch)
         elif args.command == 'check-handoff':
             result = check_handoff(args.root, args.run_id, read_record(args.receipt))
         elif args.command == 'claim':
             result = claim_action(args.root, args.run_id, **read_record(args.request))
+        elif args.command == 'define-block':
+            result = define_block(args.root, args.run_id, **read_record(args.request))
+        elif args.command == 'complete-block':
+            result = complete_block(args.root, args.run_id, **read_record(args.request))
         elif args.command == 'finish':
             result = finish_action(args.root, args.run_id, **read_record(args.request))
         elif args.command == 'settle-execution':

@@ -8,7 +8,7 @@
 [静态封面](docs/assets/evo-inquiry-hero.svg)
 
 <p align="center">
-  <a href="https://github.com/Soceremite/EvoInquiry/releases/tag/v1.6.0"><img src="https://img.shields.io/badge/release-1.6.0-FF927E?style=flat&amp;labelColor=7862E8" alt="版本 1.6.0"></a>
+  <a href="https://github.com/Soceremite/EvoInquiry/releases/tag/v1.6.1"><img src="https://img.shields.io/badge/release-1.6.1-FF927E?style=flat&amp;labelColor=7862E8" alt="版本 1.6.1"></a>
   <a href="docs/SKILLS_CATALOG.md"><img src="https://img.shields.io/badge/Codex_skills-89-59C7A7?style=flat&amp;labelColor=7862E8" alt="89 个 Codex skill"></a>
   <a href="https://github.com/Soceremite/EvoInquiry/actions/workflows/test-suite.yml"><img src="https://github.com/Soceremite/EvoInquiry/actions/workflows/test-suite.yml/badge.svg" alt="回归测试状态"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-FFD95E?style=flat&amp;labelColor=7862E8" alt="MIT 许可证"></a>
@@ -36,14 +36,14 @@
 **我们最看重的，还是客观。** 有提升，就把提升讲清楚；有退步，也把退步摆出来；
 证据还不够，就继续验证。科研工具要帮助我们把问题看得更清楚。
 
-**EvoInquiry 1.6.0，继续开源。** 欢迎大家用自己的研究任务试一试，把真实的问题和建议带给我们。
+**EvoInquiry 1.6.1，继续开源。** 欢迎大家用自己的研究任务试一试，把真实的问题和建议带给我们。
 我们一起，把这个科研搭档做得更扎实、更好用。
 
-**[1.6.0 新增](RELEASE_NOTES.md)：** 在对比块、调参批次和大里程碑之间回顾原研究问题。
-用 `problem-synthesis` 检验多个问题是否存在共同解释，或应该保持分离。
-可配置的任务数和时间边界请求真实判断；转向时保留刹车，等待修订计划交接。
-STOP 能传递到已绑定的本地训练，核实实际退出并保留恢复点。
-科研评审与资源限制继续由原有工作流负责。
+**[1.6.1 更新](RELEASE_NOTES.md)：** 优先按 N 个完整实验或对比组回顾，计划中的
+方法、种子和分析完成后，一组只计一次。普通回顾不打断健康训练，正常监听等待
+不累加科研停滞。Plan 可在宿主支持时只读观察已有任务；待完成回顾拦住下一次
+启动，包括已准备任务，原资源限制与明确 STOP 继续有效。多个问题可能有共同
+解释时，仍由 `problem-synthesis` 负责检验，保留原有 skill 的清晰分工。
 
 ## 从模糊方向走向有证据的下一步
 
@@ -52,7 +52,7 @@ STOP 能传递到已绑定的本地训练，核实实际退出并保留恢复点
 在已有项目记录中跟踪决策、未解决问题与交接。文献记录保留身份、版本和阅读层级；图件记录关联
 真实输入、可编辑源文件与图注。已有公平比较、权重保留和审阅门槛继续使用。
 具体能力见[版本说明](RELEASE_NOTES.md)，实际验证范围见
-[1.6.0 验证记录](docs/VALIDATION_1_6_0.md)。
+[1.6.1 验证记录](docs/VALIDATION_1_6_1.md)。
 
 可以直接说：“探索低成本记忆的研究问题，先不训练”“检查这些均值能支持
 什么结论”“把CSV画成图，保留脚本、失败运行和误差定义”。明确需要时再运行
@@ -79,14 +79,14 @@ STOP 能传递到已绑定的本地训练，核实实际退出并保留恢复点
 
 ## 快速开始
 
-从 [正式版 Release](https://github.com/Soceremite/EvoInquiry/releases/tag/v1.6.0)
-下载并解压 `evo-inquiry-1.6.0.tar.gz` 或 `.zip`。
+从 [正式版 Release](https://github.com/Soceremite/EvoInquiry/releases/tag/v1.6.1)
+下载并解压 `evo-inquiry-1.6.1.tar.gz` 或 `.zip`。
 下载包将在对应版本的发布门禁通过后提供。
 请使用提供 `codex plugin` 命令的 Codex 版本；插件安装已在 Linux 上使用
 Codex CLI **0.163.0** 验证。
 
 ```sh
-cd /path/to/evo-inquiry-1.6.0
+cd /path/to/evo-inquiry-1.6.1
 codex plugin marketplace add "$PWD"
 codex plugin add evo-inquiry@evo-inquiry
 ```
@@ -109,7 +109,7 @@ skill 使用 `evo-inquiry:` 命名空间。安装插件使技能可用；
 <summary><strong>源码开发与干净安装</strong></summary>
 
 需要查看和开发源码时，可以使用
-`git clone --branch v1.6.0 https://github.com/Soceremite/EvoInquiry.git EvoInquiry`。
+`git clone --branch v1.6.1 https://github.com/Soceremite/EvoInquiry.git EvoInquiry`。
 安装插件时使用干净的 Release 解压目录。Codex CLI 0.162.1 也会复制来源目录中的
 未跟踪文件；Release 包可以避免把私有验证记录、构建产物和 Git 历史带入安装缓存。
 
@@ -235,8 +235,10 @@ python tools/configure_research_guidance.py --project /path/to/project
 本项目提供的 EvoInquiry 安装方式是上面的 Codex 插件。
 保留的后端与客户端兼容资源用于支持已有流程约定，按需启用并单独配置。
 
-当前检查及其适用范围见[1.6.0 验证记录](docs/VALIDATION_1_6_0.md)。
-最新本地回归通过 1,349 项测试；真实一小时 CUDA 工程运行验证有界恢复存储和数值
+当前检查及其适用范围见[1.6.1 验证记录](docs/VALIDATION_1_6_1.md)。
+本补丁通过 242 项本地专项检查，包含三组真实 CPU 对比和活跃进程监听、停止检查；
+这些检查不证明原生 Goal/Plan 长程会话行为。此前的
+[1.6.0 验证](docs/VALIDATION_1_6_0.md)通过 1,349 项测试，真实一小时 CUDA 工程运行验证有界恢复存储和数值
 故障处理，另一段有界模型实测观察到 REPLAN、STOP 实际停止训练和完整状态重放。
 失败尝试及对照组退化均保留。构造场景与显式引导的结果不证明普遍优于旧版、默认
 常驻 watchdog 或数小时、数天无人值守科研。[1.5.0 实践记录](docs/VALIDATION_1_5_0.md)

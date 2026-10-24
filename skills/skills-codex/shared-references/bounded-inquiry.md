@@ -27,8 +27,11 @@ only. Use the public CLI/help for interface discovery before reading implementat
 For an existing owned run with declared limits, attach continuation before costly
 preparation, or name an external owner providing equivalent identities,
 reservations and recovery. A CLI timeout alone is not equivalent. Use the original
-authorized start, including preparation/review, and a task-appropriate closeout
-reserve inside that budget. Reuse authorization; missing prerequisites do not
+authorized start, including preparation/review. When the user set a finite wall
+budget, keep a task-appropriate closeout reserve inside it. Ongoing authorized
+work need not have a total wall deadline or action cap: use explicit `null` caps,
+not an invented time window or a very large number. Keep declared resource
+bounds and per-attempt limits. Reuse authorization; missing prerequisites do not
 require asking again for actions already authorized.
 
 When a report is requested, save a minimum useful artifact after the first
@@ -63,9 +66,12 @@ It requires an existing run, creates no scheduler and leaves review statuses int
 
 | Command | Contract |
 | --- | --- |
-| `configure --objective <deliverable> --limits <limits.json>` | Limits: `max_actions`, `wall_seconds`, `max_attempts_per_key`, `resources` (unit → bound). Optional `--started-at <timezone-aware-ISO>` and `--closeout-seconds <seconds>`. Existing clock/limits stay fixed; old callers reserve zero closeout time. |
-| `inspect` | Read phase, evidence, reservations and original timing; an explicitly configured elapsed-review policy may open a gate. Bound process/reviewer timeouts by `timing.dispatch_seconds_remaining`. `READY` is neither resource authorization nor success. |
+| `configure --objective <deliverable> --limits <limits.json>` | Limits: `max_actions` and `wall_seconds` (positive bound or explicit `null` for no total cap), positive `max_attempts_per_key`, `resources` (unit → bound). Optional `--started-at <timezone-aware-ISO>` and `--closeout-seconds <seconds>` inside a finite wall budget. Existing clock/limits stay fixed; old callers reserve zero closeout time. |
+| `inspect` | Read phase, evidence, reservations, completed blocks and original timing; an explicitly configured elapsed-review policy may open a gate. Cap process/reviewer timeouts by `timing.dispatch_seconds_remaining` when non-null. Null means no total wall deadline, not free resources. `READY` is neither resource authorization nor success. |
+| `inspect --read-only` | Observe existing gates and `reflection_due` without writing state or the iteration ledger. Use for Plan monitoring; due review still needs its execution owner before new dispatch. |
 | `claim --request <action.json>` | Fields: `action_key`, `phase`, `question`, `costs` for every unit, optional fixed `input_refs`. Only `claim=new` permits dispatch; `existing` requires inspecting that attempt. |
+| `define-block --request <block.json>` | Fields: `block_id`, disjoint `action_keys`, fixed `plan_ref` to the existing plan. Declare all required comparison members before their first claim; retries keep the same member key. No second experiment planner. |
+| `complete-block --request <completion.json>` | Fields: `block_id`, nonempty fixed `result_refs` to completion/analysis evidence. All planned members need settled latest attempts; missing, live or cancelled members do not complete a block. The owner checks scientific completeness and fairness. Identical completion counts once. |
 | `finish --request <completion.json>` | Fields: `action_id`, terminal `outcome` (`succeeded`, `failed`, `cancelled`), observed `actual_costs`, fixed `result_refs`, `reason`. Verify actual termination first. Success requires evidence; costs are observations, not estimates clipped to reservations. |
 | `settle-execution --request <settlement.json>` | For registered executions: `action_id`, `execution_run_id`, observed `actual_costs`, optional `result_refs`/`reason`. Verifies the existing terminal execution and derives its process outcome; never launches. |
 | `stop --reason <reason>` | Records workflow stop intent. Bound local launchers observe it and terminate their owned jobs; retain live reservations until actual terminal evidence. Remote/unbound jobs require their execution owner. No phase or native Goal acceptance. |
@@ -83,7 +89,9 @@ manual `finish` path after actual execution/ownership inspection; do not rewrite
 their original inputs or rerun to repair accounting.
 
 `RECONCILE` means verify the original execution, process/queue, outputs and leases
-before retry. If reservation preceded launch but no execution exists, establish
+before retry. It is expected while an owned job is live: continue its watch, and
+settle only after actual termination. It is not itself a failure or Goal blocker.
+If reservation preceded launch but no execution exists, establish
 that fact before cancellation and a permitted retry. Uncertain process identity,
 timeout or missing heartbeat cannot release costs or justify duplicate work.
 `REVIEW_REQUIRED` retains the workflow gate; `EVIDENCE_CHANGED` needs source
@@ -112,16 +120,27 @@ With two or more potentially related problems, use `/problem-synthesis`;
 with zero or one, the active owner performs this review. Fairness drift goes
 to `/experiment-audit`. Recording or reviewing never grants resource permission.
 
-For newly configured sustained work, choose a cadence matching comparison blocks
-and the cost of a wrong next step. `configure --reflection-every-actions <N>`
-fixes the number of settled successful/failed actions between reviews; cancelled
-work does not count. `--reflection-interval-seconds <seconds>` also permits a
-review during one long job, observed by existing monitor `inspect` calls and
-before new claims. Settlement or observation opens a gate without selecting a
-verdict. Old contracts stay opt-in; recovery cannot change their original cadence
-or budget. A gate binds the completed action IDs it covers; results arriving
-during review remain unreviewed. Read actual outputs and alternatives before
-CONTINUE, a revised plan or STOP; an automatic gate alone is not reflection.
+Prefer progress-based cadence: choose N whole experiments/comparisons in the
+existing plan, then use `configure --reflection-every-blocks <N>`. One complete
+comparison, including its planned methods, configurations, seeds, evaluation and
+analysis, counts once. Preparation, individual seeds, retries and parameter
+trials do not inflate this count. Declare membership with `define-block`, then
+call `complete-block` after checking the actual outputs and recording analysis,
+including negative findings, failures and exclusions. Terminal accounting alone
+does not prove a fair, scientifically complete comparison. `complete-block`
+opens a gate at the cadence; unfinished groups do not interrupt a comparison.
+
+Keep legacy `--reflection-every-actions` for callers intentionally counting
+settled executions; it is mutually exclusive with block cadence. Elapsed review
+via `--reflection-interval-seconds` is optional when requested, never the default
+or a total runtime limit. Existing monitor/claim calls observe it; no background
+scheduler is created. Old contracts keep their original settings and budgets.
+A gate binds only the completed block/action IDs present when it opens; results
+arriving during review remain unreviewed. Read actual outputs and alternatives
+before CONTINUE, a revised plan or STOP; a gate alone is not reflection. CONTINUE
+releases new work without resetting cumulative cost or elapsed time. Escalate
+earlier for repeated failures, stalled information gain or contradictory evidence;
+do not wait for N when the next action is already unjustified.
 
 Optional deterministic signals: `python <package>/tools/problem_synthesis.py due
 <context.json>` accepts nonnegative counts `open_problem_count`,
@@ -211,14 +230,58 @@ expired budget still blocks execution, not an authorized read-only diagnosis.
 Watch relevant manifests rather than entire datasets or unrelated credentials.
 Verify the requested artifact and affected identities once, then deliver.
 
-## Optional host features and telemetry
+## Monitoring, interruption and host modes
 
-Use the current host mode. Plan-only requests end with a plan; approved
-implementation continues within scope. Create a native Goal only on explicit
-request with available host support. It does not grant resources, bypass gates
-or prove success. Mark it complete only when its actual objective is met; never
-invent a mode switch or background service. Without Goal support, use the
-authorized turn and existing project handoff.
+Use `monitor-experiment` for one status check and `training-check` for requested
+continuous observation. Reuse the existing execution and monitoring owner. Check
+process identity, step/log freshness and available metrics at a cadence appropriate
+to the run; quality reviews can be less frequent than lightweight health checks.
+Use interruptible host waits or bounded process polls, inspect fresh evidence on
+each wake, and respond to steering. Do not busy-loop, launch keepalive experiments,
+or manufacture findings to keep a session active.
+
+When a run exits, verify its terminal record and outputs, then return results to
+the existing workflow owner instead of polling a finished job. Finishing or
+stopping one job does not complete or pause the broader Goal. A request to stop
+watching ends observation, not training; report any jobs still running.
+
+A live run advancing toward its expected next output is waiting, not a failed
+research iteration. Polls, log gaps within the expected output cadence and
+`WAIT` are not completed blocks or zero-finding iterations: do not call
+`iteration_log.py note` for them. Unreachable telemetry is an observation problem;
+cross-check process/queue and fallback logs before inferring a stuck or dead job.
+Likewise, a watchdog `STALE` heartbeat or one `IDLE` reading requests inspection;
+it does not by itself establish training failure or native Goal stalling.
+Actual stalled execution and repeated uninformative completed investigations need
+their respective execution recovery or trajectory review.
+
+| Context | Allowed continuation |
+| --- | --- |
+| Ordinary status question or discussion | Answer the requested check. An interjection does not stop training, reset review counts or cancel an already authorized watch. Do not start a continuous watch unless requested or part of the active task. |
+| Plan | A planning request delivers its plan. Requested observation of existing jobs may continue read-only while the host permits: read logs/processes and report, without launching, changing configurations, persisting gates/notes, or stopping jobs. `STOP` here is a recommendation to the execution owner. Plan-only does not guarantee automatic continuation after the turn. |
+| Active native Goal | Monitor healthy long training and keep waiting for its evidence; ordinary waiting, reflection and authorized replanning do not themselves block or complete the objective. Use the host's available continuation and wait mechanisms. |
+
+A pending or due review holds new dispatch, including prepared jobs. Healthy
+in-flight work continues through ordinary review. A revised plan does not live-edit
+frozen running inputs: carry changed protocols into separately checked attempts.
+Stopping one attempt uses its identity-bound execution stop; workflow `stop` targets
+all bound owned jobs. User-controlled Goal pause is a separate operation. Match the
+user's intended scope, verify actual exit before settlement, and preserve valid
+recovery state. A stop recommendation in observation-only work is not execution
+authorization. Explicit safety/resource policies and agreed stop conditions still
+apply through the authorized execution owner.
+
+Create a native Goal only on explicit request with host support. It grants no
+resources, bypasses no review gate and proves no scientific result. Never map
+`WAIT`, `REFLECTION_REQUIRED`, `SYNTHESIS_REQUIRED`, `REPLAN`, or a self-imposed
+time window directly to native Goal `blocked` or `stalled`. Respect actual host
+budgets, interruptions and continuation limits; a skill cannot override them or
+promise a resident background service. A genuine unresolved prerequisite blocks
+the Goal only when no useful authorized work remains, under the host's recurrence
+rules. Mark it complete only when its actual objective is met. Without Goal
+support, use the authorized turn and existing project handoff.
+
+## Optional telemetry
 
 There is no implicit Codex session hook. For an explicitly selected local export,
 `research_events.py --root <project> --source <relative-trace.jsonl> --session <id>`

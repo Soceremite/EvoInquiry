@@ -15,6 +15,7 @@ budgets, blocking checkpoints, and stopping conditions.
 
 For runs saving large artifacts, include the [storage checks](../shared-references/experiment-storage.md): capacity, artifact growth, and valid-save age/failures. Apply established run policies to storage incidents and preserve valid recovery state when stopping.
 For a governed run, use [bounded inquiry](../shared-references/bounded-inquiry.md) at the existing monitoring cadence: inspect configured trajectory gates, read actual experiment evidence, and record a reasoned decision. A STOP must reach the execution owner and be followed by actual exit verification; a saved intention is insufficient. Ordinary review does not kill healthy training.
+Apply its [monitoring and mode boundaries](../shared-references/bounded-inquiry.md#monitoring-interruption-and-host-modes): Plan observation is read-only, so stop behavior and note-writing below require execution authority. A healthy run waiting for results does not add stall iterations or block a Goal. Pair quality reviews with lightweight progress/liveness checks and interruptible waits; retain one monitoring owner.
 <!-- EVO-INQUIRY:END -->
 
 

@@ -77,6 +77,7 @@ adequate investigation and state what its result will change. Useful routes:
 | Comparative fairness or execution integrity | [experiment-audit](../experiment-audit/SKILL.md) |
 | Single critical review or paper-number audit | [research-review](../research-review/SKILL.md), [paper-claim-audit](../paper-claim-audit/SKILL.md) |
 | Implement an existing experiment plan | [experiment-bridge](../experiment-bridge/SKILL.md) |
+| One status check or continuous training observation | [monitor-experiment](../monitor-experiment/SKILL.md) or [training-check](../training-check/SKILL.md), respectively |
 | New poster, including an old `/paper-poster` call | [paper-poster-html](../paper-poster-html/SKILL.md); the old name only forwards arguments |
 | Explicit full research lifecycle | [research-pipeline](../research-pipeline/SKILL.md) |
 
@@ -118,19 +119,32 @@ execution reconciliation when that existing run needs them. Short tasks do not
 require initialization or a new contract.
 
 Codex Plan helps review the path before implementation. A planning-only request
-ends with the plan; approved implementation continues within its authorization.
+ends with the plan; requested monitoring of existing jobs can continue read-only
+while the host supports it. Route that watch to `training-check`; do not launch,
+stop jobs or persist research state from observation-only work. Approved
+implementation continues within its authorization.
 Native Goal is optional and only created on an explicit user request with available
 host tooling. It tracks a thread objective, while project records hold evidence.
 A Goal does not grant resources, remove review gates or prove a scientific result.
+Waiting for healthy long training is active monitoring, not a zero-finding research
+iteration or a reason to mark the Goal blocked/stalled. Use available host waits
+and continuation; Plan-only does not guarantee automatic continuation after a turn.
 Do not claim to switch modes or persist background work without host support.
+For ongoing authorized work, prefer reflection after N complete experimental
+blocks; a multi-method, multi-seed comparison counts once after analysis. Choose
+N for the project and review earlier when evidence warrants it. Do not invent a
+total time window. Reflection and authorized replanning are active Goal work:
+resolve them and continue rather than marking the Goal `blocked`. Honor explicit
+budgets and the host's genuine-blocker rules; review cadence grants no resources.
 
 ## Continue or stop
 
 Continue necessary adjacent steps within the same authorized goal. Reassess
 after negative results: revise the explanation, narrow the claim, prepare a
 discriminating test, or stop according to the evidence and remaining resources.
-End when the deliverable is complete, a required dependency/checkpoint blocks
-continuation, or a user-defined budget or stopping condition is reached.
+End when the deliverable is complete, an unavailable required dependency prevents
+further useful authorized work, or a user-defined budget or stopping condition is
+reached. An ordinary checkpoint is the next task to perform within that work.
 
 Use the active workflow's existing records for persistence. Leave the completed
 work, evidence paths, unresolved issue, and next feasible step in the requested

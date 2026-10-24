@@ -6,6 +6,7 @@ import subprocess
 import sys
 import time
 from concurrent.futures import ThreadPoolExecutor
+from datetime import datetime, timedelta, timezone
 
 import pytest
 
@@ -16,9 +17,11 @@ from tools.execution_registry import (freeze_snapshot, launch_execution, select_
                                       request_stop_execution, register_spec, spec_digest)
 from tools.registry_common import RegistryError, atomic_write, fixed_ref, now, read_record
 from tools import research_control, run_state
+from tools import execution_registry, iteration_log
 
 
-def _prepare_observable_worker(root, *, seconds=15, interval=None, graceful=False):
+def _prepare_observable_worker(root, *, seconds=15, interval=None, graceful=False,
+                               workflow_wall_seconds=120, started_at=None):
     sources, spec, environment = make_sources(root), make_spec(root), make_environment(root)
     (root / 'src/train.py').write_text('''import json, os, pathlib, signal, subprocess, sys, time
 output=pathlib.Path(sys.argv[1]); output.mkdir(parents=True,exist_ok=True)
@@ -40,8 +43,8 @@ time.sleep(60)
         spec = register_spec(root, record)
     run_state.start_run(str(root), 'owned-workflow', ['explore'])
     research_control.configure(root, 'owned-workflow', 'observe owned stop', {
-        'max_actions':4,'wall_seconds':120,'max_attempts_per_key':1,
-        'resources':{'cpu_seconds':60}}, reflection_interval_seconds=interval)
+        'max_actions':4,'wall_seconds':workflow_wall_seconds,'max_attempts_per_key':1,
+        'resources':{'cpu_seconds':60}}, reflection_interval_seconds=interval, started_at=started_at)
     output = root / 'runs/owned/outputs'
     args = [str(output)]
     snapshot = freeze_snapshot(root, 'owned', spec, environment, sources,
@@ -62,15 +65,126 @@ def _await_file(path, future, seconds=10):
     assert path.exists(), path
 
 
+def _prepare_review_worker(root, *, interval=None):
+    """Prepare a bounded CPU worker that exits only after the test releases it."""
+    sources, spec, environment = make_sources(root), make_spec(root), make_environment(root)
+    (root / 'src/train.py').write_text('''import json, pathlib, sys, time
+output=pathlib.Path(sys.argv[1]); output.mkdir(parents=True,exist_ok=True)
+(output/'ready.json').write_text(json.dumps({'running':True}))
+deadline=time.monotonic()+12
+while not (output/'release').exists():
+    if time.monotonic()>deadline: raise SystemExit(9)
+    time.sleep(0.02)
+(output/'metrics.json').write_text(json.dumps({'finished':True}))
+''')
+    run_state.start_run(str(root), 'review-workflow', ['explore'])
+    research_control.configure(root, 'review-workflow', 'Observe review without stopping healthy work', {
+        'max_actions':None, 'wall_seconds':None, 'max_attempts_per_key':1,
+        'resources':{'cpu_seconds':60}}, reflection_interval_seconds=interval)
+    output = root / 'runs/review-worker/outputs'
+    args = [str(output)]
+    snapshot = freeze_snapshot(root, 'review-worker', spec, environment, sources,
+        {'variant':{'augmentation':0.1},'seed':22}, 'src/train.py','method-b',22,
+        arguments=args, output_argument_indices=[0])
+    start_execution(root, 'review-worker', snapshot, workflow_run_id='review-workflow')
+    action = research_control.claim_action(root, 'review-workflow', 'worker', 'explore',
+        'Can the healthy job finish through review?', costs={'cpu_seconds':15}, input_refs=[snapshot])['action']
+    return args, output, action
+
+
+def _review_continue(root, gate):
+    return research_control.record_reflection(root, 'review-workflow', 'explore', {
+        'schema_version':1, 'kind':'checkpoint', 'gate_id':gate['id'], 'decision':'CONTINUE',
+        'reason':'Checked current execution evidence; this authorized job remains informative',
+        'evidence_refs':['runs/review-worker/snapshot/manifest.json'],
+        'next_action':{'skill':'training-check', 'description':'Continue observing the owned job'}})
+
+
+@pytest.mark.parametrize('when', ['before-validation', 'during-validation',
+                                 'due-before-validation', 'due-during-validation'])
+def test_reflection_blocks_prepared_dispatch_until_review_then_reuses_identity(tmp_path, monkeypatch, when):
+    args, output, action = _prepare_review_worker(tmp_path, interval=3600 if when.startswith('due-') else None)
+    output.mkdir(parents=True, exist_ok=True)
+    (output / 'release').touch()
+    def require_review():
+        if when.startswith('due-'):
+            class ReviewClock(datetime):
+                @classmethod
+                def now(cls, tz=None):
+                    return datetime.now(tz)+timedelta(hours=1,seconds=1)
+            monkeypatch.setattr(research_control, 'datetime', ReviewClock)
+        else:
+            research_control.require_reflection(tmp_path, 'review-workflow', ['Check planned next dispatch'],
+                                               kind='checkpoint')
+    if when.endswith('before-validation'):
+        require_review()
+    else:
+        original = execution_registry.verify_environment
+        def verify_then_review(*values, **options):
+            observed = original(*values, **options)
+            require_review()
+            return observed
+        monkeypatch.setattr(execution_registry, 'verify_environment', verify_then_review)
+    with pytest.raises(RegistryError, match='[Rr]eflection'):
+        launch_execution(tmp_path, 'review-worker', args)
+    assert not (tmp_path / 'runs/review-worker/process.json').exists()
+    assert read_record(tmp_path / 'runs/review-worker/execution.json')['status'] == 'prepared'
+    gate = research_control.inspect(tmp_path, 'review-workflow')['reflection_gate']
+    monkeypatch.undo()
+    _review_continue(tmp_path, gate)
+    result = launch_execution(tmp_path, 'review-worker', args)
+    assert result['exit_code'] == 0 and read_record(output / 'metrics.json')['finished']
+    settled = research_control.settle_execution(tmp_path, 'review-workflow', action['id'], 'review-worker',
+        actual_costs={'cpu_seconds':1})
+    assert len(settled['actions']) == 1 and settled['actions'][0]['status'] == 'succeeded'
+    assert research_control.inspect(tmp_path, 'review-workflow')['status'] == 'READY'
+
+
+def test_read_only_watch_and_reflection_leave_healthy_process_and_stall_count_unchanged(tmp_path):
+    args, output, action = _prepare_review_worker(tmp_path)
+    iteration_log.note(str(tmp_path), 'review-workflow', 'explore', 0)
+    ledger_before = iteration_log.show(str(tmp_path), 'review-workflow')
+    with ThreadPoolExecutor(max_workers=1) as pool:
+        future = pool.submit(launch_execution, tmp_path, 'review-worker', args)
+        try:
+            _await_file(output / 'ready.json', future)
+            research_control.require_reflection(tmp_path, 'review-workflow', ['Review ongoing trajectory'],
+                                               kind='checkpoint')
+            state_path = tmp_path / '.ei/runs/review-workflow.json'
+            before = state_path.read_bytes()
+            for _ in range(5):
+                observation = research_control.inspect(tmp_path, 'review-workflow', read_only=True)
+                assert observation['unresolved_actions'] == [action['id']]
+                assert observation['blocks_completed'] == 0 and observation['host_goal_modified'] is False
+                assert observation['reflection_gate']['kind'] == 'checkpoint'
+                assert not future.done()
+            assert state_path.read_bytes() == before
+            assert iteration_log.show(str(tmp_path), 'review-workflow') == ledger_before
+            _review_continue(tmp_path, observation['reflection_gate'])
+            assert not future.done()
+        finally:
+            output.mkdir(parents=True, exist_ok=True)
+            (output / 'release').touch()
+            result = future.result(timeout=15)
+    assert result['exit_code'] == 0
+    assert not (tmp_path / 'runs/review-worker/termination.json').exists()
+    assert iteration_log._last_stale(tmp_path / '.ei/runs/review-workflow.iterations.jsonl') == 1
+    research_control.settle_execution(tmp_path, 'review-workflow', action['id'], 'review-worker',
+                                     actual_costs={'cpu_seconds':1})
+    assert research_control.inspect(tmp_path, 'review-workflow')['status'] == 'READY'
+
+
 def _linux_running(pid):
     path=Path('/proc')/str(pid)/'stat'
     return path.exists() and path.read_text().split(') ',1)[1][0]!='Z'
 
 
 @pytest.mark.skipif(sys.platform!='linux', reason='Owned process-group observation uses Linux procfs')
-@pytest.mark.parametrize('source',['workflow','execution','elapsed-review'])
-def test_stop_intent_reaches_the_owned_process_group_and_preserves_other_work(tmp_path,source):
-    args, output, action = _prepare_observable_worker(tmp_path, interval=0.1 if source=='elapsed-review' else None)
+@pytest.mark.parametrize('source',['workflow','execution','elapsed-review','ongoing-workflow'])
+def test_stop_intent_reaches_the_owned_process_group_and_preserves_other_work(tmp_path,source,monkeypatch):
+    args, output, action = _prepare_observable_worker(tmp_path,
+        interval=3600 if source=='elapsed-review' else None,
+        workflow_wall_seconds=None if source in ('elapsed-review','ongoing-workflow') else 120)
     unrelated=subprocess.Popen([sys.executable,'-I','-c','import time; time.sleep(60)'])
     try:
         with ThreadPoolExecutor(max_workers=1) as pool:
@@ -78,6 +192,13 @@ def test_stop_intent_reaches_the_owned_process_group_and_preserves_other_work(tm
             _await_file(output/'ready.json',future)
             identities=read_record(output/'ready.json')
             if source=='elapsed-review':
+                # Advance only the policy clock after actual launch: an already
+                # due review must now correctly prevent prepared dispatch.
+                class ReviewClock(datetime):
+                    @classmethod
+                    def now(cls, tz=None):
+                        return datetime.now(tz)+timedelta(hours=1,seconds=1)
+                monkeypatch.setattr(research_control,'datetime',ReviewClock)
                 inspection=research_control.inspect(tmp_path,'owned-workflow')
                 assert inspection['reflection_gate']['reasons']==['elapsed_review_interval']
                 assert _linux_running(identities['pid']) and _linux_running(identities['child_pid'])
@@ -150,8 +271,12 @@ def test_observed_zero_exit_recovery_preserves_explicit_cancellation_and_legacy_
     assert selection['attempts'][0]['included'] is (cancelled is not True)
 
 
-def test_spec_timeout_is_enforced_when_the_caller_omits_a_timeout(tmp_path):
-    args,output,action=_prepare_observable_worker(tmp_path,seconds=0.5)
+@pytest.mark.parametrize('workflow_wall_seconds', [120, None])
+def test_spec_timeout_is_enforced_when_the_caller_omits_a_timeout(tmp_path, workflow_wall_seconds):
+    args,output,action=_prepare_observable_worker(tmp_path,seconds=0.5,
+        workflow_wall_seconds=workflow_wall_seconds,
+        started_at=(datetime.now(timezone.utc)-timedelta(hours=3)).isoformat()
+        if workflow_wall_seconds is None else None)
     result=launch_execution(tmp_path,'owned',args)
     receipt=read_record(tmp_path/'runs/owned/termination.json')
     assert result['exit_code']!=0 and receipt['cause']=='timeout'
