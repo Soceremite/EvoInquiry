@@ -14,6 +14,7 @@
 - Keep healthy in-flight jobs running through ordinary reflection. Separate waiting for long training from completed zero-finding investigations and native Goal blocked/stalled status.
 - Distinguish one-attempt cancellation, workflow STOP and host Goal pause. Preserve process ownership, actual exit verification and original accounting.
 - Clarify observation-only Plan monitoring: report anomalies without launching, changing configurations, persisting research state or executing stop commands.
+- Use native Windows shared/exclusive file locks so review writers can coexist with healthy training while exclusive migration stays blocked. Preserve nonblocking contention errors and release locks when an owner exits.
 
 ### Changed
 

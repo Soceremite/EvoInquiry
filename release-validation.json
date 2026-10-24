@@ -21,7 +21,8 @@
       "failures": 0,
       "errors": 0,
       "skipped": 0,
-      "elapsed_seconds": 308.084
+      "elapsed_seconds": 308.084,
+      "phase": "initial-local-validation-before-windows-lock-followup"
     },
     "compatibility": {
       "artifact": "validation/experiment-block-reflection/compat-final.xml",
@@ -30,9 +31,10 @@
       "failures": 0,
       "errors": 0,
       "skipped": 0,
-      "elapsed_seconds": 48.834
+      "elapsed_seconds": 48.834,
+      "phase": "initial-local-validation-before-windows-lock-followup"
     },
-    "distinct_tests_passed": 242,
+    "distinct_tests_passed": 282,
     "package_preservation": {
       "status": "PASS",
       "retained_workflows": 83,
@@ -41,8 +43,19 @@
     },
     "release_note_wrapping": "passed",
     "git_diff_check": "passed",
-    "native_platform_ci": "pending-release-workflow",
-    "native_goal_plan_sessions": "not-tested"
+    "native_platform_ci": "pending-corrected-release-workflow",
+    "native_goal_plan_sessions": "not-tested",
+    "windows_lock_followup_on_linux": {
+      "artifact": "validation/release-1.6.1/lock-runtime.xml",
+      "sha256": "cb5ada2960cc92022a904d9cb77db1012d45251121b44b7f6d662cac76a753e2",
+      "tests": 66,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "elapsed_seconds": 184.313,
+      "new_lock_regressions": 7
+    },
+    "distinct_test_scope": "Union of 242 initial Linux cases and the 66-test lock/execution/migration follow-up; 26 cases repeat."
   },
   "validation_record": "docs/VALIDATION_1_6_1.md",
   "limitations": [
@@ -56,7 +69,7 @@
     "version": "1.6.0",
     "validation_ref": "https://github.com/Soceremite/EvoInquiry/blob/v1.6.0/release-validation.json"
   },
-  "assessed_at": "2026-10-24T04:49:27.995239+00:00",
+  "assessed_at": "2026-10-24T05:11:54.736297+00:00",
   "practice": {
     "actual_local_cpu_jobs": 18,
     "complete_comparison_blocks": 3,
@@ -124,6 +137,30 @@
     {
       "artifact": "validation/experiment-block-reflection/results-filesystem-rejected.xml",
       "reason": "Repository filesystem failed required cross-process lock exclusion; accepted runtime tests used local /tmp."
+    },
+    {
+      "artifact": "validation/release-1.6.1/windows-powershell-failed-annotations.json",
+      "sha256": "19fa2521171fe9ef43830a1bbd92fe4f5c978ba8ae3e4ca712270e9c89920b11",
+      "platform": "windows-latest",
+      "shell": "powershell.exe",
+      "passed": 497,
+      "skipped": 9,
+      "failures": 1,
+      "workflow_run": "https://github.com/Soceremite/EvoInquiry/actions/runs/40064421779",
+      "check_run_id": 120784561817,
+      "reason": "Windows exclusive CRT fallback blocked a concurrent shared namespace guard during live-worker review; publish job skipped."
+    },
+    {
+      "artifact": "validation/release-1.6.1/windows-pwsh-failed-annotations.json",
+      "sha256": "933f994131256580d4188ae5c137afc5649b65370c2aa5478913d7e2ef6657ad",
+      "platform": "windows-latest",
+      "shell": "pwsh",
+      "passed": 497,
+      "skipped": 9,
+      "failures": 1,
+      "workflow_run": "https://github.com/Soceremite/EvoInquiry/actions/runs/40064421779",
+      "check_run_id": 120784561842,
+      "reason": "Windows exclusive CRT fallback blocked a concurrent shared namespace guard during live-worker review; publish job skipped."
     }
   ],
   "publication": {
@@ -131,7 +168,12 @@
     "installed_plugin_replaced": false,
     "authorized": true,
     "tag": "v1.6.1",
-    "method": "tag-triggered-release-workflow"
+    "method": "tag-triggered-release-workflow",
+    "superseded_unpublished_tag": {
+      "object": "690d82d5ddabf198933f95c7b3177bc539f54e1b",
+      "commit": "c3babba1e385f6d3357703b757f728da33b44ce5",
+      "reason": "Both native Windows shells failed; no release published."
+    }
   },
   "runtime_sha256": {
     "VERSION": "6430a242e9486093ef6f71d9086d48f61ba102f0d2fb0f5b95334c6007a46db3",
@@ -150,6 +192,8 @@
     "skills/skills-codex/monitor-experiment/SKILL.md": "e332d8e7d3873c0087553dff8753e6d3ed9ae6cdf4894ac245ad43e2b8280733",
     "skills/skills-codex/research-pipeline/SKILL.md": "06ab8cb9e23edc84785a845b5c4fb9ea07c734a19bf18d7795cd1660b8cf3b51",
     "tests/test_execution_governance.py": "66351af923863192e5ff9b85a121033a699b0dd4d09ce6683c5cace5bf50cedf",
-    "tests/test_experiment_block_reflection.py": "e50208f4c4e87215ce43b055acaa27798c01ebcef320e5011400b484ef0dc629"
+    "tests/test_experiment_block_reflection.py": "e50208f4c4e87215ce43b055acaa27798c01ebcef320e5011400b484ef0dc629",
+    "tools/registry_common.py": "2b3a5a053f1299d58e7aab1be324a42ce31c3e43a6b0764ab0282367430d59ef",
+    "tests/test_filesystem_doctor.py": "f82c36a4d55c27c3e78f42ba283f42bcdcf666b4f9c2f3d7363108309f1d8b1c"
   }
 }

@@ -266,7 +266,7 @@ Retained backend and client compatibility resources support existing workflow
 contracts; they are optional and have separate setup requirements.
 
 Current checks and their scope are recorded in [1.6.1 validation](docs/VALIDATION_1_6_1.md).
-The patch passed 242 focused local tests, including three real CPU comparison
+The patch passed 282 focused local tests, including three real CPU comparison
 blocks and live-worker observation/stop checks. Native Goal/Plan session behavior
 is not established by these tests. In the earlier [1.6.0 validation](docs/VALIDATION_1_6_0.md),
 1,349 tests passed and a real one-hour CUDA engineering

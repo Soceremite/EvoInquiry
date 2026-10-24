@@ -236,7 +236,7 @@ python tools/configure_research_guidance.py --project /path/to/project
 保留的后端与客户端兼容资源用于支持已有流程约定，按需启用并单独配置。
 
 当前检查及其适用范围见[1.6.1 验证记录](docs/VALIDATION_1_6_1.md)。
-本补丁通过 242 项本地专项检查，包含三组真实 CPU 对比和活跃进程监听、停止检查；
+本补丁通过 282 项本地专项检查，包含三组真实 CPU 对比和活跃进程监听、停止检查；
 这些检查不证明原生 Goal/Plan 长程会话行为。此前的
 [1.6.0 验证](docs/VALIDATION_1_6_0.md)通过 1,349 项测试，真实一小时 CUDA 工程运行验证有界恢复存储和数值
 故障处理，另一段有界模型实测观察到 REPLAN、STOP 实际停止训练和完整状态重放。

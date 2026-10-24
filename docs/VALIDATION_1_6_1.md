@@ -28,9 +28,10 @@ entrypoint hooks; original retained workflow bodies remain frozen.
 
 ## Verification record
 
-Local Linux validation passed **242 distinct tests**: 135 control, block-review,
-execution and iteration-ledger checks, plus 107 handoff, pilot, guidance, mirror,
-package, queue, version and release-workflow checks. The two existing queue
+Local Linux validation passed **282 distinct tests** across the initial 135
+control, block-review, execution and iteration-ledger checks, 107 handoff, pilot,
+guidance, mirror, package, queue, version and release-workflow checks, and the
+66-test lock/execution/migration follow-up (26 repeat cases). The two existing queue
 `datetime.utcnow` deprecation warnings remain. The current machine-readable status
 is [release-validation.json](../release-validation.json); it is not a publication
 receipt or a reuse of 1.6.0 release results.
@@ -71,3 +72,30 @@ documentation says Plan-only does not trigger Goal automatic continuation; the
 patch permits supported read-only observation without promising a resident
 monitor. This patch does not repeat or inherit the historical 1.6.0 one-hour CUDA
 acceptance as new evidence. See [monitoring boundaries](BOUNDED_RESEARCH_CN.md).
+
+## Release CI follow-up
+
+The [first release CI attempt](https://github.com/Soceremite/EvoInquiry/actions/runs/40064421779)
+passed the full Linux and macOS suites but failed the same live-worker review
+test in both native Windows shells (497 passed, 9 skipped and 1 failed per shell).
+The failure annotations are retained locally. No GitHub release was published
+from that attempt.
+
+The Windows lock backend used an exclusive CRT lock even for shared namespace
+guards. A running execution held that guard, preventing another thread from
+recording review until the CRT retry limit raised a deadlock error. The repair
+uses Windows [LockFileEx](https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-lockfileex)
+shared/exclusive semantics on synchronous handles. It locks beyond EOF without
+writing a sentinel and releases the matching range with UnlockFileEx. The
+namespace guard remains held for the entire execution, preserving migration
+exclusion. POSIX verification is unchanged.
+
+Seven additional portable regressions exercise the shared/exclusive conflict
+matrix in actual subprocesses, a review writer in another thread, a blocking
+waiter acquiring after release, and lock release after killing an owner. These
+run in both existing Windows CI shell gates through the filesystem-doctor test
+module. The local follow-up passed all 66 tests, including the unchanged
+live-worker review case and existing migration protection checks. Its JUnit
+receipt is `validation/release-1.6.1/lock-runtime.xml`. The legacy-state read
+warning is expected for its explicit migration test. Native acceptance must
+come from the corrected release workflow, not from the Linux checks alone.

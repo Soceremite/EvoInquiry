@@ -1,4 +1,4 @@
-"""Local governance primitives; locks require POSIX flock or Windows locking.
+"""Local governance primitives; locks use POSIX flock or Windows LockFileEx.
 
 Records use canonical UTF-8 JSON and SHA-256. Reference checks establish file
 identity, not scientific validity. All mutations stay inside the project root.
@@ -209,6 +209,56 @@ def _verify_lock_backend(parent):
 
 
 @contextmanager
+def _windows_file_lock(handle, path, *, shared, blocking):
+    """Lock one byte with native shared/exclusive semantics on a sync handle.
+
+    Locking beyond EOF is supported, so acquiring a shared lock never writes to
+    the lock file. The zeroed OVERLAPPED supplies offset zero and must remain
+    alive until the matching unlock. Blocking waits have no CRT retry ceiling.
+    """
+    import ctypes
+    from ctypes import wintypes
+    import msvcrt
+
+    class Offsets(ctypes.Structure):
+        _fields_ = [('Offset', wintypes.DWORD), ('OffsetHigh', wintypes.DWORD)]
+
+    class Location(ctypes.Union):
+        _fields_ = [('offsets', Offsets), ('Pointer', ctypes.c_void_p)]
+
+    class Overlapped(ctypes.Structure):
+        _fields_ = [('Internal', ctypes.c_size_t),
+                    ('InternalHigh', ctypes.c_size_t),
+                    ('location', Location), ('hEvent', wintypes.HANDLE)]
+
+    kernel = ctypes.WinDLL('kernel32', use_last_error=True)
+    kernel.LockFileEx.argtypes = [wintypes.HANDLE, wintypes.DWORD,
+                                 wintypes.DWORD, wintypes.DWORD,
+                                 wintypes.DWORD, ctypes.POINTER(Overlapped)]
+    kernel.LockFileEx.restype = wintypes.BOOL
+    kernel.UnlockFileEx.argtypes = [wintypes.HANDLE, wintypes.DWORD,
+                                   wintypes.DWORD, wintypes.DWORD,
+                                   ctypes.POINTER(Overlapped)]
+    kernel.UnlockFileEx.restype = wintypes.BOOL
+    native_handle = msvcrt.get_osfhandle(handle.fileno())
+    overlapped = Overlapped()
+    # LOCKFILE_EXCLUSIVE_LOCK = 2; LOCKFILE_FAIL_IMMEDIATELY = 1.
+    flags = (0 if shared else 2) | (0 if blocking else 1)
+    if not kernel.LockFileEx(native_handle, flags, 0, 1, 0,
+                             ctypes.byref(overlapped)):
+        error = ctypes.get_last_error()
+        if error == 33:  # ERROR_LOCK_VIOLATION
+            raise RegistryError(f'Active writer holds {path}') from None
+        raise ctypes.WinError(error)
+    try:
+        yield
+    finally:
+        if not kernel.UnlockFileEx(native_handle, 0, 1, 0,
+                                   ctypes.byref(overlapped)):
+            raise ctypes.WinError(ctypes.get_last_error())
+
+
+@contextmanager
 def file_lock(path, *, shared=False, blocking=True):
     """Hold an OS lock; a crash releases it, but a timeout never proves quiescence."""
     path = _regular_ancestors(path)
@@ -241,21 +291,13 @@ def file_lock(path, *, shared=False, blocking=True):
             finally:
                 held.pop(key, None)
                 fcntl.flock(handle, fcntl.LOCK_UN)
-        elif os.name == 'nt':  # Exclusive fallback on Windows.
-            import msvcrt
-            if path.stat().st_size == 0:
-                handle.write(b'\0')
-                handle.flush()
-            handle.seek(0)
-            mode = msvcrt.LK_LOCK if blocking else msvcrt.LK_NBLCK
-            msvcrt.locking(handle.fileno(), mode, 1)
-            try:
-                held[key] = shared
-                yield
-            finally:
-                held.pop(key, None)
-                handle.seek(0)
-                msvcrt.locking(handle.fileno(), msvcrt.LK_UNLCK, 1)
+        elif os.name == 'nt':
+            with _windows_file_lock(handle, path, shared=shared, blocking=blocking):
+                try:
+                    held[key] = shared
+                    yield
+                finally:
+                    held.pop(key, None)
         else:
             raise RegistryError('Registry writes require a verified local filesystem lock backend')
 
