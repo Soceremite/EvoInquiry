@@ -1,9 +1,9 @@
-# 1.6.1 local validation scope
+# 1.6.1 validation and publication
 
 This record covers local validation of the 1.6.1 patch to the published 1.6.0
 implementation. It changes existing continuation and monitoring contracts without
-adding skills or creating a scheduler. Release CI and publication receipts are
-separate from the local checks below.
+adding skills or creating a scheduler. Local checks, failed release attempts,
+and the successful release receipts are recorded separately below.
 
 ## Changes reviewed
 
@@ -34,8 +34,8 @@ guidance, mirror, package, queue, version and release-workflow checks, the
 66-test lock/execution/migration follow-up, and the 76-test per-run/concurrency
 follow-up. The suites overlap; the total counts unique JUnit case identities. The two existing queue
 `datetime.utcnow` deprecation warnings remain. The current machine-readable status
-is [release-validation.json](../release-validation.json); it is not a publication
-receipt or a reuse of 1.6.0 release results.
+is [release-validation.json](../release-validation.json). The local results are
+separate from the publication receipts below and do not reuse 1.6.0 results.
 
 The admission defect was reproduced before repair: both already-pending review
 and review created during environment verification allowed a prepared CPU job to
@@ -66,8 +66,9 @@ by governed runtime state. An initial in-repository temporary-directory test run
 was correctly rejected and retained locally. Accepted execution fixtures use a
 verified local `/tmp` filesystem; lock checks were not weakened.
 
-Native Windows/macOS CI, Codex Goal auto-continuation/stalled behavior and Plan
-watch behavior have not been exercised by this Linux patch validation. Skills
+Local Linux checks alone do not exercise native Windows/macOS behavior; the
+release CI results are recorded below. Native Codex Goal auto-continuation/stalled
+behavior and Plan watch behavior have not been exercised by this patch validation. Skills
 cannot override host budgets, interruptions or continuation support. Official
 documentation says Plan-only does not trigger Goal automatic continuation; the
 patch permits supported read-only observation without promising a resident
@@ -98,8 +99,8 @@ run in both existing Windows CI shell gates through the filesystem-doctor test
 module. The local follow-up passed all 66 tests, including the unchanged
 live-worker review case and existing migration protection checks. Its JUnit
 receipt is `validation/release-1.6.1/lock-runtime.xml`. The legacy-state read
-warning is expected for its explicit migration test. Native acceptance must
-come from the corrected release workflow, not from the Linux checks alone.
+warning is expected for its explicit migration test. Native acceptance is established by the final release workflow below, separately
+from the Linux checks.
 
 The [second release CI attempt](https://github.com/Soceremite/EvoInquiry/actions/runs/40065475352)
 passed all seven lock regressions and the live-worker review test in both native
@@ -119,4 +120,39 @@ preserved; the targeted adaptation is registered separately.
 
 The per-run repair passed all 76 local follow-up tests with no skips or warnings;
 its JUnit receipt is `validation/release-1.6.1/run-lock-runtime.xml`. Native
-Windows/macOS acceptance still requires the next corrected release workflow.
+Windows/macOS acceptance is recorded in the final release workflow below.
+
+
+## Published release
+
+[EvoInquiry 1.6.1](https://github.com/Soceremite/EvoInquiry/releases/tag/v1.6.1)
+was published as the latest stable release at **2026-10-24 05:32:31 UTC**.
+The source commit is `bbe52387bbf0542d62b6cd8886c9187c573fa023` and the
+annotated tag object is `7efa333bcbddba95d9d999cd492b7b30bf077ade`.
+The [final release workflow](https://github.com/Soceremite/EvoInquiry/actions/runs/40066355363)
+passed all four validation jobs and the publish job:
+
+| Native runner / shell | Passed | Skipped | Failures / errors |
+| --- | ---: | ---: | ---: |
+| Ubuntu full suite | 1371 | 35 | 0 / 0 |
+| macOS full suite | 1366 | 40 | 0 / 0 |
+| Windows PowerShell (`powershell.exe`) | 507 | 9 | 0 / 0 |
+| Windows PowerShell 7 (`pwsh`) | 507 | 9 | 0 / 0 |
+
+These are platform-specific runs, with overlapping test cases. The two failed
+attempts above remain part of the validation history; neither published a release.
+Native Goal/Plan long-session behavior remains untested.
+
+All four public attachments (`evo-inquiry-1.6.1.tar.gz`,
+`evo-inquiry-1.6.1.zip`, `SHA256SUMS`, and `release-manifest.json`) have GitHub
+SHA-256 digests matching the locally built and exercised files. The downloaded
+checksum and manifest files agree on both archive hashes and the source commit.
+Local archive extraction verified 1,084 files, 89 skill entrypoints, 83 retained
+workflows, protected runtime hashes, and the packaged read-only CLI. The large
+public binary transfers did not complete within this server's network deadline;
+no full binary download is claimed. Integrity verification binds the exercised
+local packages to the public attachments through the matching GitHub digests.
+
+The release-tag snapshot records its pre-publication state. This main-branch
+follow-up adds the actual CI and publication receipts; the published tag and
+assets remain unchanged.
