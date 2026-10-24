@@ -14,8 +14,11 @@ budgets, blocking checkpoints, and stopping conditions.
 For a planning-only request, batch relevant context/reference reads and reuse
 unchanged guidance already loaded. Write the core plan and required compact
 tracker before optional elaboration. Record unknown resource estimates and
-unresolved execution references as prerequisites; do not probe or initialize a
-runtime merely to fill them. Preserve the existing spec and output contracts.
+unresolved execution references as prerequisites; do not probe or initialize an
+experiment runtime merely to fill them. The [session resource table](../shared-references/resource-budget.md)
+is separate: in a writable session initialize its pending policy; if its first
+choice is missing, present the options and end this turn, resuming planning after
+the user's response. Preserve the existing spec and output contracts.
 Carry the supplied resource quantities into the feasibility calculation; keep
 provided values, derived totals and genuinely unknown estimates distinct. If
 the requested combination cannot fit, save that calculation and the compact

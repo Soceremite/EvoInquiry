@@ -1,5 +1,10 @@
 # Bounded research continuation
 
+Resolve the [session resource table](resource-budget.md) before resource-bearing
+planning or dispatch. Its one-time selection supplies standing authorization;
+reload it and check fresh capacity at each stage. Do not turn a table-approved
+90-minute job into another permission request or a new Goal deadline.
+
 Use for authorized sustained work or recovery, within the active workflow's
 records, resource bounds and review gates. Advice and small edits need no new
 run or contract. These helpers account for declared actions; they do not meter

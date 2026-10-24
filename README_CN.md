@@ -9,6 +9,7 @@
 
 <p align="center">
   <a href="https://github.com/Soceremite/EvoInquiry/releases/tag/v1.6.1"><img src="https://img.shields.io/badge/release-1.6.1-FF927E?style=flat&amp;labelColor=7862E8" alt="版本 1.6.1"></a>
+  <a href="RELEASE_NOTES.md"><img src="https://img.shields.io/badge/development-1.6.2-FFD95E?style=flat&amp;labelColor=7862E8" alt="1.6.2 开发中"></a>
   <a href="docs/SKILLS_CATALOG.md"><img src="https://img.shields.io/badge/Codex_skills-89-59C7A7?style=flat&amp;labelColor=7862E8" alt="89 个 Codex skill"></a>
   <a href="https://github.com/Soceremite/EvoInquiry/actions/workflows/test-suite.yml"><img src="https://github.com/Soceremite/EvoInquiry/actions/workflows/test-suite.yml/badge.svg" alt="回归测试状态"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-FFD95E?style=flat&amp;labelColor=7862E8" alt="MIT 许可证"></a>
@@ -39,11 +40,11 @@
 **EvoInquiry 1.6.1，继续开源。** 欢迎大家用自己的研究任务试一试，把真实的问题和建议带给我们。
 我们一起，把这个科研搭档做得更扎实、更好用。
 
-**[1.6.1 更新](RELEASE_NOTES.md)：** 优先按 N 个完整实验或对比组回顾，计划中的
-方法、种子和分析完成后，一组只计一次。普通回顾不打断健康训练，正常监听等待
-不累加科研停滞。Plan 可在宿主支持时只读观察已有任务；待完成回顾拦住下一次
-启动，包括已准备任务，原资源限制与明确 STOP 继续有效。多个问题可能有共同
-解释时，仍由 `problem-synthesis` 负责检验，保留原有 skill 的清晰分工。
+**开发中 — [1.6.2 更新](RELEASE_NOTES.md)：** 每个 session 一份资源表，首次选择，
+后续所有科研 skill 复用；安排实验和启动前检查最新 GPU、内存与存储状态。
+最大可用配置下，单任务 12 小时内无需重复审批预算。资源等待保持任务待处理，
+不消耗训练重试。见[资源表说明](docs/SESSION_RESOURCE_BUDGET_CN.md)和
+[验证范围](docs/VALIDATION_1_6_2.md)；当前正式下载版本仍为 1.6.1。
 
 ## 从模糊方向走向有证据的下一步
 
@@ -52,7 +53,7 @@
 在已有项目记录中跟踪决策、未解决问题与交接。文献记录保留身份、版本和阅读层级；图件记录关联
 真实输入、可编辑源文件与图注。已有公平比较、权重保留和审阅门槛继续使用。
 具体能力见[版本说明](RELEASE_NOTES.md)，实际验证范围见
-[1.6.1 验证记录](docs/VALIDATION_1_6_1.md)。
+[1.6.2 验证记录](docs/VALIDATION_1_6_2.md)。
 
 可以直接说：“探索低成本记忆的研究问题，先不训练”“检查这些均值能支持
 什么结论”“把CSV画成图，保留脚本、失败运行和误差定义”。明确需要时再运行
@@ -235,9 +236,10 @@ python tools/configure_research_guidance.py --project /path/to/project
 本项目提供的 EvoInquiry 安装方式是上面的 Codex 插件。
 保留的后端与客户端兼容资源用于支持已有流程约定，按需启用并单独配置。
 
-当前检查及其适用范围见[1.6.1 验证记录](docs/VALIDATION_1_6_1.md)。
-本补丁通过 304 项本地专项检查，包含三组真实 CPU 对比和活跃进程监听、停止检查；
-这些检查不证明原生 Goal/Plan 长程会话行为。此前的
+当前检查及其适用范围见[1.6.2 验证记录](docs/VALIDATION_1_6_2.md)。
+最新引导通过 95 项本地专项检查，此前完整回归有 1,410 项通过。原生 Plan/Goal
+实测验证资源选择、只读监听与 Goal 自动续跑，两轮均正常完成；监听对象是约
+4 分钟的 CPU 任务。小时级 Goal/Plan 科研和 1.6.2 原生 Windows/macOS 验收仍未覆盖。此前的
 [1.6.0 验证](docs/VALIDATION_1_6_0.md)通过 1,349 项测试，真实一小时 CUDA 工程运行验证有界恢复存储和数值
 故障处理，另一段有界模型实测观察到 REPLAN、STOP 实际停止训练和完整状态重放。
 失败尝试及对照组退化均保留。构造场景与显式引导的结果不证明普遍优于旧版、默认

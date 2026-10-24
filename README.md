@@ -9,6 +9,7 @@
 
 <p align="center">
   <a href="https://github.com/Soceremite/EvoInquiry/releases/tag/v1.6.1"><img src="https://img.shields.io/badge/release-1.6.1-FF927E?style=flat&amp;labelColor=7862E8" alt="Version 1.6.1"></a>
+  <a href="RELEASE_NOTES.md"><img src="https://img.shields.io/badge/development-1.6.2-FFD95E?style=flat&amp;labelColor=7862E8" alt="1.6.2 in development"></a>
   <a href="docs/SKILLS_CATALOG.md"><img src="https://img.shields.io/badge/Codex_skills-89-59C7A7?style=flat&amp;labelColor=7862E8" alt="89 Codex skills"></a>
   <a href="https://github.com/Soceremite/EvoInquiry/actions/workflows/test-suite.yml"><img src="https://github.com/Soceremite/EvoInquiry/actions/workflows/test-suite.yml/badge.svg" alt="Regression test status"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-FFD95E?style=flat&amp;labelColor=7862E8" alt="MIT license"></a>
@@ -46,13 +47,12 @@ research tool should help us see the problem more clearly.
 the problems and suggestions you encounter. Help us make this research companion
 more dependable and more useful.
 
-**New in [1.6.1](RELEASE_NOTES.md):** review after N complete experiments or
-comparisons, with all planned methods, seeds and analysis counted as one group.
-Healthy long training keeps running during ordinary reflection; normal monitoring
-waits do not count as research stalls. Plan can observe existing jobs read-only
-where the host supports it. Pending review holds the next launch, including
-prepared jobs, while original resource limits and explicit STOP remain effective.
-Use `problem-synthesis` when several unresolved problems may share an explanation.
+**In development — [1.6.2](RELEASE_NOTES.md):** one resource table per session,
+selected once and reused by all research skills. Planning and launch check fresh
+GPU, memory and storage state. Within the maximum-available profile, individual
+jobs up to 12 hours need no repeated budget approval. Resource waits preserve
+pending jobs and training retries. See the [resource contract](skills/shared-references/resource-budget.md)
+and [validation scope](docs/VALIDATION_1_6_2.md); the stable download remains 1.6.1.
 
 ## From a rough direction to an evidence-backed next step
 
@@ -63,7 +63,7 @@ and handoffs in existing project records. Literature records
 retain identity, versions and reading scope; figure receipts bind real inputs,
 editable sources and captions. Existing comparison, checkpoint and review gates
 remain in use. See [what changed](RELEASE_NOTES.md) and the
-[1.6.1 validation record](docs/VALIDATION_1_6_1.md).
+[1.6.2 validation record](docs/VALIDATION_1_6_2.md).
 
 Try a bounded request such as “Frame research questions about low-cost memory;
 no training yet”, “Check whether these means support the claim”, or “Plot this
@@ -265,10 +265,13 @@ The documented EvoInquiry installation route is the Codex plugin above.
 Retained backend and client compatibility resources support existing workflow
 contracts; they are optional and have separate setup requirements.
 
-Current checks and their scope are recorded in [1.6.1 validation](docs/VALIDATION_1_6_1.md).
-The patch passed 304 focused local tests, including three real CPU comparison
-blocks and live-worker observation/stop checks. Native Goal/Plan session behavior
-is not established by these tests. In the earlier [1.6.0 validation](docs/VALIDATION_1_6_0.md),
+Current checks and their scope are recorded in [1.6.2 validation](docs/VALIDATION_1_6_2.md).
+The latest guidance passed 95 focused local tests after an earlier full regression
+of 1,410 passing tests. Actual native Plan/Goal checks verified resource choices,
+read-only monitoring and automatic Goal continuation through two completed turns
+using approximately four-minute CPU jobs. Hour-long Goal/Plan research and native
+Windows/macOS acceptance for 1.6.2 remain untested. In the earlier
+[1.6.0 validation](docs/VALIDATION_1_6_0.md),
 1,349 tests passed and a real one-hour CUDA engineering
 run checked bounded recovery storage and numerical fault handling. A separate
 bounded native-model observation exercised REPLAN, actual STOP delivery to a

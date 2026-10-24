@@ -277,11 +277,12 @@ def job_status_check(job, log_dir, cwd):
 
     if job.get('execution'):
         binding = job['execution']
+        tools_dir = Path(binding['registry_tools_dir']).resolve()
+        if str(tools_dir) not in sys.path:
+            sys.path.insert(0, str(tools_dir))
+        from registry_common import read_record
         final = Path(binding['project_root']) / 'runs' / binding['execution_run_id'] / 'execution.final.json'
         if final.is_file():
-            tools_dir = Path(binding['registry_tools_dir']).resolve()
-            if str(tools_dir) not in sys.path:
-                sys.path.insert(0, str(tools_dir))
             from execution_registry import inspect_terminal
             from state_paths import resolve_state_root
             resolve_state_root(binding['project_root'], 'read')
@@ -297,6 +298,15 @@ def job_status_check(job, log_dir, cwd):
                 'failed_other', f"Recorded execution exit {record['exit_code']}")
         if screen_name and screen_exists(screen_name):
             return 'running', None
+        prepared = final.parent / 'execution.json'
+        admission = final.parent / 'resource-admission.json'
+        if prepared.is_file() and admission.is_file() and not (final.parent / 'process.json').exists():
+            current, receipt = read_record(prepared), read_record(admission)
+            if (current['status'] == 'prepared' and receipt.get('execution_run_id') == binding['execution_run_id']
+                    and receipt.get('snapshot_ref') == binding['snapshot_ref']
+                    and receipt.get('check', {}).get('status') in
+                    ('WAIT_RESOURCE', 'NEEDS_APPROVAL', 'NEEDS_ESTIMATE', 'SELECTION_REQUIRED')):
+                return 'pending', 'Session resources ' + receipt['check']['status']
         return 'failed_other', 'No verified terminal execution; inspect before retry or lease release'
 
     # 1. Output exists → completed
@@ -343,7 +353,7 @@ def governed_launch_command(job):
         raise ValueError('Governed queue needs the complete registry tools and schemas on this host')
     if str(tools_dir) not in sys.path:
         sys.path.insert(0, str(tools_dir))
-    from execution_registry import clone_attempt, verify_queue_binding, verify_snapshot
+    from execution_registry import clone_attempt, verify_queue_binding, verify_snapshot, check_execution_resources
     from environment_registry import EnvironmentRegistry
     from registry_common import read_record
     from state_paths import resolve_state_root
@@ -367,6 +377,7 @@ def governed_launch_command(job):
         if job.get('expected_output'):
             job['expected_output'] = job['expected_output'].replace('runs/' + previous + '/', 'runs/' + new_id + '/')
     verify_queue_binding(root, binding)
+    check_execution_resources(root, current)
     if current['execution_run_id'] not in job.setdefault('execution_attempts', []):
         job['execution_attempts'].append(current['execution_run_id'])
     return shlex.join([binding.get('registry_python', sys.executable), str(tools_dir / 'execution_registry.py'),
@@ -472,6 +483,11 @@ def step(manifest, state, state_file, log_dir):
             job["completed"] = now()
             if job["screen_name"]:
                 kill_screen(job["screen_name"])
+        elif new_status == 'pending':
+            # The admitted launcher never started a training process. Waiting
+            # for resources is not a failed experiment or a consumed retry.
+            job.update(status='pending', gpu=None, screen_name=None, pid=None, started=None, error=err,
+                       attempts=max(0, job['attempts'] - 1))
 
     # 2. Park non-OOM failures as terminal, retry OOM jobs that have waited long enough
     current_time = time.time()
@@ -505,14 +521,29 @@ def step(manifest, state, state_file, log_dir):
         gpu = free[i]
         governed = bool(job.get('execution'))
         if governed:
-            governed_launch_command(job)
+            try:
+                governed_launch_command(job)
+            except ValueError as error:
+                if getattr(error, 'result', {}).get('status') not in (
+                        'WAIT_RESOURCE', 'NEEDS_APPROVAL', 'NEEDS_ESTIMATE', 'SELECTION_REQUIRED'):
+                    raise
+                job['error'] = str(error)
+                continue
             # Persist the selected attempt before screen can start. Recovery
             # sees this same binding and never relaunches a running identity.
             job.update(status='running', gpu=gpu, screen_name=f"EQ_{job['id']}",
                        pid=None, started=now(), error=None)
             job['attempts'] += 1
             save_state(state, state_file)
-        screen_name, pid = launch_job(job, gpu, conda_env, cwd, log_dir, conda_hook)
+        try:
+            screen_name, pid = launch_job(job, gpu, conda_env, cwd, log_dir, conda_hook)
+        except ValueError as error:
+            if not governed or getattr(error, 'result', {}).get('status') not in (
+                    'WAIT_RESOURCE', 'NEEDS_APPROVAL', 'NEEDS_ESTIMATE', 'SELECTION_REQUIRED'):
+                raise
+            job.update(status='pending', gpu=None, screen_name=None, pid=None, started=None,
+                       error=str(error), attempts=max(0, job['attempts'] - 1))
+            continue
         job["status"] = "running"
         job["gpu"] = gpu
         job["screen_name"] = screen_name

@@ -848,10 +848,17 @@
       "upgrade_baseline_sha256": "2fe0d13d2bba863e9bbde65f8a746f1c0f46b7e2c08e16107786fad6980a5820"
     },
     "skills/experiment-queue/scripts/queue_manager.py": {
-      "sha256": "67dc8fa1e5f5f4c879c1d9b72eacda55fb71e514d0ee5241dd27f6e7e31d73f9",
+      "sha256": "2940d3a57706c0df39338f94326d3a13b6d80b03b02ac6094f7ab37ecf4bef5e",
       "baseline_sha256": "9b53e554bda3fec88d9d293e323e26f531d8c074b7544a8ca7b4c3b529ab0129",
-      "reason": "Frozen bindings, recoverable retries and actual terminal lease receipts; unbound scheduling preserved.",
-      "upgrade_baseline_sha256": "9b53e554bda3fec88d9d293e323e26f531d8c074b7544a8ca7b4c3b529ab0129"
+      "reason": "Reuse the selected session resource table at queue admission; preserve unlaunched resource waits as pending without consuming retries.",
+      "upgrade_baseline_sha256": "9b53e554bda3fec88d9d293e323e26f531d8c074b7544a8ca7b4c3b529ab0129",
+      "previous_sha256": "67dc8fa1e5f5f4c879c1d9b72eacda55fb71e514d0ee5241dd27f6e7e31d73f9",
+      "adaptation_version": "1.6.2",
+      "review_ref": "docs/VALIDATION_1_6_2.md#changes-reviewed",
+      "test_refs": [
+        "tests/test_resource_budget.py",
+        "tests/test_governed_queue.py"
+      ]
     },
     "skills/shared-references/output-versioning.md": {
       "sha256": "420caadf96438fbe987cdd8b4ee9b7b3f0d59f71f47522ac1f5697020e60b53d",
@@ -1153,18 +1160,16 @@
     },
     "skills/experiment-plan/SKILL.md": {
       "baseline_sha256": "c5b53692ff95b0b55e80702e33afc79d9fe8d4f55a69e2a39714013f97ac595e",
-      "sha256": "ca42d921ba9d62bc0d018595b21d1acee88ef89680ae11874eda5895765bb9a8",
-      "reason": "Trajectory checkpoints and problem-synthesis handoffs through the existing action owner, ledger, phases and review gates.",
-      "adaptation_version": "1.6.0",
-      "review_ref": "docs/VALIDATION_1_6_0.md#verification-record",
+      "sha256": "3649609f46cd099ef62c88d0c0153dfae0b3436a59070b588b956c355382f882",
+      "reason": "Keep experiment runtime initialization deferred in planning-only requests while initializing the separate session resource policy and offering its first choice before scheduling; preserve actual host Plan-mode restrictions.",
+      "adaptation_version": "1.6.2",
+      "review_ref": "docs/VALIDATION_1_6_2.md#native-session-validation",
       "test_refs": [
-        "tests/test_problem_synthesis.py",
-        "tests/test_iteration_log.py",
-        "tests/test_research_control.py",
+        "tests/test_resource_budget.py",
         "tests/test_codex_skill_mirror.py",
         "tests/test_evo_inquiry.py"
       ],
-      "previous_sha256": "113aeb8ff2b17a1fd70ca40cbf6668e758e677ae6072b84bd52767c385435ea9"
+      "previous_sha256": "ca42d921ba9d62bc0d018595b21d1acee88ef89680ae11874eda5895765bb9a8"
     },
     "skills/figure-spec/SKILL.md": {
       "baseline_sha256": "090a28a1b6464d3b88cf32b9bf59f6a1008e7e63d638801070f0b888c3ef9c5b",
@@ -2692,16 +2697,16 @@
     },
     "tools/publication-policy.json": {
       "baseline_sha256": "b6b65bede8a5d21a5040d9543e41b71bcf2bad71990013e5b49225151f3c7c52",
-      "sha256": "a632b8bf05d34f4990039ee8b5e569b0f012ecf876dfe32e7ebe0175d12f8e57",
-      "adaptation_version": "1.5.0",
-      "reason": "Require all optional bounded-research helpers and usage/validation references in public packages; retain retired-material exclusions.",
-      "review_ref": "docs/VALIDATION_1_5_0.md#directed-adaptations",
+      "sha256": "3d45ff1e4d58040e6acf9a36c0665df5576ae8b90e4471d80b56b8856d6e1cc6",
+      "adaptation_version": "1.6.2",
+      "reason": "Register the session resource checker, shared contract and usage guide; retain original retired-file exclusions and frozen baseline.",
+      "review_ref": "docs/VALIDATION_1_6_2.md#changes-reviewed",
       "test_refs": [
+        "tests/test_resource_budget.py",
         "tests/test_evo_inquiry.py",
-        "tests/test_research_control.py",
-        "tests/test_candidate_comparison.py"
+        "tests/test_codex_skill_mirror.py"
       ],
-      "previous_sha256": "b6b65bede8a5d21a5040d9543e41b71bcf2bad71990013e5b49225151f3c7c52"
+      "previous_sha256": "a632b8bf05d34f4990039ee8b5e569b0f012ecf876dfe32e7ebe0175d12f8e57"
     },
     "skills/shared-references/external-cadence.md": {
       "baseline_sha256": "d0d8e92c9c8f5e60555c8ddf32cf15c78d0bdc61a367ef35d8b0fef8dab906f3",

@@ -98,6 +98,12 @@ resources alongside compute. Use a bounded retention policy appropriate to the
 research, preserve necessary evidence, and budget a complete new save before
 rotating older recovery points.
 
+Before arranging resource-consuming research and again before its launch, use
+the single [session resource table](resource-budget.md) and fresh target-host
+state. Initialize and obtain the session's first user choice once; all skills
+reuse it. Work within the selected ceilings proceeds without repeated budget
+approval. A research Goal does not need an invented short time window.
+
 When research project identity, runtime state or reproducible handoffs matter,
 use [project-governance](project-governance.md): resolve .ei centrally, fix inputs
 and preserve existing workflow IDs/statuses. Profiles are optional. For actual

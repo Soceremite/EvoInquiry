@@ -22,12 +22,18 @@ try:
                                   validate_schema, verify_ref)
     from .state_paths import resolve_state_root, state_writer
     from .environment_registry import verify_environment
+    from .resource_budget import check_launch as check_session_resources
+    from .resource_budget import table_path as session_resource_table
+    from .resource_budget import ResourceAdmissionError
 except ImportError:
     from registry_common import (RegistryError, configure_utf8_output, atomic_write, canonical, digest, file_lock,
                                  fixed_ref, identifier, local_path, now, read_record,
                                  validate_schema, verify_ref)
     from state_paths import resolve_state_root, state_writer
     from environment_registry import verify_environment
+    from resource_budget import check_launch as check_session_resources
+    from resource_budget import table_path as session_resource_table
+    from resource_budget import ResourceAdmissionError
 
 
 def spec_digest(spec):
@@ -489,6 +495,37 @@ def _wait_controlled(root, directory, record, process, timeout, bound_workflow):
     return process.returncode, False
 
 
+def check_execution_resources(root, record):
+    """Reuse one session table at queue admission and after environment validation.
+
+    The per-execution receipt is evidence of this check, not another policy
+    table. Deferred checks leave the execution prepared and spend no retry.
+    """
+    root = Path(root).resolve()
+    directory = local_path(root, f"runs/{identifier(record['execution_run_id'])}")
+    snapshot_dir = verify_ref(root, record['snapshot_ref']).parent
+    binding = read_record(snapshot_dir / 'configuration.json').get('resource_budget')
+    if (binding is None and (os.environ.get('CODEX_THREAD_ID') or os.environ.get('CODEX_SESSION_ID'))
+            and session_resource_table(root).exists()):
+        raise RegistryError('Bind the current session resource table before launching this execution')
+    if binding is None:
+        return None
+    try:
+        result = check_session_resources(root, binding)
+    except ResourceAdmissionError as error:
+        result = error.result
+        with state_writer(root):
+            atomic_write(directory / 'resource-admission.json', {
+                'execution_run_id': record['execution_run_id'], 'snapshot_ref': record['snapshot_ref'],
+                'check': result})
+        raise
+    with state_writer(root):
+        atomic_write(directory / 'resource-admission.json', {
+            'execution_run_id': record['execution_run_id'], 'snapshot_ref': record['snapshot_ref'],
+            'check': result})
+    return result
+
+
 def launch_execution(root, execution_run_id, arguments=(), *, timeout=None):
     """Launch an authorized local CPU/GPU entry from its verified snapshot and interpreter.
 
@@ -543,6 +580,8 @@ def launch_execution(root, execution_run_id, arguments=(), *, timeout=None):
             bounds.append(remaining)
     effective_timeout = min(bounds) if bounds else None
     snapshot_dir = verify_ref(root, record['snapshot_ref']).parent
+    resource_binding = read_record(snapshot_dir / 'configuration.json').get('resource_budget')
+    resource_admission = check_execution_resources(root, record)
     with state_writer(root) as state, file_lock(state / 'locks/executions.lock'):
         current = read_record(path)
         if current['status'] != 'prepared':
@@ -581,11 +620,20 @@ finally:
 '''
     command = [observed['interpreter'], '-I', '-c', bootstrap, str(root), str(snapshot_dir),
                snapshot['entrypoint'], str(directory / 'import-paths.json'), *map(str, arguments)]
+    launch_environment = None
+    if resource_admission is not None:
+        # Restrict the actual child to the admitted physical devices; host indices
+        # can differ from CUDA's process-local numbering. Empty means CPU-only.
+        admitted = resource_binding['request']['gpus']
+        devices = resource_admission['observed']['gpus']
+        uuids = [next(row['uuid'] for row in devices if item['id'] in (row['id'], row['uuid']))
+                 for item in admitted]
+        launch_environment = dict(os.environ, CUDA_VISIBLE_DEVICES=','.join(uuids))
     with state_writer(root):
         with (directory / 'process.log').open('wb') as log:
             try:
                 process = subprocess.Popen(command, cwd=snapshot_dir, stdout=log, stderr=subprocess.STDOUT,
-                                           start_new_session=os.name == 'posix')
+                                           start_new_session=os.name == 'posix', env=launch_environment)
             except OSError as error:
                 log.write(str(error).encode())
                 exit_code, stopped = 127, False
@@ -613,6 +661,8 @@ finally:
             references.append(fixed_ref(root, (directory / 'import-paths.json').relative_to(root)))
         if (directory / 'termination.json').exists():
             references.append(fixed_ref(root, (directory / 'termination.json').relative_to(root)))
+        if (directory / 'resource-admission.json').exists():
+            references.append(fixed_ref(root, (directory / 'resource-admission.json').relative_to(root)))
         reference = finish_execution(root, execution_run_id, exit_code, references, stopped=stopped)
         return {'exit_code': exit_code, 'execution_ref': reference}
 

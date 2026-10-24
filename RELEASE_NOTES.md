@@ -1,33 +1,32 @@
-# EvoInquiry 1.6.1
+# EvoInquiry 1.6.2
 
-EvoInquiry 1.6.1 makes trajectory review follow completed research work and clarifies how to monitor long training without treating normal waiting as research failure. The existing 89 Codex entrypoints and 88 mainline skills retain their separate owners.
+EvoInquiry 1.6.2 introduces a session resource table so research skills can reuse an established allocation instead of repeatedly asking whether a routine experiment may run. This source update has passed local validation; a tagged 1.6.2 release has not been published.
 
-## Added
+## New capabilities
 
-- Review after N whole experimental blocks: a planned comparison counts once after its methods, seeds, evaluation and analysis are complete.
-- Explicit null total wall/action caps for ongoing authorized tasks, with declared resources, retries and individual experiment limits preserved.
-- Read-only inspection of current and due review for Plan monitoring and live observation.
+- One table per session, initialized on first use with maximum available, exclusive GPU or custom choices. Continuation and other research skills reuse the selected policy.
+- Fresh checks before arranging experiments and again before launch, covering GPU allowlists, per-device and total VRAM, sharing, CPU, host RAM, dataset growth, weights, checkpoint save peaks and disk headroom.
+- The existing frozen execution launcher and governed queue consult the same selected table and retain an execution-bound check receipt.
 
-## Fixed
+## Fixes and corrections
 
-- Prepared jobs cannot bypass a pending or due review at the launch checks, including after environment verification. The same prepared identity can launch once its review is addressed.
-- Healthy launched jobs continue through ordinary review. Monitoring polls and waiting for results do not count as completed zero-finding research iterations or directly block a Goal.
-- Observation-only Plan work reports stop recommendations to the execution owner. One-job cancellation, workflow STOP and native Goal pause remain distinct operations.
-- Windows shared namespace locks now allow review writers alongside healthy training. Exclusive operations remain excluded, and process exit releases the OS lock; the previous exclusive fallback could deadlock review updates.
-- Windows run-state updates now use the existing portable per-run lock, preventing two cooperating processes from claiming the same action or overwriting each other's updates. Independent runs retain separate locks.
+- Within the maximum-available profile, individual jobs up to 12 hours use standing authorization. A 90-minute allocation needs no repeated budget approval, and an ongoing Goal gains no invented total time window.
+- Resource shortages, missing first choices, uncertain estimates and policy exceptions keep unlaunched jobs pending without consuming training retries or becoming failed experiments.
+- Storage checks combine concurrent peaks on the same filesystem. GPU checks retain per-device fit and aggregate occupancy, reject index/UUID aliases and pass only admitted GPU UUIDs to the child process.
+- Unknown telemetry remains unknown capacity. Changing one custom ceiling preserves unrelated user restrictions, and a policy revision during checking requires a fresh check.
+- Ordinary experiment planning in a writable session initializes the resource table and offers the first choice before scheduling. Actual host Plan mode retains its read-only restrictions; creating the policy record does not start an experiment runtime.
+- Keep maximum available as the default first choice. A job's estimated CPU, RAM or duration sizes that job; it does not silently select the session's standing policy.
 
-## Validation and limits
+## Validation and scope
 
-Local Linux validation passed 304 distinct tests, including three actual CPU comparison blocks and live-worker monitoring/stop checks; see the [1.6.1 validation record](https://github.com/Soceremite/EvoInquiry/blob/v1.6.1/docs/VALIDATION_1_6_1.md). Publication is gated by the full Linux and macOS CI suites and targeted native Windows checks in both PowerShell shells. Native Goal/Plan long-running session behavior remains untested. Skills follow the host's mode, budgets and available continuation tools; Plan-only does not guarantee automatic continuation after a turn. Admission checks do not form an atomic transaction with process creation.
+The full regression before the native-session guidance correction passed 1,410 tests with 39 skipped and 46 passing subtests, with no failures. The latest guidance passed 95 resource, queue, mirror and package tests. Two independent ordinary Codex threads completed four turns covering first choice, reuse, a short CPU execution and session separation. Additional actual host Plan/Goal tests passed: read-only Plan monitoring, same-thread policy persistence after a mode switch, and automatic Goal continuation through two completed turns. Monitoring used real four-minute CPU jobs; earlier failed and partial attempts are retained. No 90-minute training was performed. See the [1.6.2 validation record](docs/VALIDATION_1_6_2.md).
+
+Windows and macOS acceptance for 1.6.2, real GPU training and hour-long Goal/Plan behavior remain untested. Observation cadence includes model/tool latency and is not a real-time guarantee. The Windows CI gates now include the resource and queue modules. Capacity sampling does not atomically reserve hardware, and sharing still depends on the existing scheduler. The 89 Codex entrypoints and 88 mainline skills retain their existing owners.
 
 ## 中文说明
 
-**EvoInquiry 1.6.1：按研究进展适时回顾，让长训练的正常等待继续推进。** 一组完整的对比实验只计一次，支持不设置总时长窗口的已授权持续研究；真实资源预算、重试次数和单任务上限继续有效。
+**EvoInquiry 1.6.2：每个 session 一份资源表，首次选择，后续复用。** 安排实验与实际启动前都检查当前 GPU、内存和存储状态；最大可用配置下，单任务 12 小时内无需重复审批，90 分钟属于表内常规安排。持续 Goal 不新增总时长窗口，原有明确预算、停止请求与科研审查继续有效。
 
-**修复与边界：** 阻止已准备任务绕过待完成或到期回顾，回顾后复用原执行身份；普通回顾不打断健康训练，监听不累加科研停滞计数。修复 Windows 共享锁退化为独占锁导致回顾写入死锁的问题，以及运行状态锁缺失导致重复认领、丢失更新的问题，保留迁移互斥和进程退出释放锁的保护。Plan 可以在宿主支持的当前任务内只读观察已有训练，发现异常后报告，不擅自执行停止。单训练停止、工作流 STOP 与 Goal 暂停分别处理。
+**修复问题：** 资源不足保持等待，不消耗未启动训练的重试；同一磁盘合并数据集、权重、断点与临时峰值，逐卡核对显存并保留总占用。未知状态不能冒充可用容量，单项调高额度不再重置其他限制。
 
-**实际验证：** 本地 Linux 验证 304 项通过，包含三组真实 CPU 对比实验与活跃进程监听、停止检查。发布流程要求 Linux、macOS 完整回归及两种 Windows Shell 的原生检查通过；原生 Goal/Plan 长程会话尚未实测。跨回合自动监听取决于 Codex 的模式、预算与续跑支持，不能由 skill 保证。
-
-## Install and upgrade
-
-Download `evo-inquiry-1.6.1.tar.gz` or `evo-inquiry-1.6.1.zip` from this release and follow the [Codex plugin installation and upgrade instructions](https://github.com/Soceremite/EvoInquiry/blob/v1.6.1/README.md#installation). `SHA256SUMS` and `release-manifest.json` identify the committed source packages.
+**验证与发布状态：** 真实会话覆盖首次资源选择、同会话复用和新会话隔离；原生 Plan/Goal 另验证约 4 分钟的 CPU 任务监听，Goal 首轮结束后自动续出第二轮，两轮均正常完成。本机插件已同步经过验收的 1.6.2 修正版，全部 89 个子 skill 可被重新发现。1.6.2 尚未正式发布；小时级运行与跨平台验收仍待覆盖。功能与用法见[资源表说明](docs/SESSION_RESOURCE_BUDGET_CN.md)。

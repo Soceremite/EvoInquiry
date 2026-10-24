@@ -216,7 +216,12 @@
     "tools/research_memory.py",
     "tools/meta_opt/compare_candidates.py",
     "skills/shared-references/bounded-inquiry.md",
-    "skills/skills-codex/shared-references/bounded-inquiry.md"
+    "skills/skills-codex/shared-references/bounded-inquiry.md",
+    "tools/resource_budget.py",
+    "docs/SESSION_RESOURCE_BUDGET_CN.md",
+    "skills/shared-references/resource-budget.md",
+    "skills/skills-codex/shared-references/resource-budget.md",
+    "docs/VALIDATION_1_6_2.md"
   ],
   "adapted_upstream_documents": [
     "AGENT_GUIDE.md",

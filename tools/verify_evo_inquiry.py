@@ -47,6 +47,12 @@ REQUIRED_REFLECTION_RESOURCES = (
     'skills/skills-codex/shared-references/research-review-cycle.md',
 )
 
+REQUIRED_RESOURCE_BUDGET_RESOURCES = (
+    'tools/resource_budget.py', 'docs/SESSION_RESOURCE_BUDGET_CN.md',
+    'skills/shared-references/resource-budget.md',
+    'skills/skills-codex/shared-references/resource-budget.md',
+)
+
 
 def verify(root: Path, baseline: Path | None = None) -> dict:
     errors: list[str] = []
@@ -115,6 +121,9 @@ def verify(root: Path, baseline: Path | None = None) -> dict:
     for required in REQUIRED_COMPARISON_RESOURCES:
         if not (root / required).is_file():
             errors.append(f'Missing required comparison/routing resource {required}')
+    for required in REQUIRED_RESOURCE_BUDGET_RESOURCES:
+        if not (root / required).is_file():
+            errors.append(f'Missing required session resource budget resource {required}')
     if contract.get('schema_version', 0) >= 3:
         for required in REQUIRED_RESEARCH_RESOURCES:
             if not (root / required).is_file():

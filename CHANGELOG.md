@@ -1,5 +1,27 @@
 # Changelog
 
+## 1.6.2 — Unreleased
+
+### Added
+
+- Add one user-selected resource table per session, shared through the existing research principles. First use initializes the table and offers maximum available, exclusive GPUs or custom limits; continuation and other skills reuse the selection.
+- Check the table and fresh execution-host state before arranging experiments and again before launching. Cover GPU allowlists, per-device and total VRAM, sharing, CPU, host RAM, dataset growth, weights, checkpoint save peaks and disk headroom.
+- Bind frozen executions and their governed queue to the same resource admission check, retaining a per-execution check receipt without copying the policy table.
+
+### Fixed
+
+- Treat in-scope resource allocations within the selected ceilings as standing authorization. The maximum-available profile automatically approves individual jobs up to 12 hours, including a 90-minute budget, without inventing a total Goal time window.
+- Keep unlaunched jobs pending when capacity, first selection, estimates or a policy exception are unresolved; do not spend training retries or record these waits as failed experiments.
+- Combine additional storage peaks on the same filesystem, check each GPU separately, and retain unknown telemetry as unknown capacity. Prevent GPU index/UUID aliases from allocating the same device twice.
+- Preserve unrelated user restrictions when changing one custom ceiling, recheck concurrent policy revisions, and pass only admitted GPU UUIDs to the launched child.
+- Initialize the session resource policy during ordinary writable experiment planning; reserve read-only behavior for actual host Plan mode or read-only restrictions, without initializing an experiment runtime.
+- Separate per-job estimates from the user's standing session choice, and keep maximum available as the default first-use option.
+
+### Changed
+
+- Keep resource policy with the session table and planning, execution, accounting, reflection and scientific review with their existing owners. Existing finite budgets and stop requests remain in force; no new skill or scheduler is added.
+- Include resource-table and governed-queue tests in both Windows shell CI gates. Actual native Plan/Goal checks cover four-minute CPU monitoring and automatic Goal continuation; they do not establish native Windows/macOS acceptance, GPU isolation or hour-long research behavior. See [1.6.2 validation](docs/VALIDATION_1_6_2.md).
+
 ## 1.6.1 — 2026-10-24
 
 ### Added
