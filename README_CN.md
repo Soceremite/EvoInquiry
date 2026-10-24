@@ -237,9 +237,11 @@ python tools/configure_research_guidance.py --project /path/to/project
 保留的后端与客户端兼容资源用于支持已有流程约定，按需启用并单独配置。
 
 当前检查及其适用范围见[1.6.2 验证记录](docs/VALIDATION_1_6_2.md)。
-最新引导通过 95 项本地专项检查，此前完整回归有 1,410 项通过。原生 Plan/Goal
+Windows 队列修正通过 183 项本地专项检查，13 项因需原生 Windows 跳过；此前完整
+回归有 1,410 项通过。早前的原生 Plan/Goal
 实测验证资源选择、只读监听与 Goal 自动续跑，两轮均正常完成；监听对象是约
-4 分钟的 CPU 任务。小时级 Goal/Plan 科研和 1.6.2 原生 Windows/macOS 验收仍未覆盖。此前的
+4 分钟的 CPU 任务。小时级 Goal/Plan 科研仍未覆盖；初次 macOS CI 通过，Windows
+修正以新提交的原生 CI 为准。此前的
 [1.6.0 验证](docs/VALIDATION_1_6_0.md)通过 1,349 项测试，真实一小时 CUDA 工程运行验证有界恢复存储和数值
 故障处理，另一段有界模型实测观察到 REPLAN、STOP 实际停止训练和完整状态重放。
 失败尝试及对照组退化均保留。构造场景与显式引导的结果不证明普遍优于旧版、默认

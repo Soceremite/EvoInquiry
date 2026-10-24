@@ -266,11 +266,13 @@ Retained backend and client compatibility resources support existing workflow
 contracts; they are optional and have separate setup requirements.
 
 Current checks and their scope are recorded in [1.6.2 validation](docs/VALIDATION_1_6_2.md).
-The latest guidance passed 95 focused local tests after an earlier full regression
-of 1,410 passing tests. Actual native Plan/Goal checks verified resource choices,
+The Windows queue correction passed 183 focused local tests with 13 native-only
+skips after an earlier full regression of 1,410 passing tests. Earlier actual
+native Plan/Goal checks verified resource choices,
 read-only monitoring and automatic Goal continuation through two completed turns
 using approximately four-minute CPU jobs. Hour-long Goal/Plan research and native
-Windows/macOS acceptance for 1.6.2 remain untested. In the earlier
+Windows acceptance of the corrected commit depends on its CI; the initial macOS
+job passed. In the earlier
 [1.6.0 validation](docs/VALIDATION_1_6_0.md),
 1,349 tests passed and a real one-hour CUDA engineering
 run checked bounded recovery storage and numerical fault handling. A separate

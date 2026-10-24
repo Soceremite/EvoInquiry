@@ -16,6 +16,8 @@
 - Preserve unrelated user restrictions when changing one custom ceiling, recheck concurrent policy revisions, and pass only admitted GPU UUIDs to the launched child.
 - Initialize the session resource policy during ordinary writable experiment planning; reserve read-only behavior for actual host Plan mode or read-only restrictions, without initializing an experiment runtime.
 - Separate per-job estimates from the user's standing session choice, and keep maximum available as the default first-use option.
+- Rebase native Windows and portable retry output paths in both frozen snapshots and queue expectations without changing parent evidence or fixed inputs.
+- Observe Windows process exit with non-signaling handles before releasing a queue lease; keep live and unknown processes protected.
 
 ### Changed
 

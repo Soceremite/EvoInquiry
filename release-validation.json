@@ -2,7 +2,7 @@
   "schema_version": 1,
   "version": "1.6.2",
   "release_kind": "stable",
-  "status": "local-native-session-and-mode-validation-passed-unpublished",
+  "status": "windows-queue-corrected-local-regression-passed-native-ci-required",
   "source_base": {
     "version": "1.6.1",
     "commit": "bbe52387bbf0542d62b6cd8886c9187c573fa023"
@@ -15,7 +15,7 @@
   },
   "current_checks": {
     "package_preservation": {
-      "artifact": "validation/release-1.6.2/native-modes/package.json",
+      "artifact": "validation/release-1.6.2/ci-fix/package.json",
       "sha256": "5134c86851eb34af3d9435301eaa25f9b968812f347053532cd0ec6c43e17ead",
       "status": "PASS"
     },
@@ -23,65 +23,14 @@
     "release_note_wrapping": "PASS",
     "git_diff_check": "PASS",
     "native_platform_ci": {
-      "status": "not-run-for-1.6.2",
+      "artifact": "validation/release-1.6.2/ci-fix/initial-ci.json",
+      "sha256": "8f1f39a9837a1fbe7e1da80fffdc3d556f46cf97b686b549cc5fd29518e460e2",
+      "status": "initial-source-windows-failed-linux-macos-passed",
+      "source_commit": "30ca828d6c9275f7b420ebc859621e8af79980a3",
+      "corrected_commit_native_ci": "required",
       "windows_resource_and_queue_modules_configured": true
     },
-    "native_goal_plan_sessions": {
-      "artifact": "validation/release-1.6.2/native-modes/receipt.json",
-      "sha256": "9b5356affdc6f4743def80e59230be1cd4b00c1684b7ba0e1a0c5cfbf5fa51ab",
-      "status": "PASS",
-      "actual_native_modes": true,
-      "cases": 3,
-      "goal_client_turns": 1,
-      "goal_host_turns": 2,
-      "goal_completed_turns": 2,
-      "paced_cpu_training_seconds_each": 240,
-      "hour_long_training": false,
-      "gpu_training": false
-    },
     "python": "3.14.7 | packaged by Anaconda, Inc. | (main, Aug 14 2026, 10:21:40) [GCC 14.3.0]",
-    "post_native_guidance_regression": {
-      "artifact": "validation/release-1.6.2/native-modes/guidance-regression-final.xml",
-      "sha256": "caf15856320870822b576ccd7b663f5d3a8bb60cdf4bd070e6099df692d11976",
-      "status": "PASS",
-      "passed": 95,
-      "failures": 0,
-      "errors": 0,
-      "skipped": 0,
-      "elapsed_seconds": 37.17,
-      "scope": "resource admission, governed queue, skill mirrors and package contracts after final session-profile clarification"
-    },
-    "source_identity": {
-      "artifact": "validation/release-1.6.2/native-modes/runtime-identity.json",
-      "sha256": "8ac4013ed4b9ebdd21731039df6bbfce5cbbf3c7b02c7c2626fda0ce93ab6814",
-      "status": "PASS",
-      "files_verified": 305,
-      "source_private_package_and_private_cache_match": true
-    },
-    "tested_inputs": {
-      "artifact": "validation/release-1.6.2/native-modes/runtime-inputs.json",
-      "sha256": "f4d72676bf7f634aa61a99ba46a6520b08049e546a6fdb3e649b694d642cf6c6",
-      "status": "PASS",
-      "runtime_and_reference_inputs": 305,
-      "codex_entrypoints": 89
-    },
-    "default_installation": {
-      "artifact": "validation/release-1.6.2/native-modes/default-installation/receipt.json",
-      "sha256": "371885791d078251ee37ae8e8ecf1ed708b7746ed9a58783d10538d9a1be4ef4",
-      "status": "PASS",
-      "marketplace_source_version": "1.6.2",
-      "cache_version": "1.6.2",
-      "runtime_files_verified": 305,
-      "unrelated_configuration_preserved": true
-    },
-    "default_native_discovery": {
-      "artifact": "validation/release-1.6.2/native-modes/default-installation/discovery/receipt.json",
-      "sha256": "f347333393e5793a83f9328bdb547969f1a304ab35ca8e529cebc902ec323060",
-      "status": "PASS",
-      "entrypoints": 89,
-      "errors": 0,
-      "model_request_sent": false
-    },
     "private_test_cleanup": {
       "artifact": "validation/release-1.6.2/native-modes/private-cleanup.json",
       "sha256": "e352bc87612a1097a86b8c056ce57bb18148f404da61db160a7a4218d301d5db",
@@ -93,6 +42,22 @@
         "mainline",
         "codex"
       ]
+    },
+    "windows_queue_fix_local_regression": {
+      "artifact": "validation/release-1.6.2/ci-fix/regression.xml",
+      "sha256": "3d41fa4c66617efeab9d46fc3b11c5d3f28a18d9a84a9f2c6d84573e02aae457",
+      "status": "PASS",
+      "passed": 183,
+      "skipped": 13,
+      "failures": 0,
+      "errors": 0,
+      "elapsed_seconds": 127.024
+    },
+    "tested_inputs": {
+      "artifact": "validation/release-1.6.2/ci-fix/runtime-inputs.json",
+      "sha256": "1e4538d286d58a2351fa20f783c69a3e2b934e2b1baec0155db0d044971ea7c9",
+      "runtime_and_reference_inputs": 305,
+      "scope": "corrected runtime identities; no native Goal/Plan rerun"
     }
   },
   "validation_record": "docs/VALIDATION_1_6_2.md",
@@ -108,7 +73,7 @@
     "gpu_training_performed": false
   },
   "limitations": [
-    "Latest focused regression used Python 3.14.7; native Windows/macOS and Python 3.12 CI for 1.6.2 have not run.",
+    "Local correction regression used Python 3.14.7. The first source commit passed Linux/macOS Python 3.12 CI and failed both Windows jobs; the correction needs its own native CI results.",
     "Native Plan/Goal cases used approximately four-minute paced CPU jobs; hour-long unattended research, UI stall indicators and context compaction were not tested.",
     "Observation cadence includes model and tool latency; some checks exceeded the requested 20–30-second interval. This is not a real-time watchdog guarantee.",
     "A 90-minute allocation was declared and admitted; no 90-minute training was performed.",
@@ -130,17 +95,18 @@
     "source_commit": null,
     "installed_cache_contains_native_planning_fix": true,
     "configured_marketplace_source_version": "1.6.2",
-    "installed_build_kind": "tested-local-development-snapshot-unpublished"
+    "installed_build_kind": "tested-local-development-snapshot-unpublished",
+    "installed_cache_contains_latest_windows_queue_fix": false
   },
-  "assessed_at": "2026-10-24T12:38:58.217262+00:00",
+  "assessed_at": "2026-10-24T14:58:11.548409+00:00",
   "runtime_sha256": {
     "VERSION": "a2d5e268fe70979caccd895156b3d33bd61a3cc7e660ab7a5b07066849b3e248",
     ".codex-plugin/plugin.json": "8aa9233ac319302141a4d2267db91033bda0a359ed661df13a8c79ac1c5dc55b",
     "tools/resource_budget.py": "e3b09b783812de7305ffd7ccdf3845a4cb935f26a1cca53cc92ebc373252710d",
-    "tools/execution_registry.py": "f30c629b9c3cac48985b7c176be8dbaed8e693401cf02fa63be4409117ed3afb",
-    "skills/experiment-queue/scripts/queue_manager.py": "2940d3a57706c0df39338f94326d3a13b6d80b03b02ac6094f7ab37ecf4bef5e",
+    "tools/execution_registry.py": "6a48656529abb8a7d0d9d3798deda9704845fe92e1e608d488f5ad6d0929e922",
+    "skills/experiment-queue/scripts/queue_manager.py": "07ede99b1668ff7d12b1d2a507c7ae974dc06ff61258e1d23c3e869b1cce0dcb",
     "tools/skill_contracts.py": "84c62439059f365943a2e50c8ed016774331a51fe77f355facedcf5db247523d",
-    "tools/skill-contracts.json": "b2d950040b5f77ddd106ec5d35dda016b9e77f39e1a89f453cfc0d6c473e662c",
+    "tools/skill-contracts.json": "d9b4162e6ae83413d5939cdb905bdf381f267580a3b8b1b8ef7f5e1f805e325a",
     "tools/publication-policy.json": "3d45ff1e4d58040e6acf9a36c0665df5576ae8b90e4471d80b56b8856d6e1cc6",
     "tools/verify_evo_inquiry.py": "0e6ab232fd4f5fb3118bab3cb1b821a39b5e3046aeba533127608aa171d65059",
     "skills/shared-references/evo-inquiry.md": "f32db6f3c559ee3ecccda15e49b63277a40af87e60700d102953b2f7f01a7a17",
@@ -152,10 +118,11 @@
     ".github/workflows/test-suite.yml": "13c2fc64e7b89e4125817f8d5a06a9babdf57e595834f5f43f42798dcaef1f7d",
     ".github/workflows/release-beta.yml": "c79318cd6d354f935c3b056001814164c57d9376c27ab5018773107a6d3ff607",
     "tests/test_resource_budget.py": "fc62530d0cf5e4e2d458f34f044878a43fd772ad10dc38c374b17e5e2222e253",
-    "tests/test_governed_queue.py": "59ffbf321584d33f06e0d0d13792a3c53036faf1e11ff5e3653a0157187b1f75",
-    "RELEASE_NOTES.md": "fbd85b269bd8a697e00c5841f12b7b1588348071253d41a2530326e1e369ef6e",
+    "tests/test_governed_queue.py": "a0299450a280be29ef4672c60dd8e5cf10f09cd27669ca2a71330a2b3f60ac15",
+    "RELEASE_NOTES.md": "a9fac0f0bd5afe894106b12ccffc6311b1fee49e891b2e2a337d146b2b217496",
     "skills/experiment-plan/SKILL.md": "3649609f46cd099ef62c88d0c0153dfae0b3436a59070b588b956c355382f882",
-    "skills/skills-codex/experiment-plan/SKILL.md": "dc3fa3a201557af241848fa4efd61a6356f44908c0e64e153746471009f1d894"
+    "skills/skills-codex/experiment-plan/SKILL.md": "dc3fa3a201557af241848fa4efd61a6356f44908c0e64e153746471009f1d894",
+    "tests/test_execution_governance.py": "cda551f50bdee89fe18752f4889bddebb9fb15696e930741a7545c51977f92ff"
   },
   "retained_checks": {
     "full_regression_before_final_edge_cases": {
@@ -264,6 +231,61 @@
       "sha256": "7046d5dbf02a66d11f135ac2f9ce9df8b940f79f3404253616f942e40ee4bb50",
       "status": "correction-not-synchronized",
       "observed_version": "1.6.2"
+    },
+    "before_windows_queue_fix_post_native_guidance_regression": {
+      "artifact": "validation/release-1.6.2/native-modes/guidance-regression-final.xml",
+      "sha256": "caf15856320870822b576ccd7b663f5d3a8bb60cdf4bd070e6099df692d11976",
+      "status": "PASS",
+      "passed": 95,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "elapsed_seconds": 37.17,
+      "scope": "resource admission, governed queue, skill mirrors and package contracts after final session-profile clarification"
+    },
+    "before_windows_queue_fix_source_identity": {
+      "artifact": "validation/release-1.6.2/native-modes/runtime-identity.json",
+      "sha256": "8ac4013ed4b9ebdd21731039df6bbfce5cbbf3c7b02c7c2626fda0ce93ab6814",
+      "status": "PASS",
+      "files_verified": 305,
+      "source_private_package_and_private_cache_match": true
+    },
+    "before_windows_queue_fix_tested_inputs": {
+      "artifact": "validation/release-1.6.2/native-modes/runtime-inputs.json",
+      "sha256": "f4d72676bf7f634aa61a99ba46a6520b08049e546a6fdb3e649b694d642cf6c6",
+      "status": "PASS",
+      "runtime_and_reference_inputs": 305,
+      "codex_entrypoints": 89
+    },
+    "before_windows_queue_fix_native_goal_plan_sessions": {
+      "artifact": "validation/release-1.6.2/native-modes/receipt.json",
+      "sha256": "9b5356affdc6f4743def80e59230be1cd4b00c1684b7ba0e1a0c5cfbf5fa51ab",
+      "status": "PASS",
+      "actual_native_modes": true,
+      "cases": 3,
+      "goal_client_turns": 1,
+      "goal_host_turns": 2,
+      "goal_completed_turns": 2,
+      "paced_cpu_training_seconds_each": 240,
+      "hour_long_training": false,
+      "gpu_training": false
+    },
+    "before_windows_queue_fix_default_installation": {
+      "artifact": "validation/release-1.6.2/native-modes/default-installation/receipt.json",
+      "sha256": "371885791d078251ee37ae8e8ecf1ed708b7746ed9a58783d10538d9a1be4ef4",
+      "status": "PASS",
+      "marketplace_source_version": "1.6.2",
+      "cache_version": "1.6.2",
+      "runtime_files_verified": 305,
+      "unrelated_configuration_preserved": true
+    },
+    "before_windows_queue_fix_default_native_discovery": {
+      "artifact": "validation/release-1.6.2/native-modes/default-installation/discovery/receipt.json",
+      "sha256": "f347333393e5793a83f9328bdb547969f1a304ab35ca8e529cebc902ec323060",
+      "status": "PASS",
+      "entrypoints": 89,
+      "errors": 0,
+      "model_request_sent": false
     }
   }
 }

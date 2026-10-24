@@ -11,6 +11,7 @@ import math
 import os
 from pathlib import Path
 import platform
+import re
 import signal
 import subprocess
 import sys
@@ -206,6 +207,19 @@ def start_execution(root, execution_run_id, snapshot_ref, *, workflow_run_id=Non
     return record
 
 
+def rebase_execution_output(value, parent_id, execution_run_id):
+    """Move one declared output path to a retry, preserving its separator style.
+
+    Accept native or forward Windows separators and glob suffixes. Only an exact
+    runs/<parent> component moves; similarly named runs and input arguments stay
+    unchanged. Callers must restrict this to declared outputs.
+    """
+    parent_id, execution_run_id = identifier(parent_id), identifier(execution_run_id)
+    pattern = r'(^|[/\\])runs([/\\])' + re.escape(parent_id) + r'(?=[/\\]|$)'
+    return re.sub(pattern, lambda match: match[1] + 'runs' + match[2] + execution_run_id,
+                  value, count=1)
+
+
 def clone_attempt(root, parent_id, execution_run_id, *, checkpoint_ref=None):
     """Freeze a retry from the parent's snapshot, never from the current checkout."""
     root = Path(root).resolve()
@@ -221,7 +235,7 @@ def clone_attempt(root, parent_id, execution_run_id, *, checkpoint_ref=None):
         if 'arguments' in snapshot:
             retry_arguments = list(snapshot['arguments'])
             for index in snapshot.get('output_argument_indices', []):
-                retry_arguments[index] = retry_arguments[index].replace('runs/' + parent_id + '/', 'runs/' + execution_run_id + '/')
+                retry_arguments[index] = rebase_execution_output(retry_arguments[index], parent_id, execution_run_id)
             expected_manifest['arguments'] = retry_arguments
         expected_files = {*snapshot['source_files'], 'configuration.json', 'manifest.json'}
         existing_files = {p.relative_to(target).as_posix() for p in target.rglob('*') if p.is_file()} if target.exists() else set()

@@ -378,9 +378,14 @@ def test_code_map_detects_signature_semantic_and_documentation_drift(tmp_path):
     assert 'public-interface-changed' in {row['reason'] for row in check_freshness(tmp_path,mapping)['issues']}
 
 
-def test_retry_allocation_recovers_and_only_declared_output_arguments_move(tmp_path):
+@pytest.mark.parametrize('forward_slashes', [False, True])
+def test_retry_allocation_recovers_and_only_declared_output_arguments_move(tmp_path, forward_slashes):
     sources, spec, environment = make_sources(tmp_path), make_spec(tmp_path), make_environment(tmp_path)
     arguments = [str(tmp_path / 'runs/failed/outputs/metrics.json'),str(tmp_path / 'runs/failed/input.json')]
+    expected_output = str(tmp_path / 'runs/retry/outputs/metrics.json')
+    if forward_slashes:
+        arguments = [argument.replace('\\', '/') for argument in arguments]
+        expected_output = expected_output.replace('\\', '/')
     snapshot = freeze_snapshot(tmp_path,'failed',spec,environment,sources,
         {'variant':{'augmentation':0.1},'seed':22,'inject_failure':True},
         'src/train.py','method-b',22,arguments=arguments,output_argument_indices=[0])
@@ -389,7 +394,7 @@ def test_retry_allocation_recovers_and_only_declared_output_arguments_move(tmp_p
     retry = clone_attempt(tmp_path,'failed','retry')
     assert clone_attempt(tmp_path,'failed','retry')==retry
     manifest = verify_snapshot(tmp_path,retry['snapshot_ref'])
-    assert manifest['arguments'][0]==arguments[0].replace('runs/failed/','runs/retry/')
+    assert manifest['arguments'][0]==expected_output
     assert manifest['arguments'][1]==arguments[1]
 
 

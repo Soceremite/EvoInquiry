@@ -1,15 +1,17 @@
 """Exercise queue bindings with real CPU processes; no screen or GPU allocation."""
 import importlib.util
+import ctypes
 from pathlib import Path
 import shlex
 import subprocess
 import sys
+from unittest.mock import Mock
 
 import pytest
 
 from tests.governance_helpers import consumer, make_environment, make_sources, make_spec
 from tools.environment_registry import EnvironmentRegistry
-from tools.execution_registry import freeze_snapshot, start_execution
+from tools.execution_registry import freeze_snapshot, rebase_execution_output, start_execution, verify_snapshot
 from tools.registry_common import read_record
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -70,9 +72,82 @@ def test_queue_rejects_parameter_drift_and_retry_allocation_is_recoverable(tmp_p
     retry = job['execution']['execution_run_id']
     assert retry!='queue-attempt-1' and job['execution_attempts']==['queue-attempt-1',retry]
     assert read_record(tmp_path / 'runs' / retry / 'execution.json')['retry_of']=='queue-attempt-1'
-    assert retry in job['expected_output']
+    expected = str(tmp_path / 'runs' / retry / 'outputs/metrics.json')
+    assert job['expected_output'] == expected
+    assert job['execution']['arguments'] == [expected]
+    assert verify_snapshot(tmp_path, job['execution']['snapshot_ref'])['arguments'] == [expected]
+    assert read_record(tmp_path / 'runs/queue-attempt-1/execution.final.json')['exit_code'] == 7
     assert queue.governed_launch_command(job)==command
     assert read_record(tmp_path / '.ei/leases/queue-lease.json')['status']=='queued'
+
+
+@pytest.mark.parametrize('value,expected', [
+    ('runs/failed/outputs/*.json', 'runs/retry/outputs/*.json'),
+    ('/project with spaces/runs/failed/outputs/metrics.json',
+     '/project with spaces/runs/retry/outputs/metrics.json'),
+    (r'C:\Research project\runs\failed\outputs\metrics.json',
+     r'C:\Research project\runs\retry\outputs\metrics.json'),
+    ('C:/Research project/runs/failed/outputs/*.json',
+     'C:/Research project/runs/retry/outputs/*.json'),
+    (r'\\server\share\runs\failed\outputs\metrics.json',
+     r'\\server\share\runs\retry\outputs\metrics.json'),
+    (r'C:\project\runs/failed\outputs/*.json', r'C:\project\runs/retry\outputs/*.json'),
+    (r'C:\project\runs\failed', r'C:\project\runs\retry'),
+    ('runs/failed-extra/outputs/metrics.json', 'runs/failed-extra/outputs/metrics.json'),
+    ('not-runs/failed/metrics.json', 'not-runs/failed/metrics.json'),
+])
+def test_retry_output_paths_handle_native_and_portable_separators(value, expected):
+    assert rebase_execution_output(value, 'failed', 'retry') == expected
+
+
+@pytest.mark.parametrize('handle,error,wait_result,expected', [
+    (123, 0, 258, True),   # Running process.
+    (123, 0, 0, False),    # Exited process whose handle still exists.
+    (None, 87, 0, False),  # PID no longer exists.
+    (None, 5, 0, None),    # Access denied is not proof of exit.
+    (123, 0, 0xFFFFFFFF, None),
+])
+def test_windows_liveness_uses_non_signaling_handles(monkeypatch, handle, error, wait_result, expected):
+    kernel = Mock()
+    kernel.OpenProcess.return_value = handle
+    kernel.WaitForSingleObject.return_value = wait_result
+    monkeypatch.setattr(ctypes, 'WinDLL', lambda *args, **kwargs: kernel, raising=False)
+    monkeypatch.setattr(ctypes, 'get_last_error', lambda: error, raising=False)
+    assert queue._windows_process_alive(12345) is expected
+    kernel.OpenProcess.assert_called_once_with(0x00100000, False, 12345)
+    if handle:
+        kernel.WaitForSingleObject.assert_called_once_with(handle, 0)
+        kernel.CloseHandle.assert_called_once_with(handle)
+    else:
+        kernel.WaitForSingleObject.assert_not_called()
+        kernel.CloseHandle.assert_not_called()
+
+
+def test_process_liveness_observes_real_owned_child_and_its_exit():
+    child = subprocess.Popen([sys.executable, '-u', '-c',
+        'import time; print("ready", flush=True); time.sleep(30)'], stdout=subprocess.PIPE)
+    try:
+        assert child.stdout.readline() == b'ready\n'
+        assert queue._process_alive(child.pid) is True
+    finally:
+        child.terminate()
+        child.wait(timeout=10)
+        child.stdout.close()
+    assert queue._process_alive(child.pid) is False
+
+
+@pytest.mark.parametrize('alive', [True, None])
+def test_lease_release_protects_live_or_unknown_process(tmp_path, monkeypatch, alive):
+    job = queued_job(tmp_path)
+    completed = subprocess.run(shlex.split(queue.governed_launch_command(job)),
+                               capture_output=True, text=True, timeout=25)
+    assert completed.returncode == 0, completed.stderr
+    job['status'] = 'completed'
+    monkeypatch.setattr(queue, '_process_alive', lambda pid: alive)
+    queue.release_governed_lease(job)
+    assert read_record(tmp_path / '.ei/leases/queue-lease.json')['status'] == 'queued'
+    assert read_record(tmp_path / '.ei/consumers/queue-job.json')['lifecycle'] == 'queued'
+    assert not (tmp_path / '.ei/queue/termination-receipts/queue-attempt-1.json').exists()
 
 
 @pytest.mark.parametrize('kind', ['capacity', 'first-choice', 'duration'])

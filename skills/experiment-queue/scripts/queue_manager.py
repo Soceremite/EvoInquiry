@@ -353,7 +353,8 @@ def governed_launch_command(job):
         raise ValueError('Governed queue needs the complete registry tools and schemas on this host')
     if str(tools_dir) not in sys.path:
         sys.path.insert(0, str(tools_dir))
-    from execution_registry import clone_attempt, verify_queue_binding, verify_snapshot, check_execution_resources
+    from execution_registry import (clone_attempt, verify_queue_binding, verify_snapshot,
+                                    check_execution_resources, rebase_execution_output)
     from environment_registry import EnvironmentRegistry
     from registry_common import read_record
     from state_paths import resolve_state_root
@@ -375,7 +376,7 @@ def governed_launch_command(job):
         # replacement in code or historical evidence.
         binding['arguments'] = verify_snapshot(root, current['snapshot_ref'])['arguments']
         if job.get('expected_output'):
-            job['expected_output'] = job['expected_output'].replace('runs/' + previous + '/', 'runs/' + new_id + '/')
+            job['expected_output'] = rebase_execution_output(job['expected_output'], previous, new_id)
     verify_queue_binding(root, binding)
     check_execution_resources(root, current)
     if current['execution_run_id'] not in job.setdefault('execution_attempts', []):
@@ -383,6 +384,45 @@ def governed_launch_command(job):
     return shlex.join([binding.get('registry_python', sys.executable), str(tools_dir / 'execution_registry.py'),
                        '--root', str(root), 'launch', '--execution-id', current['execution_run_id'],
                        *binding.get('arguments', [])])
+
+
+def _windows_process_alive(pid):
+    """Observe a PID without sending a signal; None means access is inconclusive."""
+    import ctypes
+    from ctypes import wintypes
+
+    kernel = ctypes.WinDLL('kernel32', use_last_error=True)
+    kernel.OpenProcess.argtypes = [wintypes.DWORD, wintypes.BOOL, wintypes.DWORD]
+    kernel.OpenProcess.restype = wintypes.HANDLE
+    kernel.WaitForSingleObject.argtypes = [wintypes.HANDLE, wintypes.DWORD]
+    kernel.WaitForSingleObject.restype = wintypes.DWORD
+    kernel.CloseHandle.argtypes = [wintypes.HANDLE]
+    kernel.CloseHandle.restype = wintypes.BOOL
+    handle = kernel.OpenProcess(0x00100000, False, pid)  # SYNCHRONIZE only.
+    if not handle:
+        return False if ctypes.get_last_error() == 87 else None  # Invalid PID.
+    try:
+        result = kernel.WaitForSingleObject(handle, 0)
+        if result == 0:  # Process handle signaled: exited, even if still open elsewhere.
+            return False
+        return True if result == 258 else None  # WAIT_TIMEOUT or unknown failure.
+    finally:
+        kernel.CloseHandle(handle)
+
+
+def _process_alive(pid):
+    """Return True/False only for observed liveness/absence; protect unknown PIDs."""
+    if type(pid) is not int or pid <= 0:
+        return None
+    if os.name == 'nt':
+        return _windows_process_alive(pid)
+    try:
+        os.kill(pid, 0)
+    except ProcessLookupError:
+        return False
+    except OSError:
+        return None
+    return True
 
 
 def release_governed_lease(job):
@@ -418,14 +458,11 @@ def release_governed_lease(job):
             or not isinstance(process.get('pid'), int)):
         job['lease_release'] = 'protected-needs-process-reconciliation'
         return
-    try:
-        os.kill(process['pid'], 0)
-    except ProcessLookupError:
-        pass
-    except (OSError, PermissionError):
+    alive = _process_alive(process['pid'])
+    if alive is None:
         job['lease_release'] = 'protected-needs-process-reconciliation'
         return
-    else:
+    if alive:
         job['lease_release'] = 'protected-process-present'
         return
     receipt = {'job_ref': record['job_ref'], 'execution_run_id': record['execution_run_id'],

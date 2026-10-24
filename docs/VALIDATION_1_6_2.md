@@ -191,10 +191,51 @@ receipts are under `validation/release-1.6.2/native-modes/default-installation/`
 Private test authentication/configuration copies were removed after testing.
 This is an installed local development snapshot, not a published release.
 
+## Native Windows CI correction
+
+The first source submission, `30ca828`, passed the full Linux and macOS jobs but
+failed the two native Windows shells in
+[run 40096518677](https://github.com/Soceremite/EvoInquiry/actions/runs/40096518677).
+Both Windows jobs reported the same two queue failures: the retry's expected
+output still referred to the parent directory, and an exited process's lease
+remained queued. Each job reported 550 passed, nine skipped and two failed;
+these are failed acceptance runs, not optional skipped coverage.
+
+The queue and execution snapshot retry logic had separately replaced only
+forward-slash `runs/<id>/` strings. They now share one output-path rebasing
+function that preserves native Windows, forward and mixed separators, glob
+suffixes and run-ID boundaries. Only explicitly declared output arguments move;
+the original failed attempt and input arguments remain unchanged.
+
+Lease release now observes Windows process handles with `SYNCHRONIZE` and a
+zero-timeout wait instead of relying on POSIX-style `os.kill(pid, 0)`. A signaled
+handle or invalid PID establishes exit, a timeout means the process remains
+present, and permission/wait failures remain unknown and keep the lease
+protected. Observing liveness sends no termination signal. Existing terminal,
+host and execution identity checks remain required.
+
+Regression coverage includes native and portable output paths, real child
+process liveness and exit, Windows API outcomes including access denial, and
+lease protection for live or unknown processes. The execution retry integration
+also checks native and forward slash arguments while preserving the fixed input.
+Local receipts are under `validation/release-1.6.2/ci-fix/`. Acceptance of the
+correction requires the new commit's native Windows jobs; simulated API outcomes
+on Linux do not establish that result.
+
+The local correction regression passed 183 tests with 13 native-Windows-only
+skips and no failures in 127.04 seconds. It covered resource admission, the
+governed queue, execution recovery, portability, skill mirrors and retained
+package contracts. The earlier queue/execution-only run passed 50 tests and is
+included in this broader scope, not added to it as a distinct total. The new
+runtime differs from the earlier native-mode snapshot; those native-mode
+receipts remain evidence for that earlier snapshot rather than a rerun of the
+queue correction. The same resource and mode guidance is retained.
+
 ## Remaining scope
 
-Native Windows/macOS checks for 1.6.2 and hour-long Goal/Plan behavior have not
-been run. The native mode cases validate approximately four-minute CPU jobs,
+The initial source commit's native macOS job passed; Windows acceptance of the
+queue correction must be checked on its own commit. Hour-long Goal/Plan behavior
+has not been run. The native mode cases validate approximately four-minute CPU jobs,
 not hours of unattended research, UI stall indicators or context compaction.
 Platform telemetry outside NVIDIA GPUs may require a target
 execution owner's own observations. Shared GPU policy permits use when capacity

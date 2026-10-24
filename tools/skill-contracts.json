@@ -848,16 +848,17 @@
       "upgrade_baseline_sha256": "2fe0d13d2bba863e9bbde65f8a746f1c0f46b7e2c08e16107786fad6980a5820"
     },
     "skills/experiment-queue/scripts/queue_manager.py": {
-      "sha256": "2940d3a57706c0df39338f94326d3a13b6d80b03b02ac6094f7ab37ecf4bef5e",
+      "sha256": "07ede99b1668ff7d12b1d2a507c7ae974dc06ff61258e1d23c3e869b1cce0dcb",
       "baseline_sha256": "9b53e554bda3fec88d9d293e323e26f531d8c074b7544a8ca7b4c3b529ab0129",
-      "reason": "Reuse the selected session resource table at queue admission; preserve unlaunched resource waits as pending without consuming retries.",
+      "reason": "Reuse session resource admission; preserve pending retries; support native Windows retry output paths and non-signaling process-exit verification before lease release.",
       "upgrade_baseline_sha256": "9b53e554bda3fec88d9d293e323e26f531d8c074b7544a8ca7b4c3b529ab0129",
-      "previous_sha256": "67dc8fa1e5f5f4c879c1d9b72eacda55fb71e514d0ee5241dd27f6e7e31d73f9",
+      "previous_sha256": "2940d3a57706c0df39338f94326d3a13b6d80b03b02ac6094f7ab37ecf4bef5e",
       "adaptation_version": "1.6.2",
-      "review_ref": "docs/VALIDATION_1_6_2.md#changes-reviewed",
+      "review_ref": "docs/VALIDATION_1_6_2.md#native-windows-ci-correction",
       "test_refs": [
         "tests/test_resource_budget.py",
-        "tests/test_governed_queue.py"
+        "tests/test_governed_queue.py",
+        "tests/test_execution_governance.py"
       ]
     },
     "skills/shared-references/output-versioning.md": {
