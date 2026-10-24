@@ -58,6 +58,16 @@
       "sha256": "1e4538d286d58a2351fa20f783c69a3e2b934e2b1baec0155db0d044971ea7c9",
       "runtime_and_reference_inputs": 305,
       "scope": "corrected runtime identities; no native Goal/Plan rerun"
+    },
+    "queue_newline_regression": {
+      "artifact": "validation/release-1.6.2/ci-fix/queue-line-ending.xml",
+      "sha256": "48a63def09ed1c335bd2915a19a68fcf6e0ef7ecc0bb02784a34abb0d7fb36e4",
+      "status": "PASS",
+      "passed": 23,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "scope": "same corrected runtime; universal-newline test readiness check"
     }
   },
   "validation_record": "docs/VALIDATION_1_6_2.md",
@@ -98,7 +108,7 @@
     "installed_build_kind": "tested-local-development-snapshot-unpublished",
     "installed_cache_contains_latest_windows_queue_fix": false
   },
-  "assessed_at": "2026-10-24T14:58:11.548409+00:00",
+  "assessed_at": "2026-10-24T15:04:56.900156+00:00",
   "runtime_sha256": {
     "VERSION": "a2d5e268fe70979caccd895156b3d33bd61a3cc7e660ab7a5b07066849b3e248",
     ".codex-plugin/plugin.json": "8aa9233ac319302141a4d2267db91033bda0a359ed661df13a8c79ac1c5dc55b",
@@ -118,7 +128,7 @@
     ".github/workflows/test-suite.yml": "13c2fc64e7b89e4125817f8d5a06a9babdf57e595834f5f43f42798dcaef1f7d",
     ".github/workflows/release-beta.yml": "c79318cd6d354f935c3b056001814164c57d9376c27ab5018773107a6d3ff607",
     "tests/test_resource_budget.py": "fc62530d0cf5e4e2d458f34f044878a43fd772ad10dc38c374b17e5e2222e253",
-    "tests/test_governed_queue.py": "a0299450a280be29ef4672c60dd8e5cf10f09cd27669ca2a71330a2b3f60ac15",
+    "tests/test_governed_queue.py": "d5b02f4467da9bb760e137b6b19b69fd2cfd226a898ed5a8673ec10150003d24",
     "RELEASE_NOTES.md": "a9fac0f0bd5afe894106b12ccffc6311b1fee49e891b2e2a337d146b2b217496",
     "skills/experiment-plan/SKILL.md": "3649609f46cd099ef62c88d0c0153dfae0b3436a59070b588b956c355382f882",
     "skills/skills-codex/experiment-plan/SKILL.md": "dc3fa3a201557af241848fa4efd61a6356f44908c0e64e153746471009f1d894",
@@ -286,6 +296,12 @@
       "entrypoints": 89,
       "errors": 0,
       "model_request_sent": false
+    },
+    "before_newline_fixture_native_ci": {
+      "artifact": "validation/release-1.6.2/ci-fix/before-line-ending-ci.json",
+      "sha256": "b3995fe2679a2c179c8a8d141c240d9a09efbd3242ba69e6593d33da80085517",
+      "status": "functional-fixes-passed-new-test-crlf-failed",
+      "source_commit": "68038cc2e2bd7c45e4413c02c42e17fd9eda199b"
     }
   }
 }

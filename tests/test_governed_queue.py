@@ -125,9 +125,9 @@ def test_windows_liveness_uses_non_signaling_handles(monkeypatch, handle, error,
 
 def test_process_liveness_observes_real_owned_child_and_its_exit():
     child = subprocess.Popen([sys.executable, '-u', '-c',
-        'import time; print("ready", flush=True); time.sleep(30)'], stdout=subprocess.PIPE)
+        'import time; print("ready", flush=True); time.sleep(30)'], stdout=subprocess.PIPE, text=True)
     try:
-        assert child.stdout.readline() == b'ready\n'
+        assert child.stdout.readline() == 'ready\n'
         assert queue._process_alive(child.pid) is True
     finally:
         child.terminate()
