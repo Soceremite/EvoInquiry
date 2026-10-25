@@ -2,7 +2,7 @@
   "schema_version": 1,
   "version": "1.6.2",
   "release_kind": "stable",
-  "status": "validated-release-candidate-awaiting-tag-workflow",
+  "status": "published-native-platform-validation-passed",
   "source_base": {
     "version": "1.6.1",
     "commit": "bbe52387bbf0542d62b6cd8886c9187c573fa023"
@@ -23,16 +23,17 @@
     "release_note_wrapping": "PASS",
     "git_diff_check": "PASS",
     "native_platform_ci": {
-      "artifact": "validation/release-1.6.2/ci-fix/corrected-ci.json",
-      "sha256": "e1100c103b2d5d87fdb79214fc6de31281943309e91343cfd096cac0a36a66e5",
+      "artifact": "validation/release-1.6.2/publication/release-ci.json",
+      "sha256": "dbdadb7875503df540a2275775970b95ad44d75a06275b1320d0c3511a4443e3",
       "status": "PASS",
-      "source_commit": "d56f9f4ceceb375ea46f5ebbb9d3be4d2f021e6a",
-      "run_id": 40105479143,
-      "run_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/40105479143",
+      "source_commit": "c507e5256a19b3b22deca9a18f532ec30b48c5d5",
+      "run_id": 40164900524,
+      "run_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/40164900524",
       "linux_full_suite": "PASS",
       "macos_full_suite": "PASS",
       "windows_powershell_exe": "PASS",
       "windows_pwsh": "PASS",
+      "publication_job": "PASS",
       "python": "3.12"
     },
     "python": "3.14.7 | packaged by Anaconda, Inc. | (main, Aug 14 2026, 10:21:40) [GCC 14.3.0]",
@@ -75,17 +76,17 @@
       "scope": "same corrected runtime; universal-newline test readiness check"
     },
     "default_installation": {
-      "artifact": "validation/release-1.6.2/ci-fix/default-installation/receipt.json",
-      "sha256": "e2e110719fa245a8e72162e444fe6d598656dd59377ef28adc9a71603f7a5b56",
+      "artifact": "validation/release-1.6.2/publication/official-installation/receipt.json",
+      "sha256": "a9a257569add5598693b8d8f050448ae7af9dea39f1bfffa3a3ce76394d31c04",
       "status": "PASS",
-      "runtime_files_verified": 305,
+      "public_files_verified": 1090,
       "source_and_cache_version": "1.6.2",
-      "includes_windows_queue_fix": true,
+      "installed_build_kind": "checksum-verified-official-source-archive",
       "unrelated_configuration_preserved": true
     },
     "default_native_discovery": {
-      "artifact": "validation/release-1.6.2/ci-fix/default-installation/discovery/receipt.json",
-      "sha256": "f56ec4b2becc52ee6b2dff96e8d90efd386b3c5e70a46c1492bb8cc2458c49a1",
+      "artifact": "validation/release-1.6.2/publication/official-installation/discovery/receipt.json",
+      "sha256": "cd0d7cde296220e0a1840b1e64b7ef88e6185fc1a968d9cf5ff94a2742da3d24",
       "status": "PASS",
       "entrypoints": 89,
       "errors": 0,
@@ -107,6 +108,24 @@
       "status": "PASS",
       "runtime_inputs_verified_unchanged": 305,
       "scope": "only publication documentation changed since passing native platform CI"
+    },
+    "main_branch_ci": {
+      "artifact": "validation/release-1.6.2/publication/main-ci.json",
+      "sha256": "5ebea5ae1549b7da93ea6ca1b817371d161e22a87222d1134b72e52fc85eff33",
+      "status": "PASS",
+      "source_commit": "c507e5256a19b3b22deca9a18f532ec30b48c5d5",
+      "run_id": 40164900473,
+      "run_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/40164900473"
+    },
+    "published_assets": {
+      "artifact": "validation/release-1.6.2/publication/published-assets-verification.json",
+      "sha256": "b5aa0b7b8db2fee1b749a3a943279852bf421ccae6f1604e5fd7f628ee31ca34",
+      "status": "PASS",
+      "source_commit": "c507e5256a19b3b22deca9a18f532ec30b48c5d5",
+      "public_files": 1090,
+      "checksums_verified": true,
+      "archive_contents_match_committed_source": true,
+      "release_notes_match_source": true
     }
   },
   "validation_record": "docs/VALIDATION_1_6_2.md",
@@ -137,20 +156,36 @@
     "release_url": "https://github.com/Soceremite/EvoInquiry/releases/tag/v1.6.1"
   },
   "publication": {
-    "published": false,
+    "published": true,
     "tag": "v1.6.2",
-    "state": "authorized-awaiting-tag-triggered-platform-gates",
+    "state": "published-stable",
     "installed_plugin_version": "1.6.2",
-    "source_commit": null,
+    "source_commit": "c507e5256a19b3b22deca9a18f532ec30b48c5d5",
     "installed_cache_contains_native_planning_fix": true,
     "configured_marketplace_source_version": "1.6.2",
-    "installed_build_kind": "tested-local-development-snapshot-unpublished",
+    "installed_build_kind": "checksum-verified-official-source-archive",
     "installed_cache_contains_latest_windows_queue_fix": true,
     "authorized": true,
     "method": "tag-triggered-release-workflow",
-    "release_url": "https://github.com/Soceremite/EvoInquiry/releases/tag/v1.6.2"
+    "release_url": "https://github.com/Soceremite/EvoInquiry/releases/tag/v1.6.2",
+    "release_id": 423164742,
+    "published_at": "2026-10-25T05:20:58Z",
+    "latest_stable": true,
+    "prerelease": false,
+    "draft": false,
+    "workflow_run_id": 40164900524,
+    "workflow_run_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/40164900524",
+    "installed_plugin_replaced": true,
+    "installed_public_files_match_release": 1090,
+    "asset_sha256": {
+      "evo-inquiry-1.6.2.tar.gz": "af47aba87a0409a3d63dc31b3328c798f91519392363b0bd392b2d434a2c852c",
+      "evo-inquiry-1.6.2.zip": "0bb00c7743070684deb175cfbfcef962794f3ca63b7dca8a87fc7d2ec09eb776",
+      "release-manifest.json": "8eb6406030d76a6789f6df23ef07bf262e20b3f227261ea748d136a3a95e4956",
+      "SHA256SUMS": "566c815a524784ec4b00bf607af6dd9a40e3355ff5f2674930e39a7e07ab3f2a"
+    },
+    "tag_snapshot_note": "The tagged validation snapshot records readiness before its publication workflow; this closeout records the observed workflow, published assets and official local installation."
   },
-  "assessed_at": "2026-10-25T05:14:44.053709+00:00",
+  "assessed_at": "2026-10-25T05:34:41.119749+00:00",
   "runtime_sha256": {
     "VERSION": "a2d5e268fe70979caccd895156b3d33bd61a3cc7e660ab7a5b07066849b3e248",
     ".codex-plugin/plugin.json": "8aa9233ac319302141a4d2267db91033bda0a359ed661df13a8c79ac1c5dc55b",
@@ -357,6 +392,42 @@
       "artifact": "validation/release-1.6.2/ci-fix/package.json",
       "sha256": "5134c86851eb34af3d9435301eaa25f9b968812f347053532cd0ec6c43e17ead",
       "status": "PASS"
+    },
+    "before_tag_corrected_runtime_native_ci": {
+      "artifact": "validation/release-1.6.2/ci-fix/corrected-ci.json",
+      "sha256": "e1100c103b2d5d87fdb79214fc6de31281943309e91343cfd096cac0a36a66e5",
+      "status": "PASS",
+      "source_commit": "d56f9f4ceceb375ea46f5ebbb9d3be4d2f021e6a",
+      "run_id": 40105479143,
+      "run_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/40105479143",
+      "linux_full_suite": "PASS",
+      "macos_full_suite": "PASS",
+      "windows_powershell_exe": "PASS",
+      "windows_pwsh": "PASS",
+      "python": "3.12"
+    },
+    "before_official_archive_default_installation": {
+      "artifact": "validation/release-1.6.2/ci-fix/default-installation/receipt.json",
+      "sha256": "e2e110719fa245a8e72162e444fe6d598656dd59377ef28adc9a71603f7a5b56",
+      "status": "PASS",
+      "runtime_files_verified": 305,
+      "source_and_cache_version": "1.6.2",
+      "includes_windows_queue_fix": true,
+      "unrelated_configuration_preserved": true
+    },
+    "before_official_archive_default_native_discovery": {
+      "artifact": "validation/release-1.6.2/ci-fix/default-installation/discovery/receipt.json",
+      "sha256": "f56ec4b2becc52ee6b2dff96e8d90efd386b3c5e70a46c1492bb8cc2458c49a1",
+      "status": "PASS",
+      "entrypoints": 89,
+      "errors": 0,
+      "model_request_sent": false
+    },
+    "publication_initial_browser_download_timeout": {
+      "artifact": "validation/release-1.6.2/publication/initial-download-timeout.json",
+      "sha256": "bc4700d509ec90f42e61161c022cd8c9e88543d57a70e155bd4cbe114c67093e",
+      "status": "resolved-via-github-asset-api",
+      "release_publication_affected": false
     }
   }
 }
