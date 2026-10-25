@@ -1,10 +1,12 @@
 # EvoInquiry 1.6.2 validation
 
 Status: local validation, native-session checks, native Goal/Plan checks and
-version preparation passed. This version has not been published. Native testing
-used an isolated corrected installation; see the default-installation record
-below. The baseline
-release is `v1.6.1` at `bbe52387bbf0542d62b6cd8886c9187c573fa023`.
+corrected-runtime native platform CI passed. Formal release assets require the
+tag-triggered publication workflow to pass again on the release commit; see
+[the 1.6.2 release](https://github.com/Soceremite/EvoInquiry/releases/tag/v1.6.2).
+Native session testing used an isolated installation; see the default-installation
+record below. The baseline release is `v1.6.1` at
+`bbe52387bbf0542d62b6cd8886c9187c573fa023`.
 
 ## Changes reviewed
 
@@ -18,8 +20,9 @@ The 89 Codex entrypoints, 88 mainline skills and 83 retained workflows remain.
 VERSION and the Codex manifest identify 1.6.2. Only the session resource changes
 are assigned new adaptation metadata; historical baselines remain unchanged.
 The publication manifest includes the helper, shared references and usage guide.
-Both Windows shell CI gates include resource-table and governed-queue modules;
-their configuration is not evidence that the native jobs have run.
+Both Windows shell CI gates include resource-table and governed-queue modules.
+Actual results for the corrected runtime are recorded below, separately from
+the earlier native-session checks.
 
 ## Local evidence
 
@@ -189,7 +192,8 @@ removing a same-named marketplace before adding its replacement source. The
 retry used that supported transition and passed. Installation and discovery
 receipts are under `validation/release-1.6.2/native-modes/default-installation/`.
 Private test authentication/configuration copies were removed after testing.
-This is an installed local development snapshot, not a published release.
+This receipt describes the local development snapshot installed before formal
+publication; it does not certify a later release-archive installation.
 
 ## Native Windows CI correction
 
@@ -218,9 +222,8 @@ Regression coverage includes native and portable output paths, real child
 process liveness and exit, Windows API outcomes including access denial, and
 lease protection for live or unknown processes. The execution retry integration
 also checks native and forward slash arguments while preserving the fixed input.
-Local receipts are under `validation/release-1.6.2/ci-fix/`. Acceptance of the
-correction requires the new commit's native Windows jobs; simulated API outcomes
-on Linux do not establish that result.
+Local receipts are under `validation/release-1.6.2/ci-fix/`. Simulated Windows
+API outcomes on Linux are separate from actual native Windows acceptance.
 
 The local correction regression passed 183 tests with 13 native-Windows-only
 skips and no failures in 127.04 seconds. It covered resource admission, the
@@ -231,11 +234,19 @@ runtime differs from the earlier native-mode snapshot; those native-mode
 receipts remain evidence for that earlier snapshot rather than a rerun of the
 queue correction. The same resource and mode guidance is retained.
 
+The first correction's new child-process test compared raw LF bytes and failed
+on Windows CRLF output before reaching its process assertion. The test now uses
+universal-newline text reading. That intermediate failure remains recorded.
+The corrected runtime and test at `d56f9f4` then passed full Linux/macOS CI and
+both targeted native Windows shell jobs in
+[run 40105479143](https://github.com/Soceremite/EvoInquiry/actions/runs/40105479143).
+The actual native CI receipt is `validation/release-1.6.2/ci-fix/corrected-ci.json`.
+Publication reruns those platform gates through the existing release workflow.
+
 ## Remaining scope
 
-The initial source commit's native macOS job passed; Windows acceptance of the
-queue correction must be checked on its own commit. Hour-long Goal/Plan behavior
-has not been run. The native mode cases validate approximately four-minute CPU jobs,
+Hour-long Goal/Plan behavior has not been run for this patch. The native mode
+cases validate approximately four-minute CPU jobs,
 not hours of unattended research, UI stall indicators or context compaction.
 Platform telemetry outside NVIDIA GPUs may require a target
 execution owner's own observations. Shared GPU policy permits use when capacity

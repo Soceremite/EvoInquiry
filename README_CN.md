@@ -8,8 +8,7 @@
 [静态封面](docs/assets/evo-inquiry-hero.svg)
 
 <p align="center">
-  <a href="https://github.com/Soceremite/EvoInquiry/releases/tag/v1.6.1"><img src="https://img.shields.io/badge/release-1.6.1-FF927E?style=flat&amp;labelColor=7862E8" alt="版本 1.6.1"></a>
-  <a href="RELEASE_NOTES.md"><img src="https://img.shields.io/badge/development-1.6.2-FFD95E?style=flat&amp;labelColor=7862E8" alt="1.6.2 开发中"></a>
+  <a href="https://github.com/Soceremite/EvoInquiry/releases/tag/v1.6.2"><img src="https://img.shields.io/badge/release-1.6.2-FF927E?style=flat&amp;labelColor=7862E8" alt="版本 1.6.2"></a>
   <a href="docs/SKILLS_CATALOG.md"><img src="https://img.shields.io/badge/Codex_skills-89-59C7A7?style=flat&amp;labelColor=7862E8" alt="89 个 Codex skill"></a>
   <a href="https://github.com/Soceremite/EvoInquiry/actions/workflows/test-suite.yml"><img src="https://github.com/Soceremite/EvoInquiry/actions/workflows/test-suite.yml/badge.svg" alt="回归测试状态"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-FFD95E?style=flat&amp;labelColor=7862E8" alt="MIT 许可证"></a>
@@ -37,14 +36,14 @@
 **我们最看重的，还是客观。** 有提升，就把提升讲清楚；有退步，也把退步摆出来；
 证据还不够，就继续验证。科研工具要帮助我们把问题看得更清楚。
 
-**EvoInquiry 1.6.1，继续开源。** 欢迎大家用自己的研究任务试一试，把真实的问题和建议带给我们。
+**EvoInquiry 1.6.2，继续开源。** 欢迎大家用自己的研究任务试一试，把真实的问题和建议带给我们。
 我们一起，把这个科研搭档做得更扎实、更好用。
 
-**开发中 — [1.6.2 更新](RELEASE_NOTES.md)：** 每个 session 一份资源表，首次选择，
+**[1.6.2 更新](RELEASE_NOTES.md)：** 每个 session 一份资源表，首次选择，
 后续所有科研 skill 复用；安排实验和启动前检查最新 GPU、内存与存储状态。
 最大可用配置下，单任务 12 小时内无需重复审批预算。资源等待保持任务待处理，
 不消耗训练重试。见[资源表说明](docs/SESSION_RESOURCE_BUDGET_CN.md)和
-[验证范围](docs/VALIDATION_1_6_2.md)；当前正式下载版本仍为 1.6.1。
+[验证范围](docs/VALIDATION_1_6_2.md)。
 
 ## 从模糊方向走向有证据的下一步
 
@@ -80,14 +79,14 @@
 
 ## 快速开始
 
-从 [正式版 Release](https://github.com/Soceremite/EvoInquiry/releases/tag/v1.6.1)
-下载并解压 `evo-inquiry-1.6.1.tar.gz` 或 `.zip`。
+从 [正式版 Release](https://github.com/Soceremite/EvoInquiry/releases/tag/v1.6.2)
+下载并解压 `evo-inquiry-1.6.2.tar.gz` 或 `.zip`。
 下载包将在对应版本的发布门禁通过后提供。
 请使用提供 `codex plugin` 命令的 Codex 版本；插件安装已在 Linux 上使用
-Codex CLI **0.163.0** 验证。
+Codex CLI **0.164.0** 验证。
 
 ```sh
-cd /path/to/evo-inquiry-1.6.1
+cd /path/to/evo-inquiry-1.6.2
 codex plugin marketplace add "$PWD"
 codex plugin add evo-inquiry@evo-inquiry
 ```
@@ -110,7 +109,7 @@ skill 使用 `evo-inquiry:` 命名空间。安装插件使技能可用；
 <summary><strong>源码开发与干净安装</strong></summary>
 
 需要查看和开发源码时，可以使用
-`git clone --branch v1.6.1 https://github.com/Soceremite/EvoInquiry.git EvoInquiry`。
+`git clone --branch v1.6.2 https://github.com/Soceremite/EvoInquiry.git EvoInquiry`。
 安装插件时使用干净的 Release 解压目录。Codex CLI 0.162.1 也会复制来源目录中的
 未跟踪文件；Release 包可以避免把私有验证记录、构建产物和 Git 历史带入安装缓存。
 
@@ -240,8 +239,9 @@ python tools/configure_research_guidance.py --project /path/to/project
 Windows 队列修正通过 183 项本地专项检查，13 项因需原生 Windows 跳过；此前完整
 回归有 1,410 项通过。早前的原生 Plan/Goal
 实测验证资源选择、只读监听与 Goal 自动续跑，两轮均正常完成；监听对象是约
-4 分钟的 CPU 任务。小时级 Goal/Plan 科研仍未覆盖；初次 macOS CI 通过，Windows
-修正以新提交的原生 CI 为准。此前的
+4 分钟的 CPU 任务。修正版已通过 Linux、macOS 完整 CI，以及两种 PowerShell 的
+Windows 原生专项检查，见[成功记录](https://github.com/Soceremite/EvoInquiry/actions/runs/40105479143)。
+1.6.2 的小时级 Goal/Plan 科研仍未覆盖。此前的
 [1.6.0 验证](docs/VALIDATION_1_6_0.md)通过 1,349 项测试，真实一小时 CUDA 工程运行验证有界恢复存储和数值
 故障处理，另一段有界模型实测观察到 REPLAN、STOP 实际停止训练和完整状态重放。
 失败尝试及对照组退化均保留。构造场景与显式引导的结果不证明普遍优于旧版、默认

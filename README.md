@@ -8,8 +8,7 @@
 [Static cover](docs/assets/evo-inquiry-hero.svg)
 
 <p align="center">
-  <a href="https://github.com/Soceremite/EvoInquiry/releases/tag/v1.6.1"><img src="https://img.shields.io/badge/release-1.6.1-FF927E?style=flat&amp;labelColor=7862E8" alt="Version 1.6.1"></a>
-  <a href="RELEASE_NOTES.md"><img src="https://img.shields.io/badge/development-1.6.2-FFD95E?style=flat&amp;labelColor=7862E8" alt="1.6.2 in development"></a>
+  <a href="https://github.com/Soceremite/EvoInquiry/releases/tag/v1.6.2"><img src="https://img.shields.io/badge/release-1.6.2-FF927E?style=flat&amp;labelColor=7862E8" alt="Version 1.6.2"></a>
   <a href="docs/SKILLS_CATALOG.md"><img src="https://img.shields.io/badge/Codex_skills-89-59C7A7?style=flat&amp;labelColor=7862E8" alt="89 Codex skills"></a>
   <a href="https://github.com/Soceremite/EvoInquiry/actions/workflows/test-suite.yml"><img src="https://github.com/Soceremite/EvoInquiry/actions/workflows/test-suite.yml/badge.svg" alt="Regression test status"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-FFD95E?style=flat&amp;labelColor=7862E8" alt="MIT license"></a>
@@ -43,16 +42,16 @@ weights, recovering from interruptions and keeping storage under control.
 regressions openly, and keep validating when the evidence is incomplete. A
 research tool should help us see the problem more clearly.
 
-**EvoInquiry 1.6.1 is open source.** Try it on your own research tasks and share
+**EvoInquiry 1.6.2 is open source.** Try it on your own research tasks and share
 the problems and suggestions you encounter. Help us make this research companion
 more dependable and more useful.
 
-**In development — [1.6.2](RELEASE_NOTES.md):** one resource table per session,
+**New in [1.6.2](RELEASE_NOTES.md):** one resource table per session,
 selected once and reused by all research skills. Planning and launch check fresh
 GPU, memory and storage state. Within the maximum-available profile, individual
 jobs up to 12 hours need no repeated budget approval. Resource waits preserve
 pending jobs and training retries. See the [resource contract](skills/shared-references/resource-budget.md)
-and [validation scope](docs/VALIDATION_1_6_2.md); the stable download remains 1.6.1.
+and [validation scope](docs/VALIDATION_1_6_2.md).
 
 ## From a rough direction to an evidence-backed next step
 
@@ -92,14 +91,14 @@ Your scope, review gates, resource budget and stopping conditions govern the wor
 
 ## Quick start
 
-Download and extract `evo-inquiry-1.6.1.tar.gz` or `.zip` from the
-[stable release](https://github.com/Soceremite/EvoInquiry/releases/tag/v1.6.1).
+Download and extract `evo-inquiry-1.6.2.tar.gz` or `.zip` from the
+[stable release](https://github.com/Soceremite/EvoInquiry/releases/tag/v1.6.2).
 Assets become available after the version's publication checks pass.
 Use a Codex version with the `codex plugin` commands; installation has been checked
-with Codex CLI **0.163.0** on Linux.
+with Codex CLI **0.164.0** on Linux.
 
 ```sh
-cd /path/to/evo-inquiry-1.6.1
+cd /path/to/evo-inquiry-1.6.2
 codex plugin marketplace add "$PWD"
 codex plugin add evo-inquiry@evo-inquiry
 ```
@@ -122,7 +121,7 @@ available; persistent selection preferences are [configured separately](#usage).
 <summary><strong>Source development and a clean installation</strong></summary>
 
 For source development, use
-`git clone --branch v1.6.1 https://github.com/Soceremite/EvoInquiry.git EvoInquiry`.
+`git clone --branch v1.6.2 https://github.com/Soceremite/EvoInquiry.git EvoInquiry`.
 Install the plugin from a clean release archive. Codex CLI 0.162.1 copies local
 untracked files too, so a release archive keeps private validation records,
 build outputs and Git history out of the installed cache.
@@ -270,9 +269,10 @@ The Windows queue correction passed 183 focused local tests with 13 native-only
 skips after an earlier full regression of 1,410 passing tests. Earlier actual
 native Plan/Goal checks verified resource choices,
 read-only monitoring and automatic Goal continuation through two completed turns
-using approximately four-minute CPU jobs. Hour-long Goal/Plan research and native
-Windows acceptance of the corrected commit depends on its CI; the initial macOS
-job passed. In the earlier
+using approximately four-minute CPU jobs. The corrected runtime passed full Linux
+and macOS CI and both targeted native Windows shell jobs in
+[run 40105479143](https://github.com/Soceremite/EvoInquiry/actions/runs/40105479143).
+Hour-long Goal/Plan research remains untested for 1.6.2. In the earlier
 [1.6.0 validation](docs/VALIDATION_1_6_0.md),
 1,349 tests passed and a real one-hour CUDA engineering
 run checked bounded recovery storage and numerical fault handling. A separate

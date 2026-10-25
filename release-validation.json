@@ -2,7 +2,7 @@
   "schema_version": 1,
   "version": "1.6.2",
   "release_kind": "stable",
-  "status": "local-and-native-platform-validation-passed-unpublished",
+  "status": "validated-release-candidate-awaiting-tag-workflow",
   "source_base": {
     "version": "1.6.1",
     "commit": "bbe52387bbf0542d62b6cd8886c9187c573fa023"
@@ -15,7 +15,7 @@
   },
   "current_checks": {
     "package_preservation": {
-      "artifact": "validation/release-1.6.2/ci-fix/package.json",
+      "artifact": "validation/release-1.6.2/publication/package.json",
       "sha256": "5134c86851eb34af3d9435301eaa25f9b968812f347053532cd0ec6c43e17ead",
       "status": "PASS"
     },
@@ -90,6 +90,23 @@
       "entrypoints": 89,
       "errors": 0,
       "model_request_sent": false
+    },
+    "publication_preparation_regression": {
+      "artifact": "validation/release-1.6.2/publication/release-checks.xml",
+      "sha256": "313aa933eaf1025e98c58975360a8e89a93833eedeb5a3d841855d079c9a183e",
+      "status": "PASS",
+      "passed": 53,
+      "skipped": 0,
+      "failures": 0,
+      "errors": 0,
+      "scope": "release workflow, public package preservation and Codex mirror inventory"
+    },
+    "publication_runtime_identity": {
+      "artifact": "validation/release-1.6.2/publication/source-readiness.json",
+      "sha256": "44363d4baaa4ae4f871e58793431a8e5b773676d0ceb8ab808fca5ac77676841",
+      "status": "PASS",
+      "runtime_inputs_verified_unchanged": 305,
+      "scope": "only publication documentation changed since passing native platform CI"
     }
   },
   "validation_record": "docs/VALIDATION_1_6_2.md",
@@ -122,15 +139,18 @@
   "publication": {
     "published": false,
     "tag": "v1.6.2",
-    "state": "source-submission-authorized-release-not-requested",
+    "state": "authorized-awaiting-tag-triggered-platform-gates",
     "installed_plugin_version": "1.6.2",
     "source_commit": null,
     "installed_cache_contains_native_planning_fix": true,
     "configured_marketplace_source_version": "1.6.2",
     "installed_build_kind": "tested-local-development-snapshot-unpublished",
-    "installed_cache_contains_latest_windows_queue_fix": true
+    "installed_cache_contains_latest_windows_queue_fix": true,
+    "authorized": true,
+    "method": "tag-triggered-release-workflow",
+    "release_url": "https://github.com/Soceremite/EvoInquiry/releases/tag/v1.6.2"
   },
-  "assessed_at": "2026-10-24T15:12:19.800108+00:00",
+  "assessed_at": "2026-10-25T05:14:44.053709+00:00",
   "runtime_sha256": {
     "VERSION": "a2d5e268fe70979caccd895156b3d33bd61a3cc7e660ab7a5b07066849b3e248",
     ".codex-plugin/plugin.json": "8aa9233ac319302141a4d2267db91033bda0a359ed661df13a8c79ac1c5dc55b",
@@ -151,7 +171,7 @@
     ".github/workflows/release-beta.yml": "c79318cd6d354f935c3b056001814164c57d9376c27ab5018773107a6d3ff607",
     "tests/test_resource_budget.py": "fc62530d0cf5e4e2d458f34f044878a43fd772ad10dc38c374b17e5e2222e253",
     "tests/test_governed_queue.py": "d5b02f4467da9bb760e137b6b19b69fd2cfd226a898ed5a8673ec10150003d24",
-    "RELEASE_NOTES.md": "420b268b1ff5cc13aa8e42b1aef19b1e20d162c785f5dd0ace576e7f27240ebe",
+    "RELEASE_NOTES.md": "934823e6a69f511361531c1718f76b0dd881c6d8ff96c38859d3113d83cdec86",
     "skills/experiment-plan/SKILL.md": "3649609f46cd099ef62c88d0c0153dfae0b3436a59070b588b956c355382f882",
     "skills/skills-codex/experiment-plan/SKILL.md": "dc3fa3a201557af241848fa4efd61a6356f44908c0e64e153746471009f1d894",
     "tests/test_execution_governance.py": "cda551f50bdee89fe18752f4889bddebb9fb15696e930741a7545c51977f92ff"
@@ -332,6 +352,11 @@
       "source_commit": "30ca828d6c9275f7b420ebc859621e8af79980a3",
       "corrected_commit_native_ci": "required",
       "windows_resource_and_queue_modules_configured": true
+    },
+    "pre_publication_package_preservation": {
+      "artifact": "validation/release-1.6.2/ci-fix/package.json",
+      "sha256": "5134c86851eb34af3d9435301eaa25f9b968812f347053532cd0ec6c43e17ead",
+      "status": "PASS"
     }
   }
 }

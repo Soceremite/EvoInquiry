@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.6.2 — Unreleased
+## 1.6.2 — 2026-10-25
 
 ### Added
 
@@ -22,7 +22,7 @@
 ### Changed
 
 - Keep resource policy with the session table and planning, execution, accounting, reflection and scientific review with their existing owners. Existing finite budgets and stop requests remain in force; no new skill or scheduler is added.
-- Include resource-table and governed-queue tests in both Windows shell CI gates. Actual native Plan/Goal checks cover four-minute CPU monitoring and automatic Goal continuation; they do not establish native Windows/macOS acceptance, GPU isolation or hour-long research behavior. See [1.6.2 validation](docs/VALIDATION_1_6_2.md).
+- Include resource-table and governed-queue tests in both Windows shell CI gates. The corrected runtime passed full Linux/macOS CI and both native Windows shells. Separate actual Plan/Goal checks cover four-minute CPU monitoring and automatic Goal continuation; they do not establish GPU isolation or hour-long research behavior. See [1.6.2 validation](docs/VALIDATION_1_6_2.md).
 
 ## 1.6.1 — 2026-10-24
 
