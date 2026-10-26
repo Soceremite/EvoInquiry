@@ -141,9 +141,14 @@ def _native_bash():
                                                (0, False, 'failed_other')])
 def test_real_tee_wrapper_keeps_trainer_exit_and_checks_expected_output(tmp_path, monkeypatch, code, output, expected):
     result = tmp_path / 'result.json'
-    program = ('from pathlib import Path; Path(' + repr(str(result)) + ').write_text("partial"); ' if output else '')
-    program += f'raise SystemExit({code})'
-    command = shlex.join([Path(sys.executable).as_posix(), '-c', program])
+    trainer = tmp_path / 'trainer.py'
+    trainer.write_text('from pathlib import Path\nimport sys\n'
+                       'if sys.argv[3] == "True": Path(sys.argv[1]).write_text("partial")\n'
+                       'raise SystemExit(int(sys.argv[2]))\n', encoding='utf-8')
+    # Exercise an actual script/argv launch. Inline -c source embeds a second
+    # Python string grammar and its backslashes are rewritten by MSYS/Win32.
+    command = shlex.join([Path(sys.executable).as_posix(), trainer.as_posix(), result.as_posix(),
+                          str(code), str(output)])
     job = {'id': 'pipeline', 'screen_name': None, 'pid': None, 'expected_output': str(result)}
     shell = queue.job_shell(job, command, str(tmp_path), str(tmp_path/'pipeline.log'))
     process = subprocess.run([_native_bash(), '-c', shell], capture_output=True, text=True, timeout=10)
