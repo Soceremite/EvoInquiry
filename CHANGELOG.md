@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.6.3 — Unreleased
+## 1.6.3 — 2026-10-26
 
 ### Added
 
@@ -10,6 +10,7 @@
 
 ### Fixed
 
+- Replace queue state atomically on native Windows, preserving the previous file on failure. Execute pipeline acceptance with Git Bash instead of the unconfigured WSL shim and normalize shell paths.
 - Serialize final process dispatch with workflow review/stop updates; keep structured deferrals pending without consuming retries, and resume the same frozen attempt after review.
 - Preserve trainer exit codes through tee and require attempt-bound terminal evidence; missing screen sessions and partial outputs cannot complete a live job.
 - Consume first-step timing receipts in the original execution observer, deduplicate runtime notices, and continue observation without treating unanswered notices as consent.

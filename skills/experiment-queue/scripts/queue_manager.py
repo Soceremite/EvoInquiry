@@ -48,6 +48,7 @@ import re
 import shlex
 import subprocess
 import sys
+import tempfile
 import time
 import uuid
 from datetime import datetime
@@ -65,15 +66,19 @@ def job_shell(job, command, cwd, log_file, activation='', gpu_prefix=''):
     receipt = Path(log_file).with_name(f"{job['id']}.{token}.exit.json").resolve()
     pid_receipt = receipt.with_suffix('.pid')
     job.update(launch_token=token, exit_receipt=str(receipt), pid_receipt=str(pid_receipt))
+    # Git Bash accepts drive-prefixed forward-slash paths; backslash-native
+    # Windows strings must not become shell escape sequences or literal names.
+    shell_receipt, shell_pid = receipt.as_posix(), pid_receipt.as_posix()
+    shell_cwd, shell_log = Path(cwd).as_posix(), Path(log_file).as_posix()
     # Capture PIPESTATUS immediately: tee success must not hide trainer failure.
-    return (f'set -o pipefail; printf "%s" "$$" > {shlex.quote(str(pid_receipt))}; '
-            f'{{ cd {shlex.quote(cwd)} && {activation}{gpu_prefix}{command}; }} '
-            f'2>&1 | tee {shlex.quote(log_file)}; '
+    return (f'set -o pipefail; printf "%s" "$$" > {shlex.quote(shell_pid)}; '
+            f'{{ cd {shlex.quote(shell_cwd)} && {activation}{gpu_prefix}{command}; }} '
+            f'2>&1 | tee {shlex.quote(shell_log)}; '
             'statuses=("${PIPESTATUS[@]}"); trainer_rc=${statuses[0]}; log_rc=${statuses[1]}; '
             'rc=$trainer_rc; if [ "$rc" -eq 0 ]; then rc=$log_rc; fi; '
             f'printf \'{{"launch_token":"{token}","exit_code":%d,"trainer_exit_code":%d,"log_exit_code":%d}}\\n\' '
-            f'"$rc" "$trainer_rc" "$log_rc" > {shlex.quote(str(receipt) + ".tmp")}; '
-            f'mv {shlex.quote(str(receipt) + ".tmp")} {shlex.quote(str(receipt))}; exit "$rc"')
+            f'"$rc" "$trainer_rc" "$log_rc" > {shlex.quote(shell_receipt + ".tmp")}; '
+            f'mv {shlex.quote(shell_receipt + ".tmp")} {shlex.quote(shell_receipt)}; exit "$rc"')
 
 
 OOM_RE = re.compile(r"(CUDA out of memory|torch\.OutOfMemoryError)")
@@ -239,10 +244,20 @@ def load_state(state_file, manifest):
 
 
 def save_state(state, state_file):
-    tmp = state_file + ".tmp"
-    with open(tmp, "w") as f:
-        json.dump(state, f, indent=2)
-    os.rename(tmp, state_file)
+    """Atomically replace existing queue state on POSIX and native Windows."""
+    destination = Path(state_file)
+    descriptor, temporary = tempfile.mkstemp(dir=destination.parent, prefix='.' + destination.name + '.')
+    try:
+        with os.fdopen(descriptor, 'w', encoding='utf-8') as output:
+            json.dump(state, output, indent=2, ensure_ascii=False, allow_nan=False)
+            output.write('\n')
+            output.flush()
+            os.fsync(output.fileno())
+        # os.rename cannot replace an existing destination on Windows.
+        os.replace(temporary, destination)
+    finally:
+        if os.path.exists(temporary):
+            os.unlink(temporary)
 
 
 def phase_ready(phase_name, state):

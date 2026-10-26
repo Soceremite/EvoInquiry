@@ -272,3 +272,19 @@ CI 选择列表；Windows 父进程停止收据单独保留后代核验要求，
 入口、0 个解析错误。安装收据为 `validation/repair-1.6.3/local-installation/receipt.json`，
 发现收据为 `local-discovery/receipt.json`。这是未提交的本地开发快照，不是 GitHub 正式发布。
 当前在途训练与原生生产 Goal 均未重启或修改，其他本地插件配置保留。
+
+
+### 发布前原生 Windows 修正
+
+首次推送 `9ff802e` 的原生 Windows 检查（`40303908889`）在两种 PowerShell
+中均出现四项失败：三项 tee 包装验收误选 `System32` 的未配置 WSL `bash`；另一项
+暴露队列保存使用 `os.rename` 无法在 Windows 覆盖已有状态文件。原始公开注释保留在
+本地 `validation/release-1.6.3/publication/*-annotations.json`。
+
+修复为明确使用 Windows Git Bash 并规范其文件路径；队列用唯一临时文件、flush/fsync
+和 `os.replace` 更新状态，失败时保留原文件并清理临时文件。新增已有状态覆盖及失败保护
+的真实文件回归。没有跳过 Windows 管道验收或接受失败退出码。Linux 全量已在首次推送
+通过；修复后的原生检查会另行记录，不将该失败记录改写为成功。
+
+该 Windows 修正的本地定向回归 **107 项通过**，包含原失败路径、状态覆盖/失败保护、
+队列、真实管道、包镜像与发布契约；日志与 XML 保存在 `windows-correction-local.*`。

@@ -848,13 +848,13 @@
       "upgrade_baseline_sha256": "2fe0d13d2bba863e9bbde65f8a746f1c0f46b7e2c08e16107786fad6980a5820"
     },
     "skills/experiment-queue/scripts/queue_manager.py": {
-      "sha256": "c491d1adce036a0fe66ae5149e171b4193475b8636e6331fb1cc4a6ea6a080bf",
+      "sha256": "c66f4d471a30b8d172ebfb91e1b42a640746c152aff3b7b7da355eb78df5e63f",
       "baseline_sha256": "9b53e554bda3fec88d9d293e323e26f531d8c074b7544a8ca7b4c3b529ab0129",
-      "reason": "User-authorized 1.6.3 audit repair: align pilot, dispatch, queue, timing, cooperative stop, resource, notification and deployment ownership without replacing preserved baselines.",
+      "reason": "User-authorized 1.6.3 audit repair: align pilot, dispatch, queue, timing, cooperative stop, resource, notification and deployment ownership without replacing preserved baselines. Native Windows CI follow-up: use atomic replacement for existing state and forward-slash paths for actual Git Bash wrappers; preserve trainer exit evidence.",
       "upgrade_baseline_sha256": "9b53e554bda3fec88d9d293e323e26f531d8c074b7544a8ca7b4c3b529ab0129",
-      "previous_sha256": "3beac1fd42ef1cbf0020c41264b18227a518e84eed36460ea57ee0c54e150799",
+      "previous_sha256": "c491d1adce036a0fe66ae5149e171b4193475b8636e6331fb1cc4a6ea6a080bf",
       "adaptation_version": "1.6.3",
-      "review_ref": "docs/AUDIT_1_6_3_CN.md#修复实施记录",
+      "review_ref": "docs/AUDIT_1_6_3_CN.md#发布前原生-windows-修正",
       "test_refs": [
         "tests/test_dispatch_monitor_repairs.py",
         "tests/test_execution_governance.py",

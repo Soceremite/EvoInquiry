@@ -123,17 +123,30 @@ def test_missing_screen_protects_an_actual_live_cpu_child(tmp_path, monkeypatch)
     assert queue.job_status_check(job, str(tmp_path), str(tmp_path))[0] == 'failed_other'
 
 
-@pytest.mark.skipif(shutil.which('bash') is None, reason='Legacy screen wrapper requires bash')
+def _native_bash():
+    """Use Git Bash on Windows, rather than the unconfigured System32 WSL shim."""
+    if os.name != 'nt':
+        return shutil.which('bash')
+    roots = [Path(value) / 'Git' for key in ('ProgramFiles', 'ProgramFiles(x86)', 'LOCALAPPDATA')
+             if (value := os.environ.get(key))]
+    git = shutil.which('git')
+    if git:
+        roots.insert(0, Path(git).resolve().parent.parent)
+    return next((str(root / name) for root in roots for name in ('bin/bash.exe', 'usr/bin/bash.exe')
+                 if (root / name).is_file()), None)
+
+
+@pytest.mark.skipif(_native_bash() is None, reason='Legacy screen wrapper requires native bash (Git Bash on Windows)')
 @pytest.mark.parametrize('code,output,expected', [(0, True, 'completed'), (7, True, 'failed_other'),
                                                (0, False, 'failed_other')])
 def test_real_tee_wrapper_keeps_trainer_exit_and_checks_expected_output(tmp_path, monkeypatch, code, output, expected):
     result = tmp_path / 'result.json'
     program = ('from pathlib import Path; Path(' + repr(str(result)) + ').write_text("partial"); ' if output else '')
     program += f'raise SystemExit({code})'
-    command = shlex.join([sys.executable, '-c', program])
+    command = shlex.join([Path(sys.executable).as_posix(), '-c', program])
     job = {'id': 'pipeline', 'screen_name': None, 'pid': None, 'expected_output': str(result)}
     shell = queue.job_shell(job, command, str(tmp_path), str(tmp_path/'pipeline.log'))
-    process = subprocess.run(['bash', '-c', shell], capture_output=True, text=True, timeout=10)
+    process = subprocess.run([_native_bash(), '-c', shell], capture_output=True, text=True, timeout=10)
     assert process.returncode == code, process.stderr
     receipt = read_record(job['exit_receipt'])
     assert receipt['trainer_exit_code'] == code and receipt['log_exit_code'] == 0
@@ -142,6 +155,27 @@ def test_real_tee_wrapper_keeps_trainer_exit_and_checks_expected_output(tmp_path
     # A receipt from another launch cannot complete this attempt.
     job['launch_token'] = 'different-attempt'
     assert queue.job_status_check(job, str(tmp_path), str(tmp_path))[0] == 'failed_other'
+
+
+def test_queue_state_updates_an_existing_file_without_rename_overwrite_assumptions(tmp_path, monkeypatch):
+    state = tmp_path / 'queue.json'
+    queue.save_state({'step':1}, str(state))
+    monkeypatch.setattr(queue.os, 'rename', lambda *a: pytest.fail('Native Windows rename cannot replace a file'))
+    queue.save_state({'step':2, 'reason':'继续'}, str(state))
+    assert read_record(state) == {'step':2, 'reason':'继续'}
+    assert set(tmp_path.iterdir()) == {state}
+
+
+def test_failed_queue_state_replacement_preserves_previous_bytes_and_removes_temporary(tmp_path, monkeypatch):
+    state = tmp_path / 'queue.json'
+    queue.save_state({'step':1}, str(state))
+    original = state.read_bytes()
+    def unavailable(*args):
+        raise PermissionError('fixture: destination unavailable')
+    monkeypatch.setattr(queue.os, 'replace', unavailable)
+    with pytest.raises(PermissionError, match='destination unavailable'):
+        queue.save_state({'step':2}, str(state))
+    assert state.read_bytes() == original and set(tmp_path.iterdir()) == {state}
 
 
 @pytest.mark.parametrize('process_ids,utilization,expected', [([], 0, 'AUTO_APPROVED'), ([123], 0, 'WAIT_RESOURCE'),
