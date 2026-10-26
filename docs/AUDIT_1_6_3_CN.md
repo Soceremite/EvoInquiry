@@ -1,7 +1,7 @@
 # EvoInquiry 1.6.3 全版本一致性审查
 
 审查日期：2026-10-26。本文保留 1.6.3 开发、修复和发布验收各阶段的证据；修复前状态不代表当前状态。
-当前状态：**10 类问题已修复，本地与原生跨平台验收通过；Goal / Plan / 普通会话验收通过。正式发布流程待执行。**
+当前状态：**1.6.3 正式版已发布，标签对应的四组跨平台检查与发布作业通过；官方包及校验和已核验，本机安装与官方包一致，原生发现 89 个技能且无错误。**
 
 本次使用 `skill-creator` 和实际安装的 `evo-inquiry:research-guide`，检查公共原则、
 Codex 与主线入口、执行工具、队列、恢复和发布检查。结论来自代码、明确的文本冲突与
@@ -306,3 +306,12 @@ MSYS/Win32 参数转义后触发 `unicodeescape`。验收改为真实 `trainer.p
 - Windows / pwsh 原生专项：PASS。
 
 第三轮保留全部场景与新增状态保护断言。前两轮原生失败未被覆盖；最终发布标签还会通过发布流程的四组检查后才产生正式 release。此处记录运行代码验收，不声称小时级科研或原生弹窗已测。
+
+
+### 正式发布与本机安装核验
+
+[v1.6.3 正式 Release](https://github.com/Soceremite/EvoInquiry/releases/tag/v1.6.3) 对应提交 `c7d448ecf954d8028622c4e9788d7148ee08bc44`，通过 [发布门禁](https://github.com/Soceremite/EvoInquiry/actions/runs/40314173277) 的 Linux/macOS 全量、两种 Windows PowerShell 检查及发布作业。
+
+实际下载并核验 tar.gz、zip、SHA256SUMS 和 release-manifest.json 四个附件，两种归档均与提交中的 1093 个公开文件逐项一致。默认 Codex 已从核验后的正式包安装，来源目录与插件缓存逐文件一致；原生 `skills/list` 发现 89 个启用的 EvoInquiry 技能，错误为 0。原安装已备份，无关插件与配置保持一致。
+
+发布及安装收据保留在本地 `validation/release-1.6.3/publication/`，公开摘要见 `release-validation.json`。正式包保留发布前验收快照；主分支后续仅补充本节和发布收据，不改写标签或下载包。这次发布不扩张前述短程 CPU、只读 Plan、原生弹窗与既有冻结任务的验证边界。
