@@ -8,7 +8,7 @@
 [Static cover](docs/assets/evo-inquiry-hero.svg)
 
 <p align="center">
-  <a href="https://github.com/Soceremite/EvoInquiry/releases/tag/v1.6.2"><img src="https://img.shields.io/badge/release-1.6.2-FF927E?style=flat&amp;labelColor=7862E8" alt="Version 1.6.2"></a>
+  <a href="https://github.com/Soceremite/EvoInquiry/releases/tag/v1.6.3"><img src="https://img.shields.io/badge/release-1.6.3-FF927E?style=flat&amp;labelColor=7862E8" alt="Version 1.6.3"></a>
   <a href="docs/SKILLS_CATALOG.md"><img src="https://img.shields.io/badge/Codex_skills-89-59C7A7?style=flat&amp;labelColor=7862E8" alt="89 Codex skills"></a>
   <a href="https://github.com/Soceremite/EvoInquiry/actions/workflows/test-suite.yml"><img src="https://github.com/Soceremite/EvoInquiry/actions/workflows/test-suite.yml/badge.svg" alt="Regression test status"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-FFD95E?style=flat&amp;labelColor=7862E8" alt="MIT license"></a>
@@ -42,19 +42,17 @@ weights, recovering from interruptions and keeping storage under control.
 regressions openly, and keep validating when the evidence is incomplete. A
 research tool should help us see the problem more clearly.
 
-**EvoInquiry 1.6.2 is open source.** Try it on your own research tasks and share
+**EvoInquiry 1.6.3 is open source.** Try it on your own research tasks and share
 the problems and suggestions you encounter. Help us make this research companion
 more dependable and more useful.
 
-**[1.6.3 in development](RELEASE_NOTES.md):** keep duration reminders separate
-from the session's selected approval ceiling, and continue authorized work while
-an optional notice is unanswered. Verify native Goal recovery before relying on
-automatic continuation; a background log observer does not replace the research
-loop. Count training from its first actual step, refresh hardware before each
-experiment, and require user consent before interrupting a live process.
-The latest published release remains 1.6.2. See the
-[resource contract](skills/shared-references/resource-budget.md) and
-[current validation scope](docs/SESSION_RESOURCE_BUDGET_CN.md).
+**[New in 1.6.3](RELEASE_NOTES.md):** keep duration reminders separate
+from the session's selected approval ceiling. Count training from its first
+actual step, refresh hardware before each experiment, and continue observing
+while optional notices are unanswered. Review deferrals retain the original
+prepared attempt; cooperative checkpoint saves have no implicit force-kill
+deadline. See the [resource contract](skills/shared-references/resource-budget.md)
+and [1.6.3 validation](docs/AUDIT_1_6_3_CN.md).
 
 ## From a rough direction to an evidence-backed next step
 
@@ -65,7 +63,7 @@ and handoffs in existing project records. Literature records
 retain identity, versions and reading scope; figure receipts bind real inputs,
 editable sources and captions. Existing comparison, checkpoint and review gates
 remain in use. See [what changed](RELEASE_NOTES.md) and the
-[1.6.2 validation record](docs/VALIDATION_1_6_2.md).
+[1.6.3 validation record](docs/AUDIT_1_6_3_CN.md).
 
 Try a bounded request such as “Frame research questions about low-cost memory;
 no training yet”, “Check whether these means support the claim”, or “Plot this
@@ -94,14 +92,14 @@ Your scope, review gates, resource budget and stopping conditions govern the wor
 
 ## Quick start
 
-Download and extract `evo-inquiry-1.6.2.tar.gz` or `.zip` from the
-[stable release](https://github.com/Soceremite/EvoInquiry/releases/tag/v1.6.2).
+Download and extract `evo-inquiry-1.6.3.tar.gz` or `.zip` from the
+[stable release](https://github.com/Soceremite/EvoInquiry/releases/tag/v1.6.3).
 Assets become available after the version's publication checks pass.
 Use a Codex version with the `codex plugin` commands; installation has been checked
 with Codex CLI **0.164.0** on Linux.
 
 ```sh
-cd /path/to/evo-inquiry-1.6.2
+cd /path/to/evo-inquiry-1.6.3
 codex plugin marketplace add "$PWD"
 codex plugin add evo-inquiry@evo-inquiry
 ```
@@ -124,7 +122,7 @@ available; persistent selection preferences are [configured separately](#usage).
 <summary><strong>Source development and a clean installation</strong></summary>
 
 For source development, use
-`git clone --branch v1.6.2 https://github.com/Soceremite/EvoInquiry.git EvoInquiry`.
+`git clone --branch v1.6.3 https://github.com/Soceremite/EvoInquiry.git EvoInquiry`.
 Install the plugin from a clean release archive. Codex CLI 0.162.1 copies local
 untracked files too, so a release archive keeps private validation records,
 build outputs and Git history out of the installed cache.
@@ -267,15 +265,16 @@ The documented EvoInquiry installation route is the Codex plugin above.
 Retained backend and client compatibility resources support existing workflow
 contracts; they are optional and have separate setup requirements.
 
-Current checks and their scope are recorded in [1.6.2 validation](docs/VALIDATION_1_6_2.md).
-The Windows queue correction passed 183 focused local tests with 13 native-only
-skips after an earlier full regression of 1,410 passing tests. Earlier actual
-native Plan/Goal checks verified resource choices,
-read-only monitoring and automatic Goal continuation through two completed turns
-using approximately four-minute CPU jobs. The corrected runtime passed full Linux
-and macOS CI and both targeted native Windows shell jobs in
-[run 40105479143](https://github.com/Soceremite/EvoInquiry/actions/runs/40105479143).
-Hour-long Goal/Plan research remains untested for 1.6.2. In the earlier
+Current checks and their scope are recorded in the
+[1.6.3 audit and repair record](docs/AUDIT_1_6_3_CN.md). Local validation includes
+real CPU-process regressions, a six-second cooperative checkpoint save, and
+fresh native Goal, read-only Plan and ordinary-dialogue sessions using
+gpt-6.1-sol. Goal continued automatically after interim analysis; Plan observed
+its task through completion within one read-only turn. These short engineering
+fixtures do not establish hour-long GPU research, native popup interaction or
+universal model compliance. The corrected runtime passed full Linux/macOS tests and both native Windows
+PowerShell jobs in [run 40307318785](https://github.com/Soceremite/EvoInquiry/actions/runs/40307318785); the publication workflow
+checks them again before release. In the earlier
 [1.6.0 validation](docs/VALIDATION_1_6_0.md),
 1,349 tests passed and a real one-hour CUDA engineering
 run checked bounded recovery storage and numerical fault handling. A separate
