@@ -84,7 +84,7 @@ preconditions:
 
 gpus: [0, 1, 2, 3, 4, 5, 6, 7]
 max_parallel: 8
-gpu_free_threshold_mib: 500  # optional, default 500; raise for shared servers, lower for tight packing
+# gpu_free_threshold_mib: deprecated compatibility input; admission uses the session policy and live telemetry
 oom_retry:
   delay: 120
   max_attempts: 3
@@ -103,7 +103,9 @@ jobs:
 pending → running → completed
                  ↘ failed_oom → pending (after delay) [retry up to N]
                  ↘ failed_other → stuck (needs manual inspection)
-stale screen (process gone, screen lingering) → failed_other → stuck
+resource/control deferral before trainer launch → pending (same identity; no retry spent)
+live/unknown PID or occupied screen → continue observation
+actual exit + matching successful receipt + required output → completed
 ```
 
 > **Operator note on `stuck` (the agent's move, not the queue's):** the queue
@@ -120,8 +122,8 @@ stale screen (process gone, screen lingering) → failed_other → stuck
 
 A "wave" is a batch of jobs that fit available GPUs. Next wave only starts when:
 1. All current-wave python processes have exited
-2. No stale screens remain for current-wave tags
-3. GPU memory has dropped below threshold (≤500 MiB)
+2. Verify current-wave training processes have actually exited; reconcile lingering screens without automatically terminating their occupants
+3. Fresh resource admission passes the selected sharing policy and measured phase peaks; exclusive devices have no observed occupants or conflicting scheduler allocation
 4. Precondition checks pass for next-wave jobs
 
 ## Workflow
@@ -151,9 +153,9 @@ Save the built manifest to `$LOCAL_RUN_DIR/manifest.json` for reproducibility.
 - Check conda env exists on remote
 - Check `cwd` exists on remote
 - Check all preconditions (checkpoints, input files)
-- Check GPU availability (at least `max_parallel` free GPUs)
+- Recheck current session admission for each job. `max_parallel` is a concurrency ceiling, not a minimum number of idle GPUs required to start; launch the admitted subset and keep observing the remainder.
 
-If any precondition fails, show user which jobs are blocked and why.
+Keep resource/control deferrals pending under their original attempt identity without consuming a retry. Report the reason and continue authorized observation/replanning; do not translate queue waiting into a blocked native Goal.
 
 ### Step 3: Launch Scheduler
 
@@ -221,11 +223,11 @@ LOCAL_RUN_DIR="/abs/path/to/project/experiment_queue/<existing-run-ts>"
 
 The scheduler:
 - Reads manifest
-- Loops: for each pending job, assign to free GPU, launch via `screen`
+- Loops: check fresh session resources for bound jobs, preserve device assignments and queue concurrency, then launch via `screen`; legacy jobs retain their declared admission rule
 - Polls job status (every 60s)
-- Detects stale screens (python exited but screen detached → kill)
+- Detects lingering screens for reconciliation; no automatic interruption of unknown occupants
 - Detects OOM (CUDA OOM in log → mark failed_oom → retry after delay)
-- Detects completion (expected output JSON/file exists) → mark completed
+- Detects completion from terminal execution evidence, or observed process exit plus expected output for legacy jobs
 - Launches next wave when current wave settles
 - Writes state to `queue_state.json` continuously
 
@@ -299,21 +301,22 @@ torch\.OutOfMemoryError: CUDA out of memory
 ```
 
 On detection:
-1. Mark job `failed_oom`
-2. Kill screen
-3. Wait `oom_retry.delay` seconds
-4. Check if current GPU is free; if not, try another free GPU
+1. Verify actual process exit before marking `failed_oom`; a log marker alone is not terminal evidence
+2. Leave a live screen/process running unless the user confirms stopping it; keep monitoring while unanswered
+3. Wait `oom_retry.delay` seconds after verified exit
+4. Recheck current resources and original device authorization before an allowed retry
 5. Requeue as `pending`
 6. Max `oom_retry.max_attempts` before marking `stuck`
 
 ## Stale Screen Detection
 
-Every 60s, for each running screen:
-1. Check screen exists (`screen -ls`)
-2. Check python PID still running (`ps -p`)
-3. If screen exists but python exited:
-   - If expected output file exists → mark `completed`, kill stale screen
-   - If no output file → mark `failed_other`, kill screen
+At the existing polling cadence, inspect both the attempt PID and screen independently.
+A missing screen cannot settle a live or unknown PID; a lingering occupied screen stays
+protected. Governed jobs use their verified terminal record. Legacy jobs require the
+wrapper's matching launch token and actual exit code, then the expected output when
+specified. Partial output and OOM-looking logs never establish exit. Keep structured
+pre-launch resource/review deferrals pending without consuming retries; preserve
+unresolved process identities for reconciliation and never kill unknown occupants.
 
 ## Resume-on-restart
 
@@ -357,7 +360,7 @@ If scheduler crashes / is killed:
 | Multi-GPU parallel | Basic | Proper scheduling |
 | Wave transitions | Manual | Automatic |
 | OOM retry | Manual | Automatic |
-| Stale screen cleanup | Manual | Automatic |
+| Stale screen reconciliation | Manual | Detected automatically; interruption needs user consent |
 | Teacher→student chain | Manual | Built-in |
 | State persistence | No | Yes (JSON) |
 | Resume on crash | No | Yes |
@@ -367,10 +370,10 @@ If scheduler crashes / is killed:
 
 ## Key Rules
 
-- **Never overlap screens on the same GPU** — always wait for `memory.used < 500 MiB` before launching new job
+- **Check actual resource fit** — resource-bound jobs use the current session table and measured phase peaks; exclusive admission checks observed occupants rather than a fixed memory threshold. This queue still reserves one of its own running GPU jobs per assigned device; external sharing follows session permission and actual free capacity.
 - **Always write state to disk** — every state change flushed to `queue_state.json`
 - **Idempotent scheduler** — safe to restart; picks up from state file
-- **Expected-output-based completion** — don't trust screen state alone; verify output file exists
+- **Verified completion** — an intermediate output or OOM log does not establish exit. Verify terminal execution evidence or actual legacy process exit and its output before retrying.
 - **Bounded retry** — max N OOM retries, then mark `stuck` and alert
 - **Dependencies enforced at launch** — a wave launches only after every job in the phases it
   depends on has reached a terminal state. Note "terminal" includes `stuck`: if a teacher job

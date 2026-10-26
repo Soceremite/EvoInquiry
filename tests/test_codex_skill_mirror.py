@@ -532,7 +532,8 @@ def test_codex_training_check_defaults_to_interactive_watch() -> None:
     assert "交互式训练监控模式" in text
     assert "every 30 minutes" in text
     assert "current terminal" in text
-    assert "If the context contains `stop_command`, run `stop_command` first." in text
+    # A configured stop command does not establish user consent. Actual consent
+    # enforcement is exercised with live workers in test_execution_governance.
     assert "Optional Background Mode" not in text
     assert "codex-training-check" not in text
     assert "codex_training_check.py" not in text

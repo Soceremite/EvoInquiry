@@ -46,12 +46,15 @@ research tool should help us see the problem more clearly.
 the problems and suggestions you encounter. Help us make this research companion
 more dependable and more useful.
 
-**New in [1.6.2](RELEASE_NOTES.md):** one resource table per session,
-selected once and reused by all research skills. Planning and launch check fresh
-GPU, memory and storage state. Within the maximum-available profile, individual
-jobs up to 12 hours need no repeated budget approval. Resource waits preserve
-pending jobs and training retries. See the [resource contract](skills/shared-references/resource-budget.md)
-and [validation scope](docs/VALIDATION_1_6_2.md).
+**[1.6.3 in development](RELEASE_NOTES.md):** keep duration reminders separate
+from the session's selected approval ceiling, and continue authorized work while
+an optional notice is unanswered. Verify native Goal recovery before relying on
+automatic continuation; a background log observer does not replace the research
+loop. Count training from its first actual step, refresh hardware before each
+experiment, and require user consent before interrupting a live process.
+The latest published release remains 1.6.2. See the
+[resource contract](skills/shared-references/resource-budget.md) and
+[current validation scope](docs/SESSION_RESOURCE_BUDGET_CN.md).
 
 ## From a rough direction to an evidence-backed next step
 

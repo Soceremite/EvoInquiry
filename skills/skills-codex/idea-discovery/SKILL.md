@@ -34,8 +34,8 @@ Pilot limits below are ceilings, not authorization or evidence of available reso
 Use the actual established compute/storage budget and requested scope; no pilot
 is launched by a request for ideas or planning alone.
 
-- **PILOT_MAX_HOURS = 2** — Skip any pilot experiment estimated to take > 2 hours per GPU. Flag as "needs manual pilot" in the report.
-- **PILOT_TIMEOUT_HOURS = 3** — Hard timeout: kill any running pilot that exceeds 3 hours. Collect partial results if available.
+- **PILOT_MAX_HOURS = 2** — Planning target for a cheap pilot, not an authorization ceiling. Scale down when useful; a longer authorized pilot stays with the execution owner under the selected session table.
+- **PILOT_REVIEW_HOURS = 3** — Progress reminder from the first training step; review usefulness and continue observing. A reminder never authorizes interruption, force-kill, a new approval gate, or a blocked host Goal.
 - **MAX_PILOT_IDEAS = 3** — Run pilots for at most 3 top ideas in parallel. Additional ideas are validated on paper only.
 - **MAX_TOTAL_GPU_HOURS = 8** — Total GPU budget across all pilots. If exceeded, skip remaining pilots and note in report.
 - **AUTO_PROCEED = true** — When `true`, checkpoints are informational: report the selected option and continue in the same turn. Set to `false` to ask for explicit user confirmation and end the turn at each selection checkpoint.

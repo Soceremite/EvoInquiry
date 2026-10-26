@@ -207,6 +207,17 @@ def load_run(root: str, run_id: str, *, legacy_read: bool = False) -> dict:
     return _load(root, run_id, 'legacy-read' if legacy_read else 'read')
 
 
+@contextmanager
+def coordination_guard(root: str, run_id: str) -> Iterator[None]:
+    """Serialize the final dispatch decision with coordination updates.
+
+    Hold only through process creation/identity recording, never while waiting
+    for training. Lock order is namespace, run, then execution registry.
+    """
+    with _lock(root, run_id):
+        yield
+
+
 def update_coordination(root: str, run_id: str,
                         transition: Callable[[dict, dict], dict]) -> dict:
     """Atomically update optional coordination metadata, preserving phase gates.

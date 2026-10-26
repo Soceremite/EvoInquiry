@@ -4,6 +4,20 @@ Resolve the [session resource table](resource-budget.md) before resource-bearing
 planning or dispatch. Its one-time selection supplies standing authorization;
 reload it and check fresh capacity at each stage. Do not turn a table-approved
 90-minute job into another permission request or a new Goal deadline.
+Duration applies to each independent experiment; reflection may count its whole
+comparison as one block. A soft-limit notice is optional: keep
+monitoring within the separately selected authorization while unanswered, without blocking the
+Goal. The resource contract owns its limits and notice semantics; execution
+owns checkpoint/stop and actual termination, not the reflection router.
+
+Prefer autonomous progress within existing authorization to a new user handoff.
+Resolve routine uncertainty through evidence, adjust an in-scope plan, and do
+useful independent work while a dependency waits. A reminder is an opportunity
+to intervene, not a request for renewed permission. Keep pending steps scoped
+to their actual dependency; do not escalate them into a whole-Goal blocker while
+authorized work remains. Plan mode retains host restrictions, but can continue
+allowed planning and read-only observation without treating that restriction
+as a request for the user to run each next step.
 
 Use for authorized sustained work or recovery, within the active workflow's
 records, resource bounds and review gates. Advice and small edits need no new
@@ -32,7 +46,9 @@ only. Use the public CLI/help for interface discovery before reading implementat
 For an existing owned run with declared limits, attach continuation before costly
 preparation, or name an external owner providing equivalent identities,
 reservations and recovery. A CLI timeout alone is not equivalent. Use the original
-authorized start, including preparation/review. When the user set a finite wall
+authorized start for an explicitly finite workflow wall budget, including
+preparation/review. The per-training allowance starts at the first actual step;
+keep these clocks separate as specified in the resource contract. When the user set a finite wall
 budget, keep a task-appropriate closeout reserve inside it. Ongoing authorized
 work need not have a total wall deadline or action cap: use explicit `null` caps,
 not an invented time window or a very large number. Keep declared resource
@@ -79,7 +95,7 @@ It requires an existing run, creates no scheduler and leaves review statuses int
 | `complete-block --request <completion.json>` | Fields: `block_id`, nonempty fixed `result_refs` to completion/analysis evidence. All planned members need settled latest attempts; missing, live or cancelled members do not complete a block. The owner checks scientific completeness and fairness. Identical completion counts once. |
 | `finish --request <completion.json>` | Fields: `action_id`, terminal `outcome` (`succeeded`, `failed`, `cancelled`), observed `actual_costs`, fixed `result_refs`, `reason`. Verify actual termination first. Success requires evidence; costs are observations, not estimates clipped to reservations. |
 | `settle-execution --request <settlement.json>` | For registered executions: `action_id`, `execution_run_id`, observed `actual_costs`, optional `result_refs`/`reason`. Verifies the existing terminal execution and derives its process outcome; never launches. |
-| `stop --reason <reason>` | Records workflow stop intent. Bound local launchers observe it and terminate their owned jobs; retain live reservations until actual terminal evidence. Remote/unbound jobs require their execution owner. No phase or native Goal acceptance. |
+| `stop --reason <reason>` | Holds new workflow dispatch. Interrupting bound jobs additionally needs `--confirmed-by <actual-user-choice-reference>` covering that scope. Without it, keep observing live jobs; retain reservations until terminal evidence. No phase or native Goal acceptance. |
 
 For registered execution, prepare its frozen snapshot with the existing
 `execution_registry.py prepare --request <request.json>`, binding
@@ -179,14 +195,22 @@ A merge, abstraction pivot or `REPLAN` retains the brake while its owner revises
 the plan. Complete that handoff with `clear-reflection --handoff <project-relative-plan>`;
 this binds the plan's current identity, not its scientific correctness. Changed
 method/data/evaluation still needs its existing review. `DEFER` / `BLOCKED` keep
-the brake until a new gate-bound reflection resolves them. `STOP` records intent;
-the bound local launcher now observes it. For one obsolete attempt while research
-continues, use `execution_registry.py --root <project> stop --execution-id <id>
---reason <reason>` through its execution owner. The request binds snapshot and
+the brake until a new gate-bound reflection resolves them. `STOP` holds new work;
+it does not itself authorize process interruption. After an actual user stop
+choice for one attempt, use `execution_registry.py --root <project> stop
+--execution-id <id> --reason <reason> --confirmed-by <user-choice-reference>`
+through its execution owner. The request binds snapshot and
 process identities; it is not proof of exit. The launcher retains actual exit
 and cause in `termination.json` and the final execution record. Its timeout is
 capped by an explicit bound, spec `max_seconds_per_attempt` and the original
-workflow dispatch time. Preserve the latest valid resume state and settle only
+workflow dispatch time; it measures process wall time, not the training clock.
+Enforcement of an automatic stop additionally requires frozen
+`configuration.stop_authorization = {"confirmed_by": <actual-user-choice-ref>,
+"conditions": [...]}` for the agreed conditions (`timeout`, `workflow_deadline`,
+`control_error` or `launcher_error`). Do not manufacture this authorization from
+a resource profile or ordinary permission to run. Without it, a reached limit
+or observation failure records a notice and continues observation rather than
+sending signals; the limit still holds new dispatch. Preserve the latest valid resume state and settle only
 after terminal evidence. POSIX targets the owned group; native Windows currently
 certifies the parent only. Ordinary review leaves healthy training running. Retry an interrupted record with the same gate ID and
 payload; never reuse an older reflection for a new gate. Review, closeout,
@@ -250,6 +274,12 @@ the existing workflow owner instead of polling a finished job. Finishing or
 stopping one job does not complete or pause the broader Goal. A request to stop
 watching ends observation, not training; report any jobs still running.
 
+Subworkflow timeouts, iteration caps and human-attention signals belong to their
+existing task. Review the affected branch, return its evidence and choose an
+authorized next step; they are not native Goal lifecycle commands. Do not renew
+an exhausted explicit budget by relabeling the same work. A healthy live job
+still supplies a concrete wait even when another branch is held for review.
+
 A live run advancing toward its expected next output is waiting, not a failed
 research iteration. Polls, log gaps within the expected output cadence and
 `WAIT` are not completed blocks or zero-finding iterations: do not call
@@ -266,11 +296,24 @@ their respective execution recovery or trajectory review.
 | Plan | A planning request delivers its plan. Requested observation of existing jobs may continue read-only while the host permits: read logs/processes and report, without launching, changing configurations, persisting gates/notes, or stopping jobs. `STOP` here is a recommendation to the execution owner. Plan-only does not guarantee automatic continuation after the turn. |
 | Active native Goal | Monitor healthy long training and keep waiting for its evidence; ordinary waiting, reflection and authorized replanning do not themselves block or complete the objective. Use the host's available continuation and wait mechanisms. |
 
+When resuming authorized work, inspect native Goal status before ending a turn
+that relies on automatic continuation. A new user turn or a successful launch
+does not prove a previously blocked Goal is active. For an explicit user resume,
+use the supported host resume interface if available, preserving its objective
+and accounting. If the model lacks that operation, report the host recovery
+requirement once and continue authorized work within the current turn's limits;
+do not pretend the Goal resumed. Do not reset it through database edits, a
+replacement Goal or premature completion. A background log observer collects
+evidence; it does not schedule later research analysis and decisions.
+
 A pending or due review holds new dispatch, including prepared jobs. Healthy
 in-flight work continues through ordinary review. A revised plan does not live-edit
 frozen running inputs: carry changed protocols into separately checked attempts.
-Stopping one attempt uses its identity-bound execution stop; workflow `stop` targets
-all bound owned jobs. User-controlled Goal pause is a separate operation. Match the
+Stopping one attempt uses its user-confirmed identity-bound execution stop;
+workflow `stop` interrupts all bound jobs only with user confirmation covering
+that scope. A reviewer STOP or missing control file grants no such permission.
+Use a nonblocking continue/stop popup when available and keep monitoring while
+unanswered; silence never authorizes interruption. User-controlled Goal pause is a separate operation. Match the
 user's intended scope, verify actual exit before settlement, and preserve valid
 recovery state. A stop recommendation in observation-only work is not execution
 authorization. Explicit safety/resource policies and agreed stop conditions still

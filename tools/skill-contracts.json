@@ -848,17 +848,21 @@
       "upgrade_baseline_sha256": "2fe0d13d2bba863e9bbde65f8a746f1c0f46b7e2c08e16107786fad6980a5820"
     },
     "skills/experiment-queue/scripts/queue_manager.py": {
-      "sha256": "07ede99b1668ff7d12b1d2a507c7ae974dc06ff61258e1d23c3e869b1cce0dcb",
+      "sha256": "c491d1adce036a0fe66ae5149e171b4193475b8636e6331fb1cc4a6ea6a080bf",
       "baseline_sha256": "9b53e554bda3fec88d9d293e323e26f531d8c074b7544a8ca7b4c3b529ab0129",
-      "reason": "Reuse session resource admission; preserve pending retries; support native Windows retry output paths and non-signaling process-exit verification before lease release.",
+      "reason": "User-authorized 1.6.3 audit repair: align pilot, dispatch, queue, timing, cooperative stop, resource, notification and deployment ownership without replacing preserved baselines.",
       "upgrade_baseline_sha256": "9b53e554bda3fec88d9d293e323e26f531d8c074b7544a8ca7b4c3b529ab0129",
-      "previous_sha256": "2940d3a57706c0df39338f94326d3a13b6d80b03b02ac6094f7ab37ecf4bef5e",
-      "adaptation_version": "1.6.2",
-      "review_ref": "docs/VALIDATION_1_6_2.md#native-windows-ci-correction",
+      "previous_sha256": "3beac1fd42ef1cbf0020c41264b18227a518e84eed36460ea57ee0c54e150799",
+      "adaptation_version": "1.6.3",
+      "review_ref": "docs/AUDIT_1_6_3_CN.md#修复实施记录",
       "test_refs": [
-        "tests/test_resource_budget.py",
+        "tests/test_dispatch_monitor_repairs.py",
+        "tests/test_execution_governance.py",
         "tests/test_governed_queue.py",
-        "tests/test_execution_governance.py"
+        "tests/test_training_budget_clock.py",
+        "tests/test_resource_budget.py",
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_evo_inquiry.py"
       ]
     },
     "skills/shared-references/output-versioning.md": {
@@ -945,20 +949,16 @@
     },
     "tools/run_state.py": {
       "baseline_sha256": "5fc466462e2d4c26c6de078dcb04100bafa3a9c56df9a0dc4e38f316a33df5b5",
-      "sha256": "fb88eabe4726767c35ab481fbdbc27a4d805c939b889963c7773f07d1086d77f",
-      "reason": "Serialize per-run load-modify-save with the existing portable exclusive lock on Windows and POSIX; preserve namespace migration guards, phase acceptance and public interfaces.",
-      "adaptation_version": "1.6.1",
-      "review_ref": "docs/VALIDATION_1_6_1.md#release-ci-follow-up",
+      "sha256": "286bc673c7041f48cea848db08886cec053176fea3951b4d0954ba0d55ed0f2c",
+      "reason": "Reuse the existing coordination lock for atomic final dispatch; retain phase gates and original workflow ownership.",
+      "adaptation_version": "1.6.3",
+      "review_ref": "docs/AUDIT_1_6_3_CN.md#修复实施记录",
       "test_refs": [
-        "tests/test_research_control.py",
-        "tests/test_research_events.py",
-        "tests/test_research_pilots.py",
-        "tests/test_candidate_comparison.py",
         "tests/test_run_state.py",
-        "tests/test_execution_governance.py",
-        "tests/test_filesystem_doctor.py"
+        "tests/test_dispatch_monitor_repairs.py",
+        "tests/test_execution_governance.py"
       ],
-      "previous_sha256": "f8f0a6299f04610ae3e9d468fd01a5584c79713411264cde9f7d731055fd0d97"
+      "previous_sha256": "fb88eabe4726767c35ab481fbdbc27a4d805c939b889963c7773f07d1086d77f"
     },
     "tools/save_trace.sh": {
       "sha256": "f6222ec6df378707905c9824478040e92bf6f7c182ccea440481a89d22bdc752",
@@ -1202,29 +1202,37 @@
     },
     "skills/idea-creator/SKILL.md": {
       "baseline_sha256": "e78e20b2eff657953ba95134e89779954c77399779eee0134459b77d84efb602",
-      "sha256": "91df4e096519c03e6700abd1003867a69249411c8a151ea03fb38e10702d34ee",
-      "reason": "Directed 1.4.0 evidence, workflow, figure or distribution adaptation; see scoped implementation review. The existing common principles hook is now reachable from this mainline entrypoint; that hook itself changes no workflow body.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "74306ca1c0a92d940e77dbefd168a8731fe9ddbd61861f842bd8b75115daf218",
+      "reason": "User-authorized 1.6.3 audit repair: align pilot, dispatch, queue, timing, cooperative stop, resource, notification and deployment ownership without replacing preserved baselines.",
+      "adaptation_version": "1.6.3",
+      "review_ref": "docs/AUDIT_1_6_3_CN.md#修复实施记录",
       "test_refs": [
+        "tests/test_dispatch_monitor_repairs.py",
+        "tests/test_execution_governance.py",
+        "tests/test_governed_queue.py",
+        "tests/test_training_budget_clock.py",
+        "tests/test_resource_budget.py",
         "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py"
-      ]
+        "tests/test_evo_inquiry.py"
+      ],
+      "previous_sha256": "91df4e096519c03e6700abd1003867a69249411c8a151ea03fb38e10702d34ee"
     },
     "skills/idea-discovery/SKILL.md": {
       "baseline_sha256": "ac2d06bde65bf7335d9e9a290cc1c10bbc813b6256480e7d1da9cf102a76fa23",
-      "sha256": "2be785b4934c9624f0eb20cd1851a413db7cf824bbae9320a741c9d7a4559ab0",
-      "reason": "Directed 1.4.0 evidence, workflow, figure or distribution adaptation; see scoped implementation review. The existing common principles hook is now reachable from this mainline entrypoint; that hook itself changes no workflow body.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "784dcc332ff8c233b791aa8bc87d2a8776c0103ea603d663c76a0c355e900e90",
+      "reason": "User-authorized 1.6.3 audit repair: align pilot, dispatch, queue, timing, cooperative stop, resource, notification and deployment ownership without replacing preserved baselines.",
+      "adaptation_version": "1.6.3",
+      "review_ref": "docs/AUDIT_1_6_3_CN.md#修复实施记录",
       "test_refs": [
+        "tests/test_dispatch_monitor_repairs.py",
+        "tests/test_execution_governance.py",
+        "tests/test_governed_queue.py",
+        "tests/test_training_budget_clock.py",
+        "tests/test_resource_budget.py",
         "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py"
-      ]
+        "tests/test_evo_inquiry.py"
+      ],
+      "previous_sha256": "2be785b4934c9624f0eb20cd1851a413db7cf824bbae9320a741c9d7a4559ab0"
     },
     "skills/kill-argument/SKILL.md": {
       "baseline_sha256": "7a222081ddd9548f7ce560a202c3888783cc34ee0fe81c35ee87c5a7b652aa59",
@@ -1367,18 +1375,19 @@
     },
     "skills/research-pipeline/SKILL.md": {
       "baseline_sha256": "3dd1f071770ffd700c55e607f8a6f641b7be5d4fbd3c2e0ab203bbfe22fd2d3b",
-      "sha256": "2027407bf7a3c30a3708f1247511399df21a566c681aed85ba48ea6da4950838",
-      "reason": "User-approved 1.6.1: distinguish monitoring waits from completed research iterations, permit supported read-only Plan observation, and retain separate execution/Goal stop scope. Frozen original baselines are preserved.",
-      "adaptation_version": "1.6.1",
-      "review_ref": "docs/VALIDATION_1_6_1.md#changes-reviewed",
+      "previous_sha256": "2027407bf7a3c30a3708f1247511399df21a566c681aed85ba48ea6da4950838",
+      "sha256": "1e5e1d08f5ab37cfe715e93ff20c78980641a00871b3784599e9a5137111f411",
+      "adaptation_version": "1.6.3",
+      "reason": "User-requested 1.6.3 continuation-scope correction: count completed investigations rather than heartbeat polls; treat attention signals as review hints; scope subworkflow stops and actual gates to affected work while authorized monitoring continues. Preserve original review owners, budgets and frozen baselines.",
+      "review_ref": "docs/SESSION_RESOURCE_BUDGET_CN.md#continuation-scope-review",
       "test_refs": [
-        "tests/test_execution_governance.py",
-        "tests/test_experiment_block_reflection.py",
         "tests/test_iteration_log.py",
+        "tests/test_experiment_block_reflection.py",
+        "tests/test_research_control.py",
+        "tests/test_auto_proceed_contract.py",
         "tests/test_codex_skill_mirror.py",
         "tests/test_evo_inquiry.py"
-      ],
-      "previous_sha256": "ebac1e7a8c88868c3a35b92289a7a084fd03e9e1ebed4ce74f36231f93157e9c"
+      ]
     },
     "skills/research-review/SKILL.md": {
       "baseline_sha256": "85c75d2bef1f08e2e7d2e6a7f6bc0ae42faecf942d5314d25f17376e1292597f",
@@ -1973,12 +1982,16 @@
     },
     "skills/dse-loop/SKILL.md": {
       "baseline_sha256": "ae8e147011f7c1a6add208b6cecb218d03a83949fba0ef9b0b1936e4b0ee18bf",
-      "sha256": "a5fe9bba9933400248656a0d0b6ec33997140b4f44fcbf350c72b5ecd2ca8b66",
-      "reason": "Link sustained tuning batches to the shared trajectory checkpoint while retaining DSE search bounds and stopping rules.",
-      "adaptation_version": "1.6.0",
-      "review_ref": "docs/VALIDATION_1_6_0.md#verification-record",
+      "previous_sha256": "a5fe9bba9933400248656a0d0b6ec33997140b4f44fcbf350c72b5ecd2ca8b66",
+      "sha256": "19a2f7dc4621614c0735909a9a5c8ea1dbc49206d4bbab05eb547f360319c0f6",
+      "adaptation_version": "1.6.3",
+      "reason": "User-requested 1.6.3 continuation-scope correction: count completed investigations rather than heartbeat polls; treat attention signals as review hints; scope subworkflow stops and actual gates to affected work while authorized monitoring continues. Preserve original review owners, budgets and frozen baselines.",
+      "review_ref": "docs/SESSION_RESOURCE_BUDGET_CN.md#continuation-scope-review",
       "test_refs": [
-        "tests/test_problem_synthesis.py",
+        "tests/test_iteration_log.py",
+        "tests/test_experiment_block_reflection.py",
+        "tests/test_research_control.py",
+        "tests/test_auto_proceed_contract.py",
         "tests/test_codex_skill_mirror.py",
         "tests/test_evo_inquiry.py"
       ]
@@ -1998,29 +2011,37 @@
     },
     "skills/experiment-queue/SKILL.md": {
       "baseline_sha256": "6da32285f905d77664334bba7f7bbc2c069814ff5c3bc266ecc00f6c77d77208",
-      "sha256": "384ff5d35a305f8bdb4e08431eeb52837955d7e5a6520e8c566bf0aa368fb1cb",
-      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "771b1d50991a7de4b040230d0dc297bfd790a98e0f3c6751c4bb047ca7dc54c8",
+      "reason": "User-authorized 1.6.3 audit repair: align pilot, dispatch, queue, timing, cooperative stop, resource, notification and deployment ownership without replacing preserved baselines.",
+      "adaptation_version": "1.6.3",
+      "review_ref": "docs/AUDIT_1_6_3_CN.md#修复实施记录",
       "test_refs": [
+        "tests/test_dispatch_monitor_repairs.py",
+        "tests/test_execution_governance.py",
+        "tests/test_governed_queue.py",
+        "tests/test_training_budget_clock.py",
+        "tests/test_resource_budget.py",
         "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py"
-      ]
+        "tests/test_evo_inquiry.py"
+      ],
+      "previous_sha256": "f2d08a523740b48d818cb615aa7cc6a30f377994619e153409de489c5b0de587"
     },
     "skills/feishu-notify/SKILL.md": {
       "baseline_sha256": "1a6c2e7a92b4f10c25cb7a9c647919a9dcc9b1fc9a6c99a86e73d757c8a6edbf",
-      "sha256": "3c261e9e9cca1802088c2aefb376e4df8a5717a85200420066e2cc4e6aca2fc3",
-      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "59819ccc872e9ea3423c54e4c564152891a88a718dfc7a2a82da2ebddb3a2038",
+      "reason": "User-authorized 1.6.3 audit repair: align pilot, dispatch, queue, timing, cooperative stop, resource, notification and deployment ownership without replacing preserved baselines.",
+      "adaptation_version": "1.6.3",
+      "review_ref": "docs/AUDIT_1_6_3_CN.md#修复实施记录",
       "test_refs": [
+        "tests/test_dispatch_monitor_repairs.py",
+        "tests/test_execution_governance.py",
+        "tests/test_governed_queue.py",
+        "tests/test_training_budget_clock.py",
+        "tests/test_resource_budget.py",
         "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py"
-      ]
+        "tests/test_evo_inquiry.py"
+      ],
+      "previous_sha256": "3c261e9e9cca1802088c2aefb376e4df8a5717a85200420066e2cc4e6aca2fc3"
     },
     "skills/figure-description/SKILL.md": {
       "baseline_sha256": "4c69bc650a67d1688f44c909c49be98ffe74ea427b3859edb3c3357ec5730136",
@@ -2458,22 +2479,20 @@
     },
     "skills/run-experiment/SKILL.md": {
       "baseline_sha256": "4d481ce95d8bcadb93b095c3dd9bda51d68b6edea6b710316d6c0c74bb5bcfa8",
-      "sha256": "5d0d47b38966d0de9b6018b3bc289b6e6d4d175825cb97c8f23546bd64753745",
-      "reason": "Keep common research guidance and existing execution/review contracts; add bounded sample-evidence collection before temporary storage/weights are released, without extra inference or whole-dataset copies.; extend only the common hook with bound local stop enforcement and truthful termination evidence; retain the original workflow owner and monitoring body",
-      "adaptation_version": "1.6.0",
-      "review_ref": "docs/VALIDATION_1_6_0.md",
+      "sha256": "141621836b814b4871c8919d78a0672e4282bf06e20d5fcf578718422215b8f7",
+      "reason": "User-authorized 1.6.3 audit repair: align pilot, dispatch, queue, timing, cooperative stop, resource, notification and deployment ownership without replacing preserved baselines.",
+      "adaptation_version": "1.6.3",
+      "review_ref": "docs/AUDIT_1_6_3_CN.md#修复实施记录",
       "test_refs": [
-        "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py",
-        "tests/behavior/evo-inquiry-case-study-cases.json",
-        "tests/test_comparison_packaging.py",
-        "tests/test_research_control.py",
+        "tests/test_dispatch_monitor_repairs.py",
         "tests/test_execution_governance.py",
-        "tests/test_problem_synthesis.py"
+        "tests/test_governed_queue.py",
+        "tests/test_training_budget_clock.py",
+        "tests/test_resource_budget.py",
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_evo_inquiry.py"
       ],
-      "previous_sha256": "03f264ba4f5ee500078debc542646aad8aa3c6763b1025a85aa07d2dc0fcf24d"
+      "previous_sha256": "95e6ff86d9c9bead79fd11333606780b22a60078931537ca0868a115c7fabcd4"
     },
     "skills/semantic-scholar/SKILL.md": {
       "baseline_sha256": "41be9cd7d08d2d795d4fe0c87d23288712febd2807b8d4d38a2ea9c54ebb31e8",
@@ -2542,18 +2561,20 @@
     },
     "skills/training-check/SKILL.md": {
       "baseline_sha256": "b4f27bbc58aaae314d8c51fe309fb41e42f47dce4f69ba07fac1ce7f0080c789",
-      "sha256": "5e4e7c992ef1d68e629d7cb9981d038691ae368cb625f9300b748268779230af",
-      "reason": "User-approved 1.6.1: distinguish monitoring waits from completed research iterations, permit supported read-only Plan observation, and retain separate execution/Goal stop scope. Frozen original baselines are preserved.",
-      "adaptation_version": "1.6.1",
-      "review_ref": "docs/VALIDATION_1_6_1.md#changes-reviewed",
+      "sha256": "6dfca152bcfec0c3ebbb35466556b6211b88c955381b9ec66fbfb79260ae440a",
+      "reason": "User-authorized 1.6.3 audit repair: align pilot, dispatch, queue, timing, cooperative stop, resource, notification and deployment ownership without replacing preserved baselines.",
+      "adaptation_version": "1.6.3",
+      "review_ref": "docs/AUDIT_1_6_3_CN.md#修复实施记录",
       "test_refs": [
+        "tests/test_dispatch_monitor_repairs.py",
         "tests/test_execution_governance.py",
-        "tests/test_experiment_block_reflection.py",
-        "tests/test_iteration_log.py",
+        "tests/test_governed_queue.py",
+        "tests/test_training_budget_clock.py",
+        "tests/test_resource_budget.py",
         "tests/test_codex_skill_mirror.py",
         "tests/test_evo_inquiry.py"
       ],
-      "previous_sha256": "01b53be957fb7b3ba5d988fe192399fd485cc9b923cdb7c721b2b9bc50b1a2db"
+      "previous_sha256": "0c1a30df616a3a29650b1d666f78b7119ec2313444d8da8e4dcd38392c012382"
     },
     "skills/vast-gpu/SKILL.md": {
       "baseline_sha256": "69aabce36540fd6fce55bf47b6f043166fc118fd708d03efddb57d168a99f4e5",
@@ -2711,30 +2732,32 @@
     },
     "skills/shared-references/external-cadence.md": {
       "baseline_sha256": "d0d8e92c9c8f5e60555c8ddf32cf15c78d0bdc61a367ef35d8b0fef8dab906f3",
-      "previous_sha256": "d0d8e92c9c8f5e60555c8ddf32cf15c78d0bdc61a367ef35d8b0fef8dab906f3",
-      "sha256": "5ad507aafade32e1b111a6746b8e738324320d145d594a485b98cabc86962baa",
-      "adaptation_version": "1.6.1",
-      "reason": "User-approved 1.6.1: distinguish monitoring waits from completed research iterations, permit supported read-only Plan observation, and retain separate execution/Goal stop scope. Frozen original baselines are preserved.",
-      "review_ref": "docs/VALIDATION_1_6_1.md#changes-reviewed",
+      "previous_sha256": "5ad507aafade32e1b111a6746b8e738324320d145d594a485b98cabc86962baa",
+      "sha256": "4bbdfe9417661d8907336ae1fc5312068722ccb633099a68ab3bc7d2687511f8",
+      "adaptation_version": "1.6.3",
+      "reason": "User-requested 1.6.3 continuation-scope correction: count completed investigations rather than heartbeat polls; treat attention signals as review hints; scope subworkflow stops and actual gates to affected work while authorized monitoring continues. Preserve original review owners, budgets and frozen baselines.",
+      "review_ref": "docs/SESSION_RESOURCE_BUDGET_CN.md#continuation-scope-review",
       "test_refs": [
-        "tests/test_execution_governance.py",
-        "tests/test_experiment_block_reflection.py",
         "tests/test_iteration_log.py",
+        "tests/test_experiment_block_reflection.py",
+        "tests/test_research_control.py",
+        "tests/test_auto_proceed_contract.py",
         "tests/test_codex_skill_mirror.py",
         "tests/test_evo_inquiry.py"
       ]
     },
     "skills/skills-codex/shared-references/external-cadence.md": {
       "baseline_sha256": "f59faf54b865b0c46779cacba081f3d5e4d68a7f748915197f8de64c67a26507",
-      "previous_sha256": "f59faf54b865b0c46779cacba081f3d5e4d68a7f748915197f8de64c67a26507",
-      "sha256": "8053da9eddab285df8dce10e9aa3f76a870310fffe891d7adbc0f3a9664a3dc5",
-      "adaptation_version": "1.6.1",
-      "reason": "User-approved 1.6.1: distinguish monitoring waits from completed research iterations, permit supported read-only Plan observation, and retain separate execution/Goal stop scope. Frozen original baselines are preserved.",
-      "review_ref": "docs/VALIDATION_1_6_1.md#changes-reviewed",
+      "previous_sha256": "8053da9eddab285df8dce10e9aa3f76a870310fffe891d7adbc0f3a9664a3dc5",
+      "sha256": "71e5777806aa0e62b227e875eba27465c1bf8b0fd748b05067a5b2507b57637c",
+      "adaptation_version": "1.6.3",
+      "reason": "User-requested 1.6.3 continuation-scope correction: count completed investigations rather than heartbeat polls; treat attention signals as review hints; scope subworkflow stops and actual gates to affected work while authorized monitoring continues. Preserve original review owners, budgets and frozen baselines.",
+      "review_ref": "docs/SESSION_RESOURCE_BUDGET_CN.md#continuation-scope-review",
       "test_refs": [
-        "tests/test_execution_governance.py",
-        "tests/test_experiment_block_reflection.py",
         "tests/test_iteration_log.py",
+        "tests/test_experiment_block_reflection.py",
+        "tests/test_research_control.py",
+        "tests/test_auto_proceed_contract.py",
         "tests/test_codex_skill_mirror.py",
         "tests/test_evo_inquiry.py"
       ]
@@ -2848,27 +2871,37 @@
     },
     "idea-creator": {
       "baseline_body_sha256": "1332cc28285d17e410bfa71fd6d5c3c9de246155a25c43ad215ccf64fdcdbe78",
-      "body_sha256": "6e2a539357bc1d1d861a27397c49e79f0b7c7eb72d61abd9bf1bf78a9201deba",
-      "reason": "Generate candidates for bounded questions; preserve useful null findings and actual authorized resources.",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "body_sha256": "c9baf5ae4065e72d98d299bbd63438a6ce93d37480b025cd18cdd35a5afed7f4",
+      "reason": "User-authorized 1.6.3 audit repair: align pilot, dispatch, queue, timing, cooperative stop, resource, notification and deployment ownership without replacing preserved baselines.",
+      "review_ref": "docs/AUDIT_1_6_3_CN.md#修复实施记录",
       "test_refs": [
-        "tests/behavior/evo-inquiry-v140-development-cases.json",
+        "tests/test_dispatch_monitor_repairs.py",
+        "tests/test_execution_governance.py",
+        "tests/test_governed_queue.py",
+        "tests/test_training_budget_clock.py",
+        "tests/test_resource_budget.py",
+        "tests/test_codex_skill_mirror.py",
         "tests/test_evo_inquiry.py"
-      ]
+      ],
+      "previous_body_sha256": "6e2a539357bc1d1d861a27397c49e79f0b7c7eb72d61abd9bf1bf78a9201deba",
+      "adaptation_version": "1.6.3"
     },
     "idea-discovery": {
       "baseline_body_sha256": "ce3cf409b6b113353161d2621811c15843d549db2488ba6240f2465c5d65fb13",
-      "body_sha256": "443bb29de51bcb634db9d7a2749fbc502044a6ea24d148f77b9554a1ea75d9f9",
-      "reason": "Versioned question framing has explicit deterministic artifact completion; scientific review and legacy run semantics remain unchanged. Correct shared output protocol links to the installed Codex reference tree; do not mix mainline manifest or versioning policy into Codex and reviewer overlays.",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "body_sha256": "30882e10c7f2e84881d02d2e00a7625f0520c97ca8867e20195acec9599125ca",
+      "reason": "User-authorized 1.6.3 audit repair: align pilot, dispatch, queue, timing, cooperative stop, resource, notification and deployment ownership without replacing preserved baselines.",
+      "review_ref": "docs/AUDIT_1_6_3_CN.md#修复实施记录",
       "test_refs": [
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/behavior/evo-inquiry-v140-development-cases.json",
+        "tests/test_dispatch_monitor_repairs.py",
+        "tests/test_execution_governance.py",
+        "tests/test_governed_queue.py",
+        "tests/test_training_budget_clock.py",
+        "tests/test_resource_budget.py",
         "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_generator.py",
         "tests/test_evo_inquiry.py"
-      ]
+      ],
+      "previous_body_sha256": "443bb29de51bcb634db9d7a2749fbc502044a6ea24d148f77b9554a1ea75d9f9",
+      "adaptation_version": "1.6.3"
     },
     "kill-argument": {
       "baseline_body_sha256": "8a7905483411a1b2638e8a4d8c52634107cb72fcab76be43629f1f6100d1b81e",
@@ -2983,18 +3016,19 @@
     },
     "research-pipeline": {
       "baseline_body_sha256": "fd923d4b77b6a23b5f4627a7bd0a95f7f1dca7892037298173a4d43877043485",
-      "body_sha256": "16ed638f8849b97703334192c78ec6240b3df171eb80dd3fa4149d2f7d8ce05f",
-      "reason": "1.6.0 problem-level reflection checkpoint: preserve the existing execution, planning, review and run-state owners while routing structural synthesis through the new bounded skill.",
-      "review_ref": "docs/VALIDATION_1_6_0.md#verification-record",
+      "body_sha256": "fcbb3e2ee7800ec6dc634a811bc99a4bd44439fd040c1f6f984f5fe7d8a6cea3",
+      "reason": "User-requested 1.6.3: remove per-poll iteration counting and mandatory human escalation from the Codex pipeline; allow requested read-only observation within actual host restrictions without changing scientific acceptance.",
+      "review_ref": "docs/SESSION_RESOURCE_BUDGET_CN.md#continuation-scope-review",
       "test_refs": [
-        "tests/test_problem_synthesis.py",
         "tests/test_iteration_log.py",
+        "tests/test_experiment_block_reflection.py",
+        "tests/test_research_control.py",
+        "tests/test_auto_proceed_contract.py",
         "tests/test_codex_skill_mirror.py",
-        "tests/test_skill_groups.py",
         "tests/test_evo_inquiry.py"
       ],
-      "adaptation_version": "1.6.0",
-      "previous_body_sha256": "b4b1667a26790a8d57d3235b98681f6d39ee6ccf1c6c28e6b7e07ff5b0816bfe"
+      "adaptation_version": "1.6.3",
+      "previous_body_sha256": "16ed638f8849b97703334192c78ec6240b3df171eb80dd3fa4149d2f7d8ce05f"
     },
     "research-review": {
       "baseline_body_sha256": "0ccbc315d33966e1d24b39b684afbe5bad51df263d84c05ffa306922a3930195",
@@ -3166,6 +3200,74 @@
         "tests/test_evo_inquiry.py",
         "tests/test_review_gate.py"
       ]
+    },
+    "training-check": {
+      "baseline_body_sha256": "1f6399fb9233344064a2bafabb79a5a4a4de5a372db72e202efb482a1e379526",
+      "body_sha256": "fb4742f67d791018bfd425dc8efb6b3a9fa3e4a92fefe773f0b91c449a0fe9d2",
+      "adaptation_version": "1.6.3",
+      "review_ref": "docs/AUDIT_1_6_3_CN.md#修复实施记录",
+      "test_refs": [
+        "tests/test_dispatch_monitor_repairs.py",
+        "tests/test_execution_governance.py",
+        "tests/test_governed_queue.py",
+        "tests/test_training_budget_clock.py",
+        "tests/test_resource_budget.py",
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_evo_inquiry.py"
+      ],
+      "reason": "User-authorized 1.6.3 audit repair: align pilot, dispatch, queue, timing, cooperative stop, resource, notification and deployment ownership without replacing preserved baselines.",
+      "previous_body_sha256": "b2c43509739b51c0f87875a0b5d3e2341d591f9f08a92847a83d999c2f998511"
+    },
+    "experiment-queue": {
+      "baseline_body_sha256": "0c494b930562d1d47f658e09268dd925727cef9b8559cf991f48eb4ff445c988",
+      "body_sha256": "4160a131d717445387d61e6581271dfcfcbf71496505eebc3787199e6b432d94",
+      "adaptation_version": "1.6.3",
+      "review_ref": "docs/AUDIT_1_6_3_CN.md#修复实施记录",
+      "test_refs": [
+        "tests/test_dispatch_monitor_repairs.py",
+        "tests/test_execution_governance.py",
+        "tests/test_governed_queue.py",
+        "tests/test_training_budget_clock.py",
+        "tests/test_resource_budget.py",
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_evo_inquiry.py"
+      ],
+      "reason": "User-authorized 1.6.3 audit repair: align pilot, dispatch, queue, timing, cooperative stop, resource, notification and deployment ownership without replacing preserved baselines.",
+      "previous_body_sha256": "75c874e4456b3f50886a494fa391cd1e145a5090792e7c12c1981d6c13c41910"
+    },
+    "run-experiment": {
+      "baseline_body_sha256": "5633588230e7f8e56f96a0cf5c9d35ef5c39cf6ec2bccc4cf33f27f52715077f",
+      "previous_body_sha256": "5633588230e7f8e56f96a0cf5c9d35ef5c39cf6ec2bccc4cf33f27f52715077f",
+      "body_sha256": "659a42b8647cbf97890823343b8be99a52dd7a7994ad23e7f91a51199d34431b",
+      "adaptation_version": "1.6.3",
+      "review_ref": "docs/AUDIT_1_6_3_CN.md#修复实施记录",
+      "test_refs": [
+        "tests/test_dispatch_monitor_repairs.py",
+        "tests/test_execution_governance.py",
+        "tests/test_governed_queue.py",
+        "tests/test_training_budget_clock.py",
+        "tests/test_resource_budget.py",
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_evo_inquiry.py"
+      ],
+      "reason": "User-authorized 1.6.3 audit repair: align pilot, dispatch, queue, timing, cooperative stop, resource, notification and deployment ownership without replacing preserved baselines."
+    },
+    "feishu-notify": {
+      "baseline_body_sha256": "7ebcfebbddb679f0e35a76f0899beb74a70cbfd04b8019e5aff951a1eccde76c",
+      "previous_body_sha256": "7ebcfebbddb679f0e35a76f0899beb74a70cbfd04b8019e5aff951a1eccde76c",
+      "body_sha256": "18368a20510075a4305b8cdb61f6c85568fda662a778cfa7894ddbb14546cef6",
+      "adaptation_version": "1.6.3",
+      "review_ref": "docs/AUDIT_1_6_3_CN.md#修复实施记录",
+      "test_refs": [
+        "tests/test_dispatch_monitor_repairs.py",
+        "tests/test_execution_governance.py",
+        "tests/test_governed_queue.py",
+        "tests/test_training_budget_clock.py",
+        "tests/test_resource_budget.py",
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_evo_inquiry.py"
+      ],
+      "reason": "User-authorized 1.6.3 audit repair: align pilot, dispatch, queue, timing, cooperative stop, resource, notification and deployment ownership without replacing preserved baselines."
     }
   }
 }

@@ -112,7 +112,7 @@ Interactive mode uses [feishu-claude-code](https://github.com/joewongjc/feishu-c
    ```
    Returns: `{"reply": "approve"}` or `{"reply": "reject"}` or `{"reply": "user typed message"}` or `{"timeout": true}`
 
-3. **On timeout**: Fall back to `AUTO_PROCEED` behavior (proceed with default option).
+3. **On timeout**: Return `{"timeout": true}` without inventing a reply. An optional progress notice continues existing authorized work; a required decision holds only its dependent action while independent work and observation continue.
 
 4. **Return the user's reply** to the calling skill so it can act on it.
 
@@ -155,11 +155,11 @@ Skills send these events at these moments:
 
 ## Key Rules
 
-- **NEVER block a workflow** because Feishu is unreachable. Always fail open.
+- **Classify the call** as an optional notice or a required user decision. Unreachable delivery does not stop existing observation; a required decision still needs an actual reply before its dependent action.
 - **NEVER require Feishu config** — all skills must work without it.
 - **Config file absent = mode off.** No error, no warning, no log.
 - **Push mode is fire-and-forget.** Send curl, check exit code, move on.
-- **Interactive timeout = auto-proceed.** Don't hang forever waiting for a reply.
-- **Respect `AUTO_PROCEED`**: In interactive mode, if the user doesn't reply within timeout, use the same auto-proceed logic as the calling skill.
+- **Timeout means unanswered.** Return promptly to the caller; it never means approve, reject, stop, or permission to expand scope.
+- **Respect caller authorization**: continue already authorized work after optional notices. Explicit approval gates require an actual user reply; keep unrelated work and live monitoring active. Credentials or a config file alone do not authorize sending messages.
 - **No secrets in notifications.** Never include API keys, tokens, or passwords in Feishu messages.
 

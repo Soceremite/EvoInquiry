@@ -1,5 +1,35 @@
 # Changelog
 
+## 1.6.3 — Unreleased
+
+### Added
+
+- Add an optional per-experiment duration reminder and read-only duration advice to the existing session resource tool, separate from the standing automatic-approval ceiling.
+- Read first-step timing receipts from the existing experiment owner, preserving completed training segments across resume while excluding engineering preparation.
+- Refresh observed/effective CPU, RAM and GPU capacity in the same session table and report hardware inventory changes without changing the user's authorization.
+
+### Fixed
+
+- Serialize final process dispatch with workflow review/stop updates; keep structured deferrals pending without consuming retries, and resume the same frozen attempt after review.
+- Preserve trainer exit codes through tee and require attempt-bound terminal evidence; missing screen sessions and partial outputs cannot complete a live job.
+- Consume first-step timing receipts in the original execution observer, deduplicate runtime notices, and continue observation without treating unanswered notices as consent.
+- Wait for cooperative checkpoint saves without an implicit forced-kill deadline; require a separate explicit force grant and verify save receipts. Protect Windows descendant reconciliation before releasing leases.
+- Replace driver-memory idle heuristics with observed GPU occupants; align pilot, queue, analysis completion, optional notification and deployment guidance with their shared ownership and authorization boundaries.
+- Check duration per independent experiment, separately from a comparison's reflection count or a serial queue's total. Keep concurrent resource peaks subject to the existing admission checks.
+- Separate optional duration reminders from the session's existing automatic-approval ceiling. Within that authorization, send a nonblocking continue/stop notice and keep monitoring while unanswered; do not infer a new hard cutoff, record silence as a new approval or block the Goal for that notice.
+- Add read-only duration advice for the existing execution owner, preserving actual user replies, original experiment timing, hard limits and checkpoint/stop ownership. Existing tables retain their selected ceilings.
+- Keep routine replanning, healthy training waits and optional reminders with their current owners. Scope unresolved dependencies to affected steps and continue useful authorized work in Goal or allowed read-only Plan work.
+- Remove conflicting per-heartbeat iteration counting from both research pipelines. Record completed investigations once, and interpret the legacy `pivot=human` signal as a request for attention rather than mandatory approval or a Goal stop.
+- Scope analysis completion, search-batch timeouts, routing failures and actual review gates to their affected work. Resolve routine plan uncertainty within existing authorization instead of treating every ambiguous gate as a required human stop.
+- Clarify requested read-only observation in Plan without claiming that Plan itself schedules another turn; retain the supported host continuation boundary.
+- Distinguish physically impossible requests (`REPLAN_REQUIRED`) from temporarily occupied resources. Retain usable GPU telemetry when another device fails, and replace unsupported blanket launch gates with measured phase requirements.
+- Let resource-bound queue jobs reach fresh admission without a separate near-idle GPU threshold; retain the queue's own device/concurrency constraints and the launcher's admitted UUIDs.
+- Require an actual user confirmation for process interruption, or a specifically preauthorized automatic condition. Review stops hold new dispatch; unconfirmed timeouts and control errors produce notices while observation continues. Do not kill unknown screen occupants or retry a still-live process from partial output or an OOM log.
+
+### Changed
+
+- Verify native Goal state before relying on automatic continuation after a resumed task. Starting an authorized job does not itself reactivate a previously blocked Goal, and a background metrics observer does not replace the research decision loop. Use a supported host resume interface when available; otherwise report the missing capability and continue permitted work without pretending the Goal is active.
+
 ## 1.6.2 — 2026-10-25
 
 ### Added

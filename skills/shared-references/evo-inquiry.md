@@ -80,6 +80,13 @@ without repeated permission requests; respect explicit project constraints,
 scope changes, and user-defined stopping boundaries. Existing project-specific
 research rules still apply. These principles authorize no extra actions.
 
+Scope a stop, missing prerequisite or review decision to the affected task or
+branch. In sustained work, finish its analysis or revise its plan, then continue
+the authorized objective, including observation of healthy running jobs. A human
+attention signal is not a new approval gate. Follow the existing owner's
+[continuation and monitoring contract](bounded-inquiry.md#monitoring-interruption-and-host-modes);
+do not turn local review, a subtask's completion or its timeout into a whole-Goal stop.
+
 Connect each next step to an unresolved question, its existing evidence, and the
 decision the new evidence would change. Complete necessary adjacent steps within
 the same authorized goal, subject to the active workflow's checkpoints, budget,
@@ -103,6 +110,12 @@ the single [session resource table](resource-budget.md) and fresh target-host
 state. Initialize and obtain the session's first user choice once; all skills
 reuse it. Work within the selected ceilings proceeds without repeated budget
 approval. A research Goal does not need an invented short time window.
+Refresh the table's hardware observations before every experiment; adapt
+unsupported launch thresholds to measured phase peaks and current capacity.
+Training duration starts at the first actual step, with preparation accounted
+separately. Interrupt a live process only with the user's explicit stop consent
+or a specifically preauthorized condition; reflection, resource pressure and
+unanswered notices are not that consent. Keep monitoring while awaiting a choice.
 
 When research project identity, runtime state or reproducible handoffs matter,
 use [project-governance](project-governance.md): resolve .ei centrally, fix inputs
@@ -125,8 +138,10 @@ When the package is invoked through Codex, use the exact discovered Codex mirror
 path `skills/skills-codex/<name>/SKILL.md` and its sibling references. The
 mainline `skills/<name>/SKILL.md` tree belongs to a separate integration and
 must not replace a discovered Codex entrypoint unless a cross-runtime comparison
-was explicitly requested. If a bounded analysis has enough verified evidence,
-finish one compact report, verify it once and stop. Repeated reconnect,
+was explicitly requested. If a standalone bounded analysis has enough verified
+evidence, finish one compact report, verify it once and respond. An analysis
+inside an authorized longer task returns its evidence to that task and continues.
+Repeated reconnect,
 overload or stream-disconnection messages require a short incomplete-status
 record or an explicit infrastructure report, never invented findings or
 unbounded retries.

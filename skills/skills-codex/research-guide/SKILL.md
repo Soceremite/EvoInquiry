@@ -55,8 +55,9 @@ For a recovery diagnosis, verify the checkpoint, prepare only work independent
 of its missing prerequisites, and complete the requested handoff once these facts
 are established. Keep incidental evidence caveats in that handoff. Load a separate
 claim, review, or experiment-planning workflow when its deliverable is requested
-or necessary for the authorized goal. A blocked prerequisite stops forward
-orchestration; it does not require a formal claim review of the available inputs.
+or necessary for the authorized goal. A blocked prerequisite holds its dependent
+steps; continue independent authorized work and existing monitoring. It does not
+require a formal claim review of the available inputs or block the whole Goal.
 
 ## Choose and perform the next step
 

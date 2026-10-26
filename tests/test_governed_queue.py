@@ -20,7 +20,7 @@ queue = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(queue)
 
 
-def queued_job(root, failure=False, resource_binding=None):
+def queued_job(root, failure=False, resource_binding=None, workflow_run_id=None):
     sources, spec_ref, environment = make_sources(root), make_spec(root), make_environment(root)
     run_id = 'queue-attempt-1'
     arguments = [str(root / 'runs' / run_id / 'outputs/metrics.json')]
@@ -29,7 +29,7 @@ def queued_job(root, failure=False, resource_binding=None):
         config['resource_budget'] = resource_binding
     snapshot = freeze_snapshot(root,run_id,spec_ref,environment,sources, config,
         'src/train.py','method-b',22,arguments=arguments,output_argument_indices=[0])
-    start_execution(root,run_id,snapshot,job_ref='queue-job')
+    start_execution(root,run_id,snapshot,job_ref='queue-job',workflow_run_id=workflow_run_id)
     registry = EnvironmentRegistry(root)
     binding = consumer(environment,'queue-job') | {'execution_run_id':run_id}
     registry.bind_consumer(binding)
@@ -182,8 +182,42 @@ def test_late_admission_failure_returns_to_pending_instead_of_failed_training(tm
     resource_budget.select(tmp_path,'queue-session',preset='maximum',selected_by='fixture-user')
     job = queued_job(tmp_path,resource_binding={'session_id':'queue-session',
                                                'request':requirements(tmp_path,ram_bytes=10**25)})
-    with pytest.raises(ValueError,match='WAIT_RESOURCE'):
+    with pytest.raises(ValueError,match='REPLAN_REQUIRED'):
         execution_registry.launch_execution(tmp_path,'queue-attempt-1',job['execution']['arguments'])
     monkeypatch.setattr(queue,'screen_exists',lambda *a:False)
-    assert queue.job_status_check(job,str(tmp_path),str(tmp_path))==('pending','Session resources WAIT_RESOURCE')
+    assert queue.job_status_check(job,str(tmp_path),str(tmp_path))==('pending','Session resources REPLAN_REQUIRED')
     assert read_record(tmp_path/'runs/queue-attempt-1/execution.json')['status']=='prepared'
+
+
+def test_resource_bound_cpu_dispatch_is_not_held_by_an_unrelated_gpu_idle_gate(tmp_path, monkeypatch):
+    from tools import resource_budget
+    from tests.test_resource_budget import requirements
+    resource_budget.select(tmp_path, 'queue-session', preset='maximum', selected_by='fixture-user')
+    job = queued_job(tmp_path, resource_binding={'session_id':'queue-session', 'request':requirements(tmp_path)})
+    job['phase'] = 'compare'
+    state = {'meta':{}, 'phases':[{'name':'compare', 'depends_on':[], 'status':'active'}], 'jobs':[job]}
+    manifest = {'cwd':str(tmp_path), 'gpus':[0], 'max_parallel':1,
+                'phases':[{'name':'compare', 'depends_on':[], 'jobs':[{'id':job['id']}]}]}
+    launches = []
+    monkeypatch.setattr(queue, 'resolve_conda_hook', lambda *a:'')
+    monkeypatch.setattr(queue, 'free_gpus', lambda *a:[])
+    monkeypatch.setattr(queue, 'launch_job', lambda job, gpu, *a:(launches.append(gpu) or ('fixture-screen', None)))
+    queue.step(manifest, state, str(tmp_path/'state.json'), str(tmp_path))
+    assert launches == [None] and job['status'] == 'running'
+    assert read_record(tmp_path/'runs/queue-attempt-1/resource-admission.json')['check']['status'] == 'AUTO_APPROVED'
+
+
+def test_existing_screen_collision_never_terminates_its_unknown_occupants(tmp_path, monkeypatch):
+    monkeypatch.setattr(queue, 'screen_exists', lambda *a:True)
+    monkeypatch.setattr(queue, 'kill_screen', lambda *a, **k:pytest.fail('No user authorized a process stop'))
+    with pytest.raises(ValueError, match='reconciled'):
+        queue.launch_job({'id':'occupied','cmd':'python train.py'}, 0, 'base', str(tmp_path), str(tmp_path), '')
+
+
+def test_partial_output_and_oom_log_do_not_cancel_or_retry_a_live_process(tmp_path, monkeypatch):
+    job = {'id':'live', 'screen_name':'occupied', 'pid':123, 'expected_output':str(tmp_path/'partial.json')}
+    (tmp_path/'partial.json').write_text('{}')
+    (tmp_path/'live.log').write_text('CUDA out of memory: old diagnostic, live process recovered')
+    monkeypatch.setattr(queue, 'screen_exists', lambda *a:True)
+    monkeypatch.setattr(queue, '_process_alive', lambda *a:True)
+    assert queue.job_status_check(job, str(tmp_path), str(tmp_path)) == ('running', None)

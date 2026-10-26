@@ -49,8 +49,31 @@ import shlex
 import subprocess
 import sys
 import time
+import uuid
 from datetime import datetime
 from pathlib import Path
+
+
+DEFERRED_ADMISSIONS = frozenset(('WAIT_RESOURCE', 'REPLAN_REQUIRED', 'NEEDS_APPROVAL',
+    'NEEDS_ESTIMATE', 'SELECTION_REQUIRED', 'WAIT_REVIEW', 'WORKFLOW_STOPPED',
+    'DISPATCH_BUDGET_EXHAUSTED', 'CONTROL_UNAVAILABLE'))
+
+
+def job_shell(job, command, cwd, log_file, activation='', gpu_prefix=''):
+    """Wrap one attempt with pipefail and identity-bound atomic exit evidence."""
+    token = uuid.uuid4().hex
+    receipt = Path(log_file).with_name(f"{job['id']}.{token}.exit.json").resolve()
+    pid_receipt = receipt.with_suffix('.pid')
+    job.update(launch_token=token, exit_receipt=str(receipt), pid_receipt=str(pid_receipt))
+    # Capture PIPESTATUS immediately: tee success must not hide trainer failure.
+    return (f'set -o pipefail; printf "%s" "$$" > {shlex.quote(str(pid_receipt))}; '
+            f'{{ cd {shlex.quote(cwd)} && {activation}{gpu_prefix}{command}; }} '
+            f'2>&1 | tee {shlex.quote(log_file)}; '
+            'statuses=("${PIPESTATUS[@]}"); trainer_rc=${statuses[0]}; log_rc=${statuses[1]}; '
+            'rc=$trainer_rc; if [ "$rc" -eq 0 ]; then rc=$log_rc; fi; '
+            f'printf \'{{"launch_token":"{token}","exit_code":%d,"trainer_exit_code":%d,"log_exit_code":%d}}\\n\' '
+            f'"$rc" "$trainer_rc" "$log_rc" > {shlex.quote(str(receipt) + ".tmp")}; '
+            f'mv {shlex.quote(str(receipt) + ".tmp")} {shlex.quote(str(receipt))}; exit "$rc"')
 
 
 OOM_RE = re.compile(r"(CUDA out of memory|torch\.OutOfMemoryError)")
@@ -119,9 +142,37 @@ def gpu_memory_used():
 
 
 def free_gpus(allowed, threshold_mib=DEFAULT_GPU_FREE_THRESHOLD_MIB):
-    """Return list of GPU indices with memory.used < threshold."""
-    used = gpu_memory_used()
-    return [i for i in allowed if i < len(used) and used[i] < threshold_mib]
+    """Legacy exclusive admission uses observed occupants, not a VRAM threshold.
+
+    threshold_mib remains a compatibility argument. Resource-bound jobs use the
+    selected session policy and measured peak instead of this idle-device path.
+    """
+    tools_dir = Path(__file__).resolve().parents[3] / 'tools'
+    if str(tools_dir) not in sys.path:
+        sys.path.insert(0, str(tools_dir))
+    try:
+        from resource_budget import _gpus
+    except ImportError:
+        # The legacy manager can still be copied alone to an SSH host.
+        import xml.etree.ElementTree as ET
+        raw, code = run('nvidia-smi -q -x')
+        if code:
+            return []
+        try:
+            devices = []
+            for gpu in ET.fromstring(raw).findall('gpu'):
+                processes = gpu.find('processes')
+                devices.append({'id': str(int(gpu.findtext('minor_number'))), 'uuid': gpu.findtext('uuid'),
+                    'process_ids': [] if processes is not None and not processes.findall('process_info') else None,
+                    'utilization_percent': float(gpu.findtext('utilization/gpu_util').split()[0]),
+                    'free_bytes': int(gpu.findtext('fb_memory_usage/free').split()[0]) * 1024**2})
+        except (ET.ParseError, TypeError, ValueError, AttributeError):
+            return []
+    else:
+        devices, _ = _gpus()
+    selected = {str(item) for item in allowed}
+    return [int(row['id']) for row in devices if (row['id'] in selected or row['uuid'] in selected)
+            and row.get('process_ids') == [] and row['utilization_percent'] == 0 and row['free_bytes'] > 0]
 
 
 def screen_exists(name):
@@ -129,8 +180,10 @@ def screen_exists(name):
     return re.search(rf"^\s*\d+\.{re.escape(name)}\s", out, re.MULTILINE) is not None
 
 
-def kill_screen(name):
-    run(f"screen -S {name} -X quit", check=False)
+def kill_screen(name, *, confirmed_by=None):
+    if not isinstance(confirmed_by, str) or not confirmed_by.strip():
+        raise ValueError('Stopping a screen session requires explicit user confirmation')
+    run(f"screen -S {shlex.quote(name)} -X quit", check=False)
 
 
 def detect_oom_in_log(log_path):
@@ -241,32 +294,27 @@ def launch_job(job, gpu, conda_env, cwd, log_dir, conda_hook):
     """Launch job in a detached screen, return (screen_name, pid)."""
     screen_name = f"EQ_{job['id']}"
     if screen_exists(screen_name):
-        if job.get('execution'):
-            raise ValueError('Existing governed screen must be reconciled before another launch')
-        # Shouldn't happen; clean up
-        kill_screen(screen_name)
-        time.sleep(2)
+        raise ValueError('Existing screen must be reconciled before another launch; do not terminate it automatically')
     log_file = os.path.join(log_dir, f"{job['id']}.log")
     if job.get('execution'):
         cmd = governed_launch_command(job)
     else:
         cmd = job["cmd"]
     # Substitute GPU placeholder if present
-    cmd_with_gpu = cmd.replace("${GPU}", str(gpu))
+    cmd_with_gpu = cmd if job.get('execution') else cmd.replace("${GPU}", str(gpu))
     activation = '' if job.get('execution') else f'{conda_hook} && conda activate {shlex.quote(conda_env)} && '
-    full = (
-        f'cd {shlex.quote(cwd)} && '
-        f'{activation}'
-        f'CUDA_VISIBLE_DEVICES={gpu} {cmd_with_gpu} 2>&1 | tee {shlex.quote(log_file)}'
-    )
-    screen_cmd = f'screen -dmS {screen_name} bash -c {shlex.quote(full)}'
-    run(screen_cmd)
+    full = job_shell(job, cmd_with_gpu, cwd, log_file, activation,
+                     '' if job.get('execution') else f'CUDA_VISIBLE_DEVICES={gpu} ')
+    screen_cmd = f'screen -dmS {shlex.quote(screen_name)} bash -c {shlex.quote(full)}'
+    _, rc = run(screen_cmd)
+    if rc:
+        raise ValueError('Screen launcher failed; inspect the recorded attempt before retry')
     time.sleep(2)
-    # Get pid (find python process for this CUDA_VISIBLE_DEVICES)
-    pid_out, _ = run(
-        f"ps -ef | grep 'CUDA_VISIBLE_DEVICES={gpu} ' | grep -v grep | "
-        f"grep python | awk '{{print $2}}' | head -1")
-    pid = pid_out.strip()
+    # Observe this wrapper's PID, never an unrelated Python job on the same GPU.
+    try:
+        pid = Path(job['pid_receipt']).read_text().strip()
+    except OSError:
+        pid = ''
     return screen_name, (int(pid) if pid.isdigit() else None)
 
 
@@ -294,43 +342,48 @@ def job_status_check(job, log_dir, cwd):
                     return 'failed_other', 'Terminal execution has no expected output'
                 return 'completed', None
             own_log = final.parent / 'process.log'
+            if record['status'] == 'stopped':
+                return 'failed_other', 'Execution was stopped; do not automatically retry a user cancellation'
             return ('failed_oom', 'CUDA OOM in terminal execution') if detect_oom_in_log(str(own_log)) else (
                 'failed_other', f"Recorded execution exit {record['exit_code']}")
         if screen_name and screen_exists(screen_name):
             return 'running', None
         prepared = final.parent / 'execution.json'
-        admission = final.parent / 'resource-admission.json'
-        if prepared.is_file() and admission.is_file() and not (final.parent / 'process.json').exists():
-            current, receipt = read_record(prepared), read_record(admission)
-            if (current['status'] == 'prepared' and receipt.get('execution_run_id') == binding['execution_run_id']
-                    and receipt.get('snapshot_ref') == binding['snapshot_ref']
-                    and receipt.get('check', {}).get('status') in
-                    ('WAIT_RESOURCE', 'NEEDS_APPROVAL', 'NEEDS_ESTIMATE', 'SELECTION_REQUIRED')):
-                return 'pending', 'Session resources ' + receipt['check']['status']
+        if prepared.is_file() and not (final.parent / 'process.json').exists():
+            current = read_record(prepared)
+            for name, label in (('dispatch-admission.json', 'Workflow dispatch '),
+                                ('resource-admission.json', 'Session resources ')):
+                admission = final.parent / name
+                if not admission.is_file():
+                    continue
+                receipt = read_record(admission)
+                if (current['status'] == 'prepared' and receipt.get('execution_run_id') == binding['execution_run_id']
+                        and receipt.get('snapshot_ref') == binding['snapshot_ref']
+                        and receipt.get('check', {}).get('status') in DEFERRED_ADMISSIONS):
+                    return 'pending', label + receipt['check']['status']
         return 'failed_other', 'No verified terminal execution; inspect before retry or lease release'
 
-    # 1. Output exists → completed
-    if job.get("expected_output") and output_exists(job["expected_output"], cwd):
-        return "completed", None
-
-    # 2. OOM detected → failed_oom
-    if detect_oom_in_log(log_file):
-        return "failed_oom", "CUDA OOM detected"
-
-    # 3. Screen alive + python alive → still running
+    # A partial output or OOM-looking log does not prove the process has exited.
+    if job.get('pid') and _process_alive(job['pid']) is not False:
+        return 'running', None
     if screen_name and screen_exists(screen_name):
-        if job.get("pid"):
-            _, rc = run(f"kill -0 {job['pid']} 2>/dev/null")
-            if rc == 0:
-                return "running", None
-            # Python died but the screen lingers → stale; step() kills the screen.
-            return "failed_other", "Process exited without expected output (stale screen)"
-        else:
-            # No pid known; trust screen for now
-            return "running", None
-
-    # 4. Screen gone (or never recorded), no output → failed_other
-    return "failed_other", "Screen exited without expected output"
+        return 'running', None
+    receipt_path = job.get('exit_receipt')
+    if not receipt_path or not Path(receipt_path).is_file():
+        return 'failed_other', 'No verified exit receipt; partial outputs cannot establish completion'
+    try:
+        receipt = json.loads(Path(receipt_path).read_text(encoding='utf-8'))
+        if (not job.get('launch_token') or receipt['launch_token'] != job['launch_token']
+                or type(receipt['exit_code']) is not int):
+            raise ValueError('Exit receipt identity/status differs from this attempt')
+    except (OSError, ValueError, KeyError, TypeError) as error:
+        return 'failed_other', 'Invalid exit receipt: ' + str(error)
+    if receipt['exit_code'] != 0:
+        return ('failed_oom', 'CUDA OOM detected after actual exit') if detect_oom_in_log(log_file) else (
+            'failed_other', f"Recorded command exit {receipt['exit_code']}")
+    if job.get('expected_output') and not output_exists(job['expected_output'], cwd):
+        return 'failed_other', 'Successful command has no expected output'
+    return 'completed', None
 
 
 def pending_jobs_in_active_phases(state, manifest):
@@ -345,7 +398,7 @@ def pending_jobs_in_active_phases(state, manifest):
     ]
 
 
-def governed_launch_command(job):
+def governed_launch_command(job, *, return_admission=False):
     """Keep the queue as coordinator while each actual launch gets frozen evidence."""
     binding = job['execution']
     tools_dir = Path(binding['registry_tools_dir']).resolve()
@@ -354,7 +407,7 @@ def governed_launch_command(job):
     if str(tools_dir) not in sys.path:
         sys.path.insert(0, str(tools_dir))
     from execution_registry import (clone_attempt, verify_queue_binding, verify_snapshot,
-                                    check_execution_resources, rebase_execution_output)
+                                    check_execution_resources, check_execution_dispatch, rebase_execution_output)
     from environment_registry import EnvironmentRegistry
     from registry_common import read_record
     from state_paths import resolve_state_root
@@ -378,12 +431,14 @@ def governed_launch_command(job):
         if job.get('expected_output'):
             job['expected_output'] = rebase_execution_output(job['expected_output'], previous, new_id)
     verify_queue_binding(root, binding)
-    check_execution_resources(root, current)
+    check_execution_dispatch(root, current)
+    admission = check_execution_resources(root, current)
     if current['execution_run_id'] not in job.setdefault('execution_attempts', []):
         job['execution_attempts'].append(current['execution_run_id'])
-    return shlex.join([binding.get('registry_python', sys.executable), str(tools_dir / 'execution_registry.py'),
-                       '--root', str(root), 'launch', '--execution-id', current['execution_run_id'],
-                       *binding.get('arguments', [])])
+    command = shlex.join([binding.get('registry_python', sys.executable), str(tools_dir / 'execution_registry.py'),
+                          '--root', str(root), 'launch', '--execution-id', current['execution_run_id'],
+                          *binding.get('arguments', [])])
+    return (command, admission) if return_admission else command
 
 
 def _windows_process_alive(pid):
@@ -454,6 +509,10 @@ def release_governed_lease(job):
         return
     record, reference = inspect_terminal(root, binding['execution_run_id'])
     process = read_record(process_path)
+    termination = final.parent / 'termination.json'
+    if termination.is_file() and read_record(termination).get('termination_scope') == 'windows-parent-only':
+        job['lease_release'] = 'protected-needs-process-tree-reconciliation'
+        return
     if (process.get('host') != platform.node() or process.get('execution_run_id') != record['execution_run_id']
             or not isinstance(process.get('pid'), int)):
         job['lease_release'] = 'protected-needs-process-reconciliation'
@@ -491,7 +550,7 @@ def step(manifest, state, state_file, log_dir):
     conda_env = manifest.get("conda", "base")
     conda_hook = resolve_conda_hook(manifest.get("conda_hook"))
     allowed_gpus = manifest.get("gpus", list(range(8)))
-    max_parallel = manifest.get("max_parallel", len(allowed_gpus))
+    max_parallel = manifest.get("max_parallel", max(1, len(allowed_gpus)))
     gpu_free_threshold = manifest.get("gpu_free_threshold_mib",
                                        DEFAULT_GPU_FREE_THRESHOLD_MIB)
     oom_delay = manifest.get("oom_retry", {}).get("delay", 120)
@@ -505,21 +564,14 @@ def step(manifest, state, state_file, log_dir):
         if new_status == "completed":
             job["status"] = "completed"
             job["completed"] = now()
-            # Clean up screen
-            if job["screen_name"]:
-                kill_screen(job["screen_name"])
         elif new_status == "failed_oom":
             job["status"] = "failed_oom"
             job["error"] = err
             job["completed"] = now()
-            if job["screen_name"]:
-                kill_screen(job["screen_name"])
         elif new_status == "failed_other":
             job["status"] = "failed_other"
             job["error"] = err
             job["completed"] = now()
-            if job["screen_name"]:
-                kill_screen(job["screen_name"])
         elif new_status == 'pending':
             # The admitted launcher never started a training process. Waiting
             # for resources is not a failed experiment or a consumed retry.
@@ -549,34 +601,54 @@ def step(manifest, state, state_file, log_dir):
     pending = pending_jobs_in_active_phases(state, manifest)
     free = free_gpus(allowed_gpus, gpu_free_threshold)
     # Exclude GPUs already assigned to running jobs
-    taken = {j["gpu"] for j in running if j.get("gpu") is not None}
+    taken = {gpu for job in running for gpu in job.get('assigned_gpus',
+             [job['gpu']] if job.get('gpu') is not None else [])}
     free = [g for g in free if g not in taken]
 
-    slots = min(max_parallel - len(running), len(free), len(pending))
-    for i in range(slots):
-        job = pending[i]
-        gpu = free[i]
+    slots = max(0, max_parallel - len(running))
+    for job in pending:
+        if slots <= 0:
+            break
+        gpu, assigned = None, []
         governed = bool(job.get('execution'))
         if governed:
             try:
-                governed_launch_command(job)
+                _, admission = governed_launch_command(job, return_admission=True)
             except ValueError as error:
-                if getattr(error, 'result', {}).get('status') not in (
-                        'WAIT_RESOURCE', 'NEEDS_APPROVAL', 'NEEDS_ESTIMATE', 'SELECTION_REQUIRED'):
+                if getattr(error, 'result', {}).get('status') not in DEFERRED_ADMISSIONS:
                     raise
                 job['error'] = str(error)
                 continue
+            if admission is not None:
+                devices = admission['observed']['gpus']
+                selected = [next(row for row in devices if item['id'] in (row['id'], row['uuid']))
+                            for item in admission['request']['gpus']]
+                if any(row['id'] not in {str(item) for item in allowed_gpus} and row['uuid'] not in allowed_gpus
+                       for row in selected):
+                    job['error'] = 'Queue GPU allowlist excludes an admitted device; revise the plan within authorization'
+                    continue
+                assigned = [int(row['id']) for row in selected]
+                if any(device in taken for device in assigned):
+                    continue
+                gpu = assigned[0] if assigned else None
+            else:
+                if not free:
+                    continue
+                gpu, assigned = free[0], [free[0]]
             # Persist the selected attempt before screen can start. Recovery
             # sees this same binding and never relaunches a running identity.
             job.update(status='running', gpu=gpu, screen_name=f"EQ_{job['id']}",
                        pid=None, started=now(), error=None)
             job['attempts'] += 1
             save_state(state, state_file)
+        else:
+            if not free:
+                continue
+            gpu, assigned = free[0], [free[0]]
         try:
             screen_name, pid = launch_job(job, gpu, conda_env, cwd, log_dir, conda_hook)
         except ValueError as error:
-            if not governed or getattr(error, 'result', {}).get('status') not in (
-                    'WAIT_RESOURCE', 'NEEDS_APPROVAL', 'NEEDS_ESTIMATE', 'SELECTION_REQUIRED'):
+            if not governed or getattr(error, 'result', {}).get('status') not in DEFERRED_ADMISSIONS:
                 raise
             job.update(status='pending', gpu=None, screen_name=None, pid=None, started=None,
                        error=str(error), attempts=max(0, job['attempts'] - 1))
@@ -589,6 +661,10 @@ def step(manifest, state, state_file, log_dir):
             job["attempts"] += 1
         job["started"] = now()
         job["error"] = None
+        job['assigned_gpus'] = assigned
+        taken.update(assigned)
+        free = [device for device in free if device not in taken]
+        slots -= 1
 
     # 4. Update phase status
     for job in state['jobs']:

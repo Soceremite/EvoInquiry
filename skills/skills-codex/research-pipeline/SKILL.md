@@ -26,7 +26,7 @@ For sustained work, use [bounded inquiry](../shared-references/bounded-inquiry.m
 > process/file progress, update a heartbeat, and nudge a stalled phase. It must
 > never rerun or replace a reviewer verdict. Register the state file with
 > `watchdog.py`, unregister on completion, and use `iteration_log.py` to trigger
-> structural pivots after repeated no-progress iterations. See
+> structural review after completed investigations with no new findings. See
 > [`external-cadence.md`](../shared-references/external-cadence.md).
 
 End-to-end autonomous research workflow for: **$ARGUMENTS**
@@ -128,9 +128,12 @@ was persisted. Phases are `idea-discovery,experiment-bridge,auto-review-loop,sum
 
 For an unattended loop, touch the run state at the start of every tick, register
 it once with `watchdog.py --register` as type `loop`, and unregister on
-completion. After each tick run `iteration_log.py note <root> <run_id> <phase>
-<new-finding-count>`: `pivot=structural` requires a genuinely different approach;
-`pivot=human` surfaces the stall. Neither result is a quality verdict. See
+completion. After a newly completed investigation, run `iteration_log.py note
+<root> <run_id> <phase> <new-finding-count>` once; monitoring ticks and waits do
+not call `note`. `pivot=structural` requests a structural review; the legacy
+`pivot=human` flags the affected branch for attention, not mandatory approval or
+a Goal stop. Continue an authorized alternative or existing watch. Neither
+result is a quality verdict. See
 [`resumable-runs.md`](../shared-references/resumable-runs.md).
 
 ## Trajectory reflection and problem synthesis
@@ -168,8 +171,10 @@ resolve, using relevant prior decisions. Before dispatch reserve a stable action
 identity and declared cost; on resume reconcile actual execution before retry.
 Preserve original phase reviews, failure history and the existing storage policy.
 A native Goal, when explicitly requested, can sustain the host session; it cannot
-advance a research gate or replace experiment budgets. Plan-only work stops at
-the requested plan. Negative findings and evidence-driven pivots belong in the
+advance a research gate or replace experiment budgets. A planning-only request
+delivers its plan; explicitly requested observation of existing jobs routes to
+`training-check` and may continue read-only in the current turn when the host
+permits. Plan does not itself schedule another turn. Negative findings and evidence-driven pivots belong in the
 research history; the requested paper pipeline does not certify a positive claim.
 
 ## Pipeline

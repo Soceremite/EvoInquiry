@@ -6,6 +6,7 @@ to evidence, preserve failures and record real local process exit codes.
 from __future__ import annotations
 
 import argparse
+from contextlib import nullcontext
 import json
 import math
 import os
@@ -26,6 +27,8 @@ try:
     from .resource_budget import check_launch as check_session_resources
     from .resource_budget import table_path as session_resource_table
     from .resource_budget import ResourceAdmissionError
+    from .resource_budget import check_duration as check_training_duration
+    from .run_state import coordination_guard
 except ImportError:
     from registry_common import (RegistryError, configure_utf8_output, atomic_write, canonical, digest, file_lock,
                                  fixed_ref, identifier, local_path, now, read_record,
@@ -35,6 +38,59 @@ except ImportError:
     from resource_budget import check_launch as check_session_resources
     from resource_budget import table_path as session_resource_table
     from resource_budget import ResourceAdmissionError
+    from resource_budget import check_duration as check_training_duration
+    from run_state import coordination_guard
+
+
+class DispatchDeferred(RegistryError):
+    """A prepared attempt awaiting workflow coordination, not a failed run."""
+
+    def __init__(self, result):
+        self.result = result
+        super().__init__(f"Workflow dispatch {result['status']}: {result['reason']}")
+
+
+def check_execution_dispatch(root, record, *, require_bound=False):
+    """Check the original coordinator; preserve a structured queue deferral.
+
+    The final caller must hold coordination_guard through Popen. Earlier queue
+    checks are advisory and never replace that serialized dispatch decision.
+    """
+    directive = _workflow_directive(root, record)
+    status, reason = 'AUTO_APPROVED', 'Workflow permits dispatch'
+    if directive is None and require_bound:
+        status, reason = 'CONTROL_UNAVAILABLE', 'Bound workflow control disappeared'
+    elif directive is not None:
+        if directive['stopped']:
+            status, reason = 'WORKFLOW_STOPPED', 'Bound workflow already stopped: ' + directive['stopped']['reason']
+        elif directive['reflection_gate'] or directive['reflection_due']:
+            status, reason = 'WAIT_REVIEW', 'Reflection required before launch'
+        elif (directive['timing']['dispatch_seconds_remaining'] is not None
+              and directive['timing']['dispatch_seconds_remaining'] <= 0):
+            status, reason = 'DISPATCH_BUDGET_EXHAUSTED', 'Original workflow dispatch budget exhausted before launch'
+    if record.get('workflow_run_id'):
+        with state_writer(root):
+            atomic_write(local_path(root, f"runs/{record['execution_run_id']}/dispatch-admission.json"), {
+                'execution_run_id': record['execution_run_id'], 'snapshot_ref': record['snapshot_ref'],
+                'check': {'status': status, 'reason': reason, 'checked_at': now()}})
+    if status != 'AUTO_APPROVED':
+        raise DispatchDeferred({'status': status, 'reason': reason})
+    return directive
+
+
+def _dispatch_process(root, directory, record, observed, command, log, environment, *, require_bound):
+    """Linearize control validation, state transition and creation of one child."""
+    guard = coordination_guard(str(root), record['workflow_run_id']) if record.get('workflow_run_id') else nullcontext()
+    with guard, state_writer(root) as state, file_lock(state / 'locks/executions.lock'):
+        current = read_record(directory / 'execution.json')
+        if current['status'] != 'prepared':
+            raise RegistryError('Another writer already launched this execution')
+        directive = check_execution_dispatch(root, record, require_bound=require_bound)
+        record.update(status='running', observed_fingerprint=observed, updated_at=now())
+        atomic_write(directory / 'execution.json', record)
+        process = subprocess.Popen(command, cwd=directory / 'snapshot', stdout=log,
+                                   stderr=subprocess.STDOUT, start_new_session=os.name == 'posix', env=environment)
+        return process, directive
 
 
 def spec_digest(spec):
@@ -244,6 +300,14 @@ def clone_attempt(root, parent_id, execution_run_id, *, checkpoint_ref=None):
         for name in [*snapshot['source_files'], 'configuration.json']:
             source, destination = local_path(original, name), local_path(target, name)
             payload = source.read_bytes()
+            if name == 'configuration.json':
+                configuration = json.loads(payload)
+                for key, field in (('training_clock', 'path'), ('stop_protocol', 'receipt_path')):
+                    if configuration.get(key):
+                        configuration[key][field] = rebase_execution_output(configuration[key][field], parent_id,
+                                                                           execution_run_id)
+                payload = canonical(configuration) + b'\n'
+                expected_manifest['configuration_sha256'] = digest(payload)
             if destination.exists() and destination.read_bytes() != payload:
                 raise RegistryError('Retry snapshot identity has conflicting source content')
             if not destination.exists():
@@ -381,8 +445,37 @@ def reconcile_execution(root, execution_run_id, *, final_ref=None, termination_r
         return fixed_ref(root, path.with_name('execution.final.json').relative_to(root))
 
 
-def _stop_owned_process(process):
-    """Stop the process group created by this launcher and reap its parent."""
+def _owned_group_alive(process):
+    """Observe our process group, excluding Linux zombies awaiting reaping."""
+    if os.name != 'posix':
+        return process.poll() is None
+    if sys.platform.startswith('linux'):
+        for path in Path('/proc').glob('[0-9]*/stat'):
+            try:
+                fields = path.read_text().rsplit(')', 1)[1].split()
+                if int(fields[2]) == process.pid and fields[0] != 'Z':
+                    return True
+            except (OSError, ValueError, IndexError):
+                continue
+        return False
+    try:
+        os.killpg(process.pid, 0)
+        return True
+    except ProcessLookupError:
+        return False
+    except PermissionError:
+        return True
+
+
+def _stop_owned_process(process, *, force_after_seconds=None):
+    """Request termination once; force only under a distinct explicit grant.
+
+    Cooperative saves may take minutes. Keep the original observer and resource
+    ownership until actual exit; a five-second wait never authorizes SIGKILL.
+    """
+    if force_after_seconds is not None:
+        force_after_seconds = _positive_timeout(force_after_seconds)
+    started, forced = time.monotonic(), False
     try:
         if os.name == 'posix':
             os.killpg(process.pid, signal.SIGTERM)
@@ -390,26 +483,33 @@ def _stop_owned_process(process):
             process.terminate()
     except ProcessLookupError:
         pass
-    try:
-        process.wait(timeout=5)
-    except subprocess.TimeoutExpired:
-        pass
-    # The parent can exit before a child that ignores SIGTERM. Kill the owned
-    # group even when wait() has already returned; never target unrelated jobs.
-    try:
-        if os.name == 'posix':
-            os.killpg(process.pid, signal.SIGKILL)
-        elif process.poll() is None:
-            process.kill()
-    except ProcessLookupError:
-        pass
+    while process.poll() is None or _owned_group_alive(process):
+        if force_after_seconds is not None and not forced and time.monotonic() - started >= force_after_seconds:
+            try:
+                if os.name == 'posix':
+                    os.killpg(process.pid, signal.SIGKILL)
+                elif process.poll() is None:
+                    process.kill()
+            except ProcessLookupError:
+                pass
+            forced = True
+        try:
+            process.wait(timeout=0.2)
+        except subprocess.TimeoutExpired:
+            continue
+        if _owned_group_alive(process):
+            time.sleep(0.2)
     process.wait()
+    return {'force_used': forced, 'force_after_seconds': force_after_seconds,
+            'process_tree_exited': os.name == 'posix'}
 
 
-def request_stop_execution(root, execution_run_id, reason):
+def request_stop_execution(root, execution_run_id, reason, *, confirmed_by=None, force_after_seconds=None):
     """Request cancellation of one running local execution, without sending signals.
 
     Bind the request to its immutable snapshot and observed local process file.
+    confirmed_by must reference an actual user choice for this experiment; a
+    review verdict, elapsed reminder or unanswered popup is not confirmation.
     The existing launcher observes it, stops its own process group and freezes
     actual termination evidence. Return a fixed request reference; this is not
     a termination receipt and cannot settle a live reservation. Same-reason
@@ -417,6 +517,10 @@ def request_stop_execution(root, execution_run_id, reason):
     """
     if not isinstance(reason, str) or not reason.strip():
         raise RegistryError('Execution stop needs a reason')
+    if not isinstance(confirmed_by, str) or not confirmed_by.strip():
+        raise RegistryError('Interrupting an execution requires explicit user confirmation')
+    if force_after_seconds is not None:
+        force_after_seconds = _positive_timeout(force_after_seconds)
     execution_run_id = identifier(execution_run_id)
     root = Path(root).resolve()
     directory = local_path(root, f'runs/{execution_run_id}')
@@ -427,7 +531,9 @@ def request_stop_execution(root, execution_run_id, reason):
             existing = read_record(target)
             if (existing.get('execution_run_id') != execution_run_id
                     or existing.get('snapshot_ref') != record['snapshot_ref']
-                    or existing.get('reason') != reason):
+                    or existing.get('reason') != reason
+                    or existing.get('confirmed_by') != confirmed_by
+                    or existing.get('force_after_seconds') != force_after_seconds):
                 raise RegistryError('Existing execution stop request is immutable')
             verify_ref(root, existing['process_ref'])
             return fixed_ref(root, target.relative_to(root))
@@ -440,7 +546,8 @@ def request_stop_execution(root, execution_run_id, reason):
             raise RegistryError('No matching observed local process for this execution')
         atomic_write(target, {'schema_version': 1, 'execution_run_id': execution_run_id,
                              'snapshot_ref': record['snapshot_ref'], 'process_ref': process_ref,
-                             'reason': reason, 'requested_at': now()})
+                             'reason': reason, 'requested_at': now(), 'confirmed_by': confirmed_by,
+                             'force_after_seconds': force_after_seconds})
         return fixed_ref(root, target.relative_to(root))
 
 
@@ -460,11 +567,134 @@ def _positive_timeout(value):
     return float(value)
 
 
-def _wait_controlled(root, directory, record, process, timeout, bound_workflow):
+def _stop_authorization(configuration):
+    """Read only explicitly authorized automatic stop conditions from frozen inputs."""
+    authorization = configuration.get('stop_authorization')
+    if authorization is None:
+        return {'confirmed_by': None, 'conditions': []}
+    if (not isinstance(authorization, dict) or set(authorization) - {
+            'confirmed_by', 'conditions', 'force_after_seconds', 'force_on_confirmed_stop'}
+            or not {'confirmed_by', 'conditions'} <= set(authorization)
+            or not isinstance(authorization['confirmed_by'], str) or not authorization['confirmed_by'].strip()
+            or not isinstance(authorization['conditions'], list) or not authorization['conditions']
+            or any(condition not in ('timeout', 'workflow_deadline', 'control_error', 'launcher_error')
+                   for condition in authorization['conditions'])
+            or len(set(authorization['conditions'])) != len(authorization['conditions'])):
+        raise RegistryError('Automatic stopping requires a user confirmation reference and explicit conditions')
+    if authorization.get('force_after_seconds') is not None:
+        _positive_timeout(authorization['force_after_seconds'])
+    if 'force_on_confirmed_stop' in authorization and (
+            type(authorization['force_on_confirmed_stop']) is not bool
+            or authorization.get('force_after_seconds') is None):
+        raise RegistryError('Forced confirmed-stop cleanup requires its explicit force interval')
+    return authorization
+
+
+def _stop_notice(directory, record, process, cause, notices):
+    """Retain one notice per cause without signaling or repeatedly asking the user."""
+    key = (cause['cause'], cause['reason'])
+    if key in notices:
+        return
+    notices.add(key)
+    path = directory / 'process-control-notices.json'
+    rows = read_record(path)['notices'] if path.exists() else []
+    rows.append(dict(cause, execution_run_id=record['execution_run_id'], pid=process.pid,
+                     snapshot_ref=record['snapshot_ref'], observed_at=now(),
+                     action='await_user_stop_confirmation', process_interrupted=False))
+    atomic_write(path, {'schema_version': 1, 'notices': rows})
+
+
+def _validate_monitor_bindings(root, record, configuration):
+    """Bind optional trainer-owned timing/save receipts before any process starts."""
+    for key, fields in (('training_clock', {'path', 'experiment_id'}),
+                        ('stop_protocol', {'mode', 'receipt_path'})):
+        binding = configuration.get(key)
+        if binding is None:
+            continue
+        if not isinstance(binding, dict) or set(binding) != fields:
+            raise RegistryError(f'Invalid frozen {key} binding')
+        name = binding['path' if key == 'training_clock' else 'receipt_path']
+        if not isinstance(name, str) or not name or Path(name).is_absolute() or '\\' in name:
+            raise RegistryError(f'{key} receipt must be project-relative')
+        target = local_path(root, name)
+        if not target.is_relative_to(Path(root) / 'runs' / record['execution_run_id']):
+            raise RegistryError(f'{key} receipt must belong to this execution')
+        if key == 'training_clock':
+            identifier(binding['experiment_id'])
+            if not configuration.get('resource_budget'):
+                raise RegistryError('Training clock monitoring requires the original session resource binding')
+        elif binding['mode'] != 'checkpoint_then_stop' or os.name != 'posix':
+            raise RegistryError('checkpoint_then_stop requires a cooperating POSIX SIGTERM handler')
+
+
+def _observe_training_budget(root, directory, record, configuration):
+    """Consume the trainer's first-step clock in the existing execution observer.
+
+    Persist deduplicated notices for the session UI/monitor. Missing receipts
+    mean setup has not reported a first step; never substitute process uptime.
+    A reminder, invalid clock or exceeded ceiling never sends a signal.
+    """
+    binding = configuration.get('training_clock')
+    if binding is None:
+        return
+    path = local_path(root, binding['path'])
+    if not path.exists():
+        return
+    try:
+        clock = read_record(path)
+        if clock.get('segments') and clock['segments'][-1].get('attempt_id') != record['execution_run_id']:
+            raise RegistryError('Training clock current attempt differs from this execution')
+        resource = configuration['resource_budget']
+        result = check_training_duration(resource.get('table_root', root), resource['session_id'],
+                                        training_clock=clock, experiment_id=binding['experiment_id'])
+    except (RegistryError, OSError, ValueError, TypeError, KeyError, AttributeError) as error:
+        result = {'status': 'INVALID_TRAINING_CLOCK', 'reason': str(error),
+                  'action': 'repair_clock_continue_observing', 'notice_required': True}
+    receipt = directory / 'training-budget-observations.json'
+    data = read_record(receipt) if receipt.exists() else {
+        'schema_version': 1, 'execution_run_id': record['execution_run_id'],
+        'snapshot_ref': record['snapshot_ref'], 'notices': []}
+    previous = data.get('latest', {})
+    status = result['status']
+    key = (status, result.get('policy_revision'))
+    if (result.get('notice_required') or status in ('NEEDS_APPROVAL', 'SELECTION_REQUIRED')) and not any(
+            (item['status'], item.get('policy_revision')) == key for item in data['notices']):
+        data['notices'].append(dict(result, observed_at=now(), process_interrupted=False,
+                                   delivery='pending_execution_owner'))
+    if (status != previous.get('status') or len(data['notices']) != data.get('notice_count', 0)
+            or result.get('training_state') != previous.get('training_state')
+            or abs(result.get('seconds', 0) - previous.get('seconds', 0)) >= 1):
+        data.update(latest=result, notice_count=len(data['notices']), observed_at=now())
+        atomic_write(receipt, data)
+
+
+def _checkpoint_stop_evidence(root, record, configuration):
+    protocol = configuration.get('stop_protocol')
+    if protocol is None:
+        return {'status': 'not_requested', 'checkpoint_saved': False}
+    try:
+        reference = fixed_ref(root, protocol['receipt_path'])
+        receipt = read_record(verify_ref(root, reference))
+        if (receipt.get('execution_run_id') != record['execution_run_id']
+                or receipt.get('snapshot_ref') != record['snapshot_ref']
+                or receipt.get('validation', {}).get('passed') is not True
+                or not receipt['validation'].get('label')):
+            raise RegistryError('Checkpoint stop receipt lacks matching identity/loader validation')
+        verify_ref(root, receipt['checkpoint_ref'])
+        return {'status': 'verified', 'checkpoint_saved': True, 'receipt_ref': reference}
+    except (RegistryError, OSError, ValueError, TypeError, KeyError) as error:
+        return {'status': 'unverified', 'checkpoint_saved': False, 'reason': str(error)}
+
+
+def _wait_controlled(root, directory, record, process, timeout, bound_workflow, stop_authorization,
+                     configuration=None):
     """Wait for actual exit while observing only this execution's control inputs."""
     started = time.monotonic()
-    cause = None
+    configuration = configuration or {}
+    notices = set()
     while process.poll() is None:
+        _observe_training_budget(root, directory, record, configuration)
+        causes = []
         try:
             request_path = directory / 'stop-request.json'
             if request_path.exists():
@@ -475,37 +705,59 @@ def _wait_controlled(root, directory, record, process, timeout, bound_workflow):
                         or request.get('process_ref') != fixed_ref(root, (directory / 'process.json').relative_to(root))
                         or not isinstance(request.get('reason'), str) or not request['reason'].strip()):
                     raise RegistryError('Execution stop request has mismatched identities')
-                cause = {'cause': 'execution_stop', 'reason': request['reason'],
-                         'requested_at': request['requested_at'],
-                         'request_ref': fixed_ref(root, request_path.relative_to(root))}
-            if cause is None and bound_workflow:
+                causes.append({'cause': 'execution_stop', 'reason': request['reason'],
+                               'requested_at': request['requested_at'],
+                               'confirmed_by': request.get('confirmed_by'),
+                               'force_after_seconds': request.get('force_after_seconds'),
+                               'request_ref': fixed_ref(root, request_path.relative_to(root))})
+        except (RegistryError, OSError, ValueError, TypeError, KeyError) as error:
+            causes.append({'cause': 'control_error', 'reason': str(error)})
+        if bound_workflow:
+            try:
                 directive = _workflow_directive(root, record)
                 if directive is None:
                     raise RegistryError('Bound workflow control disappeared')
                 if directive['stopped']:
-                    cause = {'cause': 'workflow_stop', 'reason': directive['stopped']['reason'],
-                             'requested_at': directive['stopped']['at']}
-                elif (directive['timing']['dispatch_seconds_remaining'] is not None
+                    causes.append({'cause': 'workflow_stop', 'reason': directive['stopped']['reason'],
+                                   'requested_at': directive['stopped']['at'],
+                                   'confirmed_by': directive['stopped'].get('confirmed_by')})
+                if (directive['timing']['dispatch_seconds_remaining'] is not None
                       and directive['timing']['dispatch_seconds_remaining'] <= 0):
-                    cause = {'cause': 'workflow_deadline', 'reason': 'Original dispatch budget exhausted'}
-            if cause is None and timeout is not None and time.monotonic() - started >= timeout:
-                cause = {'cause': 'timeout', 'reason': 'Fixed execution time limit reached'}
-        except (RegistryError, OSError, ValueError, TypeError, KeyError) as error:
-            cause = {'cause': 'control_error', 'reason': str(error)}
-        if cause is not None:
-            _stop_owned_process(process)
-            receipt = dict(cause, schema_version=1, execution_run_id=record['execution_run_id'],
-                           workflow_run_id=record.get('workflow_run_id'), snapshot_ref=record['snapshot_ref'],
-                           process_ref=fixed_ref(root, (directory / 'process.json').relative_to(root)),
-                           pid=process.pid, exit_code=process.returncode, parent_exited=True,
-                           termination_scope='posix-process-group' if os.name == 'posix' else 'windows-parent-only',
-                           observed_at=now())
-            atomic_write(directory / 'termination.json', receipt)
-            return process.returncode, True
+                    causes.append({'cause': 'workflow_deadline', 'reason': 'Original dispatch budget exhausted'})
+            except (RegistryError, OSError, ValueError, TypeError, KeyError) as error:
+                causes.append({'cause': 'control_error', 'reason': str(error)})
+        if timeout is not None and time.monotonic() - started >= timeout:
+            causes.append({'cause': 'timeout', 'reason': 'Fixed execution time limit reached'})
+        for cause in causes:
+            confirmed_by = cause.get('confirmed_by')
+            if not confirmed_by and cause['cause'] in stop_authorization['conditions']:
+                confirmed_by = stop_authorization['confirmed_by']
+            if isinstance(confirmed_by, str) and confirmed_by.strip():
+                force_after = cause.get('force_after_seconds')
+                if force_after is None and (cause['cause'] in stop_authorization['conditions'] or
+                        (cause.get('confirmed_by') and stop_authorization.get('force_on_confirmed_stop') is True)):
+                    force_after = stop_authorization.get('force_after_seconds')
+                atomic_write(directory / 'stop-progress.json', dict(cause, confirmed_by=confirmed_by,
+                             action='stop_requested_observing_exit', force_after_seconds=force_after, observed_at=now()))
+                stopped = _stop_owned_process(process, force_after_seconds=force_after)
+                receipt = dict(cause, schema_version=1, execution_run_id=record['execution_run_id'],
+                               workflow_run_id=record.get('workflow_run_id'), snapshot_ref=record['snapshot_ref'],
+                               process_ref=fixed_ref(root, (directory / 'process.json').relative_to(root)),
+                               pid=process.pid, exit_code=process.returncode, parent_exited=True,
+                               confirmed_by=confirmed_by,
+                               **stopped,
+                               checkpoint_stop=_checkpoint_stop_evidence(root, record, configuration),
+                               termination_scope='posix-process-group' if os.name == 'posix' else 'windows-parent-only',
+                               observed_at=now())
+                atomic_write(directory / 'termination.json', receipt)
+                _observe_training_budget(root, directory, record, configuration)
+                return process.returncode, True
+            _stop_notice(directory, record, process, cause, notices)
         try:
             process.wait(timeout=0.2)
         except subprocess.TimeoutExpired:
             pass
+    _observe_training_budget(root, directory, record, configuration)
     return process.returncode, False
 
 
@@ -545,8 +797,11 @@ def launch_execution(root, execution_run_id, arguments=(), *, timeout=None):
 
     Resource authorization/budgets belong to the calling execution skill. Imports
     of mutable project code are rejected and actual import paths are retained.
-    The local wait observes bound workflow stops and identity-bound per-execution
-    requests. Effective timeout is the minimum of an explicit bound, the spec's
+    The local wait interrupts only on a user-confirmed stop or a specifically
+    preauthorized automatic condition. Unconfirmed review stops, limits and
+    control errors produce notices while observation continues. The wall-clock
+    timeout is distinct from a training budget beginning at the first step.
+    Effective timeout is the minimum of an explicit bound, the spec's
     max_seconds_per_attempt and the configured workflow's original remaining
     dispatch time. Pending/due reflection blocks prepared dispatch, and is
     rechecked after environment verification. It does not interrupt a healthy
@@ -569,11 +824,7 @@ def launch_execution(root, execution_run_id, arguments=(), *, timeout=None):
     spec_budget = read_record(verify_ref(root, record['spec_ref']))['budget']
     if 'max_seconds_per_attempt' in spec_budget:
         bounds.append(_positive_timeout(spec_budget['max_seconds_per_attempt']))
-    directive = _workflow_directive(root, record)
-    if directive is not None and directive['stopped']:
-        raise RegistryError('Bound workflow already stopped; execution was not launched')
-    if directive is not None and (directive['reflection_gate'] or directive['reflection_due']):
-        raise RegistryError('Reflection required before launch; inspect and address the workflow review')
+    directive = check_execution_dispatch(root, record)
     try:
         from .project_registry import discover_project
     except ImportError:
@@ -582,11 +833,7 @@ def launch_execution(root, execution_run_id, arguments=(), *, timeout=None):
         raise RegistryError('Governed formal launch requires explicit frozen arguments, including an empty array')
     observed = verify_environment(root, record['env_revision'])
     if directive is not None:
-        directive = _workflow_directive(root, record)
-        if directive is None or directive['stopped']:
-            raise RegistryError('Bound workflow stopped or disappeared before launch')
-        if directive['reflection_gate'] or directive['reflection_due']:
-            raise RegistryError('Reflection required before launch; inspect and address the workflow review')
+        directive = check_execution_dispatch(root, record, require_bound=True)
         remaining = directive['timing']['dispatch_seconds_remaining']
         if remaining is not None:
             if remaining <= 0:
@@ -594,14 +841,11 @@ def launch_execution(root, execution_run_id, arguments=(), *, timeout=None):
             bounds.append(remaining)
     effective_timeout = min(bounds) if bounds else None
     snapshot_dir = verify_ref(root, record['snapshot_ref']).parent
-    resource_binding = read_record(snapshot_dir / 'configuration.json').get('resource_budget')
+    configuration = read_record(snapshot_dir / 'configuration.json')
+    resource_binding = configuration.get('resource_budget')
+    stop_authorization = _stop_authorization(configuration)
+    _validate_monitor_bindings(root, record, configuration)
     resource_admission = check_execution_resources(root, record)
-    with state_writer(root) as state, file_lock(state / 'locks/executions.lock'):
-        current = read_record(path)
-        if current['status'] != 'prepared':
-            raise RegistryError('Another writer already launched this execution')
-        record.update(status='running', observed_fingerprint=observed, updated_at=now())
-        atomic_write(path, record)
     bootstrap = r'''
 import importlib.abc, importlib.machinery, json, pathlib, runpy, sys, sysconfig
 sys.stdout.reconfigure(encoding='utf-8', errors='backslashreplace')
@@ -646,28 +890,42 @@ finally:
     with state_writer(root):
         with (directory / 'process.log').open('wb') as log:
             try:
-                process = subprocess.Popen(command, cwd=snapshot_dir, stdout=log, stderr=subprocess.STDOUT,
-                                           start_new_session=os.name == 'posix', env=launch_environment)
+                process, directive = _dispatch_process(root, directory, record, observed, command, log,
+                                                        launch_environment, require_bound=directive is not None)
             except OSError as error:
                 log.write(str(error).encode())
                 exit_code, stopped = 127, False
             else:
+                if directive is not None and directive['timing']['dispatch_seconds_remaining'] is not None:
+                    remaining = directive['timing']['dispatch_seconds_remaining']
+                    effective_timeout = min(bounds + [remaining])
                 try:
                     atomic_write(directory / 'process.json', {'execution_run_id': execution_run_id,
                                  'pid': process.pid, 'host': platform.node(), 'command': command,
                                  'cwd': str(snapshot_dir), 'started_at': now(),
-                                 'effective_timeout_seconds': effective_timeout})
-                except BaseException:
-                    _stop_owned_process(process)
+                                 'effective_timeout_seconds': effective_timeout,
+                                 'timeout_basis': 'process_wall_seconds',
+                                 'stop_authorization': stop_authorization})
+                except BaseException as error:
+                    interrupted = False
+                    if 'launcher_error' in stop_authorization['conditions']:
+                        _stop_owned_process(process, force_after_seconds=stop_authorization.get('force_after_seconds'))
+                        interrupted = True
                     # Keep the attempt unresolved for explicit reconciliation:
                     # there is no durable process identity to certify its exit.
-                    raise
+                    raise RegistryError(f'Process identity recording failed for execution {execution_run_id}, '
+                                        f'PID {process.pid}; process_interrupted={interrupted}: {error}') from error
                 try:
                     exit_code, stopped = _wait_controlled(root, directory, record, process,
-                                                         effective_timeout, directive is not None)
-                except BaseException:
-                    _stop_owned_process(process)
-                    raise
+                                                         effective_timeout, directive is not None, stop_authorization,
+                                                         configuration)
+                except BaseException as error:
+                    interrupted = False
+                    if 'launcher_error' in stop_authorization['conditions']:
+                        _stop_owned_process(process, force_after_seconds=stop_authorization.get('force_after_seconds'))
+                        interrupted = True
+                    raise RegistryError(f'Observation interrupted for execution {execution_run_id}, PID {process.pid}; '
+                                        f'process_interrupted={interrupted}: {error}') from error
         references = [fixed_ref(root, (directory / 'process.log').relative_to(root))]
         if (directory / 'process.json').exists():
             references.append(fixed_ref(root, (directory / 'process.json').relative_to(root)))
@@ -675,8 +933,15 @@ finally:
             references.append(fixed_ref(root, (directory / 'import-paths.json').relative_to(root)))
         if (directory / 'termination.json').exists():
             references.append(fixed_ref(root, (directory / 'termination.json').relative_to(root)))
+        if (directory / 'process-control-notices.json').exists():
+            references.append(fixed_ref(root, (directory / 'process-control-notices.json').relative_to(root)))
         if (directory / 'resource-admission.json').exists():
             references.append(fixed_ref(root, (directory / 'resource-admission.json').relative_to(root)))
+        if (directory / 'dispatch-admission.json').exists():
+            references.append(fixed_ref(root, (directory / 'dispatch-admission.json').relative_to(root)))
+        for name in ('stop-progress.json', 'training-budget-observations.json'):
+            if (directory / name).exists():
+                references.append(fixed_ref(root, (directory / name).relative_to(root)))
         reference = finish_execution(root, execution_run_id, exit_code, references, stopped=stopped)
         return {'exit_code': exit_code, 'execution_ref': reference}
 
@@ -754,6 +1019,8 @@ def main():
     stop = sub.add_parser('stop', help='Request an identity-bound local execution stop; await actual terminal evidence')
     stop.add_argument('--execution-id', required=True)
     stop.add_argument('--reason', required=True)
+    stop.add_argument('--confirmed-by', required=True, help='Actual user stop choice reference for this execution')
+    stop.add_argument('--force-after-seconds', type=float, help='Only when that user choice explicitly authorizes forced termination')
     args = parser.parse_args()
     try:
         if args.command == 'register-spec':
@@ -771,7 +1038,8 @@ def main():
                 final_ref=read_record(args.final_ref) if args.final_ref else None,
                 termination_ref=read_record(args.termination_ref) if args.termination_ref else None)
         elif args.command == 'stop':
-            result = request_stop_execution(args.root, args.execution_id, args.reason)
+            result = request_stop_execution(args.root, args.execution_id, args.reason, confirmed_by=args.confirmed_by,
+                                            force_after_seconds=args.force_after_seconds)
         else:
             result = launch_execution(args.root, args.execution_id, args.arguments, timeout=args.timeout)
         print(json.dumps(result, ensure_ascii=False, indent=2))

@@ -14,6 +14,24 @@ from tools.skill_contracts import contract_errors, load_contract, normalize_name
 ROOT = Path(__file__).resolve().parents[1]
 
 
+@pytest.mark.parametrize('field,value', [('test_refs', []), ('review_ref', 'missing-review.md')])
+def test_current_protected_adaptation_requires_review_and_tests(frozen_package, field, value):
+    import json
+
+    path = frozen_package / 'tools/skill-contracts.json'
+    original = path.read_bytes()
+    contract = json.loads(original)
+    relative = 'skills/shared-references/external-cadence.md'
+    contract['approved_upgrade_files'][relative].update(adaptation_version='1.6.3')
+    contract['approved_upgrade_files'][relative][field] = value
+    try:
+        path.write_text(json.dumps(contract), encoding='utf-8')
+        with pytest.raises(ValueError, match=relative + ': protected-file review/test references missing'):
+            load_contract(frozen_package)
+    finally:
+        path.write_bytes(original)
+
+
 def test_package_preserves_skill_inventory_and_resolves_shared_reference():
     report = verify(ROOT)
     assert report['status'] == 'PASS', report['errors']

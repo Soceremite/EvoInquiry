@@ -337,8 +337,12 @@ pathlib.Path(sys.argv[1]).write_text(json.dumps([{'slot': 1}, {'slot': 2}]))
 raise SystemExit(int(sys.argv[2]))
 ''')
     arguments = [str(project / 'runs' / execution_id / 'attempts.json'), str(exit_code)]
+    configuration = {'variant': {'augmentation': 0}, 'seed': 11}
+    if exit_code == 'stop':
+        configuration['stop_authorization'] = {
+            'confirmed_by': 'fixture-user-approved-timeout', 'conditions': ['timeout']}
     snapshot = freeze_snapshot(project, execution_id, spec, environment, ['src/study.py'],
-                               {'variant': {'augmentation': 0}, 'seed': 11}, 'src/study.py', 'baseline', 11,
+                               configuration, 'src/study.py', 'baseline', 11,
                                arguments=arguments, output_argument_indices=[0])
     start_execution(project, execution_id, snapshot, workflow_run_id=workflow_run_id)
     return snapshot, arguments

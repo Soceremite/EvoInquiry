@@ -48,7 +48,11 @@ time.sleep(60)
     output = root / 'runs/owned/outputs'
     args = [str(output)]
     snapshot = freeze_snapshot(root, 'owned', spec, environment, sources,
-        {'variant':{'augmentation':0.1},'seed':22}, 'src/train.py','method-b',22,
+        {'variant':{'augmentation':0.1},'seed':22,
+         'stop_authorization': {'confirmed_by':'fixture-user-approved-wall-timeout',
+                                'conditions':['timeout', 'workflow_deadline'],
+                                'force_after_seconds':0.2,
+                                'force_on_confirmed_stop':True}}, 'src/train.py','method-b',22,
         arguments=args,output_argument_indices=[0])
     start_execution(root,'owned',snapshot,workflow_run_id='owned-workflow')
     action = research_control.claim_action(root,'owned-workflow','owned','explore',
@@ -174,6 +178,78 @@ def test_read_only_watch_and_reflection_leave_healthy_process_and_stall_count_un
     assert research_control.inspect(tmp_path, 'review-workflow')['status'] == 'READY'
 
 
+@pytest.mark.parametrize('cause', ['timeout', 'workflow-stop', 'control-error'])
+def test_unconfirmed_stop_conditions_keep_the_actual_worker_running(tmp_path, monkeypatch, cause):
+    args, output, _ = _prepare_review_worker(tmp_path)
+    with ThreadPoolExecutor(max_workers=1) as pool:
+        future = pool.submit(launch_execution, tmp_path, 'review-worker', args,
+                             timeout=0.05 if cause == 'timeout' else None)
+        try:
+            _await_file(output / 'ready.json', future)
+            original = execution_registry._workflow_directive
+            if cause == 'workflow-stop':
+                research_control.stop(tmp_path, 'review-workflow', 'Autonomous review recommends no new work')
+            elif cause == 'control-error':
+                def unavailable(*args):
+                    raise RegistryError('fixture: control observation temporarily unavailable')
+                monkeypatch.setattr(execution_registry, '_workflow_directive', unavailable)
+            notice_path = tmp_path / 'runs/review-worker/process-control-notices.json'
+            _await_file(notice_path, future)
+            notices = read_record(notice_path)['notices']
+            assert len(notices) == 1 and notices[0]['action'] == 'await_user_stop_confirmation'
+            assert notices[0]['process_interrupted'] is False and not future.done()
+            assert not (tmp_path / 'runs/review-worker/termination.json').exists()
+            assert read_record(tmp_path / 'runs/review-worker/execution.json')['status'] == 'running'
+            monkeypatch.setattr(execution_registry, '_workflow_directive', original)
+        finally:
+            (output / 'release').touch()
+            result = future.result(timeout=15)
+    assert result['exit_code'] == 0
+    assert read_record(tmp_path / 'runs/review-worker/execution.final.json')['status'] == 'completed'
+    assert not (tmp_path / 'runs/review-worker/termination.json').exists()
+
+
+def test_execution_stop_without_user_confirmation_has_no_side_effect(tmp_path):
+    args, output, _ = _prepare_review_worker(tmp_path)
+    with ThreadPoolExecutor(max_workers=1) as pool:
+        future = pool.submit(launch_execution, tmp_path, 'review-worker', args)
+        try:
+            _await_file(output / 'ready.json', future)
+            with pytest.raises(RegistryError, match='explicit user confirmation'):
+                request_stop_execution(tmp_path, 'review-worker', 'Model prefers another branch')
+            assert not (tmp_path / 'runs/review-worker/stop-request.json').exists()
+            assert not future.done()
+        finally:
+            (output / 'release').touch()
+            result = future.result(timeout=15)
+    assert result['exit_code'] == 0
+
+
+def test_identity_write_failure_leaves_unconfirmed_process_observable_in_error(tmp_path, monkeypatch):
+    sources, spec, environment = make_sources(tmp_path), make_spec(tmp_path), make_environment(tmp_path)
+    (tmp_path / 'src/train.py').write_text('import time\ntime.sleep(0.8)\n')
+    prepare(tmp_path, 'identity-unconfirmed', spec, environment, sources)
+    original_write, original_popen = execution_registry.atomic_write, execution_registry.subprocess.Popen
+    children = []
+    def launch(*args, **kwargs):
+        child = original_popen(*args, **kwargs)
+        if 'start_new_session' in kwargs:
+            children.append(child)
+        return child
+    def unavailable(path, data):
+        if Path(path).name == 'process.json':
+            raise OSError('fixture: identity storage unavailable')
+        return original_write(path, data)
+    monkeypatch.setattr(execution_registry.subprocess, 'Popen', launch)
+    monkeypatch.setattr(execution_registry, 'atomic_write', unavailable)
+    with pytest.raises(RegistryError, match='process_interrupted=False') as error:
+        launch_execution(tmp_path, 'identity-unconfirmed')
+    assert len(children) == 1 and children[0].poll() is None
+    assert str(children[0].pid) in str(error.value)
+    assert children[0].wait(timeout=10) == 0
+    assert not (tmp_path / 'runs/identity-unconfirmed/termination.json').exists()
+
+
 def _linux_running(pid):
     path=Path('/proc')/str(pid)/'stat'
     return path.exists() and path.read_text().split(') ',1)[1][0]!='Z'
@@ -204,10 +280,13 @@ def test_stop_intent_reaches_the_owned_process_group_and_preserves_other_work(tm
                 assert _linux_running(identities['pid']) and _linux_running(identities['child_pid'])
             started=time.monotonic()
             if source=='execution':
-                request=request_stop_execution(tmp_path,'owned','This attempt no longer answers the question')
-                assert request_stop_execution(tmp_path,'owned','This attempt no longer answers the question')==request
+                request=request_stop_execution(tmp_path,'owned','This attempt no longer answers the question',
+                                                confirmed_by='fixture-user-stop-reply')
+                assert request_stop_execution(tmp_path,'owned','This attempt no longer answers the question',
+                                               confirmed_by='fixture-user-stop-reply')==request
             else:
-                research_control.stop(tmp_path,'owned-workflow','No further training is justified')
+                research_control.stop(tmp_path,'owned-workflow','No further training is justified',
+                                      confirmed_by='fixture-user-stop-workflow-reply')
             result=future.result(timeout=12)
             assert time.monotonic()-started<10
         terminal=read_record(tmp_path/'runs/owned/execution.final.json')
@@ -236,7 +315,8 @@ def test_cooperative_zero_exit_is_cancelled_and_excluded_from_successful_aggrega
     with ThreadPoolExecutor(max_workers=1) as pool:
         future=pool.submit(launch_execution,tmp_path,'owned',args)
         _await_file(output/'ready.json',future)
-        request_stop_execution(tmp_path,'owned','Stop after saving the latest state')
+        request_stop_execution(tmp_path,'owned','Stop after saving the latest state',
+                               confirmed_by='fixture-user-stop-reply')
         result=future.result(timeout=12)
     terminal=read_record(tmp_path/'runs/owned/execution.final.json')
     receipt=read_record(tmp_path/'runs/owned/termination.json')
@@ -295,8 +375,22 @@ def test_stopped_workflow_and_invalid_timeouts_never_launch_a_prepared_execution
     assert read_record(tmp_path/'runs/owned/execution.json')['status']=='prepared'
 
 
-def prepare(root, run_id, spec, environment, sources, *, failure=False, parent=None):
+def test_unconfirmed_review_cannot_mask_a_separately_user_authorized_timeout(tmp_path):
+    args, output, _ = _prepare_observable_worker(tmp_path, seconds=2)
+    with ThreadPoolExecutor(max_workers=1) as pool:
+        future = pool.submit(launch_execution, tmp_path, 'owned', args)
+        _await_file(output/'ready.json', future)
+        research_control.stop(tmp_path, 'owned-workflow', 'Autonomous review holds future dispatch')
+        result = future.result(timeout=12)
+    receipt = read_record(tmp_path/'runs/owned/termination.json')
+    assert result['exit_code'] != 0 and receipt['cause'] == 'timeout'
+    assert receipt['confirmed_by'] == 'fixture-user-approved-wall-timeout'
+
+
+def prepare(root, run_id, spec, environment, sources, *, failure=False, parent=None, stop_authorization=None):
     configuration = {'variant':{'augmentation':0.1},'seed':22,'inject_failure':failure}
+    if stop_authorization is not None:
+        configuration['stop_authorization'] = stop_authorization
     snapshot = freeze_snapshot(root, run_id, spec, environment, sources, configuration,
                                'src/train.py', 'method-b',22)
     start_execution(root,run_id,snapshot,retry_of=parent)
@@ -426,7 +520,9 @@ def test_failed_process_identity_write_stops_owned_child_without_claiming_comple
     import tools.execution_registry as module
     sources, spec, environment = make_sources(tmp_path), make_spec(tmp_path), make_environment(tmp_path)
     (tmp_path / 'src/train.py').write_text('import time\ntime.sleep(60)\n')
-    prepare(tmp_path,'identity-failure',spec,environment,sources)
+    prepare(tmp_path,'identity-failure',spec,environment,sources,
+            stop_authorization={'confirmed_by':'fixture-user-approved-setup-failure-cleanup',
+                                'conditions':['launcher_error']})
     original_write, original_popen = module.atomic_write, module.subprocess.Popen
     launched=[]
     def launch(*args,**kwargs):
@@ -440,7 +536,7 @@ def test_failed_process_identity_write_stops_owned_child_without_claiming_comple
         return original_write(path,data)
     monkeypatch.setattr(module.subprocess,'Popen',launch)
     monkeypatch.setattr(module,'atomic_write',interrupted)
-    with pytest.raises(OSError,match='process identity storage failed'):
+    with pytest.raises(RegistryError,match='process identity storage failed'):
         launch_execution(tmp_path,'identity-failure',timeout=15)
     assert len(launched)==1 and launched[0].poll() is not None
     assert read_record(tmp_path / 'runs/identity-failure/execution.json')['status']=='running'

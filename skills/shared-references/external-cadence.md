@@ -213,13 +213,14 @@ A `/loop` or `CronCreate` heartbeat is parasitic on a living session; if it dies
    (which your poll already reads) when the file's mtime is older than that; a finished
    loop shows **COMPLETED** (if its state carries a terminal `status`) or should be
    unregistered. **It only DETECTS** — it never restarts the loop or re-runs a
-   verdict-bearing skill; recovery stays a human/cron decision, per the fence above.
+   verdict-bearing skill. Recovery stays with the existing executor and its
+   authorization; an alert alone does not require a human or stop the Goal.
 
 ## Stall detection & forced structural pivot
 
 An overnight loop can spin: each iteration tries a near-variant of the last and gets
-diminishing returns. Detect it mechanically and force a *structural* change — not harder
-tuning of the same frame.
+diminishing returns. Use the counter to request structural review; the existing
+owner chooses a change from evidence rather than changing a protocol mechanically.
 
 - **Count, don't vibe.** Each iteration, record the number of NEW findings (concrete
   added entries — new evidence, a falsified hypothesis, a candidate direction — *not* a
@@ -235,10 +236,12 @@ tuning of the same frame.
   job, reading progress logs and a telemetry `WAIT` do not call `note` and do not
   advance the stale ladder. See [monitoring boundaries](bounded-inquiry.md#monitoring-interruption-and-host-modes).
 - **Forced pivot ladder** (the heartbeat reads the returned `pivot`):
-  - `stale_count >= 2` → **pivot structure, not tactics**: change a structural constraint
-    (frame / objective / data / representation), not a tactical parameter, and pick a
-    direction that differs from every one already tried.
-  - `stale_count >= 4` → **escalate to a human** (flag for attention; stop nudging blindly).
+  - `stale_count >= 2` → **review structure, not only tactics**: inspect the frame,
+    objective, data or representation, then choose an evidence-supported next step.
+    A counter alone does not justify changing a fixed scientific protocol.
+  - `stale_count >= 4` → the legacy `pivot=human` value **flags attention**. Review
+    the stalled branch and continue an authorized alternative or existing watch.
+    It is not an automatic user-approval gate or native Goal `blocked` transition.
 - **Direction diversity.** Before a re-generation, read the tried directions (research-wiki
   Failed Ideas + the iteration ledger) and reject a candidate too close to one already tried.
 
@@ -262,9 +265,10 @@ squarely the executor's job, and the missing move is the RESTART.
   wrong ones — patched-code archaeology is how attempts rot. Treat "delete the attempt
   and rebuild from the spec" as a normal option at every retry decision, and prefer it
   once patches start stacking.
-- **Escalate to a human only when the CONTRACT is in question** — the plan/spec is
-  missing, ambiguous, or looks wrong — not merely because the current attempt is broken.
-  "The build is broken" is the executor's problem; "the plan may be wrong" is the human's.
+- **Resolve ordinary plan and implementation uncertainty within the task.** Inspect
+  evidence, document an assumption or revise an in-scope plan. Ask for a genuinely
+  missing user decision or additional authorization only when it affects the next
+  action. Hold that action while other authorized work and monitoring continue.
 - **Hard boundary — what a restart may delete.** Only the current attempt's own
   code/scaffolding (scripts it wrote, configs it generated, its build artifacts). NEVER
   deletable in a restart: the contract/plan (`research_contract.md`,
@@ -273,9 +277,9 @@ squarely the executor's job, and the missing move is the RESTART.
   completed results. The restart rebuilds the code FROM those files; deleting them
   defeats the restart. When in doubt whether a path is "attempt" or "state," it is state
   — keep it.
-- **Restart is bounded like any other move.** A restart consumes a retry-budget slot; two
-  clean reimplements failing the SAME way means the failure is probably in the contract
-  or the environment — which IS the human-escalation trigger above.
+- **Restart is bounded like any other move.** A restart consumes a retry-budget slot.
+  Repeated identical failures call for contract/environment diagnosis with the
+  existing owner; a retry count alone neither proves the cause nor requires a human.
 
 ## Required components (when you add external cadence to a skill)
 
@@ -297,10 +301,10 @@ squarely the executor's job, and the missing move is the RESTART.
    external wait ends in a verdict step, that verdict step runs *once*,
    in its own thread, after the wait clears — not re-entered per tick.
 6. **Degrades gracefully when no scheduler exists.** External cadence is
-   additive runtime sugar, never load-bearing. On a runtime with no
-   `/loop` / `CronCreate`, the same work still terminates correctly via
-   a blocking poll or a manual re-invocation; the cross-model jury at
-   the end is identical either way (`fan-out-pattern.md`).
+   additive runtime sugar, never load-bearing. Without a scheduler, use
+   interruptible observation in the current authorized turn. After-turn follow-up
+   needs a verified host continuation mechanism; never claim that a detached
+   sampler supplies it. The review gate stays the same (`fan-out-pattern.md`).
 
 ## Autonomous-mode discipline (when the human checkpoint is off)
 
@@ -310,11 +314,12 @@ ambiguity yourself, act, and log the decision and its reasoning (a `level=decisi
 line) so the choice is auditable — "ready means execute": finishing preparation and then
 asking "should I proceed?" is the stall this rule forbids.
 
-This does **not** override an *explicit* human gate. A checkpoint the skill declares as
-load-bearing — a missing venue/target, a patent/submission step, anything marked as
-requiring sign-off — still stops and waits. If you are unsure whether a gate is explicit, treat it as explicit and stop. Autonomy removes *needless* pauses, not
-deliberate ones; and it never lets the loop self-acquit a quality verdict (that stays with
-the cross-model jury, see [`acceptance-gate.md`](acceptance-gate.md)).
+Preserve an actual human gate or required independent review, and identify its
+source and affected action. Check existing instructions and authorization before
+inventing another gate from uncertainty. A missing venue holds venue-dependent
+writing, not experiments or an ongoing watch. A pending gate does not itself
+block the native Goal; continue useful authorized work. Quality acceptance stays
+with its assigned reviewer (`acceptance-gate.md`).
 
 ## Cross-references
 

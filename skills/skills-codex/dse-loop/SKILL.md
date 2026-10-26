@@ -19,6 +19,8 @@ For sustained research tuning, review the trajectory at planned batches using
 [bounded-inquiry](../shared-references/bounded-inquiry.md), while keeping this
 loop's search bounds and stopping rules. Surface related unresolved problems to
 `/problem-synthesis`; changing the objective or bounds returns to the plan owner.
+Its timeout ends this search batch, not the broader Goal or another live job's
+watch. Return the evidence to the existing owner without resetting the batch budget.
 <!-- EVO-INQUIRY:END -->
 
 

@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+from datetime import datetime, timezone
 import json
 import math
 import os
@@ -16,6 +17,7 @@ import platform
 import shutil
 import subprocess
 import sys
+import xml.etree.ElementTree as ET
 
 try:
     from .registry_common import (RegistryError, atomic_write, configure_utf8_output,
@@ -32,7 +34,9 @@ DEFAULT_POLICY = {
     'max_cpu_cores': None, 'max_ram_bytes': None, 'max_total_vram_bytes': None,
     'max_dataset_bytes': None, 'max_weight_bytes': None, 'max_disk_bytes': None,
     'auto_approve_job_seconds': 12 * 3600, 'max_new_spend': 0,
+    'job_notice_after_seconds': None,
 }
+OPTIONAL_POLICY_FIELDS = {'job_notice_after_seconds'}
 CHOICES = [
     {'preset': 'maximum', 'description': 'Maximum available local resources; GPU sharing allowed'},
     {'preset': 'exclusive', 'description': 'Maximum available local resources; idle GPUs only'},
@@ -70,7 +74,8 @@ def _number(value, name, *, nullable=False, positive=False):
 
 
 def _validate_policy(policy):
-    if not isinstance(policy, dict) or set(policy) != set(DEFAULT_POLICY):
+    if (not isinstance(policy, dict) or set(policy) - set(DEFAULT_POLICY)
+            or set(DEFAULT_POLICY) - OPTIONAL_POLICY_FIELDS - set(policy)):
         raise RegistryError('Unknown or missing session resource policy fields')
     allowed = policy['allowed_gpu_ids']
     if allowed != 'all_visible' and (not isinstance(allowed, list)
@@ -81,7 +86,7 @@ def _validate_policy(policy):
         raise RegistryError('allow_gpu_sharing must be boolean')
     for key in set(policy) - {'allowed_gpu_ids', 'allow_gpu_sharing'}:
         _number(policy[key], key, nullable=key not in ('auto_approve_job_seconds', 'max_new_spend'),
-                positive=key == 'auto_approve_job_seconds')
+                positive=key in ('auto_approve_job_seconds', 'job_notice_after_seconds'))
 
 
 def read_table(root, session=None):
@@ -136,7 +141,7 @@ def select(root, session=None, *, preset, selected_by, overrides=None):
         data = read_table(root, session)
         # A request to change one ceiling must preserve the user's other device
         # restrictions. Choosing a named preset explicitly resets to that preset.
-        policy = (dict(data['policy']) if preset == 'custom' and data['status'] == 'active'
+        policy = (dict(DEFAULT_POLICY, **data['policy']) if preset == 'custom' and data['status'] == 'active'
                   else dict(DEFAULT_POLICY, allow_gpu_sharing=preset != 'exclusive'))
         policy.update(overrides)
         _validate_policy(policy)
@@ -193,17 +198,43 @@ def _gpus():
                                  '--format=csv,noheader,nounits'], capture_output=True, text=True, timeout=8)
         if result.returncode:
             return [], result.stderr.strip() or 'nvidia-smi failed'
-        rows = []
+        rows, errors = [], []
         visible = os.environ.get('CUDA_VISIBLE_DEVICES')
         allowed = None if visible is None else [item.strip() for item in visible.split(',')]
         for row in csv.reader(result.stdout.splitlines()):
+            if len(row) != 6:
+                errors.append('Malformed NVIDIA device telemetry')
+                continue
             index, uuid, total, used, free, utilization = (value.strip() for value in row)
             if allowed is not None and not any(item == index or item == uuid for item in allowed):
                 continue
-            rows.append({'id': index, 'uuid': uuid, 'total_bytes': int(total) * 1024**2,
-                         'used_bytes': int(used) * 1024**2, 'free_bytes': int(free) * 1024**2,
-                         'utilization_percent': float(utilization)})
-        return rows, None
+            try:
+                total, used, free, utilization = int(total), int(used), int(free), float(utilization)
+                if total <= 0 or min(used, free) < 0 or not 0 <= utilization <= 100:
+                    raise ValueError('invalid capacity or utilization')
+            except ValueError:
+                errors.append(f'GPU {index} ({uuid}) has unusable telemetry')
+                continue
+            rows.append({'id': index, 'uuid': uuid, 'total_bytes': total * 1024**2,
+                         'used_bytes': used * 1024**2, 'free_bytes': free * 1024**2,
+                         'utilization_percent': utilization})
+        # Include graphics/compute occupants; used VRAM can be a driver baseline.
+        # An unavailable process probe remains unknown, never an empty list.
+        occupants = {}
+        try:
+            detail = subprocess.run(['nvidia-smi', '-q', '-x'], capture_output=True, text=True, timeout=8)
+            if detail.returncode:
+                raise ValueError('NVIDIA process inventory unavailable')
+            for gpu in ET.fromstring(detail.stdout).findall('gpu'):
+                processes = gpu.find('processes')
+                if processes is not None:
+                    occupants[gpu.findtext('uuid')] = [int(item.findtext('pid'))
+                        for item in processes.findall('process_info')]
+        except (OSError, ValueError, TypeError, ET.ParseError, subprocess.SubprocessError):
+            pass
+        for row in rows:
+            row['process_ids'] = occupants.get(row['uuid'])
+        return rows, '; '.join(errors) or None
     except (OSError, ValueError, subprocess.SubprocessError) as error:
         return [], str(error)
 
@@ -239,6 +270,43 @@ def probe(root, storage=()):
             'ram': _ram(), 'gpus': gpus, 'gpu_probe_error': error, 'disks': disks}
 
 
+def hardware_state(table, observation):
+    """Derive current usable ceilings; refresh observations, never the user's choices.
+
+    Compare inventory rather than transient utilization. An all-visible choice
+    follows the current host; an explicit GPU allowlist remains restrictive.
+    Telemetry availability is not a certificate that a device is fault-free.
+    """
+    policy = table['policy'] if table else DEFAULT_POLICY
+    previous = ((table or {}).get('last_check') or {}).get('observed')
+    changes = []
+    if previous:
+        for key, before, after in (
+            ('host', previous.get('host'), observation['host']),
+            ('cpu_cores', previous.get('cpu_cores'), observation['cpu_cores']),
+            ('ram_total_bytes', previous.get('ram', {}).get('total_bytes'), observation['ram']['total_bytes']),
+        ):
+            if before != after:
+                changes.append({'resource': key, 'previous': before, 'current': after})
+        old = {row['uuid']: (row['id'], row['total_bytes']) for row in previous.get('gpus', [])}
+        new = {row['uuid']: (row['id'], row['total_bytes']) for row in observation['gpus']}
+        for uuid in sorted(old.keys() | new.keys()):
+            if old.get(uuid) != new.get(uuid):
+                changes.append({'resource': 'gpu:' + uuid,
+                                'previous': old.get(uuid), 'current': new.get(uuid)})
+    def bounded(available, limit):
+        return min(available, limit) if available is not None and limit is not None else available
+    allowed = policy['allowed_gpu_ids']
+    devices = [dict(row) for row in observation['gpus']
+               if allowed == 'all_visible' or row['id'] in allowed or row['uuid'] in allowed]
+    return {'hardware_changes': changes, 'effective_capacity': {
+        'observed_at': observation['observed_at'], 'host': observation['host'],
+        'cpu_cores': bounded(observation['cpu_cores'], policy['max_cpu_cores']),
+        'ram_bytes': bounded(observation['ram']['available_bytes'], policy['max_ram_bytes']),
+        'gpus': devices, 'gpu_probe_error': observation.get('gpu_probe_error'),
+    }}
+
+
 def _request(request):
     fields = {'host', 'job_seconds', 'cpu_cores', 'ram_bytes', 'gpus', 'storage', 'new_spend'}
     if not isinstance(request, dict) or set(request) != fields:
@@ -264,6 +332,104 @@ def _request(request):
             _number(row[key], key)
 
 
+def training_elapsed(clock, experiment_id, *, observed_at=None):
+    """Sum the existing execution owner's first-step segments, excluding setup gaps.
+
+    The owner records entry into each attempt's first actual training step and
+    closes that segment on exit/pause. Retain prior segments when resuming the
+    same experiment. This read-only validator cannot infer or attest first-step
+    execution from a PID, sparse progress log or caller-supplied timestamp.
+    """
+    if (not isinstance(clock, dict) or type(clock.get('schema_version')) is not int or clock['schema_version'] != 1
+            or not isinstance(experiment_id, str) or not experiment_id
+            or clock.get('experiment_id') != experiment_id
+            or not isinstance(clock.get('segments'), list)):
+        raise RegistryError('Training clock needs a matching stable experiment identity and segments')
+    def instant(value):
+        try:
+            parsed = datetime.fromisoformat(value)
+            if parsed.tzinfo is None or parsed.utcoffset() is None:
+                raise ValueError('timezone missing')
+            return parsed
+        except (TypeError, ValueError) as error:
+            raise RegistryError('Training clock requires timezone-aware first-step/end timestamps') from error
+    observed = instant(observed_at) if observed_at is not None else datetime.now(timezone.utc)
+    elapsed, previous_end, attempts = 0, None, set()
+    segments = clock['segments']
+    for index, segment in enumerate(segments):
+        if (not isinstance(segment, dict) or set(segment) != {'attempt_id', 'first_step_at', 'ended_at'}
+                or not isinstance(segment['attempt_id'], str) or not segment['attempt_id']
+                or segment['attempt_id'] in attempts):
+            raise RegistryError('Training clock requires distinct attempt identities and complete segments')
+        attempts.add(segment['attempt_id'])
+        start = instant(segment['first_step_at'])
+        end = instant(segment['ended_at']) if segment['ended_at'] is not None else observed
+        if (end < start or end > observed or (previous_end is not None and start < previous_end)
+                or (segment['ended_at'] is None and index != len(segments) - 1)):
+            raise RegistryError('Training clock segments overlap, run backwards or extend into the future')
+        elapsed += (end - start).total_seconds()
+        previous_end = end
+    return {'experiment_id': experiment_id, 'time_basis': 'training_from_first_step',
+            'training_elapsed_seconds': elapsed,
+            'training_state': 'not_started' if not segments else
+                'running' if segments[-1]['ended_at'] is None else 'ended',
+            'first_step_at': segments[0]['first_step_at'] if segments else None,
+            'observed_at': observed.isoformat()}
+
+
+def evaluate_duration(table, seconds, *, monitoring=False, response=None):
+    """Check one experiment's duration against an already selected policy.
+
+    job_notice_after_seconds is only a reminder; auto_approve_job_seconds is
+    the existing authorization ceiling. No response is recorded as consent.
+    Callers supply training time from the first actual step, carrying completed
+    training segments across resume; engineering preparation is a separate clock.
+    this helper neither owns that clock nor stops a process or a native Goal.
+    A response acknowledges/stops a notice, never grants more time than the table.
+    """
+    _number(seconds, 'experiment seconds')
+    if response not in (None, 'continue', 'stop'):
+        raise RegistryError('Duration response must be an actual continue/stop choice or omitted')
+    if table is None or table['status'] != 'active':
+        return {'status': 'SELECTION_REQUIRED', 'action': 'consult_execution_owner',
+                'notice_required': False, 'response': response}
+    policy = table['policy']
+    _validate_policy(policy)
+    ceiling, reminder = policy['auto_approve_job_seconds'], policy.get('job_notice_after_seconds')
+    status, action, notice = 'OK', 'continue', False
+    if monitoring and response == 'stop':
+        status, action = 'STOP_REQUESTED', 'checkpoint_stop'
+    elif seconds > ceiling:
+        status, action = 'NEEDS_APPROVAL', 'request_exception'
+    elif reminder is not None and seconds >= reminder:
+        status, notice = 'NOTICE_CONTINUE', response is None
+    return {'status': status, 'action': action, 'notice_required': notice,
+            'scope': 'single_experiment', 'seconds': seconds,
+            'time_basis': 'training_from_first_step',
+            'notice_after_seconds': reminder, 'approval_limit_seconds': ceiling,
+            'authorization_ref': table.get('selected_by'), 'response': response}
+
+
+def check_duration(root, session=None, *, elapsed_seconds=None, training_clock=None,
+                   experiment_id=None, response=None, observed_at=None):
+    """Read-only monitoring advice; popup delivery and process control stay with the owner."""
+    if (elapsed_seconds is None) == (training_clock is None):
+        raise RegistryError('Supply measured training seconds or the existing owner training clock, not both')
+    timing = None
+    if training_clock is not None:
+        timing = training_elapsed(training_clock, experiment_id, observed_at=observed_at)
+        elapsed_seconds = timing['training_elapsed_seconds']
+    table = read_table(root, session)
+    result = evaluate_duration(table, elapsed_seconds, monitoring=True, response=response)
+    if timing:
+        result.update(timing)
+        if timing['training_state'] == 'not_started' and result['status'] == 'OK':
+            result['status'] = 'TRAINING_NOT_STARTED'
+    result.update(table_path=str(table_path(root, session)),
+                  policy_revision=table['revision'] if table else None)
+    return result
+
+
 def evaluate(table, request, observation, *, stage):
     """Pure projected-peak check; an approval ceiling never claims physical capacity."""
     if stage not in ('plan', 'launch'):
@@ -280,16 +446,20 @@ def evaluate(table, request, observation, *, stage):
     checks = []
     def add(name, status, required, available):
         checks.append({'resource': name, 'status': status, 'required': required, 'available': available})
-    def fit(name, required, available):
-        add(name, 'NEEDS_ESTIMATE' if available is None else 'WAIT_RESOURCE' if required > available else 'OK', required, available)
+    def fit(name, required, available, capacity=None):
+        status = ('REPLAN_REQUIRED' if capacity is not None and required > capacity else
+                  'NEEDS_ESTIMATE' if available is None else 'WAIT_RESOURCE' if required > available else 'OK')
+        add(name, status, required, available)
     def ceiling(name, required, limit):
         if limit is not None:
             add(name, 'NEEDS_ESTIMATE' if required is None else 'NEEDS_APPROVAL' if required > limit else 'OK', required, limit)
     add('execution_host', 'OK' if request['host'] == observation['host'] else 'NEEDS_ESTIMATE', request['host'], observation['host'])
-    ceiling('job_seconds', request['job_seconds'], policy['auto_approve_job_seconds'])
+    duration = evaluate_duration(table, request['job_seconds'])
+    add('job_seconds', 'OK' if duration['status'] in ('OK', 'NOTICE_CONTINUE') else 'NEEDS_APPROVAL',
+        request['job_seconds'], duration['approval_limit_seconds'])
     ceiling('new_spend', request['new_spend'], policy['max_new_spend'])
-    fit('cpu_cores', request['cpu_cores'], observation['cpu_cores'])
-    fit('ram_bytes', request['ram_bytes'], observation['ram']['available_bytes'])
+    fit('cpu_cores', request['cpu_cores'], observation['cpu_cores'], observation['cpu_cores'])
+    fit('ram_bytes', request['ram_bytes'], observation['ram']['available_bytes'], observation['ram']['total_bytes'])
     ceiling('cpu_cores_limit', request['cpu_cores'], policy['max_cpu_cores'])
     ceiling('ram_bytes_limit', request['ram_bytes'], policy['max_ram_bytes'])
     allocated, seen = 0, set()
@@ -303,9 +473,13 @@ def evaluate(table, request, observation, *, stage):
         if device['uuid'] in seen:
             raise RegistryError('GPU index and UUID refer to the same device twice')
         seen.add(device['uuid'])
-        fit('vram:' + device['uuid'], required['peak_bytes'], device['free_bytes'])
-        if not policy['allow_gpu_sharing'] and (device['used_bytes'] > 0 or device['utilization_percent'] > 0):
-            add('exclusive:' + device['uuid'], 'WAIT_RESOURCE', 'idle GPU', device['used_bytes'])
+        fit('vram:' + device['uuid'], required['peak_bytes'], device['free_bytes'], device['total_bytes'])
+        if not policy['allow_gpu_sharing']:
+            occupants = device.get('process_ids')
+            if occupants or device['utilization_percent'] > 0:
+                add('exclusive:' + device['uuid'], 'WAIT_RESOURCE', 'no active GPU occupants', occupants)
+            elif occupants is None:
+                add('exclusive:' + device['uuid'], 'NEEDS_ESTIMATE', 'GPU process inventory', None)
         allocated += required['peak_bytes']
     current_vram = None if observation.get('gpu_probe_error') else sum(row['used_bytes'] for row in observation['gpus'])
     projected_vram = current_vram + allocated if current_vram is not None else None
@@ -319,17 +493,18 @@ def evaluate(table, request, observation, *, stage):
         if disk is None or disk['filesystem'] is None or disk['free_bytes'] is None:
             add('disk:' + path, 'NEEDS_ESTIMATE', sum(row[key] for key in STORAGE_FIELDS), None)
             continue
-        group = filesystems.setdefault(disk['filesystem'], {'required': 0, 'free': disk['free_bytes']})
+        group = filesystems.setdefault(disk['filesystem'], {'required': 0, 'free': disk['free_bytes'],
+                                                           'total': disk['total_bytes']})
         group['required'] += sum(row[key] for key in STORAGE_FIELDS)
         group['free'] = min(group['free'], disk['free_bytes'])
     for name, row in filesystems.items():
-        fit('disk_filesystem:' + name, row['required'], row['free'])
+        fit('disk_filesystem:' + name, row['required'], row['free'], row['total'])
     ceiling('dataset_bytes', totals['dataset_bytes'], policy['max_dataset_bytes'])
     ceiling('weight_bytes', totals['weight_bytes'] + totals['checkpoint_peak_bytes'], policy['max_weight_bytes'])
     ceiling('disk_bytes', sum(totals.values()), policy['max_disk_bytes'])
     statuses = {row['status'] for row in checks}
-    status = next((value for value in ('NEEDS_APPROVAL', 'NEEDS_ESTIMATE', 'WAIT_RESOURCE') if value in statuses), 'AUTO_APPROVED')
-    return {'status': status, 'checks': checks, 'current_total_vram_bytes': current_vram,
+    status = next((value for value in ('NEEDS_APPROVAL', 'REPLAN_REQUIRED', 'NEEDS_ESTIMATE', 'WAIT_RESOURCE') if value in statuses), 'AUTO_APPROVED')
+    return {'status': status, 'checks': checks, 'duration': duration, 'current_total_vram_bytes': current_vram,
             'projected_total_vram_bytes': projected_vram, 'storage_peaks': totals}
 
 
@@ -337,8 +512,8 @@ def check(root, session=None, *, stage, request=None, persist=True):
     """Reload the selected table and sample live state on every planning/launch check.
 
     Plan-only hosts can set persist=False, which reads without initializing or
-    changing the table. Estimates must cover a whole concurrently dispatched
-    group, including cached inputs' additional copies and atomic save peaks.
+    changing the table. Memory/storage estimates cover the concurrent dispatch;
+    job_seconds covers one independent experiment, not a serial queue's total.
     """
     table = read_table(root, session)
     if table is None and persist:
@@ -347,6 +522,7 @@ def check(root, session=None, *, stage, request=None, persist=True):
         _request(request)
     observation = probe(root, request['storage'] if request else ())
     result = evaluate(table, request, observation, stage=stage)
+    result.update(hardware_state(table, observation))
     result.update(stage=stage, table_path=str(table_path(root, session)),
                   policy_revision=table['revision'] if table else None,
                   observed=observation, request=request)
@@ -403,7 +579,12 @@ def markdown(table, result=None):
         ('CPU cores', limit(policy['max_cpu_cores']), str(observed.get('cpu_cores', 'unknown')), str(request.get('cpu_cores', 'unknown'))),
         ('Host RAM', limit(policy['max_ram_bytes'], bytes=True), f"{size(ram.get('available_bytes'))} available / {size(ram.get('total_bytes'))} total", size(request.get('ram_bytes'))),
         ('Total GPU VRAM', limit(policy['max_total_vram_bytes'], bytes=True), size(current_vram), size(result.get('projected_total_vram_bytes'))),
-        ('Single job duration', f"{policy['auto_approve_job_seconds'] / 3600:g} hours", 'no invented Goal total window', f"{request['job_seconds'] / 60:g} minutes" if request else 'not estimated'),
+        ('Single training duration', f"{policy['auto_approve_job_seconds'] / 3600:g} hours", 'from first actual training step; preparation separate', f"{request['job_seconds'] / 60:g} minutes" if request else 'not estimated'),
+        ('Single-job reminder', f"{policy['job_notice_after_seconds'] / 3600:g} hours" if policy.get('job_notice_after_seconds') is not None else 'not selected',
+         'optional notice; pending reply continues within authorization',
+         (result.get('duration') or {}).get('action', 'not checked')),
+        ('Process interruption', 'explicit user stop consent or specifically preauthorized condition',
+         'no reply: keep observing; do not interrupt', 'execution owner retains the exact confirmation'),
         ('Dataset growth', limit(policy['max_dataset_bytes'], bytes=True), 'existing bytes included in disk usage', size(peaks.get('dataset_bytes'))),
         ('Weights + save peaks', limit(policy['max_weight_bytes'], bytes=True), 'existing bytes included in disk usage', f"weights {size(peaks.get('weight_bytes'))}; checkpoint peak {size(peaks.get('checkpoint_peak_bytes'))}"),
         ('Disk growth', limit(policy['max_disk_bytes'], bytes=True), disk_state, size(total_peak)),
@@ -414,6 +595,8 @@ def markdown(table, result=None):
              '| Resource | Session authorization ceiling | Current state | Proposed peak / use |', '| --- | --- | --- | --- |']
     for row in rows:
         lines.append('| ' + ' | '.join(str(value).replace('|', '\\|').replace('\n', ' ') for value in row) + ' |')
+    if result.get('hardware_changes'):
+        lines += ['', 'Hardware inventory changed; recheck the experiment requirements against this sample.']
     return '\n'.join(lines) + '\n'
 
 
@@ -433,6 +616,13 @@ def main():
     inspect.add_argument('--request', help='JSON peak-requirements file; required for launch')
     inspect.add_argument('--read-only', action='store_true')
     inspect.add_argument('--markdown', action='store_true')
+    duration = sub.add_parser('duration', help='Read-only duration advice for one existing experiment')
+    clock_source = duration.add_mutually_exclusive_group(required=True)
+    clock_source.add_argument('--elapsed-seconds', type=float, help='Training seconds from the first actual step; exclude setup')
+    clock_source.add_argument('--training-clock', help='Existing owner JSON record containing first-step training segments')
+    duration.add_argument('--experiment-id', help='Stable experiment identity required with --training-clock')
+    duration.add_argument('--response', choices=['continue', 'stop'],
+                          help='Actual user reply to a notice; omit while unanswered')
     sub.add_parser('show')
     args = parser.parse_args()
     try:
@@ -444,6 +634,10 @@ def main():
         elif args.command == 'show':
             print(markdown(read_table(args.root, args.session)), end='')
             return 0
+        elif args.command == 'duration':
+            result = check_duration(args.root, args.session, elapsed_seconds=args.elapsed_seconds,
+                                    training_clock=read_record(args.training_clock) if args.training_clock else None,
+                                    experiment_id=args.experiment_id, response=args.response)
         else:
             result = check(args.root, args.session, stage=args.stage,
                            request=read_record(args.request) if args.request else None,
@@ -452,7 +646,9 @@ def main():
                 print(markdown(read_table(args.root, args.session), result), end='')
                 return 0 if result['status'] in ('AUTO_APPROVED', 'READY_TO_PLAN') else 3
         print(json.dumps(result, ensure_ascii=False, indent=2, allow_nan=False))
-        return 0 if result.get('status') not in ('SELECTION_REQUIRED', 'NEEDS_APPROVAL', 'WAIT_RESOURCE', 'NEEDS_ESTIMATE') else 3
+        return 0 if result.get('status') not in (
+            'SELECTION_REQUIRED', 'NEEDS_APPROVAL', 'WAIT_RESOURCE', 'REPLAN_REQUIRED', 'NEEDS_ESTIMATE',
+            'STOP_REQUESTED') else 3
     except (RegistryError, OSError) as error:
         print(f'ERROR: {error}', file=sys.stderr)
         return 2

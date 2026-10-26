@@ -12,7 +12,7 @@ principles within the user's scope and this skill's existing outputs, review
 standards, and recovery contracts. Carry them into nested research tasks and
 reviewer briefs. Continue authorized work through its necessary steps; honor
 budgets, blocking checkpoints, and stopping conditions.
-For a governed run, use [bounded inquiry](../shared-references/bounded-inquiry.md) at the existing monitoring cadence: inspect configured trajectory gates, read actual experiment evidence, and record a reasoned decision. A STOP must reach the execution owner and be followed by actual exit verification; a saved intention is insufficient. Ordinary review does not kill healthy training.
+For a governed run, use [bounded inquiry](../shared-references/bounded-inquiry.md) at the existing monitoring cadence: inspect configured trajectory gates, read actual experiment evidence, and record a reasoned decision. A STOP is a recommendation until the user explicitly confirms interruption (or previously authorized that exact automatic condition). Keep monitoring while a nonblocking stop notice is unanswered. After confirmation, the execution owner preserves recovery state and verifies actual exit; a saved intention is insufficient.
 Apply its [monitoring and mode boundaries](../shared-references/bounded-inquiry.md#monitoring-interruption-and-host-modes): Plan observation is read-only, so stopping jobs or writing notes requires execution authority. A healthy run waiting for results does not add stall iterations or block a Goal. Retain one monitoring owner and use the host's supported observation cadence.
 <!-- EVO-INQUIRY:END -->
 
@@ -44,6 +44,8 @@ Periodically read WandB metrics during training to catch problems early. Do not 
 - **This skill checks training QUALITY, not process HEALTH.** Process health (session alive, GPU utilization) is [watchdog.py](../../tools/watchdog.py)'s job.
 
 ## Workflow
+
+Read the existing execution owner’s `training-budget-observations.json` when present. Present newly recorded duration notices once, keep observing while optional choices are unanswered, and report invalid/missing timing evidence without substituting process uptime. A confirmed save-and-stop needs a validated checkpoint receipt and actual exit; do not impose an implicit five-second force-kill deadline.
 
 ### Step 1: Read WandB Metrics
 
@@ -99,7 +101,7 @@ mcp__codex__codex:
     What I'm unsure about: [specific concern]
 
     Please respond with exactly one of:
-    - STOP: clearly problematic, should kill training
+    - STOP: evidence supports recommending a stop; execution still needs the user's stop authorization
     - CONTINUE: looks fine, check again next interval
     - WAIT: not enough data to judge, check again sooner
 ```
@@ -108,7 +110,7 @@ mcp__codex__codex:
 
 | Decision | Action |
 |----------|--------|
-| **Stop** | Kill the training session. Save the WandB run URL, key metrics, and reason for stopping. Log to project notes for debugging. |
+| **Stop** | Save the evidence and offer a nonblocking continue/stop choice for this experiment. Keep monitoring while unanswered. The execution owner interrupts only after actual user confirmation or a specifically preauthorized condition, preserves recovery state and verifies exit. |
 | **Continue** | Do nothing. Will be invoked again at next interval (increase interval if consistently healthy). |
 | **Wait** | Do nothing but keep the current short interval (don't increase). |
 
@@ -129,6 +131,7 @@ Use both together:
 
 - Do not stop training on first sign of noise — some loss spikes are normal. Look at **trends over multiple checkpoints**.
 - When stopping training, always save the WandB run URL and key metrics as evidence.
+- A reviewer STOP, resource pressure, a configured stop command or Goal/Plan mode is not user consent. Never kill a process or close its screen merely to make room for another experiment. Silence leaves the live process running and the watch active.
 - If both WandB and log files are unreachable, report the connectivity issue and try again next interval. Do not assume training is broken.
 - Gradually increase check interval when healthy (10 → 20 → 30 → 60 min). Reset to 10 min after any anomaly.
 - This skill is meant to be automated via CronCreate — do not ask the user whether to set it up. Just set it.

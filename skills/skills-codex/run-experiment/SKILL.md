@@ -20,7 +20,7 @@ When executing comparisons, load [comparative-experiments](../shared-references/
 When the evaluation produces sample evidence, persist its compact prediction/selection records and the planned small output subset with the run's results before temporary storage or weights are released. Apply [case-study-analysis](../shared-references/case-study-analysis.md) for the relevant identities and storage limits. Do not add evaluation runs, regenerate missing samples or copy whole datasets merely to fill a case panel.
 
 For sustained execution or recovery, use [bounded inquiry](../shared-references/bounded-inquiry.md). Preserve the original owner/budget: reserve before launch, settle from terminal evidence and keep unfinished work visible. Registered executions can use its `settle-execution` helper; it never relaunches or accepts research gates.
-For a bound local run, follow [bounded inquiry](../shared-references/bounded-inquiry.md): the existing launcher enforces recorded workflow stops, single-execution requests and original timeout limits. Verify its actual terminal receipt before releasing the reservation; normal reflection does not interrupt healthy training.
+For a bound local run, follow [bounded inquiry](../shared-references/bounded-inquiry.md): the existing launcher requires an actual user confirmation for interruption or an explicitly preauthorized automatic stop condition; workflow review stops otherwise hold only new dispatch. Keep per-training time from the first actual step separate from any agreed overall wall deadline, and check live hardware and phase peaks before launch. Verify its actual terminal receipt before releasing the reservation; normal reflection does not interrupt healthy training.
 <!-- EVO-INQUIRY:END -->
 
 
@@ -66,7 +66,7 @@ nvidia-smi --query-gpu=index,memory.used,memory.total --format=csv,noheader
 python -c "import torch; print('MPS available:', torch.backends.mps.is_available())"
 ```
 
-Free GPU = memory.used < 500 MiB.
+Use the current session resource table and a fresh host probe. Shared admission compares measured phase peaks with free VRAM; exclusive admission checks observed GPU occupants and scheduler allocations. Driver baseline memory alone does not establish occupancy, and unknown process inventory does not establish an idle device. Never reuse a fixed free-memory gate from another machine.
 
 ### Step 3: Sync Code (Remote Only)
 
@@ -81,10 +81,14 @@ rsync -avz --include='*.py' --exclude='*' <local_src>/ <server>:<remote_dst>/
 
 #### Option B: git (when `code_sync: git` is set in AGENTS.md)
 
-Push local changes to remote repo, then pull on the server:
+Within existing commit/push authorization, stage only the reviewed deployment files, then pull on the server. Otherwise use the source allowlist with rsync:
 ```bash
 # 1. Push from local
-git add -A && git commit -m "sync: experiment deployment" && git push
+git diff -- <reviewed_source_files>
+git add -- <reviewed_source_files>
+git diff --cached
+# Commit and push only within the existing user-authorized delivery scope.
+git commit -m "sync: experiment deployment" && git push
 
 # 2. Pull on server
 ssh <server> "cd <remote_dst> && git pull"
@@ -138,10 +142,11 @@ Before deploying, ensure the experiment scripts have W&B logging:
    ```bash
    ssh <server> "wandb status"  # should show logged in
    # If not logged in:
-   ssh <server> "wandb login <WANDB_API_KEY>"
+   # Use the target's configured WANDB_API_KEY or credential store; do not place a key in this command.
+   ssh <server> "wandb status"
    ```
 
-> The W&B project name and API key come from `AGENTS.md` (see example below). The experiment name is auto-generated from the script name + timestamp.
+> The W&B project name may come from `AGENTS.md`; obtain credentials from the existing environment or credential store. Keep keys out of project guidance, snapshots, command history and logs. The experiment name is auto-generated from the script name + timestamp.
 
 ### Step 4: Deploy
 
@@ -149,7 +154,7 @@ Before deploying, ensure the experiment scripts have W&B logging:
 
 For each experiment, create a dedicated screen session with GPU binding:
 ```bash
-ssh <server> "screen -dmS <exp_name> bash -c '\
+ssh <server> "screen -dmS <exp_name> bash -c 'set -o pipefail; \
   eval \"\$(<conda_path>/conda shell.bash hook)\" && \
   conda activate <env> && \
   CUDA_VISIBLE_DEVICES=<gpu_id> python <script> <args> 2>&1 | tee <log_file>'"
@@ -177,6 +182,7 @@ Record the Modal app/function name, GPU type, timeout, mounted volumes, and wher
 
 ```bash
 # Linux with CUDA
+set -o pipefail
 CUDA_VISIBLE_DEVICES=<gpu_id> python <script> <args> 2>&1 | tee <log_file>
 
 # Mac with MPS (PyTorch uses MPS automatically)
@@ -195,7 +201,7 @@ ssh <server> "screen -ls"
 **Local:**
 Check process is running and GPU is allocated.
 
-### Step 6: Feishu Notification (if configured)
+### Step 6: Feishu Notification (within authorized delivery scope)
 
 After deployment is verified, check `~/.codex/feishu.json`:
 - Send `experiment_done` notification: which experiments launched, which GPUs, estimated time
@@ -216,7 +222,7 @@ If any artifact copy fails, do not destroy the instance.
 
 - ALWAYS check GPU availability first — never blindly assign GPUs
 - Each experiment gets its own screen session + GPU (remote) or background process (local)
-- Use `tee` to save logs for later inspection
+- Use `tee` with `set -o pipefail`; retain the trainer exit code and an attempt-bound terminal receipt. A screen disappearing or an output file appearing is not proof of successful training
 - Run deployment commands with `run_in_background: true` to keep conversation responsive
 - Report back: which GPU, which screen/process, what command, estimated time
 - If multiple experiments, launch them in parallel on different GPUs

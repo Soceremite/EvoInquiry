@@ -1,11 +1,12 @@
 {
   "schema_version": 1,
-  "version": "1.6.2",
+  "version": "1.6.3",
   "release_kind": "stable",
-  "status": "published-native-platform-validation-passed",
+  "status": "development-repairs-validated-unpublished",
   "source_base": {
-    "version": "1.6.1",
-    "commit": "bbe52387bbf0542d62b6cd8886c9187c573fa023"
+    "version": "1.6.2",
+    "commit": "c507e5256a19b3b22deca9a18f532ec30b48c5d5",
+    "working_tree_base": "fb3df67"
   },
   "runtime_changed": true,
   "inventory": {
@@ -14,14 +15,150 @@
     "retained_workflows": 83
   },
   "current_checks": {
-    "package_preservation": {
-      "artifact": "validation/release-1.6.2/publication/package.json",
-      "sha256": "5134c86851eb34af3d9435301eaa25f9b968812f347053532cd0ec6c43e17ead",
-      "status": "PASS"
+    "full_regression": {
+      "artifact": "validation/repair-1.6.3/full-suite.xml",
+      "sha256": "60ee07525aa8631927b40e4f4f1fd2d2e60583f6c2b1a98b7f88e04f3734a0f2",
+      "status": "FAIL_REPAIRED_BY_TARGETED_RERUN",
+      "passed": 1501,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 39,
+      "subtests_passed": 46,
+      "elapsed_seconds": 1519.49,
+      "scope": "Actual complete Linux/Python 3.14.7 run. Sole failure: release Windows list omitted two new modules. Runtime code was unchanged by the subsequent CI-only correction; original failed receipt retained."
+    },
+    "corrected_publication_contracts": {
+      "artifact": "validation/repair-1.6.3/corrected-publication-contracts.xml",
+      "sha256": "4382a459a1b248e45fd9b82ff745f8dd9f996a41f1992acba253edb660e904e1",
+      "status": "PASS",
+      "passed": 59,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "scope": "Release Windows coverage, publication arguments, plugin, mirror and preserved-package contracts after correcting release-beta.yml. Overlaps the full regression; counts are not additive."
+    },
+    "final_package": {
+      "artifact": "validation/repair-1.6.3/final-package.xml",
+      "sha256": "e51592b478dc990fe68f27d8958ccf034dc8a360c8c45f71ded5d75368eaf69e",
+      "status": "PASS",
+      "passed": 54,
+      "scope": "Package/mirror plus conservative parent-only lease and invalid checkpoint receipt checks; overlaps the full regression."
+    },
+    "earlier_behavior_regression": {
+      "artifact": "validation/repair-1.6.3/behavioral-regression.xml",
+      "sha256": "ae6f2a61ca98aa104dd4c09f57d6e4c123db7d1e20c86e62d7942ef852076008",
+      "status": "PASS",
+      "passed": 18,
+      "scope": "Before two more receipt/lease cases were added; all twenty new cases passed in the later full run."
+    },
+    "tested_inputs": {
+      "artifact": "validation/repair-1.6.3/tested-inputs.json",
+      "sha256": "1e626d44c347890ffcee21db4497cf93964cab0a1c081b0bd838df73d22f600d",
+      "status": "RECORDED",
+      "files": 995,
+      "scope": "Runtime/support, tests and ordinary CI inputs; unchanged runtime code since full regression."
+    },
+    "runtime_inputs": {
+      "artifact": "validation/repair-1.6.3/runtime-inputs.json",
+      "sha256": "32aef1b7ae85aa0404fe990a84de16effbe0c6bcd796bf27c5ff35956e2b1c47",
+      "status": "RECORDED",
+      "files": 500
+    },
+    "publication_ci_correction": {
+      "path": ".github/workflows/release-beta.yml",
+      "sha256": "bdd08c1f843f0bb13ab9169406b5585c7fbe022d6dc9fdc86631db23485719ba",
+      "validated_by": "corrected_publication_contracts"
+    },
+    "audit_findings": {
+      "total": 10,
+      "locally_fixed": 10,
+      "open": 0,
+      "scope": "Findings in the 1.6.3 audit, not universal coverage of every workflow/platform"
     },
     "skill_inventory": "PASS",
+    "package_preservation": "PASS",
+    "native_platform_ci": "NOT_RUN_FOR_1.6.3",
+    "default_installation": {
+      "artifact": "validation/repair-1.6.3/local-installation/receipt.json",
+      "sha256": "216b860303345ddfca267d6c9cf31dfa07ba3f010b24b1e68e76ae32597377c1",
+      "status": "PASS",
+      "runtime_files_verified": 500,
+      "version": "1.6.3",
+      "published": false,
+      "source": "/lyd/tools/.codex/plugin-sources/evo-inquiry-1.6.3-local-4d2938547417-20261026T093600Z",
+      "cache": "/lyd/tools/.codex/plugins/cache/evo-inquiry/evo-inquiry/1.6.3"
+    },
+    "native_skill_discovery": {
+      "artifact": "validation/repair-1.6.3/local-discovery/receipt.json",
+      "sha256": "b05779c79f226393cbdb2800d385b1d7a69ec107ea920492e165b1415b6024c2",
+      "status": "PASS",
+      "version": "1.6.3",
+      "evo_inquiry_skills": 89,
+      "discovery_errors": 0,
+      "source": "native Codex skills/list on default local profile"
+    },
     "release_note_wrapping": "PASS",
-    "git_diff_check": "PASS",
+    "git_diff_check": "PASS"
+  },
+  "validation_record": "docs/AUDIT_1_6_3_CN.md",
+  "practice": {
+    "native_goal": {
+      "artifact": "validation/repair-1.6.3/native-goal/result.json",
+      "sha256": "f7282eb147222c01dec43bba91c2339b919495c74c2fd4659d0f63ff6ba6408b",
+      "status": "PASS",
+      "model": "gpt-6.1-sol",
+      "thread_id": "01a17775-737b-7fe2-9b34-c202fd58dd8a",
+      "gpu_training": false,
+      "real_popup": false,
+      "mode": "goal",
+      "user_starts": 1,
+      "host_turns": 2,
+      "completed_steps": 210,
+      "automatic_host_continuation": true
+    },
+    "native_plan": {
+      "artifact": "validation/repair-1.6.3/native-plan/result.json",
+      "sha256": "c7cf05d1fe346c68fdf4e75abc6837f22a65715284f7e2fb3e7a847e6ed84718",
+      "status": "PASS",
+      "model": "gpt-6.1-sol",
+      "thread_id": "01a1777d-8d8d-7cc2-a6cf-9ffc0539bd9b",
+      "gpu_training": false,
+      "real_popup": false,
+      "mode": "plan",
+      "completed_steps": 180,
+      "sandbox": "readOnly",
+      "after_turn_continuation_tested": false
+    },
+    "native_ordinary": {
+      "artifact": "validation/repair-1.6.3/native-ordinary/result.json",
+      "sha256": "8a8c59c407190a57439d1cac44382408fea0337e91c1ea82d926bc48c1a8a3ec",
+      "status": "PASS",
+      "model": "gpt-6.1-sol",
+      "thread_id": "01a17781-d635-7ba1-a0e8-6f3e1cc2ce00",
+      "gpu_training": false,
+      "real_popup": false,
+      "mode": "default",
+      "guided_scenarios": 6,
+      "content_criteria": 10,
+      "content_review_by": "primary-maintainer-agent",
+      "independent_model_review": false
+    }
+  },
+  "limitations": [
+    "Current acceptance used short real CPU fixtures and guided dialogue, not hour-long GPU research, distributed checkpointing or native popup interaction.",
+    "Native Windows/macOS runtime CI has not been run for 1.6.3; both Windows validation lists now include timing and dispatch regressions.",
+    "Plan observation passed within one actual read-only host turn. Plan-only does not itself schedule another turn; model/tool latency is not strict real-time monitoring.",
+    "First-step timing and cooperative save receipts require trainer integration. Caller-supplied timing alone cannot attest actual first-step execution.",
+    "Hardware sampling is not atomic reservation; explicit device restrictions, resource ceilings, scheduler allocations, review gates and interruption permission still apply.",
+    "Existing frozen production owners and external scheduler deadlines are not hot-patched by installation. The previously blocked production Goal was not resumed by this repair.",
+    "All native cases retain their own source snapshots; the final queue wording and release-CI correction are covered by the ordinary case/package reruns rather than claiming every case used identical metadata.",
+    "The complete run retained its one CI-coverage failure. The correction passed the targeted release/plugin/mirror/package rerun; no second complete run was claimed."
+  ],
+  "previous_release": {
+    "version": "1.6.2",
+    "tag": "v1.6.2",
+    "source_commit": "c507e5256a19b3b22deca9a18f532ec30b48c5d5",
+    "release_url": "https://github.com/Soceremite/EvoInquiry/releases/tag/v1.6.2",
     "native_platform_ci": {
       "artifact": "validation/release-1.6.2/publication/release-ci.json",
       "sha256": "dbdadb7875503df540a2275775970b95ad44d75a06275b1320d0c3511a4443e3",
@@ -35,399 +172,288 @@
       "windows_pwsh": "PASS",
       "publication_job": "PASS",
       "python": "3.12"
-    },
-    "python": "3.14.7 | packaged by Anaconda, Inc. | (main, Aug 14 2026, 10:21:40) [GCC 14.3.0]",
-    "private_test_cleanup": {
-      "artifact": "validation/release-1.6.2/native-modes/private-cleanup.json",
-      "sha256": "e352bc87612a1097a86b8c056ce57bb18148f404da61db160a7a4218d301d5db",
-      "status": "PASS"
-    },
-    "experiment_plan_frontmatter": {
-      "status": "PASS",
-      "variants": [
-        "mainline",
-        "codex"
-      ]
-    },
-    "windows_queue_fix_local_regression": {
-      "artifact": "validation/release-1.6.2/ci-fix/regression.xml",
-      "sha256": "3d41fa4c66617efeab9d46fc3b11c5d3f28a18d9a84a9f2c6d84573e02aae457",
-      "status": "PASS",
-      "passed": 183,
-      "skipped": 13,
-      "failures": 0,
-      "errors": 0,
-      "elapsed_seconds": 127.024
-    },
-    "tested_inputs": {
-      "artifact": "validation/release-1.6.2/ci-fix/runtime-inputs.json",
-      "sha256": "1e4538d286d58a2351fa20f783c69a3e2b934e2b1baec0155db0d044971ea7c9",
-      "runtime_and_reference_inputs": 305,
-      "scope": "corrected runtime identities; no native Goal/Plan rerun"
-    },
-    "queue_newline_regression": {
-      "artifact": "validation/release-1.6.2/ci-fix/queue-line-ending.xml",
-      "sha256": "48a63def09ed1c335bd2915a19a68fcf6e0ef7ecc0bb02784a34abb0d7fb36e4",
-      "status": "PASS",
-      "passed": 23,
-      "failures": 0,
-      "errors": 0,
-      "skipped": 0,
-      "scope": "same corrected runtime; universal-newline test readiness check"
-    },
-    "default_installation": {
-      "artifact": "validation/release-1.6.2/publication/official-installation/receipt.json",
-      "sha256": "a9a257569add5598693b8d8f050448ae7af9dea39f1bfffa3a3ce76394d31c04",
-      "status": "PASS",
-      "public_files_verified": 1090,
-      "source_and_cache_version": "1.6.2",
-      "installed_build_kind": "checksum-verified-official-source-archive",
-      "unrelated_configuration_preserved": true
-    },
-    "default_native_discovery": {
-      "artifact": "validation/release-1.6.2/publication/official-installation/discovery/receipt.json",
-      "sha256": "cd0d7cde296220e0a1840b1e64b7ef88e6185fc1a968d9cf5ff94a2742da3d24",
-      "status": "PASS",
-      "entrypoints": 89,
-      "errors": 0,
-      "model_request_sent": false
-    },
-    "publication_preparation_regression": {
-      "artifact": "validation/release-1.6.2/publication/release-checks.xml",
-      "sha256": "313aa933eaf1025e98c58975360a8e89a93833eedeb5a3d841855d079c9a183e",
-      "status": "PASS",
-      "passed": 53,
-      "skipped": 0,
-      "failures": 0,
-      "errors": 0,
-      "scope": "release workflow, public package preservation and Codex mirror inventory"
-    },
-    "publication_runtime_identity": {
-      "artifact": "validation/release-1.6.2/publication/source-readiness.json",
-      "sha256": "44363d4baaa4ae4f871e58793431a8e5b773676d0ceb8ab808fca5ac77676841",
-      "status": "PASS",
-      "runtime_inputs_verified_unchanged": 305,
-      "scope": "only publication documentation changed since passing native platform CI"
-    },
-    "main_branch_ci": {
-      "artifact": "validation/release-1.6.2/publication/main-ci.json",
-      "sha256": "5ebea5ae1549b7da93ea6ca1b817371d161e22a87222d1134b72e52fc85eff33",
-      "status": "PASS",
-      "source_commit": "c507e5256a19b3b22deca9a18f532ec30b48c5d5",
-      "run_id": 40164900473,
-      "run_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/40164900473"
-    },
-    "published_assets": {
-      "artifact": "validation/release-1.6.2/publication/published-assets-verification.json",
-      "sha256": "b5aa0b7b8db2fee1b749a3a943279852bf421ccae6f1604e5fd7f628ee31ca34",
-      "status": "PASS",
-      "source_commit": "c507e5256a19b3b22deca9a18f532ec30b48c5d5",
-      "public_files": 1090,
-      "checksums_verified": true,
-      "archive_contents_match_committed_source": true,
-      "release_notes_match_source": true
     }
   },
-  "validation_record": "docs/VALIDATION_1_6_2.md",
-  "practice": {
-    "artifact": "validation/release-1.6.2/practical-receipt.json",
-    "sha256": "cb67936f6e481581de7cba2daf784c862c7a1df2f96e6ad87c8cee7821061406",
-    "status": "PASS",
-    "version": "1.6.2",
-    "kind": "actual-short-CPU-process",
-    "declared_job_seconds": 5400,
-    "session_tables": 1,
-    "real_user_authorization": false,
-    "gpu_training_performed": false
-  },
-  "limitations": [
-    "Local correction regression used Python 3.14.7. The corrected runtime passed Linux/macOS full CI and both targeted native Windows shell jobs using Python 3.12.",
-    "Native Plan/Goal cases used approximately four-minute paced CPU jobs; hour-long unattended research, UI stall indicators and context compaction were not tested.",
-    "Observation cadence includes model and tool latency; some checks exceeded the requested 20–30-second interval. This is not a real-time watchdog guarantee.",
-    "A 90-minute allocation was declared and admitted; no 90-minute training was performed.",
-    "GPU state was probed; UUID child visibility used fixture observations without real GPU allocation.",
-    "Capacity sampling is not atomic reservation or process isolation; sharing depends on the existing scheduler.",
-    "Unbound legacy launchers require the documented integration; cross-project continuation carries the original table owner."
-  ],
-  "previous_release": {
-    "version": "1.6.1",
-    "tag": "v1.6.1",
-    "source_commit": "bbe52387bbf0542d62b6cd8886c9187c573fa023",
-    "release_url": "https://github.com/Soceremite/EvoInquiry/releases/tag/v1.6.1"
-  },
   "publication": {
-    "published": true,
-    "tag": "v1.6.2",
-    "state": "published-stable",
-    "installed_plugin_version": "1.6.2",
-    "source_commit": "c507e5256a19b3b22deca9a18f532ec30b48c5d5",
-    "installed_cache_contains_native_planning_fix": true,
-    "configured_marketplace_source_version": "1.6.2",
-    "installed_build_kind": "checksum-verified-official-source-archive",
-    "installed_cache_contains_latest_windows_queue_fix": true,
-    "authorized": true,
-    "method": "tag-triggered-release-workflow",
-    "release_url": "https://github.com/Soceremite/EvoInquiry/releases/tag/v1.6.2",
-    "release_id": 423164742,
-    "published_at": "2026-10-25T05:20:58Z",
-    "latest_stable": true,
-    "prerelease": false,
-    "draft": false,
-    "workflow_run_id": 40164900524,
-    "workflow_run_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/40164900524",
-    "installed_plugin_replaced": true,
-    "installed_public_files_match_release": 1090,
-    "asset_sha256": {
-      "evo-inquiry-1.6.2.tar.gz": "af47aba87a0409a3d63dc31b3328c798f91519392363b0bd392b2d434a2c852c",
-      "evo-inquiry-1.6.2.zip": "0bb00c7743070684deb175cfbfcef962794f3ca63b7dca8a87fc7d2ec09eb776",
-      "release-manifest.json": "8eb6406030d76a6789f6df23ef07bf262e20b3f227261ea748d136a3a95e4956",
-      "SHA256SUMS": "566c815a524784ec4b00bf607af6dd9a40e3355ff5f2674930e39a7e07ab3f2a"
-    },
-    "tag_snapshot_note": "The tagged validation snapshot records readiness before its publication workflow; this closeout records the observed workflow, published assets and official local installation."
+    "published": false,
+    "tag": "v1.6.3",
+    "state": "development-uncommitted",
+    "installed_plugin_version": "1.6.3",
+    "installed_build_kind": "tested-audit-repair-local-development-snapshot",
+    "latest_published_stable": "v1.6.2",
+    "archives_built": false,
+    "configured_marketplace_source_version": "1.6.3",
+    "installed_plugin_replaced": true
   },
-  "assessed_at": "2026-10-25T05:34:41.119749+00:00",
+  "assessed_at": "2026-10-26T09:39:47.390382+00:00",
   "runtime_sha256": {
-    "VERSION": "a2d5e268fe70979caccd895156b3d33bd61a3cc7e660ab7a5b07066849b3e248",
-    ".codex-plugin/plugin.json": "8aa9233ac319302141a4d2267db91033bda0a359ed661df13a8c79ac1c5dc55b",
-    "tools/resource_budget.py": "e3b09b783812de7305ffd7ccdf3845a4cb935f26a1cca53cc92ebc373252710d",
-    "tools/execution_registry.py": "6a48656529abb8a7d0d9d3798deda9704845fe92e1e608d488f5ad6d0929e922",
-    "skills/experiment-queue/scripts/queue_manager.py": "07ede99b1668ff7d12b1d2a507c7ae974dc06ff61258e1d23c3e869b1cce0dcb",
-    "tools/skill_contracts.py": "84c62439059f365943a2e50c8ed016774331a51fe77f355facedcf5db247523d",
-    "tools/skill-contracts.json": "d9b4162e6ae83413d5939cdb905bdf381f267580a3b8b1b8ef7f5e1f805e325a",
-    "tools/publication-policy.json": "3d45ff1e4d58040e6acf9a36c0665df5576ae8b90e4471d80b56b8856d6e1cc6",
-    "tools/verify_evo_inquiry.py": "0e6ab232fd4f5fb3118bab3cb1b821a39b5e3046aeba533127608aa171d65059",
-    "skills/shared-references/evo-inquiry.md": "f32db6f3c559ee3ecccda15e49b63277a40af87e60700d102953b2f7f01a7a17",
-    "skills/skills-codex/shared-references/evo-inquiry.md": "4145f1c982f945518429fa81d8941adb6578c924c0edc803671c090728148efd",
-    "skills/shared-references/resource-budget.md": "878553713c4fa95f77cea71d8acac9808e02b8f5998f7ebcea379fa66a492e15",
-    "skills/skills-codex/shared-references/resource-budget.md": "878553713c4fa95f77cea71d8acac9808e02b8f5998f7ebcea379fa66a492e15",
-    "skills/shared-references/bounded-inquiry.md": "faae18af915be0c85eda7d1ea863091fc9fa238a46fd15c1406cf612f834e155",
-    "skills/skills-codex/shared-references/bounded-inquiry.md": "faae18af915be0c85eda7d1ea863091fc9fa238a46fd15c1406cf612f834e155",
-    ".github/workflows/test-suite.yml": "13c2fc64e7b89e4125817f8d5a06a9babdf57e595834f5f43f42798dcaef1f7d",
-    ".github/workflows/release-beta.yml": "c79318cd6d354f935c3b056001814164c57d9376c27ab5018773107a6d3ff607",
-    "tests/test_resource_budget.py": "fc62530d0cf5e4e2d458f34f044878a43fd772ad10dc38c374b17e5e2222e253",
-    "tests/test_governed_queue.py": "d5b02f4467da9bb760e137b6b19b69fd2cfd226a898ed5a8673ec10150003d24",
-    "RELEASE_NOTES.md": "934823e6a69f511361531c1718f76b0dd881c6d8ff96c38859d3113d83cdec86",
+    ".codex-plugin/plugin.json": "7d8502133a08117f291d91bbc8f3a583544e37fed1769d1d5b0dba8903d5252f",
+    ".github/workflows/release-beta.yml": "bdd08c1f843f0bb13ab9169406b5585c7fbe022d6dc9fdc86631db23485719ba",
+    ".github/workflows/test-suite.yml": "c1894060fd28d257dff180f9bc70be8cbefd04203f49afe2b610e4a3e31e9fe5",
+    "RELEASE_NOTES.md": "e72fe880a76463b1cbc9545abd35cbdcf90d970f33e545f58dbb477e3184bede",
+    "VERSION": "86f8fa832a76358201d6e2fcf0bb47727efe2db23af730db64cead6527776bea",
+    "skills/dse-loop/SKILL.md": "19a2f7dc4621614c0735909a9a5c8ea1dbc49206d4bbab05eb547f360319c0f6",
     "skills/experiment-plan/SKILL.md": "3649609f46cd099ef62c88d0c0153dfae0b3436a59070b588b956c355382f882",
+    "skills/experiment-queue/SKILL.md": "771b1d50991a7de4b040230d0dc297bfd790a98e0f3c6751c4bb047ca7dc54c8",
+    "skills/experiment-queue/scripts/queue_manager.py": "c491d1adce036a0fe66ae5149e171b4193475b8636e6331fb1cc4a6ea6a080bf",
+    "skills/research-pipeline/SKILL.md": "1e5e1d08f5ab37cfe715e93ff20c78980641a00871b3784599e9a5137111f411",
+    "skills/run-experiment/SKILL.md": "141621836b814b4871c8919d78a0672e4282bf06e20d5fcf578718422215b8f7",
+    "skills/shared-references/bounded-inquiry.md": "5baf63883c897019c26f849de335d1fc6b3ad7a377240cd931f7596f2d2509fb",
+    "skills/shared-references/evo-inquiry.md": "e78149b8dbd647cd8ffecd598f1f87ba9a8ce4080adc0003b175e5b78923ea14",
+    "skills/shared-references/external-cadence.md": "4bbdfe9417661d8907336ae1fc5312068722ccb633099a68ab3bc7d2687511f8",
+    "skills/shared-references/resource-budget.md": "1981681d750d198c177d0d80525d17edd8618547c0009045d60f0a7d7a38b31e",
     "skills/skills-codex/experiment-plan/SKILL.md": "dc3fa3a201557af241848fa4efd61a6356f44908c0e64e153746471009f1d894",
-    "tests/test_execution_governance.py": "cda551f50bdee89fe18752f4889bddebb9fb15696e930741a7545c51977f92ff"
+    "skills/skills-codex/experiment-queue/SKILL.md": "e774c046dda26fd63985e6220887cbb54d275118129a02a595e7f073a4b2f412",
+    "skills/skills-codex/run-experiment/SKILL.md": "85ca4d8c61377c0588ffa31bcb975fd83ebfe184a8ff7a9693b734c72f804e7d",
+    "skills/skills-codex/shared-references/bounded-inquiry.md": "5baf63883c897019c26f849de335d1fc6b3ad7a377240cd931f7596f2d2509fb",
+    "skills/skills-codex/shared-references/evo-inquiry.md": "eaf940d4fb9ee7ea58740b1916ff57d6bb6c30aa0503ef44faf02dfe90b8078d",
+    "skills/skills-codex/shared-references/external-cadence.md": "71e5777806aa0e62b227e875eba27465c1bf8b0fd748b05067a5b2507b57637c",
+    "skills/skills-codex/shared-references/resource-budget.md": "1981681d750d198c177d0d80525d17edd8618547c0009045d60f0a7d7a38b31e",
+    "skills/skills-codex/training-check/SKILL.md": "4b153f553e97052701e2038a22967679967ac6e892e0a7f12aadd5042dfbb1dc",
+    "skills/training-check/SKILL.md": "6dfca152bcfec0c3ebbb35466556b6211b88c955381b9ec66fbfb79260ae440a",
+    "tests/test_codex_skill_mirror.py": "cf98aa63659a8eafe98ff284d9e8d5d3b5b5c876cb0b62228611ece0565bf42c",
+    "tests/test_execution_governance.py": "63634256d80d2730ee7e5f615336e0940ddba1ae291f5d835b354538a31fe8f8",
+    "tests/test_governed_queue.py": "e6cbed5c9f1412b6c0ec70210aa400a58d00923220749dd9322af17e1153d4c7",
+    "tests/test_research_control.py": "9abbd6fa8c5a9bd681711a16a3cb79b1b89d559007223d60f16e8886febb5c0d",
+    "tests/test_resource_budget.py": "fdd9a9cdc2a9fc5030196f1714673eb2661f756f0ef7f271a6ff63fc2dc9cefe",
+    "tests/test_training_budget_clock.py": "2cf181fe60c5f67de4ee05ce5602dcc24b114b0930b679e6b90822bbe3c5e212",
+    "tools/execution_registry.py": "bad4d14ec0a12ea0974c6811620af4acfccaf3083041b6d5eb833140186ea41d",
+    "tools/publication-policy.json": "3d45ff1e4d58040e6acf9a36c0665df5576ae8b90e4471d80b56b8856d6e1cc6",
+    "tools/research_control.py": "9915f0f76327340cd6725d91945abd62b27ddebc10525768ba78029ab63d6a7b",
+    "tools/resource_budget.py": "3962e5b023227cab2a21db142d9093e9f5e6ea42c52d8081c9948648b3fc4d62",
+    "tools/skill-contracts.json": "55810d5ca8abb1357f40e7be4325272b7403ca52c1ca80ba0c31c3c8aa363d3f",
+    "tools/skill_contracts.py": "e7b5e5e32398e592586a23ffeed8c273bdaace1f58a322ab7948d3198b80fa84",
+    "tools/verify_evo_inquiry.py": "0e6ab232fd4f5fb3118bab3cb1b821a39b5e3046aeba533127608aa171d65059",
+    "tools/run_state.py": "286bc673c7041f48cea848db08886cec053176fea3951b4d0954ba0d55ed0f2c",
+    "tests/test_dispatch_monitor_repairs.py": "f15b692e2927ee16b0812806aaf4c77f7c02218e5c090cb1b61cbb8e493f6c8d",
+    "skills/skills-codex/idea-creator/SKILL.md": "661988f2461364b70e7123407dea753a0fc720deff5d6998407ef3ff68133046",
+    "skills/skills-codex/idea-discovery/SKILL.md": "5aff09daa4b84e8c92dde11d05eb680f179e44868fa8e856997b9715c0203392",
+    "skills/skills-codex/feishu-notify/SKILL.md": "6e1c2056b3643dd00df4fecb489f29b917034fd35f2feec961a091312615e1ac"
   },
-  "retained_checks": {
-    "full_regression_before_final_edge_cases": {
-      "artifact": "validation/session-resource-budget/full-suite.xml",
-      "sha256": "2587b8f24881760b1e7735d14ac55351a27614f0594199eee5f7061ea59a42ef",
-      "tests": 1493,
-      "failures": 0,
-      "errors": 0,
-      "skipped": 39,
-      "elapsed_seconds": 548.415,
-      "reported_passed": 1408,
-      "reported_subtests_passed": 46,
-      "phase": "before-final-two-resource-edge-cases-and-version-metadata"
-    },
-    "previous_practical_run": {
-      "artifact": "validation/session-resource-budget/practical-receipt.json",
-      "sha256": "6339853c30dbf821b3b197ccaa1d9e2537d1675a7ac00595625ccb653a4f9985",
+  "prior_patch_checks_before_first_step_hardware_consent": {
+    "duration_and_owner_regression": {
+      "artifact": "validation/duration-policy/reminder-regression.xml",
+      "sha256": "a3471138e1d2e1104a855245086b502082c429218e78c595392595312cff681c",
       "status": "PASS",
-      "kind": "actual-short-CPU-process",
-      "declared_job_seconds": 5400,
-      "session_tables": 1,
-      "real_user_authorization": false,
-      "gpu_training_performed": false
-    },
-    "full_regression_before_native_guidance_correction": {
-      "artifact": "validation/release-1.6.2/full-suite.xml",
-      "sha256": "d05bc6f8bbebf9e2a8aea9cc41efc291b7793bf98a2efe9ca2b1a3b70e8c13ba",
-      "tests": 1495,
-      "failures": 0,
-      "errors": 0,
-      "skipped": 39,
-      "elapsed_seconds": 541.252,
-      "reported_passed": 1410,
-      "reported_subtests_passed": 46,
-      "phase": "before-native-session-guidance-correction"
-    },
-    "before_native_guidance_correction_source_identity": {
-      "artifact": "validation/release-1.6.2/test-summary.json",
-      "sha256": "ddafd0e29ae3dd315e33d5eeccc0906cd96d0004d915dd456a8c5b5c22a7d93c",
-      "status": "PASS",
-      "files_verified_unchanged": 978
-    },
-    "before_native_guidance_correction_tested_inputs": {
-      "artifact": "validation/release-1.6.2/tested-inputs.json",
-      "sha256": "54f393aa6b130c18dc38e563f01e1cb764999e667e2c427afe587e455aa25da5"
-    },
-    "resource_queue_before_final_profile_clarification": {
-      "artifact": "validation/session-resource-budget/final-integration.xml",
-      "sha256": "7846bf9f7142d16eb6f751e9ca302fc264ec002163a03259d8a87687c9dd3ffb",
-      "tests": 45,
+      "passed": 196,
       "failures": 0,
       "errors": 0,
       "skipped": 0,
-      "elapsed_seconds": 25.683,
-      "passed": 45
+      "elapsed_seconds": 364.97,
+      "scope": "Corrected duration runtime before final Goal recovery guidance and version metadata."
     },
-    "version_preparation_before_final_profile_clarification": {
-      "artifact": "validation/session-resource-budget/version-preparation.xml",
-      "sha256": "9b9b283521b6c51a7e7178951524b5cf6886c23d5c1c577dad890795b2175ed8",
-      "tests": 67,
+    "version_preparation": {
+      "artifact": "validation/duration-policy/version-preparation.xml",
+      "sha256": "b8048a16fd09908df84e5e38638ea7f9a11d8d01b4502e91307eada95a284d43",
+      "status": "PASS",
+      "passed": 57,
       "failures": 0,
       "errors": 0,
       "skipped": 0,
-      "elapsed_seconds": 13.926,
-      "passed": 67
+      "elapsed_seconds": 57.59,
+      "scope": "Plugin version, release workflows, Codex mirror and retained package contracts on 1.6.3 development source. Overlaps the preceding regression; counts are not unique totals."
     },
-    "native_session_guidance_regression_before_final_profile_clarification": {
-      "artifact": "validation/release-1.6.2/native-session/guidance-regression.xml",
-      "sha256": "413c98c29f9527194bf19b7531c34f289aa6ede3fe468f57508300ff9090bee1",
-      "status": "PASS",
-      "passed": 95,
-      "failures": 0,
-      "errors": 0,
-      "skipped": 0,
-      "scope": "resource helper, queue integration, skill mirror and frozen package contracts after first-choice turn-return correction"
-    },
-    "ordinary_native_sessions_before_final_profile_clarification": {
-      "artifact": "validation/release-1.6.2/native-session/receipt.json",
-      "sha256": "fe22387d9e7d16a11f0faca1ea5e08d6555f07f686baefe6c0781fae578c3cf8",
-      "status": "PASS",
-      "independent_threads": 2,
-      "completed_turns": 4,
-      "model": "gpt-6.1-sol",
-      "reasoning_effort": "xhigh",
-      "codex_cli": "codex-cli 0.164.0",
-      "real_user_authorization": false,
-      "gpu_training_performed": false,
-      "native_goal_or_plan_mode_tested": false,
-      "retained_failed_attempts": 3
-    },
-    "ordinary_native_session_source_identity": {
-      "artifact": "validation/release-1.6.2/native-session/runtime-identity.json",
-      "sha256": "120341be6a2d38d89fe7b1cb1e5ce4b640e62bbe79ec52cfc5d8ce83ae27fa06",
-      "status": "PASS",
-      "files_verified_unchanged": 305
-    },
-    "ordinary_native_session_discovery": {
-      "artifact": "validation/release-1.6.2/native-session/discovery.json",
-      "sha256": "68a6bd33879d5b8f9fd61aef99a3397898f7cfaba5bb622566865ea69029ed9f",
-      "status": "PASS",
-      "codex_entrypoints_verified": 89,
-      "runtime_and_reference_inputs_verified": 305
-    },
-    "default_installation_before_synchronization": {
-      "artifact": "validation/release-1.6.2/native-session/default-installation.json",
-      "sha256": "7046d5dbf02a66d11f135ac2f9ce9df8b940f79f3404253616f942e40ee4bb50",
-      "status": "correction-not-synchronized",
-      "observed_version": "1.6.2"
-    },
-    "before_windows_queue_fix_post_native_guidance_regression": {
-      "artifact": "validation/release-1.6.2/native-modes/guidance-regression-final.xml",
-      "sha256": "caf15856320870822b576ccd7b663f5d3a8bb60cdf4bd070e6099df692d11976",
-      "status": "PASS",
-      "passed": 95,
-      "failures": 0,
-      "errors": 0,
-      "skipped": 0,
-      "elapsed_seconds": 37.17,
-      "scope": "resource admission, governed queue, skill mirrors and package contracts after final session-profile clarification"
-    },
-    "before_windows_queue_fix_source_identity": {
-      "artifact": "validation/release-1.6.2/native-modes/runtime-identity.json",
-      "sha256": "8ac4013ed4b9ebdd21731039df6bbfce5cbbf3c7b02c7c2626fda0ce93ab6814",
-      "status": "PASS",
-      "files_verified": 305,
-      "source_private_package_and_private_cache_match": true
-    },
-    "before_windows_queue_fix_tested_inputs": {
-      "artifact": "validation/release-1.6.2/native-modes/runtime-inputs.json",
-      "sha256": "f4d72676bf7f634aa61a99ba46a6520b08049e546a6fdb3e649b694d642cf6c6",
-      "status": "PASS",
+    "skill_inventory": "PASS",
+    "package_preservation": "PASS",
+    "release_note_wrapping": "PASS",
+    "git_diff_check": "PASS",
+    "native_platform_ci": "NOT_RUN_FOR_1.6.3",
+    "tested_inputs": {
+      "artifact": "validation/duration-policy/runtime-inputs-before-first-step-hardware-consent.json",
+      "sha256": "d91b1bd47914b651e6495a4a759cb408531fcdb5fb48942eb43d12c6ce9236d9",
+      "status": "RECORDED",
       "runtime_and_reference_inputs": 305,
-      "codex_entrypoints": 89
+      "scope": "Current runtime matches the fresh native Plan snapshot; Goal snapshot differs only in mainline Plan wording and its protected-file digest registration."
     },
-    "before_windows_queue_fix_native_goal_plan_sessions": {
-      "artifact": "validation/release-1.6.2/native-modes/receipt.json",
-      "sha256": "9b5356affdc6f4743def80e59230be1cd4b00c1684b7ba0e1a0c5cfbf5fa51ab",
+    "default_installation": {
+      "artifact": "validation/duration-policy/local-installation-1.6.3-scope/receipt.json",
+      "sha256": "cfde9c0406e745c0c5dcaddb9870cee028ac4ec3b327685ad604321cca8391cd",
       "status": "PASS",
-      "actual_native_modes": true,
-      "cases": 3,
-      "goal_client_turns": 1,
-      "goal_host_turns": 2,
-      "goal_completed_turns": 2,
-      "paced_cpu_training_seconds_each": 240,
-      "hour_long_training": false,
-      "gpu_training": false
-    },
-    "before_windows_queue_fix_default_installation": {
-      "artifact": "validation/release-1.6.2/native-modes/default-installation/receipt.json",
-      "sha256": "371885791d078251ee37ae8e8ecf1ed708b7746ed9a58783d10538d9a1be4ef4",
-      "status": "PASS",
-      "marketplace_source_version": "1.6.2",
-      "cache_version": "1.6.2",
+      "version": "1.6.3",
       "runtime_files_verified": 305,
-      "unrelated_configuration_preserved": true
+      "source_kind": "tested-local-continuation-scope-development",
+      "published": false
     },
-    "before_windows_queue_fix_default_native_discovery": {
-      "artifact": "validation/release-1.6.2/native-modes/default-installation/discovery/receipt.json",
-      "sha256": "f347333393e5793a83f9328bdb547969f1a304ab35ca8e529cebc902ec323060",
+    "default_native_discovery": {
+      "artifact": "validation/duration-policy/local-discovery-1.6.3-scope/receipt.json",
+      "sha256": "32fc30455e7c87b86f72642ce0fa14dfa3f09c0fd8829a535ba6bba94c7a5896",
       "status": "PASS",
+      "version": "1.6.3",
       "entrypoints": 89,
       "errors": 0,
       "model_request_sent": false
     },
-    "before_newline_fixture_native_ci": {
-      "artifact": "validation/release-1.6.2/ci-fix/before-line-ending-ci.json",
-      "sha256": "b3995fe2679a2c179c8a8d141c240d9a09efbd3242ba69e6593d33da80085517",
-      "status": "functional-fixes-passed-new-test-crlf-failed",
-      "source_commit": "68038cc2e2bd7c45e4413c02c42e17fd9eda199b"
-    },
-    "initial_1_6_2_native_platform_ci": {
-      "artifact": "validation/release-1.6.2/ci-fix/initial-ci.json",
-      "sha256": "8f1f39a9837a1fbe7e1da80fffdc3d556f46cf97b686b549cc5fd29518e460e2",
-      "status": "initial-source-windows-failed-linux-macos-passed",
-      "source_commit": "30ca828d6c9275f7b420ebc859621e8af79980a3",
-      "corrected_commit_native_ci": "required",
-      "windows_resource_and_queue_modules_configured": true
-    },
-    "pre_publication_package_preservation": {
-      "artifact": "validation/release-1.6.2/ci-fix/package.json",
-      "sha256": "5134c86851eb34af3d9435301eaa25f9b968812f347053532cd0ec6c43e17ead",
-      "status": "PASS"
-    },
-    "before_tag_corrected_runtime_native_ci": {
-      "artifact": "validation/release-1.6.2/ci-fix/corrected-ci.json",
-      "sha256": "e1100c103b2d5d87fdb79214fc6de31281943309e91343cfd096cac0a36a66e5",
+    "continuation_scope_regression": {
+      "artifact": "validation/duration-policy/continuation-scope-regression.xml",
+      "sha256": "80de96924f508d30e614d4357b1df1b67d8b9038bc7c747b7f42fd71ecc3f8fd",
       "status": "PASS",
-      "source_commit": "d56f9f4ceceb375ea46f5ebbb9d3be4d2f021e6a",
-      "run_id": 40105479143,
-      "run_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/40105479143",
-      "linux_full_suite": "PASS",
-      "macos_full_suite": "PASS",
-      "windows_powershell_exe": "PASS",
-      "windows_pwsh": "PASS",
-      "python": "3.12"
+      "passed": 126,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "elapsed_seconds": 138.523,
+      "scope": "Iteration counting, reflection, bounded control, auto-proceed, package contracts and mirrors. Before final mainline-only Plan wording alignment."
     },
-    "before_official_archive_default_installation": {
-      "artifact": "validation/release-1.6.2/ci-fix/default-installation/receipt.json",
-      "sha256": "e2e110719fa245a8e72162e444fe6d598656dd59377ef28adc9a71603f7a5b56",
+    "final_contracts": {
+      "artifact": "validation/duration-policy/continuation-final-contracts.xml",
+      "sha256": "4a7daaa8903d041968b9a3f8943939de22d70654d84e0271e1f9aba29396f731",
       "status": "PASS",
+      "passed": 52,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "elapsed_seconds": 40.721,
+      "scope": "Final package contracts and Codex mirrors after mainline Plan wording alignment. Counts overlap the preceding regressions."
+    },
+    "separate_native_observations": {
+      "goal": {
+        "artifact": "validation/duration-policy/native-scope-goal/separate-observation-proof.json",
+        "sha256": "b01675f845cddf1a71d66ef71b00f0e4c268debfb0d3375acbf8e709d1d39bb2",
+        "status": "PASS"
+      },
+      "plan": {
+        "artifact": "validation/duration-policy/native-scope-plan/separate-observation-proof.json",
+        "sha256": "0b68ec8365f220cf2fddbc88afae2c5c25ce5f4fc2a19fecdf8a2d93c8ca3b0a",
+        "status": "PASS"
+      },
+      "scope": "Multiple separate commands observed advancing live progress before terminal evidence; a single read of the whole log does not count as multiple monitoring checks."
+    }
+  },
+  "prior_patch_checks_before_audit_repair": {
+    "first_step_hardware_consent_regression": {
+      "artifact": "validation/duration-policy/first-step-hardware-consent-final.xml",
+      "sha256": "9049ddb93c3d555c3f8857dd5c8e075a55421115583a080fb740e5af4404b1ac",
+      "status": "PASS",
+      "passed": 184,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "elapsed_seconds": 338.375,
+      "scope": "First-step and resumed training clocks, current hardware admission, actual owned CPU processes, user-confirmed stopping and queue execution. No production process interrupted."
+    },
+    "package_mirror_and_render_regression": {
+      "artifact": "validation/duration-policy/first-step-hardware-consent-contracts-corrected.xml",
+      "sha256": "18bca84c1459ff3d488f2ba494a2e3404362fb8c39c743b83c6ffc59603471dd",
+      "status": "PASS",
+      "passed": 65,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "elapsed_seconds": 44.376,
+      "scope": "Final package/mirror/auto-proceed/plugin/release contracts and CLI table rendering. One rendering test overlaps the 184-case runtime suite."
+    },
+    "earlier_contract_failure": {
+      "artifact": "validation/duration-policy/first-step-hardware-consent-contracts.xml",
+      "sha256": "3601c45afe7701a2dd2fe7ff0e4d97d824798411aaf5010795926c3a6678861b",
+      "status": "FAIL",
+      "passed": 64,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 0,
+      "elapsed_seconds": 46.466,
+      "scope": "Retained failure: one old test required an unconditional stop_command. Removed that obsolete expectation; actual user-consent enforcement is tested with live CPU workers. Superseded by corrected regression."
+    },
+    "tested_inputs": {
+      "artifact": "validation/duration-policy/runtime-inputs.json",
+      "sha256": "27b6a77b73c5607bab54c0513e45b68fde4ffa5dca8533f947a5ead46ddc910d",
+      "status": "RECORDED",
+      "runtime_and_reference_inputs": 305,
+      "scope": "Latest first-step, hardware and process-consent source; earlier native Goal/Plan snapshots precede this revision."
+    },
+    "live_hardware_observation": {
+      "artifact": "validation/duration-policy/first-step-hardware-consent/live-host-observation.json",
+      "sha256": "b148765369a2340fcce216f4d36a18c6ee8b72df1742245eac73af268f874fa6",
+      "status": "READ_ONLY",
+      "new_allocation": false,
+      "process_interrupted": false
+    },
+    "skill_inventory": "PASS",
+    "package_preservation": "PASS",
+    "release_note_wrapping": "PASS",
+    "git_diff_check": "PASS",
+    "native_platform_ci": "NOT_RUN_FOR_1.6.3",
+    "current_revision_native_model_test": "NOT_RUN; prior native continuation cases retain their captured snapshots",
+    "default_installation": {
+      "artifact": "validation/duration-policy/local-installation-1.6.3-first-step-hardware-consent/receipt.json",
+      "sha256": "334750653d05b090c23f5334dcce9abc40c9f380dc12e4c9e1717b14a29392bd",
+      "status": "PASS",
+      "version": "1.6.3",
       "runtime_files_verified": 305,
-      "source_and_cache_version": "1.6.2",
-      "includes_windows_queue_fix": true,
-      "unrelated_configuration_preserved": true
+      "source_kind": "tested local 1.6.3 first-step/hardware/consent development snapshot, uncommitted",
+      "published": false
     },
-    "before_official_archive_default_native_discovery": {
-      "artifact": "validation/release-1.6.2/ci-fix/default-installation/discovery/receipt.json",
-      "sha256": "f56ec4b2becc52ee6b2dff96e8d90efd386b3c5e70a46c1492bb8cc2458c49a1",
+    "default_native_discovery": {
+      "artifact": "validation/duration-policy/local-discovery-1.6.3-first-step-hardware-consent/receipt.json",
+      "sha256": "681eb5dc6c50b5ca492b7003f22433c940996df654912ceec776ae4df33e1767",
       "status": "PASS",
+      "version": "1.6.3",
       "entrypoints": 89,
       "errors": 0,
       "model_request_sent": false
     },
-    "publication_initial_browser_download_timeout": {
-      "artifact": "validation/release-1.6.2/publication/initial-download-timeout.json",
-      "sha256": "bc4700d509ec90f42e61161c022cd8c9e88543d57a70e155bd4cbe114c67093e",
-      "status": "resolved-via-github-asset-api",
-      "release_publication_affected": false
+    "final_public_identity_artifact": "validation/duration-policy/local-installation-1.6.3-first-step-hardware-consent/final-identity.json"
+  },
+  "prior_practice_before_audit_repair": {
+    "native_goal": {
+      "artifact": "validation/duration-policy/native-scope-goal/result.json",
+      "sha256": "29d05a40d9bd7edc68f52834e393f9f4f1c4985e2cf9ea11404f942fddbfe2db",
+      "status": "PASS",
+      "model": "gpt-6.1-sol",
+      "kind": "actual-paced-CPU-process",
+      "user_starts": 1,
+      "host_turns": 2,
+      "completed_steps": 210,
+      "gpu_training": false,
+      "real_popup": false,
+      "synthetic_prior_iteration_signal": "pivot=human",
+      "scope": "Current Codex guidance; final mainline-only Plan wording and digest registration followed this case.",
+      "current_source_coverage": "Earlier continuation-scope revision; predates the latest first-step/hardware/stop-consent additions."
+    },
+    "native_goal_artifact_timing": {
+      "artifact": "validation/duration-policy/native-scope-goal/result-mtime-grader.json",
+      "sha256": "36dfdf85537bedad9a27e562d81c795ebac248e09e512bc5d2f5b0c817741217",
+      "status": "RETAINED_FALSE_NEGATIVE",
+      "scope": "Final mtime included a terminal update. Corrected grading uses actual file-add event followed by independent live-process observation."
+    },
+    "native_plan": {
+      "artifact": "validation/duration-policy/native-scope-plan/result.json",
+      "sha256": "55b1aefc472605f863b9d6fb76bb34db6f3e88f102ad840d0ad0ecc733a67ffb",
+      "status": "PASS",
+      "model": "gpt-6.1-sol",
+      "mode": "plan",
+      "sandbox": "readOnly",
+      "completed_steps": 180,
+      "multiple_observations": true,
+      "terminal_observation_verified": true,
+      "after_turn_continuation_tested": false,
+      "current_source_coverage": "Earlier continuation-scope revision; predates the latest first-step/hardware/stop-consent additions."
+    },
+    "earlier_native_goal": {
+      "artifact": "validation/duration-policy/native-reminder/result.json",
+      "sha256": "4d2ec37e0d3af3d770d2cb800dc3a2cf6616f177c3aee0ba3b9f8d2bdad1806f",
+      "status": "PASS",
+      "kind": "actual-paced-CPU-process",
+      "model": "gpt-6.1-sol",
+      "host_turns": 2,
+      "user_starts": 1,
+      "real_popup": false,
+      "gpu_training": false,
+      "scope": "Before final recovery-guidance paragraph and version metadata."
+    },
+    "earlier_native_plan": {
+      "artifact": "validation/duration-policy/native-plan/result.json",
+      "sha256": "ca67b9c790821ef2290dfc6bf885db59cc09c4c16d24c3fead35feb3d57d1496",
+      "status": "INCOMPLETE",
+      "continuous_observation_verified": false,
+      "terminal_observation_verified": false,
+      "scope": "Read-only state and absence of repeated budget questions verified; continuous monitoring not accepted. Original false-positive grading retained."
+    },
+    "production_goal_recovery_probe": {
+      "artifact": "validation/duration-policy/target-goal-recovery-probe/current-observation.json",
+      "sha256": "821a04afcec0571a0a15ccc8ed33224f67511cd512d1bf4f5f1c0c52b3bb62bf",
+      "status": "READ_ONLY",
+      "goal_restored": false,
+      "native_state_database_modified": false
     }
   }
 }

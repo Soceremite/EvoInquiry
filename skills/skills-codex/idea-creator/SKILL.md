@@ -27,8 +27,8 @@ Pilot limits below are ceilings, not authorization or evidence of available reso
 Use the actual established compute/storage budget and requested scope; no pilot
 is launched by a request for ideas or planning alone.
 
-- **PILOT_MAX_HOURS = 2** — Skip any pilot estimated to take > 2 hours per GPU. Flag as "needs manual pilot".
-- **PILOT_TIMEOUT_HOURS = 3** — Hard timeout: kill pilots exceeding 3 hours. Collect partial results if available.
+- **PILOT_MAX_HOURS = 2** — Planning target for a cheap pilot, not an authorization ceiling. Scale down when useful; a longer authorized pilot stays with the execution owner under the selected session table.
+- **PILOT_REVIEW_HOURS = 3** — Progress reminder from the first training step; review usefulness and continue observing. A reminder never authorizes interruption, force-kill, a new approval gate, or a blocked host Goal.
 - **MAX_PILOT_IDEAS = 3** — Pilot at most 3 ideas in parallel. Additional ideas are validated on paper only.
 - **MAX_TOTAL_GPU_HOURS = 8** — Total GPU budget for all pilots combined.
 - **REVIEWER_MODEL = `gpt-6-astra`** — Model used via a secondary Codex agent for brainstorming and review. Must be an OpenAI model (e.g., `gpt-6-astra`, `o3`, `gpt-4o`).
@@ -297,7 +297,7 @@ Before committing to a full research effort, run cheap pilot experiments to get 
 1. **Design pilots**: For each top idea, define the minimal experiment that would give a positive or negative signal:
    - Single seed, small scale (e.g., small dataset subset, fewer epochs)
    - Target: 30 min - PILOT_MAX_HOURS per pilot on 1 GPU
-   - **Estimate GPU-hours BEFORE launching.** If estimated time > PILOT_MAX_HOURS, reduce scale (fewer epochs, smaller subset) or flag as "needs manual pilot"
+   - **Estimate GPU-hours BEFORE launching.** If estimated time > PILOT_MAX_HOURS, consider a smaller informative pilot or retain the estimate within the selected session budget; do not require a manual pilot solely for exceeding this planning target
    - Decision criterion defined upfront — including what a positive, negative, and null outcome would each teach. Metric improvement is not required for a diagnostic contribution.
 
 2. **Deploy in parallel**: Use `/run-experiment` to launch pilots on different GPUs simultaneously:
@@ -308,7 +308,7 @@ Before committing to a full research effort, run cheap pilot experiments to get 
    ```
    Use `run_in_background: true` to launch all at once.
 
-3. **Collect results**: Use `/monitor-experiment` to check progress. If any pilot exceeds PILOT_TIMEOUT_HOURS, kill it and collect partial results. Once all pilots complete (or timeout), compare:
+3. **Collect results**: Use `/monitor-experiment` to check progress. At PILOT_REVIEW_HOURS, review progress with the original execution owner and keep observing. Stop only on an actual user stop choice or a specifically preauthorized stop condition; allow cooperative checkpoint saving and require separate consent for forced termination. Once pilots actually exit, compare:
    - Which ideas showed positive signal?
    - Which showed null/negative results? Classify each: core-hypothesis refuted, informative negative (often publishable), or underpowered pilot — do not eliminate by sign alone.
    - Any surprising findings that suggest a pivot?

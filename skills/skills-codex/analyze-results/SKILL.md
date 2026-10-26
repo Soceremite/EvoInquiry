@@ -28,14 +28,14 @@ This is the Codex-native entrypoint. Use the exact discovered
 substitute. For a bounded run, target one compact report (one raw table, one
 case/selection table, and concise findings; normally no more than about 1,000
 words unless the user requests detail). After writing the requested artifact,
-verify it once, give a short completion response, and stop. If repeated
+verify it once and finish the standalone analysis. When called within an authorized Goal/Plan or a longer workflow, return the artifact to its original owner and continue the remaining authorized work. If repeated
 reconnect, overload, or stream-disconnection errors appear, stop expensive
 reads and retries and record the verified facts plus an explicit incomplete
 status; do not fabricate a result or wait indefinitely.
 
 Use the report as the single deliverable. Do not repeat the full raw table in
 the case section or restate every finding in a second summary. Once the report
-is saved and its source paths have been checked, stop the workflow.
+is saved and its source paths have been checked, return to the caller. A completed analysis step does not stop its parent workflow or live observation.
 
 Ordinary interpretation, confounds, and missing-metric caveats belong in the analysis. For authorized analysis followed by planning, apply [task-scope](../shared-references/task-scope.md) and complete those outputs without an incidental formal claim workflow.
 

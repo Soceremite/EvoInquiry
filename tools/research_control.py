@@ -146,6 +146,9 @@ def _validate_metadata(metadata):
     if stopped is not None and (not isinstance(stopped, dict)
             or not isinstance(stopped.get('reason'), str) or not stopped['reason'].strip()):
         raise RegistryError('Invalid continuation stop record')
+    if stopped is not None and 'confirmed_by' in stopped and (
+            not isinstance(stopped['confirmed_by'], str) or not stopped['confirmed_by'].strip()):
+        raise RegistryError('Process interruption confirmation must reference an actual user choice')
     _validate_blocks(metadata)
     cadence = metadata.get('reflection_every_actions')
     block_cadence = metadata.get('reflection_every_blocks')
@@ -823,16 +826,20 @@ def settle_execution(root, run_id, action_id, execution_run_id, *, actual_costs,
                          f"Registered execution {execution_run_id}: {terminal['status']} (exit {terminal['exit_code']})")
 
 
-def stop(root, run_id, reason):
-    """Persist an authorized stop that bound local launchers observe.
+def stop(root, run_id, reason, *, confirmed_by=None):
+    """Hold new work; interrupt bound jobs only on an actual user stop choice.
 
     Outstanding actions still return RECONCILE until their real execution ends.
     The controller sends no signals or releases reservations. The local launcher
-    enforces this intent; remote/unbound jobs still require their execution owner.
+    requires confirmed_by before enforcing process interruption. An autonomous
+    reflection STOP alone only holds new dispatch. Remote/unbound jobs still
+    require their execution owner and the user's matching stop authorization.
     This does not pause or complete a Codex native Goal.
     """
     if not isinstance(reason, str) or not reason.strip():
         raise RegistryError('A stop reason is required')
+    if confirmed_by is not None and (not isinstance(confirmed_by, str) or not confirmed_by.strip()):
+        raise RegistryError('Stop confirmation must reference an actual user choice')
     def update(metadata, state):
         if not metadata:
             raise RegistryError('No continuation contract')
@@ -840,6 +847,12 @@ def stop(root, run_id, reason):
         if metadata['stopped'] and metadata['stopped']['reason'] != reason:
             raise RegistryError('Existing stop reason is immutable')
         metadata['stopped'] = metadata['stopped'] or {'reason': reason, 'at': now()}
+        if confirmed_by is not None:
+            existing = metadata['stopped'].get('confirmed_by')
+            if existing is not None and existing != confirmed_by:
+                raise RegistryError('Existing user stop confirmation is immutable')
+            metadata['stopped']['confirmed_by'] = confirmed_by
+            metadata['stopped'].setdefault('confirmed_at', now())
         return metadata
     return run_state.update_coordination(str(root), run_id, update)['coordination']
 
@@ -1088,6 +1101,7 @@ def main():
                         help='JSON object: action_id, execution_run_id, actual_costs, optional result_refs/reason')
     end = sub.add_parser('stop')
     end.add_argument('--reason', required=True)
+    end.add_argument('--confirmed-by', help='Actual user authorization to interrupt all bound jobs; omit to hold new dispatch only')
     gate = sub.add_parser('require-reflection')
     gate.add_argument('--reason', action='append', required=True)
     gate.add_argument('--level', choices=('block', 'milestone', 'direction'), default='block')
@@ -1129,7 +1143,7 @@ def main():
             result = clear_reflection(args.root, args.run_id, handoff_ref=(
                 fixed_ref(args.root, args.handoff) if args.handoff else None))
         else:
-            result = stop(args.root, args.run_id, args.reason)
+            result = stop(args.root, args.run_id, args.reason, confirmed_by=args.confirmed_by)
         print(json.dumps(result, ensure_ascii=False, indent=2, allow_nan=False))
         return 3 if args.command == 'check-handoff' and result['status'] == 'STALE' else 0
     except (RegistryError, ValueError, OSError, KeyError, TypeError) as error:

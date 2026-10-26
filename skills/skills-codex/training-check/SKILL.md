@@ -14,7 +14,7 @@ reviewer briefs. Continue authorized work through its necessary steps; honor
 budgets, blocking checkpoints, and stopping conditions.
 
 For runs saving large artifacts, include the [storage checks](../shared-references/experiment-storage.md): capacity, artifact growth, and valid-save age/failures. Apply established run policies to storage incidents and preserve valid recovery state when stopping.
-For a governed run, use [bounded inquiry](../shared-references/bounded-inquiry.md) at the existing monitoring cadence: inspect configured trajectory gates, read actual experiment evidence, and record a reasoned decision. A STOP must reach the execution owner and be followed by actual exit verification; a saved intention is insufficient. Ordinary review does not kill healthy training.
+For a governed run, use [bounded inquiry](../shared-references/bounded-inquiry.md) at the existing monitoring cadence: inspect configured trajectory gates, read actual experiment evidence, and record a reasoned decision. A STOP is a recommendation until the user explicitly confirms interruption (or previously authorized that exact automatic condition). Keep monitoring while a nonblocking stop notice is unanswered. After confirmation, the execution owner preserves recovery state and verifies actual exit; a saved intention is insufficient.
 Apply its [monitoring and mode boundaries](../shared-references/bounded-inquiry.md#monitoring-interruption-and-host-modes): Plan observation is read-only, so stop behavior and note-writing below require execution authority. A healthy run waiting for results does not add stall iterations or block a Goal. Pair quality reviews with lightweight progress/liveness checks and interruptible waits; retain one monitoring owner.
 <!-- EVO-INQUIRY:END -->
 
@@ -40,6 +40,8 @@ Before the first check, identify or ask for the minimum monitoring context:
 If a source is unavailable, say so clearly and continue with the available source. If both WandB and fallback logs are unreachable, report the connectivity issue, classify the round as `WAIT`, and check again later. Do not infer that training is bad only because data is unreachable.
 
 ## Per-Round Check
+
+Read the existing execution owner’s `training-budget-observations.json` when present. Present newly recorded duration notices once, keep observing while optional choices are unanswered, and report invalid/missing timing evidence without substituting process uptime. A confirmed save-and-stop needs a validated checkpoint receipt and actual exit; do not impose an implicit five-second force-kill deadline.
 
 Every round, read WandB first when configured. If WandB is unreachable, read the fallback logs. Inspect at least:
 
@@ -72,19 +74,18 @@ Use the decisions as follows:
 |----------|---------|--------|
 | `CONTINUE` | Run looks healthy enough to keep training. | Keep monitoring and check again in 30 minutes. |
 | `WAIT` | Evidence is inconclusive, noisy, too early, or temporarily unreachable. | Do not stop training; keep monitoring and check again later. |
-| `STOP` | Training is clearly problematic or no longer worth continuing. | Stop the training task, save evidence, write notes, output final summary, and end monitoring. |
+| `STOP` | Evidence supports recommending an end to this training. | Save the evidence and request the user's stop choice without blocking observation. Interrupt only after confirmation or a specifically preauthorized condition. |
 
 ## Stop Behavior
 
 When the decision is `STOP`:
 
-- Stop the training task.
-- If the context contains `stop_command`, run `stop_command` first.
-- If no `stop_command` is available, choose the appropriate stop action from how the training was launched, such as stopping the relevant tmux session, local process, remote process, scheduler job, or notebook job.
+- Identify the exact experiment, process/job scope, evidence and recovery implications; offer continue (default) or checkpoint and stop through a nonblocking popup when available. An unanswered notice keeps monitoring active. Report once through ordinary commentary if a popup would suspend the turn.
+- An actual user stop reply, or a previously agreed automatic condition covering this run, authorizes the execution owner to stop it. A configured `stop_command`, a reviewer verdict, elapsed time or Goal/Plan mode alone does not.
+- After authorization, use the existing owner's identity-bound cooperative checkpoint/stop path; target only that experiment. Verify real exit before releasing resources or ending its watch.
 - Save evidence: WandB URL, key metrics, relevant log snippets, files inspected, and the reason for stopping.
 - Append a project note for debugging and future analysis.
-- Output `FINAL_SUMMARY` in the terminal.
-- End the interactive monitoring loop.
+- Output `FINAL_SUMMARY` and end this experiment's watch after verified exit. A pending stop choice does not end monitoring or block the broader Goal.
 
 Never stop on the first sign of ordinary metric noise. Look for sustained trends, hard failures, or clear divergence. Always preserve enough evidence for a later agent or human to understand why the run was stopped.
 

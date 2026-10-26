@@ -37,13 +37,15 @@ Keep the existing run_state.py coordinator and IDs. Attach artifact_refs, execut
 > (overnight-pipeline rule + stall detection & forced structural pivot). At heartbeat
 > startup, touch the run state first each tick and register this run with the watchdog
 > `loop` type (so a silent death surfaces as STALE); unregister on completion. The
-> watchdog only detects — it never acquits. Each tick also record the new-finding count
+> watchdog only detects — it never acquits. For each newly completed investigation,
+> record its new-finding count once; monitoring ticks and waits do not add entries
 > via the `iteration_log.py` helper (resolve through the canonical
 > `.ei/tools → tools → $ARIS_REPO/tools → $ARIS_REPO/tools via ~/.ei/repo`
 > chain, integration-contract §2; warn-and-skip if unresolved):
 > `python3 "$ITER_LOG" note <root> <run_id> <phase> <n>`. On the returned
-> `pivot=structural` (stale ≥ 2) the nudge must change a STRUCTURAL constraint and pick an
-> untried direction; on `pivot=human` (stale ≥ 4) flag for attention. Counting only —
+> `pivot=structural` (stale ≥ 2) review structural choices; on `pivot=human`
+> (stale ≥ 4) flag the affected branch for attention while continuing authorized
+> alternatives and monitoring. Neither is a whole-Goal stop. Counting only —
 > never a quality verdict.
 
 End-to-end autonomous research workflow for: **$ARGUMENTS**
@@ -165,20 +167,21 @@ ITER_LOG=".ei/tools/iteration_log.py"
 [ -f "$ITER_LOG" ] || ITER_LOG="${ARIS_REPO:-}/tools/iteration_log.py"
 [ -f "$ITER_LOG" ] || { echo "WARN: iteration_log.py not resolved; skipping stall detection" >&2; ITER_LOG=""; }
 ```
-Then, **each heartbeat tick**, record how many concrete new findings the current
-stage produced and read the returned `pivot`:
+After a newly completed investigation, record its concrete new findings once
+and read the returned `pivot`. A heartbeat poll or waiting for a live job does
+not call `note`:
 ```bash
 [ -n "$ITER_LOG" ] && python3 "$ITER_LOG" note "$ROOT" "$RUN_ID" "$STAGE" "$N_NEW_FINDINGS"
 # → {"stale_count": N, "pivot": "none|structural|human"}
 ```
 Act on `pivot`:
 - `none` — keep going.
-- `structural` (stale ≥ 2) — the next nudge must change a **structural constraint**
-  (frame / objective / data / representation), not a tactical parameter, and pick a
-  direction different from every one already tried. Record the chosen frame so future
-  ticks can avoid it: `python3 "$ITER_LOG" note "$ROOT" "$RUN_ID" "$STAGE" 0 --direction "<the new frame>"`.
-- `human` (stale ≥ 4) — stop nudging blindly; flag for human attention (escalate, do
-  not silently abandon).
+- `structural` (stale ≥ 2) — review structural choices and select an evidence-supported
+  next step. Record its direction with the next completed investigation; a review
+  alone must not append another zero-finding iteration.
+- `human` (stale ≥ 4) — flag the affected branch for attention and review it. This
+  legacy signal is advisory; continue authorized alternatives or an existing watch,
+  and request user input only for a genuinely missing decision or authorization.
 
 The heartbeat may say "keep going / change direction," never "good enough" — every
 quality verdict still terminates in the cross-model jury (`acceptance-gate.md`).
@@ -218,8 +221,10 @@ resolve, using relevant prior decisions. Before dispatch reserve a stable action
 identity and declared cost; on resume reconcile actual execution before retry.
 Preserve original phase reviews, failure history and the existing storage policy.
 A native Goal, when explicitly requested, can sustain the host session; it cannot
-advance a research gate or replace experiment budgets. Plan-only work stops at
-the requested plan. Negative findings and evidence-driven pivots belong in the
+advance a research gate or replace experiment budgets. A planning-only request
+delivers its plan; explicitly requested observation of existing jobs routes to
+`training-check` and may continue read-only in the current turn when the host
+permits. Plan does not itself schedule another turn. Negative findings and evidence-driven pivots belong in the
 research history; the requested paper pipeline does not certify a positive claim.
 
 ## Pipeline
