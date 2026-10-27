@@ -2,7 +2,7 @@
   "schema_version": 1,
   "version": "1.6.3",
   "release_kind": "stable",
-  "status": "revision-candidate-locally-tested",
+  "status": "published-and-verified",
   "source_base": {
     "version": "1.6.2",
     "commit": "c507e5256a19b3b22deca9a18f532ec30b48c5d5",
@@ -25,7 +25,7 @@
       "skipped": 39,
       "subtests_passed": 46,
       "elapsed_seconds": 1519.49,
-      "scope": "Actual complete Linux/Python 3.14.7 run. Sole failure: release Windows list omitted two new modules. Runtime code was unchanged by the subsequent CI-only correction; original failed receipt retained. This historical local failure was followed by passing complete Linux/macOS and both native Windows shell suites, including the exact release-tag gates."
+      "scope": "Actual complete Linux/Python 3.14.7 run. Sole failure: release Windows list omitted two new modules. Runtime code was unchanged by the subsequent CI-only correction; original failed receipt retained. This historical local failure was followed by passing complete Linux/macOS and both native Windows shell suites, including the exact release-tag gates. The same-version resource-defaults revision separately passed complete Linux/macOS and both Windows shell gates on its own exact release commit."
     },
     "corrected_publication_contracts": {
       "artifact": "validation/repair-1.6.3/corrected-publication-contracts.xml",
@@ -68,7 +68,7 @@
     "publication_ci_correction": {
       "path": ".github/workflows/release-beta.yml",
       "sha256": "bdd08c1f843f0bb13ab9169406b5585c7fbe022d6dc9fdc86631db23485719ba",
-      "validated_by": "corrected_publication_contracts"
+      "validated_by": "same_version_publication"
     },
     "audit_findings": {
       "total": 10,
@@ -78,16 +78,16 @@
     },
     "skill_inventory": "PASS",
     "package_preservation": "PASS",
-    "native_platform_ci": "PENDING_FOR_RESOURCE_DEFAULTS_REVISION",
+    "native_platform_ci": "PASS",
     "default_installation": {
-      "artifact": "validation/release-1.6.3/publication/official-installation/receipt.json",
-      "sha256": "93ac4170d5a5f3236dd29cdfbdb1d9b848c05797b6c4e32b9467e331d529ad85",
+      "artifact": "validation/release-1.6.3/revision-20261027/official-installation/receipt.json",
+      "sha256": "edac8ce585b06efb57e4a46c9189066b14874379e98efdba822a269554b852ef",
       "version": "1.6.3",
       "release_url": "https://github.com/Soceremite/EvoInquiry/releases/tag/v1.6.3",
-      "source_commit": "c7d448ecf954d8028622c4e9788d7148ee08bc44",
-      "source": "/lyd/tools/.codex/plugin-sources/evo-inquiry-1.6.3-c7d448ecf954",
+      "source_commit": "dd57085204111510e1184b32df4109cf7bc8fae0",
+      "source": "/lyd/tools/.codex/plugin-sources/evo-inquiry-1.6.3-dd5708520411",
       "cache": "/lyd/tools/.codex/plugins/cache/evo-inquiry/evo-inquiry/1.6.3",
-      "backup": "/lyd/tools/.codex/plugin-backups/evo-inquiry/20261026T113522Z",
+      "backup": "/lyd/tools/.codex/plugin-backups/evo-inquiry/20261027T023215Z",
       "archive_checksums_verified": true,
       "status": "PASS",
       "public_files_verified": 1093,
@@ -97,7 +97,7 @@
       "model_request_sent": false
     },
     "native_skill_discovery": {
-      "artifact": "validation/release-1.6.3/publication/official-installation/discovery/receipt.json",
+      "artifact": "validation/release-1.6.3/revision-20261027/official-installation/discovery/receipt.json",
       "sha256": "f17b3bddbd5dd543651af37a825043aaea6d35cd86e9a1a7f27c96e57ce59837",
       "status": "PASS",
       "entrypoints": 89,
@@ -124,6 +124,155 @@
     "resource_defaults_local": {
       "artifact": "validation/resource-defaults-20261026/validation-summary.json",
       "sha256": "fb023112c1d6bc1bbe95b367cb2387974e2a8a44ee71c52f21f976ac48a2ad66"
+    },
+    "current_runtime_native_ci": {
+      "artifact": "validation/release-1.6.3/revision-20261027/candidate-ci.json",
+      "sha256": "e0413d8e496889bcec9fa4b679addf3ee839b696347d0e0857d9cb363ede05af",
+      "status": "PASS",
+      "observed_at": "2026-10-27T02:21:13.535525+00:00",
+      "source_commit": "dd57085204111510e1184b32df4109cf7bc8fae0",
+      "run_id": 40437346291,
+      "url": "https://github.com/Soceremite/EvoInquiry/actions/runs/40437346291",
+      "workflow": "Test suite",
+      "branch": "main",
+      "jobs": [
+        {
+          "id": 121969082287,
+          "name": "windows (pwsh)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/40437346291/job/121969082287"
+        },
+        {
+          "id": 121969082510,
+          "name": "pytest (ubuntu-latest)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/40437346291/job/121969082510"
+        },
+        {
+          "id": 121969082556,
+          "name": "pytest (macos-latest)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/40437346291/job/121969082556"
+        },
+        {
+          "id": 121969082649,
+          "name": "windows (powershell.exe)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/40437346291/job/121969082649"
+        }
+      ]
+    },
+    "release_tag_ci": {
+      "artifact": "validation/release-1.6.3/revision-20261027/release-ci.json",
+      "sha256": "160f53eada65f872eb6b10190b9b261d6184110257eb53fe8a242b2cd9e361f6",
+      "status": "PASS",
+      "observed_at": "2026-10-27T02:27:22.311191+00:00",
+      "source_commit": "dd57085204111510e1184b32df4109cf7bc8fae0",
+      "run_id": 40437981124,
+      "url": "https://github.com/Soceremite/EvoInquiry/actions/runs/40437981124",
+      "workflow": "Publish release",
+      "branch": "v1.6.3",
+      "jobs": [
+        {
+          "id": 121971196195,
+          "name": "windows (powershell.exe)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/40437981124/job/121971196195"
+        },
+        {
+          "id": 121971196280,
+          "name": "test (macos-latest)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/40437981124/job/121971196280"
+        },
+        {
+          "id": 121971196406,
+          "name": "test (ubuntu-latest)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/40437981124/job/121971196406"
+        },
+        {
+          "id": 121971196418,
+          "name": "windows (pwsh)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/40437981124/job/121971196418"
+        },
+        {
+          "id": 121972706116,
+          "name": "publish",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/40437981124/job/121972706116"
+        }
+      ]
+    },
+    "published_assets": {
+      "artifact": "validation/release-1.6.3/revision-20261027/published-assets-verification.json",
+      "sha256": "4ad55b30713fc0c0d0d120073453ed8f3ce1d99fddd5fb778da3785da95d1b5d",
+      "status": "PASS",
+      "observed_at": "2026-10-27T02:30:51.892059+00:00",
+      "release_id": 424163558,
+      "tag": "v1.6.3",
+      "release_url": "https://github.com/Soceremite/EvoInquiry/releases/tag/v1.6.3",
+      "source_commit": "dd57085204111510e1184b32df4109cf7bc8fae0",
+      "published_at": "2026-10-26T11:24:43Z",
+      "draft": false,
+      "prerelease": false,
+      "release_notes_match_source": true,
+      "checksums_verified": true,
+      "download_method": "GitHub asset API with application/octet-stream",
+      "archives_match_committed_file_hashes": true,
+      "public_files": 1093,
+      "codex_skill_entrypoints": 89,
+      "assets": {
+        "evo-inquiry-1.6.3.tar.gz": {
+          "bytes": 3431022,
+          "sha256": "6e4d28f665d06fc35f9c0e0c2e2e10910e003b961e536c8f8ff28b62347ab2d3",
+          "url": "https://github.com/Soceremite/EvoInquiry/releases/download/v1.6.3/evo-inquiry-1.6.3.tar.gz"
+        },
+        "evo-inquiry-1.6.3.zip": {
+          "bytes": 4220675,
+          "sha256": "dd68f12682f9290154627793ff8a2ea3d010953ea084087244a20fcd7e40c92d",
+          "url": "https://github.com/Soceremite/EvoInquiry/releases/download/v1.6.3/evo-inquiry-1.6.3.zip"
+        },
+        "release-manifest.json": {
+          "bytes": 406,
+          "sha256": "61f9b67aa084bb1dedef819d5fa80a21bc5b9bffcbb012c53176eb4a43568c0d",
+          "url": "https://github.com/Soceremite/EvoInquiry/releases/download/v1.6.3/release-manifest.json"
+        },
+        "SHA256SUMS": {
+          "bytes": 179,
+          "sha256": "81f6073ef075cdfb94007f0bebef8baa11368ad0c936215d8c111209af62cb2a",
+          "url": "https://github.com/Soceremite/EvoInquiry/releases/download/v1.6.3/SHA256SUMS"
+        }
+      }
+    },
+    "release_tag": {
+      "artifact": "validation/release-1.6.3/revision-20261027/tag-publication.json",
+      "sha256": "f0499f02b126def233aaa0023da498c54313fccd4e4bf756d16cd952028eaaf9",
+      "status": "PASS",
+      "observed_at": "2026-10-27T02:28:04.465013+00:00",
+      "source_commit": "dd57085204111510e1184b32df4109cf7bc8fae0",
+      "tag_object": "820cc1d1db32f49338666585087edd63d1ff9e32",
+      "release_id": 424163558,
+      "latest_stable": "v1.6.3",
+      "same_release_identity": true,
+      "remote_ref_checked": true
+    },
+    "same_version_publication": {
+      "artifact": "validation/release-1.6.3/revision-20261027/publication-argv.xml",
+      "sha256": "a00c053b99c286bea53f4c34547df286a6de82409c48408f7ff089785afe43ad",
+      "status": "PASS",
+      "passed": 7,
+      "scope": "Actual Bash publication flow with mocked gh: new stable/beta releases, existing-release updates, and upload failure preventing metadata edits."
     }
   },
   "validation_record": "docs/AUDIT_1_6_3_CN.md",
@@ -168,6 +317,41 @@
       "content_criteria": 10,
       "content_review_by": "primary-maintainer-agent",
       "independent_model_review": false
+    },
+    "resource_defaults_cli": {
+      "artifact": "validation/resource-defaults-20261026/validation-summary.json",
+      "sha256": "fb023112c1d6bc1bbe95b367cb2387974e2a8a44ee71c52f21f976ac48a2ad66"
+    },
+    "revised_official_installation": {
+      "artifact": "validation/release-1.6.3/revision-20261027/installed-practice.json",
+      "sha256": "e2c7435136014d675821c3bd12e4379cddc18df5108715b73b6719e1eef89d1a",
+      "status": "PASS",
+      "source_commit": "dd57085204111510e1184b32df4109cf7bc8fae0",
+      "cache": "/lyd/tools/.codex/plugins/cache/evo-inquiry/evo-inquiry/1.6.3",
+      "source_sha256": "b8e750936cf67152320f4c7985d33be07c72259f32a850bd9cb34a9bc6247227",
+      "fresh_sessions": [
+        {
+          "session": "fresh-a",
+          "duration_ceiling_seconds": null,
+          "cpu_cores": 16.0,
+          "gpu_count": 2,
+          "ram_sampled": true,
+          "disk_sampled": true,
+          "one_table_preserved": true
+        },
+        {
+          "session": "fresh-b",
+          "duration_ceiling_seconds": null,
+          "cpu_cores": 16.0,
+          "gpu_count": 2,
+          "ram_sampled": true,
+          "disk_sampled": true,
+          "one_table_preserved": true
+        }
+      ],
+      "hardware_sampled_on_initialization": true,
+      "duration_ceiling_seconds": null,
+      "scope": "Actual official installed CLI with two isolated session tables. Long elapsed duration is a synthetic read-only input; no GPU training or production resource table was started or modified."
     }
   },
   "limitations": [
@@ -178,7 +362,8 @@
     "Existing frozen production owners and external scheduler deadlines are not hot-patched by installation. The previously blocked production Goal was not resumed by this repair.",
     "All native cases retain their own source snapshots; the final queue wording and release-CI correction are covered by the ordinary case/package reruns rather than claiming every case used identical metadata.",
     "The original local Python 3.14.7 run retained its publication-list failure; the targeted correction and subsequent complete native CI, including the exact release commit, passed. Overlapping test counts are not additive.",
-    "The exact release commit passed complete Linux/macOS and both native Windows shell gates before publication. The official public archive was downloaded, verified and installed; the follow-up main commit records publication metadata only."
+    "The exact release commit passed complete Linux/macOS and both native Windows shell gates before publication. The official public archive was downloaded, verified and installed; the follow-up main commit records publication metadata only.",
+    "The resource-defaults revision passed its own native platform gates and installed-CLI practice. Earlier model-driven Goal/Plan records keep their original source scope; this publication does not claim new hour-long GPU or native popup acceptance."
   ],
   "previous_release": {
     "version": "1.6.2",
@@ -201,25 +386,30 @@
     }
   },
   "publication": {
-    "published": false,
+    "published": true,
     "tag": "v1.6.3",
-    "state": "revision-candidate",
+    "state": "published-and-verified",
     "installed_plugin_version": "1.6.3",
-    "installed_build_kind": "local-unreleased-resource-defaults-follow-up",
+    "installed_build_kind": "checksum-verified-official-release-archive",
     "latest_published_stable": "v1.6.3",
-    "archives_built": false,
+    "archives_built": true,
     "configured_marketplace_source_version": "1.6.3",
     "installed_plugin_replaced": true,
     "release_url": "https://github.com/Soceremite/EvoInquiry/releases/tag/v1.6.3",
-    "configured_marketplace_source": "/lyd/tools/.codex/plugin-sources/evo-inquiry-1.6.3-local-resources-216ceee62500",
+    "configured_marketplace_source": "/lyd/tools/.codex/plugin-sources/evo-inquiry-1.6.3-dd5708520411",
     "installed_cache": "/lyd/tools/.codex/plugins/cache/evo-inquiry/evo-inquiry/1.6.3",
-    "source_and_cache_match_published_archive": false,
+    "source_and_cache_match_published_archive": true,
     "checksums_verified": true,
     "source_and_cache_match_reviewed_snapshot": true,
     "release_id": 424163558,
-    "previous_tag_object": "ff4d009732a3c2e56a4925dbfb88db87ea77c48c"
+    "previous_tag_object": "ff4d009732a3c2e56a4925dbfb88db87ea77c48c",
+    "source_commit": "dd57085204111510e1184b32df4109cf7bc8fae0",
+    "tag_object": "820cc1d1db32f49338666585087edd63d1ff9e32",
+    "published_at": "2026-10-26T11:24:43Z",
+    "revision_verified_at": "2026-10-27T02:30:51.892059+00:00",
+    "release_ci": "https://github.com/Soceremite/EvoInquiry/actions/runs/40437981124"
   },
-  "assessed_at": "2026-10-27T02:13:03.298366+00:00",
+  "assessed_at": "2026-10-27T02:35:53.066692+00:00",
   "runtime_sha256": {
     ".codex-plugin/plugin.json": "7d8502133a08117f291d91bbc8f3a583544e37fed1769d1d5b0dba8903d5252f",
     ".github/workflows/release-beta.yml": "633c0f8cdbdd316aaddd682b2e6ea427ed782d552802379f01725db17d1d585f",
@@ -576,7 +766,7 @@
     "release_note_wrapping": "PASS",
     "git_diff_check": "PASS"
   },
-  "working_tree_status": "1.6.3-revision-candidate",
+  "working_tree_status": "publication-receipts-only-follow-up",
   "previous_1_6_3_publication": {
     "source_commit": "c7d448ecf954d8028622c4e9788d7148ee08bc44",
     "release_id": 424163558,
@@ -666,17 +856,109 @@
           "url": "https://github.com/Soceremite/EvoInquiry/releases/download/v1.6.3/SHA256SUMS"
         }
       }
+    },
+    "default_installation": {
+      "artifact": "validation/release-1.6.3/publication/official-installation/receipt.json",
+      "sha256": "93ac4170d5a5f3236dd29cdfbdb1d9b848c05797b6c4e32b9467e331d529ad85",
+      "version": "1.6.3",
+      "release_url": "https://github.com/Soceremite/EvoInquiry/releases/tag/v1.6.3",
+      "source_commit": "c7d448ecf954d8028622c4e9788d7148ee08bc44",
+      "source": "/lyd/tools/.codex/plugin-sources/evo-inquiry-1.6.3-c7d448ecf954",
+      "cache": "/lyd/tools/.codex/plugins/cache/evo-inquiry/evo-inquiry/1.6.3",
+      "backup": "/lyd/tools/.codex/plugin-backups/evo-inquiry/20261026T113522Z",
+      "archive_checksums_verified": true,
+      "status": "PASS",
+      "public_files_verified": 1093,
+      "entrypoints": 89,
+      "source_and_cache_match_published_archive": true,
+      "unrelated_configuration_preserved": true,
+      "model_request_sent": false
+    },
+    "native_skill_discovery": {
+      "artifact": "validation/release-1.6.3/publication/official-installation/discovery/receipt.json",
+      "sha256": "f17b3bddbd5dd543651af37a825043aaea6d35cd86e9a1a7f27c96e57ce59837",
+      "status": "PASS",
+      "entrypoints": 89,
+      "errors": 0,
+      "model_request_sent": false,
+      "cache_root": "/lyd/tools/.codex/plugins/cache/evo-inquiry/evo-inquiry/1.6.3"
     }
   },
   "resource_defaults_revision": {
-    "status": "candidate",
+    "status": "published-and-verified",
     "scope": "New session duration defaults to null (no time limit), initial live hardware sampling, and generalized skill budget guidance. Explicit existing limits remain unchanged.",
     "validation": {
       "artifact": "validation/resource-defaults-20261026/validation-summary.json",
       "sha256": "fb023112c1d6bc1bbe95b367cb2387974e2a8a44ee71c52f21f976ac48a2ad66"
     },
-    "native_platform_ci": "NOT_RUN",
+    "native_platform_ci": {
+      "artifact": "validation/release-1.6.3/revision-20261027/release-ci.json",
+      "sha256": "160f53eada65f872eb6b10190b9b261d6184110257eb53fe8a242b2cd9e361f6",
+      "status": "PASS",
+      "observed_at": "2026-10-27T02:27:22.311191+00:00",
+      "source_commit": "dd57085204111510e1184b32df4109cf7bc8fae0",
+      "run_id": 40437981124,
+      "url": "https://github.com/Soceremite/EvoInquiry/actions/runs/40437981124",
+      "workflow": "Publish release",
+      "branch": "v1.6.3",
+      "jobs": [
+        {
+          "id": 121971196195,
+          "name": "windows (powershell.exe)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/40437981124/job/121971196195"
+        },
+        {
+          "id": 121971196280,
+          "name": "test (macos-latest)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/40437981124/job/121971196280"
+        },
+        {
+          "id": 121971196406,
+          "name": "test (ubuntu-latest)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/40437981124/job/121971196406"
+        },
+        {
+          "id": 121971196418,
+          "name": "windows (pwsh)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/40437981124/job/121971196418"
+        },
+        {
+          "id": 121972706116,
+          "name": "publish",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/Soceremite/EvoInquiry/actions/runs/40437981124/job/121972706116"
+        }
+      ]
+    },
     "installation": {
+      "artifact": "validation/release-1.6.3/revision-20261027/official-installation/receipt.json",
+      "sha256": "edac8ce585b06efb57e4a46c9189066b14874379e98efdba822a269554b852ef",
+      "version": "1.6.3",
+      "release_url": "https://github.com/Soceremite/EvoInquiry/releases/tag/v1.6.3",
+      "source_commit": "dd57085204111510e1184b32df4109cf7bc8fae0",
+      "source": "/lyd/tools/.codex/plugin-sources/evo-inquiry-1.6.3-dd5708520411",
+      "cache": "/lyd/tools/.codex/plugins/cache/evo-inquiry/evo-inquiry/1.6.3",
+      "backup": "/lyd/tools/.codex/plugin-backups/evo-inquiry/20261027T023215Z",
+      "archive_checksums_verified": true,
+      "status": "PASS",
+      "public_files_verified": 1093,
+      "entrypoints": 89,
+      "source_and_cache_match_published_archive": true,
+      "unrelated_configuration_preserved": true,
+      "model_request_sent": false
+    },
+    "publication": "Updated the existing v1.6.3 annotated tag, Release and four verified assets after native CI; version, Release ID and URL are preserved.",
+    "source_commit": "dd57085204111510e1184b32df4109cf7bc8fae0",
+    "previous_development_installation": {
       "artifact": "validation/resource-defaults-20261026/local-installation/receipt.json",
       "sha256": "93df9f1120087bf81b71276945f85a56de25be499820da74c993736f660a348c",
       "status": "PASS",
@@ -690,7 +972,6 @@
         "sha256": "c684660db76af89fc3728d6e613aa02cb3e145e434cd0fd79f714d06132beb0b",
         "status": "PASS"
       }
-    },
-    "publication": "User-authorized revision of the existing v1.6.3 tag, release notes and four assets after native CI gates pass."
+    }
   }
 }
