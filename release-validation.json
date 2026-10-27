@@ -2,7 +2,7 @@
   "schema_version": 1,
   "version": "1.6.3",
   "release_kind": "stable",
-  "status": "published-and-verified",
+  "status": "revision-candidate-locally-tested",
   "source_base": {
     "version": "1.6.2",
     "commit": "c507e5256a19b3b22deca9a18f532ec30b48c5d5",
@@ -52,18 +52,18 @@
       "scope": "Before two more receipt/lease cases were added; all twenty new cases passed in the later full run."
     },
     "tested_inputs": {
-      "artifact": "validation/release-1.6.3/publication/tested-inputs.json",
-      "sha256": "c2ba04ba06f96e7be47c07bcdbc6141aafb0e00f34af09089b11771cfac9a0ba",
+      "artifact": "validation/release-1.6.3/revision-20261027/tested-inputs.json",
+      "sha256": "88388aab8d4cbd325f73dd2c67553d55fce3ce1998a82145c995908bcd645094",
       "files": 1000,
       "status": "RECORDED",
-      "scope": "Final candidate runtime/test/CI files; native CI source d9fa3c3, release preparation changes documentation and receipts only."
+      "scope": "Resource-defaults revision candidate, including publication update path."
     },
     "runtime_inputs": {
-      "artifact": "validation/release-1.6.3/publication/runtime-inputs.json",
-      "sha256": "83028fd6543d8a3e7e7313e60194f3a6a299a2778af67e1f86328b667c536226",
+      "artifact": "validation/release-1.6.3/revision-20261027/runtime-inputs.json",
+      "sha256": "0f24dff1750c3af272a53ad612c60845923903f7f0b4d39cb86a6d435fa25af1",
       "files": 500,
       "status": "RECORDED",
-      "scope": "Final candidate runtime/test/CI files; native CI source d9fa3c3, release preparation changes documentation and receipts only."
+      "scope": "Resource-defaults revision candidate, including publication update path."
     },
     "publication_ci_correction": {
       "path": ".github/workflows/release-beta.yml",
@@ -78,41 +78,7 @@
     },
     "skill_inventory": "PASS",
     "package_preservation": "PASS",
-    "native_platform_ci": {
-      "status": "PASS",
-      "source_commit": "d9fa3c30083d8c7f67724b8c82f4becb419218cd",
-      "run_id": 40307318785,
-      "url": "https://github.com/Soceremite/EvoInquiry/actions/runs/40307318785",
-      "python": "3.12",
-      "jobs": [
-        {
-          "id": 121519519113,
-          "name": "windows (powershell.exe)",
-          "status": "completed",
-          "conclusion": "success"
-        },
-        {
-          "id": 121519519385,
-          "name": "pytest (macos-latest)",
-          "status": "completed",
-          "conclusion": "success"
-        },
-        {
-          "id": 121519519629,
-          "name": "pytest (ubuntu-latest)",
-          "status": "completed",
-          "conclusion": "success"
-        },
-        {
-          "id": 121519519642,
-          "name": "windows (pwsh)",
-          "status": "completed",
-          "conclusion": "success"
-        }
-      ],
-      "scope": "Complete Linux/macOS regression and both native Windows shell gates on the corrected runtime and test suite.",
-      "observed_at": "2026-10-26T10:35:25.591886+00:00"
-    },
+    "native_platform_ci": "PENDING_FOR_RESOURCE_DEFAULTS_REVISION",
     "default_installation": {
       "artifact": "validation/release-1.6.3/publication/official-installation/receipt.json",
       "sha256": "93ac4170d5a5f3236dd29cdfbdb1d9b848c05797b6c4e32b9467e331d529ad85",
@@ -155,95 +121,9 @@
       "artifact": "validation/release-1.6.3/publication/native-script-argv-local.xml",
       "sha256": "ca1133c03f6e2a7a19afe6a700e9aaefcd2395df38959626543aed669bf6006a"
     },
-    "current_runtime_native_ci": {
-      "status": "PASS",
-      "source_commit": "d9fa3c30083d8c7f67724b8c82f4becb419218cd",
-      "run_id": 40307318785
-    },
-    "release_tag_ci": {
-      "artifact": "validation/release-1.6.3/publication/release-ci.json",
-      "sha256": "19bb2dcae5fa320576c074e8eac72dc50835be44fc01dcf9b793c6d986ed2ab4",
-      "status": "PASS",
-      "source_commit": "c7d448ecf954d8028622c4e9788d7148ee08bc44",
-      "run_id": 40314173277,
-      "url": "https://github.com/Soceremite/EvoInquiry/actions/runs/40314173277",
-      "tag": "v1.6.3",
-      "python": "3.12",
-      "observed_at": "2026-10-26T11:27:35.554513+00:00",
-      "jobs": [
-        {
-          "id": 121542480941,
-          "name": "test (ubuntu-latest)",
-          "status": "completed",
-          "conclusion": "success"
-        },
-        {
-          "id": 121542481222,
-          "name": "windows (pwsh)",
-          "status": "completed",
-          "conclusion": "success"
-        },
-        {
-          "id": 121542481275,
-          "name": "test (macos-latest)",
-          "status": "completed",
-          "conclusion": "success"
-        },
-        {
-          "id": 121542481443,
-          "name": "windows (powershell.exe)",
-          "status": "completed",
-          "conclusion": "success"
-        },
-        {
-          "id": 121544740744,
-          "name": "publish",
-          "status": "completed",
-          "conclusion": "success"
-        }
-      ],
-      "scope": "Exact release commit: full Linux/macOS regression, both native Windows shell gates and automated stable publication."
-    },
-    "published_assets": {
-      "artifact": "validation/release-1.6.3/publication/published-assets-verification.json",
-      "sha256": "5862e5249b4424a091ecbf609bc4adc24a804eb60c0655ad024be13c1799a271",
-      "status": "PASS",
-      "observed_at": "2026-10-26T11:33:06.880018+00:00",
-      "release_id": 424163558,
-      "tag": "v1.6.3",
-      "release_url": "https://github.com/Soceremite/EvoInquiry/releases/tag/v1.6.3",
-      "source_commit": "c7d448ecf954d8028622c4e9788d7148ee08bc44",
-      "published_at": "2026-10-26T11:24:43Z",
-      "draft": false,
-      "prerelease": false,
-      "release_notes_match_source": true,
-      "checksums_verified": true,
-      "download_method": "GitHub asset API with application/octet-stream",
-      "archives_match_committed_file_hashes": true,
-      "public_files": 1093,
-      "codex_skill_entrypoints": 89,
-      "assets": {
-        "evo-inquiry-1.6.3.tar.gz": {
-          "bytes": 3430588,
-          "sha256": "5ac1910100481bc12580c051cd3551c85cfe941023c21686f8d27a3927f34515",
-          "url": "https://github.com/Soceremite/EvoInquiry/releases/download/v1.6.3/evo-inquiry-1.6.3.tar.gz"
-        },
-        "evo-inquiry-1.6.3.zip": {
-          "bytes": 4220278,
-          "sha256": "6a113dbf038e69413f38f0a39b4397cb240062b0a0bb1c1574a5793a90587814",
-          "url": "https://github.com/Soceremite/EvoInquiry/releases/download/v1.6.3/evo-inquiry-1.6.3.zip"
-        },
-        "release-manifest.json": {
-          "bytes": 406,
-          "sha256": "36db0b042948dc9bcab03d7bce42c59a9c5096b0d2a8f9c2eb88b9d497c2593b",
-          "url": "https://github.com/Soceremite/EvoInquiry/releases/download/v1.6.3/release-manifest.json"
-        },
-        "SHA256SUMS": {
-          "bytes": 179,
-          "sha256": "4d999ce9239c2b3f0969d915067a98864b56657f71a6f8b4c5c385906538bb4b",
-          "url": "https://github.com/Soceremite/EvoInquiry/releases/download/v1.6.3/SHA256SUMS"
-        }
-      }
+    "resource_defaults_local": {
+      "artifact": "validation/resource-defaults-20261026/validation-summary.json",
+      "sha256": "fb023112c1d6bc1bbe95b367cb2387974e2a8a44ee71c52f21f976ac48a2ad66"
     }
   },
   "validation_record": "docs/AUDIT_1_6_3_CN.md",
@@ -321,67 +201,67 @@
     }
   },
   "publication": {
-    "published": true,
+    "published": false,
     "tag": "v1.6.3",
-    "state": "published-and-verified",
+    "state": "revision-candidate",
     "installed_plugin_version": "1.6.3",
-    "installed_build_kind": "checksum-verified-official-release-archive",
+    "installed_build_kind": "local-unreleased-resource-defaults-follow-up",
     "latest_published_stable": "v1.6.3",
-    "archives_built": true,
+    "archives_built": false,
     "configured_marketplace_source_version": "1.6.3",
     "installed_plugin_replaced": true,
-    "source_commit": "c7d448ecf954d8028622c4e9788d7148ee08bc44",
     "release_url": "https://github.com/Soceremite/EvoInquiry/releases/tag/v1.6.3",
-    "published_at": "2026-10-26T11:24:43Z",
-    "configured_marketplace_source": "/lyd/tools/.codex/plugin-sources/evo-inquiry-1.6.3-c7d448ecf954",
+    "configured_marketplace_source": "/lyd/tools/.codex/plugin-sources/evo-inquiry-1.6.3-local-resources-216ceee62500",
     "installed_cache": "/lyd/tools/.codex/plugins/cache/evo-inquiry/evo-inquiry/1.6.3",
-    "source_and_cache_match_published_archive": true,
+    "source_and_cache_match_published_archive": false,
     "checksums_verified": true,
-    "release_ci": "https://github.com/Soceremite/EvoInquiry/actions/runs/40314173277"
+    "source_and_cache_match_reviewed_snapshot": true,
+    "release_id": 424163558,
+    "previous_tag_object": "ff4d009732a3c2e56a4925dbfb88db87ea77c48c"
   },
-  "assessed_at": "2026-10-26T11:39:10.380854+00:00",
+  "assessed_at": "2026-10-27T02:13:03.298366+00:00",
   "runtime_sha256": {
     ".codex-plugin/plugin.json": "7d8502133a08117f291d91bbc8f3a583544e37fed1769d1d5b0dba8903d5252f",
-    ".github/workflows/release-beta.yml": "bdd08c1f843f0bb13ab9169406b5585c7fbe022d6dc9fdc86631db23485719ba",
+    ".github/workflows/release-beta.yml": "633c0f8cdbdd316aaddd682b2e6ea427ed782d552802379f01725db17d1d585f",
     ".github/workflows/test-suite.yml": "c1894060fd28d257dff180f9bc70be8cbefd04203f49afe2b610e4a3e31e9fe5",
-    "RELEASE_NOTES.md": "3830b08cc5fb58934c974d3a578817138c405169fba003f610710968bdecfd40",
+    "RELEASE_NOTES.md": "64e3b5b946256f6e7e96632f420af5735c603862abf83d063381ac2e87544051",
     "VERSION": "86f8fa832a76358201d6e2fcf0bb47727efe2db23af730db64cead6527776bea",
-    "skills/dse-loop/SKILL.md": "19a2f7dc4621614c0735909a9a5c8ea1dbc49206d4bbab05eb547f360319c0f6",
+    "skills/dse-loop/SKILL.md": "6a3f48d080ba92eea07240e29191f6af8d088ddf2777c3d65c6f55708e37e30f",
     "skills/experiment-plan/SKILL.md": "3649609f46cd099ef62c88d0c0153dfae0b3436a59070b588b956c355382f882",
     "skills/experiment-queue/SKILL.md": "771b1d50991a7de4b040230d0dc297bfd790a98e0f3c6751c4bb047ca7dc54c8",
     "skills/experiment-queue/scripts/queue_manager.py": "c66f4d471a30b8d172ebfb91e1b42a640746c152aff3b7b7da355eb78df5e63f",
     "skills/research-pipeline/SKILL.md": "1e5e1d08f5ab37cfe715e93ff20c78980641a00871b3784599e9a5137111f411",
     "skills/run-experiment/SKILL.md": "141621836b814b4871c8919d78a0672e4282bf06e20d5fcf578718422215b8f7",
-    "skills/shared-references/bounded-inquiry.md": "5baf63883c897019c26f849de335d1fc6b3ad7a377240cd931f7596f2d2509fb",
+    "skills/shared-references/bounded-inquiry.md": "0d2323495779398c19e52a0c8e78739d3ab6387ff422d341157bfa9aa2ece89e",
     "skills/shared-references/evo-inquiry.md": "e78149b8dbd647cd8ffecd598f1f87ba9a8ce4080adc0003b175e5b78923ea14",
     "skills/shared-references/external-cadence.md": "4bbdfe9417661d8907336ae1fc5312068722ccb633099a68ab3bc7d2687511f8",
-    "skills/shared-references/resource-budget.md": "1981681d750d198c177d0d80525d17edd8618547c0009045d60f0a7d7a38b31e",
+    "skills/shared-references/resource-budget.md": "4850d519081c07edaf57c6ef1a2524919a64106a93aadf140ff576d91d1da477",
     "skills/skills-codex/experiment-plan/SKILL.md": "dc3fa3a201557af241848fa4efd61a6356f44908c0e64e153746471009f1d894",
     "skills/skills-codex/experiment-queue/SKILL.md": "e774c046dda26fd63985e6220887cbb54d275118129a02a595e7f073a4b2f412",
     "skills/skills-codex/run-experiment/SKILL.md": "85ca4d8c61377c0588ffa31bcb975fd83ebfe184a8ff7a9693b734c72f804e7d",
-    "skills/skills-codex/shared-references/bounded-inquiry.md": "5baf63883c897019c26f849de335d1fc6b3ad7a377240cd931f7596f2d2509fb",
+    "skills/skills-codex/shared-references/bounded-inquiry.md": "0d2323495779398c19e52a0c8e78739d3ab6387ff422d341157bfa9aa2ece89e",
     "skills/skills-codex/shared-references/evo-inquiry.md": "eaf940d4fb9ee7ea58740b1916ff57d6bb6c30aa0503ef44faf02dfe90b8078d",
     "skills/skills-codex/shared-references/external-cadence.md": "71e5777806aa0e62b227e875eba27465c1bf8b0fd748b05067a5b2507b57637c",
-    "skills/skills-codex/shared-references/resource-budget.md": "1981681d750d198c177d0d80525d17edd8618547c0009045d60f0a7d7a38b31e",
+    "skills/skills-codex/shared-references/resource-budget.md": "4850d519081c07edaf57c6ef1a2524919a64106a93aadf140ff576d91d1da477",
     "skills/skills-codex/training-check/SKILL.md": "4b153f553e97052701e2038a22967679967ac6e892e0a7f12aadd5042dfbb1dc",
     "skills/training-check/SKILL.md": "6dfca152bcfec0c3ebbb35466556b6211b88c955381b9ec66fbfb79260ae440a",
     "tests/test_codex_skill_mirror.py": "cf98aa63659a8eafe98ff284d9e8d5d3b5b5c876cb0b62228611ece0565bf42c",
     "tests/test_execution_governance.py": "63634256d80d2730ee7e5f615336e0940ddba1ae291f5d835b354538a31fe8f8",
-    "tests/test_governed_queue.py": "e6cbed5c9f1412b6c0ec70210aa400a58d00923220749dd9322af17e1153d4c7",
+    "tests/test_governed_queue.py": "8f0cc24fb8f17f80860456d35a00f05eff44bb9c8b4f4cd278604e86f1e10726",
     "tests/test_research_control.py": "9abbd6fa8c5a9bd681711a16a3cb79b1b89d559007223d60f16e8886febb5c0d",
-    "tests/test_resource_budget.py": "fdd9a9cdc2a9fc5030196f1714673eb2661f756f0ef7f271a6ff63fc2dc9cefe",
+    "tests/test_resource_budget.py": "7cd9e708bc004a1841c501cecdce5154d71be56c31b951807df4979e5edadca5",
     "tests/test_training_budget_clock.py": "2cf181fe60c5f67de4ee05ce5602dcc24b114b0930b679e6b90822bbe3c5e212",
     "tools/execution_registry.py": "bad4d14ec0a12ea0974c6811620af4acfccaf3083041b6d5eb833140186ea41d",
     "tools/publication-policy.json": "3d45ff1e4d58040e6acf9a36c0665df5576ae8b90e4471d80b56b8856d6e1cc6",
     "tools/research_control.py": "9915f0f76327340cd6725d91945abd62b27ddebc10525768ba78029ab63d6a7b",
-    "tools/resource_budget.py": "3962e5b023227cab2a21db142d9093e9f5e6ea42c52d8081c9948648b3fc4d62",
-    "tools/skill-contracts.json": "8a467c1ae67f6432ae2bfe7f7ce482170681a7f22329ceaff19819904d554af1",
+    "tools/resource_budget.py": "b8e750936cf67152320f4c7985d33be07c72259f32a850bd9cb34a9bc6247227",
+    "tools/skill-contracts.json": "97735e45d98b08352cb82b25b1011c5b5140883bf22370cf53b20a4ef0902947",
     "tools/skill_contracts.py": "e7b5e5e32398e592586a23ffeed8c273bdaace1f58a322ab7948d3198b80fa84",
     "tools/verify_evo_inquiry.py": "0e6ab232fd4f5fb3118bab3cb1b821a39b5e3046aeba533127608aa171d65059",
     "tools/run_state.py": "286bc673c7041f48cea848db08886cec053176fea3951b4d0954ba0d55ed0f2c",
     "tests/test_dispatch_monitor_repairs.py": "bdf89806f8d1552ead2521d8d1b37e7d5ab0be58d95abd80d871adb349b1fa2a",
-    "skills/skills-codex/idea-creator/SKILL.md": "661988f2461364b70e7123407dea753a0fc720deff5d6998407ef3ff68133046",
-    "skills/skills-codex/idea-discovery/SKILL.md": "5aff09daa4b84e8c92dde11d05eb680f179e44868fa8e856997b9715c0203392",
+    "skills/skills-codex/idea-creator/SKILL.md": "77eeb3e72f17613eb3587020b389e745663c378d232bb9d26407b50e84008cf2",
+    "skills/skills-codex/idea-discovery/SKILL.md": "1abd0d6678cd1319ce48146c43d8fc0959c0854405c6c84601d55c888ebee992",
     "skills/skills-codex/feishu-notify/SKILL.md": "6e1c2056b3643dd00df4fecb489f29b917034fd35f2feec961a091312615e1ac"
   },
   "prior_patch_checks_before_first_step_hardware_consent": {
@@ -695,5 +575,122 @@
     },
     "release_note_wrapping": "PASS",
     "git_diff_check": "PASS"
+  },
+  "working_tree_status": "1.6.3-revision-candidate",
+  "previous_1_6_3_publication": {
+    "source_commit": "c7d448ecf954d8028622c4e9788d7148ee08bc44",
+    "release_id": 424163558,
+    "release_url": "https://github.com/Soceremite/EvoInquiry/releases/tag/v1.6.3",
+    "tag_object": "ff4d009732a3c2e56a4925dbfb88db87ea77c48c",
+    "release_tag_ci": {
+      "artifact": "validation/release-1.6.3/publication/release-ci.json",
+      "sha256": "19bb2dcae5fa320576c074e8eac72dc50835be44fc01dcf9b793c6d986ed2ab4",
+      "status": "PASS",
+      "source_commit": "c7d448ecf954d8028622c4e9788d7148ee08bc44",
+      "run_id": 40314173277,
+      "url": "https://github.com/Soceremite/EvoInquiry/actions/runs/40314173277",
+      "tag": "v1.6.3",
+      "python": "3.12",
+      "observed_at": "2026-10-26T11:27:35.554513+00:00",
+      "jobs": [
+        {
+          "id": 121542480941,
+          "name": "test (ubuntu-latest)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 121542481222,
+          "name": "windows (pwsh)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 121542481275,
+          "name": "test (macos-latest)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 121542481443,
+          "name": "windows (powershell.exe)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 121544740744,
+          "name": "publish",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ],
+      "scope": "Exact release commit: full Linux/macOS regression, both native Windows shell gates and automated stable publication."
+    },
+    "published_assets": {
+      "artifact": "validation/release-1.6.3/publication/published-assets-verification.json",
+      "sha256": "5862e5249b4424a091ecbf609bc4adc24a804eb60c0655ad024be13c1799a271",
+      "status": "PASS",
+      "observed_at": "2026-10-26T11:33:06.880018+00:00",
+      "release_id": 424163558,
+      "tag": "v1.6.3",
+      "release_url": "https://github.com/Soceremite/EvoInquiry/releases/tag/v1.6.3",
+      "source_commit": "c7d448ecf954d8028622c4e9788d7148ee08bc44",
+      "published_at": "2026-10-26T11:24:43Z",
+      "draft": false,
+      "prerelease": false,
+      "release_notes_match_source": true,
+      "checksums_verified": true,
+      "download_method": "GitHub asset API with application/octet-stream",
+      "archives_match_committed_file_hashes": true,
+      "public_files": 1093,
+      "codex_skill_entrypoints": 89,
+      "assets": {
+        "evo-inquiry-1.6.3.tar.gz": {
+          "bytes": 3430588,
+          "sha256": "5ac1910100481bc12580c051cd3551c85cfe941023c21686f8d27a3927f34515",
+          "url": "https://github.com/Soceremite/EvoInquiry/releases/download/v1.6.3/evo-inquiry-1.6.3.tar.gz"
+        },
+        "evo-inquiry-1.6.3.zip": {
+          "bytes": 4220278,
+          "sha256": "6a113dbf038e69413f38f0a39b4397cb240062b0a0bb1c1574a5793a90587814",
+          "url": "https://github.com/Soceremite/EvoInquiry/releases/download/v1.6.3/evo-inquiry-1.6.3.zip"
+        },
+        "release-manifest.json": {
+          "bytes": 406,
+          "sha256": "36db0b042948dc9bcab03d7bce42c59a9c5096b0d2a8f9c2eb88b9d497c2593b",
+          "url": "https://github.com/Soceremite/EvoInquiry/releases/download/v1.6.3/release-manifest.json"
+        },
+        "SHA256SUMS": {
+          "bytes": 179,
+          "sha256": "4d999ce9239c2b3f0969d915067a98864b56657f71a6f8b4c5c385906538bb4b",
+          "url": "https://github.com/Soceremite/EvoInquiry/releases/download/v1.6.3/SHA256SUMS"
+        }
+      }
+    }
+  },
+  "resource_defaults_revision": {
+    "status": "candidate",
+    "scope": "New session duration defaults to null (no time limit), initial live hardware sampling, and generalized skill budget guidance. Explicit existing limits remain unchanged.",
+    "validation": {
+      "artifact": "validation/resource-defaults-20261026/validation-summary.json",
+      "sha256": "fb023112c1d6bc1bbe95b367cb2387974e2a8a44ee71c52f21f976ac48a2ad66"
+    },
+    "native_platform_ci": "NOT_RUN",
+    "installation": {
+      "artifact": "validation/resource-defaults-20261026/local-installation/receipt.json",
+      "sha256": "93df9f1120087bf81b71276945f85a56de25be499820da74c993736f660a348c",
+      "status": "PASS",
+      "source": "/lyd/tools/.codex/plugin-sources/evo-inquiry-1.6.3-local-resources-216ceee62500",
+      "cache": "/lyd/tools/.codex/plugins/cache/evo-inquiry/evo-inquiry/1.6.3",
+      "entrypoints": 89,
+      "discovery_errors": 0,
+      "build_kind": "local-unreleased-resource-defaults-follow-up",
+      "installed_cache_practice": {
+        "artifact": "validation/resource-defaults-20261026/installed-practice.json",
+        "sha256": "c684660db76af89fc3728d6e613aa02cb3e145e434cd0fd79f714d06132beb0b",
+        "status": "PASS"
+      }
+    },
+    "publication": "User-authorized revision of the existing v1.6.3 tag, release notes and four assets after native CI gates pass."
   }
 }

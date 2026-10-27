@@ -1202,37 +1202,35 @@
     },
     "skills/idea-creator/SKILL.md": {
       "baseline_sha256": "e78e20b2eff657953ba95134e89779954c77399779eee0134459b77d84efb602",
-      "sha256": "74306ca1c0a92d940e77dbefd168a8731fe9ddbd61861f842bd8b75115daf218",
-      "reason": "User-authorized 1.6.3 audit repair: align pilot, dispatch, queue, timing, cooperative stop, resource, notification and deployment ownership without replacing preserved baselines.",
+      "sha256": "b406fdc2cf480f95ed0234d98332eb472be564d64578e0ef40dd37996a1fac07",
+      "reason": "User-requested follow-up: take resource limits from the session policy, default new sessions to no duration ceiling, and remove fixed pilot/search timing rules without changing scientific review or execution ownership.",
       "adaptation_version": "1.6.3",
-      "review_ref": "docs/AUDIT_1_6_3_CN.md#修复实施记录",
+      "review_ref": "docs/SESSION_RESOURCE_BUDGET_CN.md#resource-defaults-follow-up",
       "test_refs": [
-        "tests/test_dispatch_monitor_repairs.py",
-        "tests/test_execution_governance.py",
-        "tests/test_governed_queue.py",
-        "tests/test_training_budget_clock.py",
         "tests/test_resource_budget.py",
+        "tests/test_training_budget_clock.py",
+        "tests/test_dispatch_monitor_repairs.py",
         "tests/test_codex_skill_mirror.py",
-        "tests/test_evo_inquiry.py"
+        "tests/test_evo_inquiry.py",
+        "tests/test_governed_queue.py"
       ],
-      "previous_sha256": "91df4e096519c03e6700abd1003867a69249411c8a151ea03fb38e10702d34ee"
+      "previous_sha256": "74306ca1c0a92d940e77dbefd168a8731fe9ddbd61861f842bd8b75115daf218"
     },
     "skills/idea-discovery/SKILL.md": {
       "baseline_sha256": "ac2d06bde65bf7335d9e9a290cc1c10bbc813b6256480e7d1da9cf102a76fa23",
-      "sha256": "784dcc332ff8c233b791aa8bc87d2a8776c0103ea603d663c76a0c355e900e90",
-      "reason": "User-authorized 1.6.3 audit repair: align pilot, dispatch, queue, timing, cooperative stop, resource, notification and deployment ownership without replacing preserved baselines.",
+      "sha256": "08bbd361dded58991d9445e0f10a1c01ddf5d3695dba5870d0a1d0630917fdf2",
+      "reason": "User-requested follow-up: take resource limits from the session policy, default new sessions to no duration ceiling, and remove fixed pilot/search timing rules without changing scientific review or execution ownership.",
       "adaptation_version": "1.6.3",
-      "review_ref": "docs/AUDIT_1_6_3_CN.md#修复实施记录",
+      "review_ref": "docs/SESSION_RESOURCE_BUDGET_CN.md#resource-defaults-follow-up",
       "test_refs": [
-        "tests/test_dispatch_monitor_repairs.py",
-        "tests/test_execution_governance.py",
-        "tests/test_governed_queue.py",
-        "tests/test_training_budget_clock.py",
         "tests/test_resource_budget.py",
+        "tests/test_training_budget_clock.py",
+        "tests/test_dispatch_monitor_repairs.py",
         "tests/test_codex_skill_mirror.py",
-        "tests/test_evo_inquiry.py"
+        "tests/test_evo_inquiry.py",
+        "tests/test_governed_queue.py"
       ],
-      "previous_sha256": "2be785b4934c9624f0eb20cd1851a413db7cf824bbae9320a741c9d7a4559ab0"
+      "previous_sha256": "784dcc332ff8c233b791aa8bc87d2a8776c0103ea603d663c76a0c355e900e90"
     },
     "skills/kill-argument/SKILL.md": {
       "baseline_sha256": "7a222081ddd9548f7ce560a202c3888783cc34ee0fe81c35ee87c5a7b652aa59",
@@ -1713,18 +1711,19 @@
     },
     "skills/skills-codex-gemini-review/idea-creator/SKILL.md": {
       "baseline_sha256": "eabd84c6e6b0ad5d02cda0c24582d73417306a187530bf5c9b366019416ceeb2",
-      "sha256": "8a73d4056bc13a28644bb2a69f54f85c191d07048aa6575b9e12b615215a62b5",
-      "reason": "Directed 1.4.0 follow-up: evidence fidelity in paper improvements, real read-only reviewer access, common principles and conditional review receipts across overlays, and mechanical v2 framing completion without semantic acceptance. Correct shared output protocol links to the installed Codex reference tree; do not mix mainline manifest or versioning policy into Codex and reviewer overlays.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "40e02ed909723bda53921bedeae4075c700668ec5b6fa7827b39cc8235d79640",
+      "reason": "User-requested follow-up: take resource limits from the session policy, default new sessions to no duration ceiling, and remove fixed pilot/search timing rules without changing scientific review or execution ownership.",
+      "adaptation_version": "1.6.3",
+      "review_ref": "docs/SESSION_RESOURCE_BUDGET_CN.md#resource-defaults-follow-up",
       "test_refs": [
+        "tests/test_resource_budget.py",
+        "tests/test_training_budget_clock.py",
+        "tests/test_dispatch_monitor_repairs.py",
         "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py",
-        "tests/test_claude_review_generator.py",
-        "tests/test_evo_inquiry.py"
-      ]
+        "tests/test_evo_inquiry.py",
+        "tests/test_governed_queue.py"
+      ],
+      "previous_sha256": "8a73d4056bc13a28644bb2a69f54f85c191d07048aa6575b9e12b615215a62b5"
     },
     "skills/skills-codex-gemini-review/idea-discovery-robot/SKILL.md": {
       "baseline_sha256": "dd0e7f33bff7b7a16fd4fca3bca1b475e3acd7ce24de68af6fdd20ad778c7e29",
@@ -1743,18 +1742,19 @@
     },
     "skills/skills-codex-gemini-review/idea-discovery/SKILL.md": {
       "baseline_sha256": "618a9f8aa7ea804e162d8e1ab3b10ee1e393a966107401fcc661b2a1d8f7de78",
-      "sha256": "43fa51edf43a918b33420c0a40ef430298f9590a82cd90e14fe9dfc41e7504fc",
-      "reason": "Directed 1.4.0 follow-up: evidence fidelity in paper improvements, real read-only reviewer access, common principles and conditional review receipts across overlays, and mechanical v2 framing completion without semantic acceptance. Correct shared output protocol links to the installed Codex reference tree; do not mix mainline manifest or versioning policy into Codex and reviewer overlays.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "8f8cf906a61bdf9db83eb3b1914f990897ac7e23677f0ba17dc6ef4b3e4ad52d",
+      "reason": "User-requested follow-up: take resource limits from the session policy, default new sessions to no duration ceiling, and remove fixed pilot/search timing rules without changing scientific review or execution ownership.",
+      "adaptation_version": "1.6.3",
+      "review_ref": "docs/SESSION_RESOURCE_BUDGET_CN.md#resource-defaults-follow-up",
       "test_refs": [
+        "tests/test_resource_budget.py",
+        "tests/test_training_budget_clock.py",
+        "tests/test_dispatch_monitor_repairs.py",
         "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py",
-        "tests/test_claude_review_generator.py",
-        "tests/test_evo_inquiry.py"
-      ]
+        "tests/test_evo_inquiry.py",
+        "tests/test_governed_queue.py"
+      ],
+      "previous_sha256": "43fa51edf43a918b33420c0a40ef430298f9590a82cd90e14fe9dfc41e7504fc"
     },
     "skills/skills-codex-gemini-review/novelty-check/SKILL.md": {
       "baseline_sha256": "5ef22b3605664b41a42ecaea22175e26aba19dda59eb701dca7ba602b8181e49",
@@ -1982,18 +1982,18 @@
     },
     "skills/dse-loop/SKILL.md": {
       "baseline_sha256": "ae8e147011f7c1a6add208b6cecb218d03a83949fba0ef9b0b1936e4b0ee18bf",
-      "previous_sha256": "a5fe9bba9933400248656a0d0b6ec33997140b4f44fcbf350c72b5ecd2ca8b66",
-      "sha256": "19a2f7dc4621614c0735909a9a5c8ea1dbc49206d4bbab05eb547f360319c0f6",
+      "previous_sha256": "19a2f7dc4621614c0735909a9a5c8ea1dbc49206d4bbab05eb547f360319c0f6",
+      "sha256": "6a3f48d080ba92eea07240e29191f6af8d088ddf2777c3d65c6f55708e37e30f",
       "adaptation_version": "1.6.3",
-      "reason": "User-requested 1.6.3 continuation-scope correction: count completed investigations rather than heartbeat polls; treat attention signals as review hints; scope subworkflow stops and actual gates to affected work while authorized monitoring continues. Preserve original review owners, budgets and frozen baselines.",
-      "review_ref": "docs/SESSION_RESOURCE_BUDGET_CN.md#continuation-scope-review",
+      "reason": "User-requested follow-up: take resource limits from the session policy, default new sessions to no duration ceiling, and remove fixed pilot/search timing rules without changing scientific review or execution ownership.",
+      "review_ref": "docs/SESSION_RESOURCE_BUDGET_CN.md#resource-defaults-follow-up",
       "test_refs": [
-        "tests/test_iteration_log.py",
-        "tests/test_experiment_block_reflection.py",
-        "tests/test_research_control.py",
-        "tests/test_auto_proceed_contract.py",
+        "tests/test_resource_budget.py",
+        "tests/test_training_budget_clock.py",
+        "tests/test_dispatch_monitor_repairs.py",
         "tests/test_codex_skill_mirror.py",
-        "tests/test_evo_inquiry.py"
+        "tests/test_evo_inquiry.py",
+        "tests/test_governed_queue.py"
       ]
     },
     "skills/embodiment-description/SKILL.md": {
@@ -2871,36 +2871,34 @@
     },
     "idea-creator": {
       "baseline_body_sha256": "1332cc28285d17e410bfa71fd6d5c3c9de246155a25c43ad215ccf64fdcdbe78",
-      "body_sha256": "c9baf5ae4065e72d98d299bbd63438a6ce93d37480b025cd18cdd35a5afed7f4",
-      "reason": "User-authorized 1.6.3 audit repair: align pilot, dispatch, queue, timing, cooperative stop, resource, notification and deployment ownership without replacing preserved baselines.",
-      "review_ref": "docs/AUDIT_1_6_3_CN.md#修复实施记录",
+      "body_sha256": "543ac3ea1c8fb7f9c62bd564760ad8a953f461669d6c8a3914b90cba27ed7c1c",
+      "reason": "User-requested follow-up: take resource limits from the session policy, default new sessions to no duration ceiling, and remove fixed pilot/search timing rules without changing scientific review or execution ownership.",
+      "review_ref": "docs/SESSION_RESOURCE_BUDGET_CN.md#resource-defaults-follow-up",
       "test_refs": [
-        "tests/test_dispatch_monitor_repairs.py",
-        "tests/test_execution_governance.py",
-        "tests/test_governed_queue.py",
-        "tests/test_training_budget_clock.py",
         "tests/test_resource_budget.py",
+        "tests/test_training_budget_clock.py",
+        "tests/test_dispatch_monitor_repairs.py",
         "tests/test_codex_skill_mirror.py",
-        "tests/test_evo_inquiry.py"
+        "tests/test_evo_inquiry.py",
+        "tests/test_governed_queue.py"
       ],
-      "previous_body_sha256": "6e2a539357bc1d1d861a27397c49e79f0b7c7eb72d61abd9bf1bf78a9201deba",
+      "previous_body_sha256": "c9baf5ae4065e72d98d299bbd63438a6ce93d37480b025cd18cdd35a5afed7f4",
       "adaptation_version": "1.6.3"
     },
     "idea-discovery": {
       "baseline_body_sha256": "ce3cf409b6b113353161d2621811c15843d549db2488ba6240f2465c5d65fb13",
-      "body_sha256": "30882e10c7f2e84881d02d2e00a7625f0520c97ca8867e20195acec9599125ca",
-      "reason": "User-authorized 1.6.3 audit repair: align pilot, dispatch, queue, timing, cooperative stop, resource, notification and deployment ownership without replacing preserved baselines.",
-      "review_ref": "docs/AUDIT_1_6_3_CN.md#修复实施记录",
+      "body_sha256": "d5dceb90d553d5ac2a3cf9db8346d516a5eca4f1101349152a9e490c8068debb",
+      "reason": "User-requested follow-up: take resource limits from the session policy, default new sessions to no duration ceiling, and remove fixed pilot/search timing rules without changing scientific review or execution ownership.",
+      "review_ref": "docs/SESSION_RESOURCE_BUDGET_CN.md#resource-defaults-follow-up",
       "test_refs": [
-        "tests/test_dispatch_monitor_repairs.py",
-        "tests/test_execution_governance.py",
-        "tests/test_governed_queue.py",
-        "tests/test_training_budget_clock.py",
         "tests/test_resource_budget.py",
+        "tests/test_training_budget_clock.py",
+        "tests/test_dispatch_monitor_repairs.py",
         "tests/test_codex_skill_mirror.py",
-        "tests/test_evo_inquiry.py"
+        "tests/test_evo_inquiry.py",
+        "tests/test_governed_queue.py"
       ],
-      "previous_body_sha256": "443bb29de51bcb634db9d7a2749fbc502044a6ea24d148f77b9554a1ea75d9f9",
+      "previous_body_sha256": "30882e10c7f2e84881d02d2e00a7625f0520c97ca8867e20195acec9599125ca",
       "adaptation_version": "1.6.3"
     },
     "kill-argument": {
@@ -3268,6 +3266,21 @@
         "tests/test_evo_inquiry.py"
       ],
       "reason": "User-authorized 1.6.3 audit repair: align pilot, dispatch, queue, timing, cooperative stop, resource, notification and deployment ownership without replacing preserved baselines."
+    },
+    "dse-loop": {
+      "baseline_body_sha256": "98519a749b7ea15a1548810e420be14e72c2c594e3883c3429722a8986fbc4bb",
+      "body_sha256": "1c25d6274ae6e3b7d7bcc028134857b8a40b5aef9c7b78cedcaa7f80a15161f2",
+      "reason": "User-requested follow-up: take resource limits from the session policy, default new sessions to no duration ceiling, and remove fixed pilot/search timing rules without changing scientific review or execution ownership.",
+      "review_ref": "docs/SESSION_RESOURCE_BUDGET_CN.md#resource-defaults-follow-up",
+      "test_refs": [
+        "tests/test_resource_budget.py",
+        "tests/test_training_budget_clock.py",
+        "tests/test_dispatch_monitor_repairs.py",
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_evo_inquiry.py",
+        "tests/test_governed_queue.py"
+      ],
+      "adaptation_version": "1.6.3"
     }
   }
 }

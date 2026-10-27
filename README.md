@@ -46,8 +46,9 @@ research tool should help us see the problem more clearly.
 the problems and suggestions you encounter. Help us make this research companion
 more dependable and more useful.
 
-**[New in 1.6.3](RELEASE_NOTES.md):** keep duration reminders separate
-from the session's selected approval ceiling. Count training from its first
+**[New in 1.6.3](RELEASE_NOTES.md):** initialize each session from current server
+resources, with no extra hardware caps or time limit by default. Keep optional
+reminders separate from user-selected limits. Count training from its first
 actual step, refresh hardware before each experiment, and continue observing
 while optional notices are unanswered. Review deferrals retain the original
 prepared attempt; cooperative checkpoint saves have no implicit force-kill

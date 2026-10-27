@@ -3,7 +3,7 @@
 Resolve the [session resource table](resource-budget.md) before resource-bearing
 planning or dispatch. Its one-time selection supplies standing authorization;
 reload it and check fresh capacity at each stage. Do not turn a table-approved
-90-minute job into another permission request or a new Goal deadline.
+task into another permission request or a new Goal deadline.
 Duration applies to each independent experiment; reflection may count its whole
 comparison as one block. A soft-limit notice is optional: keep
 monitoring within the separately selected authorization while unanswered, without blocking the

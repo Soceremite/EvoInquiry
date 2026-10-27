@@ -19,7 +19,7 @@ On first use, run `init`, inspect the target host, show the table and offer:
 
 1. **Maximum available (default):** all visible, permitted local GPUs; GPU sharing
    when memory fits and the existing scheduler/leases permit it; available CPU,
-   RAM and disk; automatic approval for individual jobs up to **12 hours**.
+   RAM and disk without extra policy caps; no time limit.
 2. **Exclusive GPUs (when GPUs are in scope):** the same ceilings, with idle GPUs required.
 3. **Custom:** choose GPU IDs/UUIDs, sharing, duration, memory, storage or costs.
 
@@ -46,9 +46,9 @@ an old table may be offered as an option, never silently inherited.
 | GPU sharing | Allowed when the execution owner permits it | Each device's total/used/free VRAM, utilization and aggregate additional peak; no taking over another job |
 | Total VRAM | No additional policy cap | Current total plus the proposed job; every selected GPU must also fit separately |
 | CPU / host RAM | Available capacity within affinity/container bounds | Cores, available RAM, data-loader/cache/optimizer and worker peaks |
-| Training duration | Automatically approve up to 43,200 seconds | Starts on entry into the first actual training step; preparation is recorded separately |
+| Training duration | No time limit unless the user selects one | Starts on entry into the first actual training step; preparation is recorded separately |
 | Job reminder | None unless selected | Optional soft threshold; an unanswered notice continues within the separate authorization ceiling |
-| Ongoing Goal duration | No invented total deadline | Keep any actual user/host deadline; multiple short jobs do not create a new 12-hour Goal window |
+| Ongoing Goal duration | No invented total deadline | Keep actual user/host deadlines; do not infer a Goal window from individual experiments |
 | Process interruption | Actual user stop consent or a specifically preauthorized condition | Unanswered notices keep observation active; never stop another job to reclaim capacity |
 | Dataset storage | Available disk, no extra policy cap | Existing cache, new download/unpack/copies and concurrent temporary peaks |
 | Weights / checkpoints | Available disk, no extra policy cap | Existing weights, retained recovery points, complete new save, best/final outputs and simultaneous writers |
@@ -66,7 +66,7 @@ waiting, reducing concurrency or replanning, not repetitive approval prompts.
 
 Before arranging the experiment, read the selected table and **fresh target-host
 state**, then fit the proposal to it. Do not ask the user to approve an otherwise
-in-scope 90-minute estimate. Label unknown peaks; use existing measurements or a
+in-scope request. Label unknown peaks; use existing measurements or a
 small authorized probe rather than guessing available capacity.
 
 Immediately before launch, reload the table and probe again. Account for the
@@ -102,8 +102,9 @@ python <package>/tools/resource_budget.py --root <project> --session <host-sessi
 python <package>/tools/resource_budget.py --root <project> --session <host-session-id> check --stage launch --request <requirements.json> --markdown
 ```
 
-Use `--preset custom --overrides <JSON>` for explicit choices; `null` policy
-ceilings mean available capacity. `show` renders the stored table without a new
+Use `--preset custom --overrides <JSON>` for explicit choices; `null` resource
+ceilings mean available capacity, and `auto_approve_job_seconds: null` means no
+time limit. `show` renders the stored table without a new
 sample. An observer in the host's actual Plan mode or another read-only context
 uses `check --read-only`; it never initializes or revises policy. A request to
 write a plan in a writable session still follows first-use initialization above.
@@ -151,9 +152,9 @@ hardware, and does not cover an unbound legacy launcher automatically.
 Keep the optional `job_notice_after_seconds` separate from
 `auto_approve_job_seconds`, the selected authorization ceiling. A reminder does
 not lower or raise that ceiling. Do not infer a hard cutoff by adding an informal
-tolerance to a soft threshold. Old tables retain their limits with no new reminder.
-For example, a two-hour reminder under a selected twelve-hour allowance permits
-both a half-hour overrun and an estimated 3.5-hour experiment without a new approval.
+tolerance to a soft threshold. New sessions have no duration ceiling or reminder
+unless selected; existing tables keep their explicit limits. Read values from
+the session table, not examples or skill-specific time constants.
 Other resource limits and separately agreed hard execution deadlines still apply.
 
 When a launch estimate exceeds the reminder, or elapsed time reaches it,

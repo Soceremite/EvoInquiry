@@ -19,7 +19,7 @@ For sustained research tuning, review the trajectory at planned batches using
 [bounded-inquiry](../shared-references/bounded-inquiry.md), while keeping this
 loop's search bounds and stopping rules. Surface related unresolved problems to
 `/problem-synthesis`; changing the objective or bounds returns to the plan owner.
-Its timeout ends this search batch, not the broader Goal or another live job's
+An explicit timeout ends this search batch, not the broader Goal or another live job's
 watch. Return the evidence to the existing owner without resetting the batch budget.
 <!-- EVO-INQUIRY:END -->
 
@@ -46,12 +46,12 @@ Autonomously explore a design space: run → analyze → pick next parameters �
 
 | Constant | Default | Description |
 |----------|---------|-------------|
-| `TIMEOUT` | 2h | Total wall-clock budget. Stop exploring after this. |
+| `TIMEOUT` | unset | Honor an explicitly selected wall-clock budget; otherwise impose no time limit. |
 | `MAX_ITERATIONS` | 50 | Hard cap on number of design points evaluated. |
 | `PATIENCE` | 10 | Stop early if no improvement for this many consecutive iterations. |
 | `OBJECTIVE` | minimize | `minimize` or `maximize` the target metric. |
 
-Override inline: `/dse-loop "task desc — timeout: 4h, max_iterations: 100, patience: 15"`
+Override search options through `$ARGUMENTS`; take resource limits from the session table.
 
 ## Typical Use Cases
 
@@ -74,7 +74,7 @@ Override inline: `/dse-loop "task desc — timeout: 4h, max_iterations: 100, pat
    - **Parameter space**: which knobs to tune and their ranges/options (may be incomplete — see step 2)
    - **Objective metric**: what to optimize (and how to extract it from output)
    - **Constraints**: hard limits that must not be violated (e.g., timing must close)
-   - **Timeout**: wall-clock budget
+   - **Timeout**: explicit wall-clock budget, if any
    - **Success criteria**: when is the result "good enough" to stop early?
 
 2. **Infer missing parameter ranges** — If the user provides parameter names but NOT ranges/options, you MUST infer them before exploring:
@@ -176,7 +176,7 @@ For each iteration:
 5. **Log to `dse_log.csv`**: append the new row
 
 6. **Check stopping conditions**:
-   - Timeout reached? → stop
+   - Explicit timeout reached? → close out this search; do not infer a whole-Goal stop or permission to interrupt a live job
    - Max iterations reached? → stop
    - Patience exhausted (no improvement in N iterations)? → stop
    - Success criteria met (metric is "good enough")? → stop
@@ -191,7 +191,7 @@ For each iteration:
      "best_params": {"cache_size": 32768, "assoc": 4, "pipeline_width": 2},
      "total_iterations": 15,
      "start_time": "2026-03-13T10:00:00",
-     "timeout": "2h",
+     "timeout": null,
      "patience_counter": 3
    }
    ```
@@ -273,7 +273,7 @@ If the context window compacts mid-run, the loop recovers from `DSE_STATE.json` 
 - Work AUTONOMOUSLY — do not ask the user for permission at each iteration
 - **Every run must be logged** — even failed runs, constraint violations, errors. The log is the ground truth.
 - **Never re-run an identical configuration** — check `dse_log.csv` before each run
-- **Respect the timeout** — check elapsed time before starting a new iteration. If the next run is likely to exceed the timeout, stop and report.
+- **Respect explicit time limits** — when selected, check the remaining budget before a new iteration; otherwise impose no elapsed-time cutoff.
 - **Parse metrics programmatically** — write a parsing script, don't eyeball logs
 - **Keep raw outputs** — save each run's full output in `dse_results/outputs/iter_N/`
 - **Constraint violations are not improvements** — a design point that violates constraints is never "best", regardless of the metric
@@ -293,14 +293,14 @@ If the context window compacts mid-run, the loop recovers from `DSE_STATE.json` 
 
 ```
 # Minimal — just name the parameters, let the agent figure out ranges
-/dse-loop "Run gem5 mcf benchmark. Tune: L1D_SIZE, L2_SIZE, ROB_ENTRIES. Objective: maximize IPC. Timeout: 3h"
+/dse-loop "Run gem5 mcf benchmark. Tune: L1D_SIZE, L2_SIZE, ROB_ENTRIES. Objective: maximize IPC."
 
 # Partial — some ranges given, some not
-/dse-loop "Run make synth. Tune: CLOCK_PERIOD [5ns, 4ns, 3ns, 2ns], FLATTEN, ABC_SCRIPT. Objective: minimize area at timing closure. Timeout: 1h"
+/dse-loop "Run make synth. Tune: CLOCK_PERIOD [5ns, 4ns, 3ns, 2ns], FLATTEN, ABC_SCRIPT. Objective: minimize area at timing closure."
 
 # Fully specified — explicit ranges for everything
-/dse-loop "Simulate processor with FIFO_DEPTH [4,8,16,32], ISSUE_WIDTH [1,2,4], PREFETCH [on,off]. Run: make sim. Objective: max throughput/area. Timeout: 2h"
+/dse-loop "Simulate processor with FIFO_DEPTH [4,8,16,32], ISSUE_WIDTH [1,2,4], PREFETCH [on,off]. Run: make sim. Objective: max throughput/area."
 
 # Real-world: PDAG-SFA formal verification tuning
-/dse-loop "Run python run_bmc.py. Tune: BMC_DEPTH, ENGINE, TIMEOUT_PER_PROP. Objective: maximize properties proved. Timeout: 2h"
+/dse-loop "Run python run_bmc.py. Tune: BMC_DEPTH, ENGINE, TIMEOUT_PER_PROP. Objective: maximize properties proved."
 ```

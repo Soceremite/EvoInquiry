@@ -67,16 +67,29 @@ jobs:
           version="${RELEASE_TAG#v}"
           if [[ "$version" == *-* ]]; then
             release_flags=(--prerelease --latest=false)
+            edit_flags=(--prerelease=true --latest=false)
           else
             release_flags=(--latest)
+            edit_flags=(--prerelease=false --latest)
           fi
-          gh release create "$RELEASE_TAG" \
-            "dist/evo-inquiry-${version}.tar.gz" \
-            "dist/evo-inquiry-${version}.zip" \
-            dist/SHA256SUMS dist/release-manifest.json \
-            --repo "$GITHUB_REPOSITORY" --verify-tag \
-            --title "EvoInquiry ${version}" --notes-file RELEASE_NOTES.md \
-            "${release_flags[@]}"
+          release_assets=(
+            "dist/evo-inquiry-${version}.tar.gz"
+            "dist/evo-inquiry-${version}.zip"
+            dist/SHA256SUMS dist/release-manifest.json
+          )
+          if gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
+            gh release upload "$RELEASE_TAG" "${release_assets[@]}" \
+              --repo "$GITHUB_REPOSITORY" --clobber
+            gh release edit "$RELEASE_TAG" \
+              --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
+              --title "EvoInquiry ${version}" --notes-file RELEASE_NOTES.md \
+              "${edit_flags[@]}"
+          else
+            gh release create "$RELEASE_TAG" "${release_assets[@]}" \
+              --repo "$GITHUB_REPOSITORY" --verify-tag \
+              --title "EvoInquiry ${version}" --notes-file RELEASE_NOTES.md \
+              "${release_flags[@]}"
+          fi
 
   windows:
     runs-on: windows-latest

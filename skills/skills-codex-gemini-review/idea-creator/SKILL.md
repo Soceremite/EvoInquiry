@@ -26,23 +26,18 @@ Given a broad research direction from the user, systematically generate, validat
 
 ## Constants
 
-Pilot limits below are ceilings, not authorization or evidence of available resources.
-Use the actual established compute/storage budget and requested scope; no pilot
-is launched by a request for ideas or planning alone.
+Pilot duration, reminders, compute and concurrency follow the
+[session resource table](../shared-references/resource-budget.md) and current plan.
+Prefer the smallest informative pilot; ideas or planning alone do not launch one.
 
-- **PILOT_MAX_HOURS = 2** — Skip any pilot estimated to take > 2 hours per GPU. Flag as "needs manual pilot".
-- **PILOT_TIMEOUT_HOURS = 3** — Hard timeout: kill pilots exceeding 3 hours. Collect partial results if available.
 - **MAX_PILOT_IDEAS = 3** — Pilot at most 3 ideas in parallel. Additional ideas are validated on paper only.
-- **MAX_TOTAL_GPU_HOURS = 8** — Total GPU budget for all pilots combined.
 - **REVIEWER_MODEL = `gemini-review`** — Gemini reviewer invoked through the local `gemini-review` MCP bridge for brainstorming and critique. Set `GEMINI_REVIEW_MODEL` if you need a specific Gemini model override.
 
 - **OUTPUT_DIR = `idea-stage/`** — Directory for idea output files.
 
-> 💡 Override via argument, e.g., `/idea-creator "topic" — pilot budget: 4h per idea, 20h total`.
-
 ## Workflow
 
-### Phase 1: Landscape Survey (5-10 min)
+### Phase 1: Landscape Survey
 
 Map the research area to understand what exists and where the gaps are.
 
@@ -187,23 +182,16 @@ Before committing to a full research effort, run cheap pilot experiments to get 
 
 1. **Design pilots**: For each top idea, define the minimal experiment that would give a positive or negative signal:
    - Single seed, small scale (e.g., small dataset subset, fewer epochs)
-   - Target: 30 min - PILOT_MAX_HOURS per pilot on 1 GPU
-   - **Estimate GPU-hours BEFORE launching.** If estimated time > PILOT_MAX_HOURS, reduce scale (fewer epochs, smaller subset) or flag as "needs manual pilot"
+   - Estimate compute and storage before launch; fit the smallest informative design to the session policy.
    - Decision criterion defined upfront — including what a positive, negative, and null outcome would each teach. Metric improvement is not required for a diagnostic contribution.
 
-2. **Deploy in parallel**: Use `/run-experiment` to launch pilots on different GPUs simultaneously:
-   ```
-   GPU 0: Pilot for Idea 1
-   GPU 1: Pilot for Idea 2
-   GPU 2: Pilot for Idea 3
-   ```
-   Use `run_in_background: true` to launch all at once.
+2. **Deploy**: Use `/run-experiment`; choose parallelism from current capacity and the session policy.
 
-3. **Collect results**: Use `/monitor-experiment` to check progress. If any pilot exceeds PILOT_TIMEOUT_HOURS, kill it and collect partial results. Once all pilots complete (or timeout), compare:
+3. **Collect results**: Use `/monitor-experiment`; review at meaningful milestones or selected reminders. Keep monitoring and stopping with the existing execution owner under the shared resource contract. Once pilots actually exit, compare:
    - Which ideas showed positive signal?
    - Which showed null/negative results? Classify each: core-hypothesis refuted, informative negative (often publishable), or underpowered pilot — do not eliminate by sign alone.
    - Any surprising findings that suggest a pivot?
-   - Total GPU-hours consumed (track against MAX_TOTAL_GPU_HOURS budget)
+   - Observed compute use against the current plan and session policy
 
 4. **Re-rank based on empirical evidence**: Update the idea ranking using pilot results. An idea with strong pilot signal jumps ahead of a theoretically appealing but untested idea.
 

@@ -33,7 +33,7 @@ DEFAULT_POLICY = {
     'allowed_gpu_ids': 'all_visible', 'allow_gpu_sharing': True,
     'max_cpu_cores': None, 'max_ram_bytes': None, 'max_total_vram_bytes': None,
     'max_dataset_bytes': None, 'max_weight_bytes': None, 'max_disk_bytes': None,
-    'auto_approve_job_seconds': 12 * 3600, 'max_new_spend': 0,
+    'auto_approve_job_seconds': None, 'max_new_spend': 0,
     'job_notice_after_seconds': None,
 }
 OPTIONAL_POLICY_FIELDS = {'job_notice_after_seconds'}
@@ -85,7 +85,7 @@ def _validate_policy(policy):
     if type(policy['allow_gpu_sharing']) is not bool:
         raise RegistryError('allow_gpu_sharing must be boolean')
     for key in set(policy) - {'allowed_gpu_ids', 'allow_gpu_sharing'}:
-        _number(policy[key], key, nullable=key not in ('auto_approve_job_seconds', 'max_new_spend'),
+        _number(policy[key], key, nullable=key != 'max_new_spend',
                 positive=key in ('auto_approve_job_seconds', 'job_notice_after_seconds'))
 
 
@@ -107,7 +107,7 @@ def read_table(root, session=None):
 
 
 def initialize(root, session=None):
-    """Idempotently create the one pending table. Initialization grants no execution."""
+    """Create one pending table with live host readings; preserve existing selections."""
     session = session_id(session)
     with state_writer(root) as state, file_lock(state / 'locks' / f'resources-{session}.lock'):
         existing = read_table(root, session)
@@ -117,6 +117,9 @@ def initialize(root, session=None):
                 'status': 'selection_required', 'revision': 0, 'created_at': now(),
                 'policy': dict(DEFAULT_POLICY), 'selected_by': None, 'selected_at': None,
                 'last_check': None}
+        observation = probe(root)
+        data['last_check'] = {'stage': 'initialize', 'status': 'SELECTION_REQUIRED',
+                              'observed': observation, **hardware_state(data, observation)}
         atomic_write(table_path(root, session), data)
         return data
 
@@ -124,8 +127,8 @@ def initialize(root, session=None):
 def select(root, session=None, *, preset, selected_by, overrides=None):
     """Record the user's one-time choice, or an explicitly requested revision.
 
-    Parameters are a preset and optional scalar limits/GPU list. Null ceilings
-    mean available capacity, never an invented large number. This API records a
+    Parameters are a preset and optional scalar limits/GPU list. Null resource
+    ceilings mean available capacity; a null duration has no time limit. This API records a
     choice; the calling skill must obtain it from the user, not self-authorize.
     """
     if preset not in {item['preset'] for item in CHOICES} or not isinstance(selected_by, str) or not selected_by.strip():
@@ -399,7 +402,7 @@ def evaluate_duration(table, seconds, *, monitoring=False, response=None):
     status, action, notice = 'OK', 'continue', False
     if monitoring and response == 'stop':
         status, action = 'STOP_REQUESTED', 'checkpoint_stop'
-    elif seconds > ceiling:
+    elif ceiling is not None and seconds > ceiling:
         status, action = 'NEEDS_APPROVAL', 'request_exception'
     elif reminder is not None and seconds >= reminder:
         status, notice = 'NOTICE_CONTINUE', response is None
@@ -579,7 +582,7 @@ def markdown(table, result=None):
         ('CPU cores', limit(policy['max_cpu_cores']), str(observed.get('cpu_cores', 'unknown')), str(request.get('cpu_cores', 'unknown'))),
         ('Host RAM', limit(policy['max_ram_bytes'], bytes=True), f"{size(ram.get('available_bytes'))} available / {size(ram.get('total_bytes'))} total", size(request.get('ram_bytes'))),
         ('Total GPU VRAM', limit(policy['max_total_vram_bytes'], bytes=True), size(current_vram), size(result.get('projected_total_vram_bytes'))),
-        ('Single training duration', f"{policy['auto_approve_job_seconds'] / 3600:g} hours", 'from first actual training step; preparation separate', f"{request['job_seconds'] / 60:g} minutes" if request else 'not estimated'),
+        ('Single training duration', f"{policy['auto_approve_job_seconds'] / 3600:g} hours" if policy['auto_approve_job_seconds'] is not None else 'no time limit', 'from first actual training step; preparation separate', f"{request['job_seconds'] / 60:g} minutes" if request else 'not estimated'),
         ('Single-job reminder', f"{policy['job_notice_after_seconds'] / 3600:g} hours" if policy.get('job_notice_after_seconds') is not None else 'not selected',
          'optional notice; pending reply continues within authorization',
          (result.get('duration') or {}).get('action', 'not checked')),

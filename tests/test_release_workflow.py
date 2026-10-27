@@ -56,7 +56,8 @@ def test_release_covers_portable_windows_validation_before_publication():
 
 
 @pytest.mark.parametrize('version', ['1.0.0', '1.0.0-beta.5'])
-def test_publish_selects_release_kind_and_only_current_assets(tmp_path, version):
+@pytest.mark.parametrize('existing,upload_fails', [(False, False), (True, False), (True, True)])
+def test_publish_selects_release_kind_and_only_current_assets(tmp_path, version, existing, upload_fails):
     bash = shutil.which('bash')
     if bash is None:
         pytest.skip('Release publication uses bash on GitHub Ubuntu runners')
@@ -86,11 +87,16 @@ def test_publish_selects_release_kind_and_only_current_assets(tmp_path, version)
         'import json, os, sys\n'
         'from pathlib import Path\n'
         'args = sys.argv[1:]\n'
+        'body = Path(args[args.index("--notes-file") + 1]).read_text() if "--notes-file" in args else None\n'
+        'with Path(os.environ["RELEASE_ARGV_CAPTURE"]).open("a") as capture:\n'
+        '    capture.write(json.dumps({"args": args, "body": body}) + "\\n")\n'
+        'if args[:2] == ["release", "view"]:\n'
+        '    raise SystemExit(0 if os.environ["RELEASE_EXISTS"] == "1" else 1)\n'
+        'if args[:2] == ["release", "upload"] and os.environ["RELEASE_UPLOAD_FAIL"] == "1":\n'
+        '    raise SystemExit(7)\n'
         'for arg in args:\n'
         '    if arg.startswith("dist/") and not Path(arg).is_file():\n'
         '        raise SystemExit("Missing selected asset")\n'
-        'body = Path(args[args.index("--notes-file") + 1]).read_text()\n'
-        'Path(os.environ["RELEASE_ARGV_CAPTURE"]).write_text(json.dumps({"args": args, "body": body}))\n'
     )
     gh.chmod(0o755)
     capture = tmp_path / 'publication.json'
@@ -99,23 +105,41 @@ def test_publish_selects_release_kind_and_only_current_assets(tmp_path, version)
         PATH=str(bin_dir) + os.pathsep + environment.get('PATH', ''),
         RELEASE_TAG='v' + version,
         GITHUB_REPOSITORY='Soceremite/EvoInquiry',
+        GITHUB_SHA='a' * 40,
         RELEASE_ARGV_CAPTURE=str(capture),
+        RELEASE_EXISTS='1' if existing else '0',
+        RELEASE_UPLOAD_FAIL='1' if upload_fails else '0',
     )
-    subprocess.run([bash, '-e', '-o', 'pipefail', '-c', script],
-                   cwd=tmp_path, env=environment, capture_output=True, text=True,
-                   check=True, timeout=15)
-    published = json.loads(capture.read_text())
+    result = subprocess.run([bash, '-e', '-o', 'pipefail', '-c', script],
+                            cwd=tmp_path, env=environment, capture_output=True, text=True,
+                            timeout=15)
+    calls = [json.loads(line) for line in capture.read_text().splitlines()]
+    assert calls[0]['args'][:3] == ['release', 'view', 'v' + version]
+    if upload_fails:
+        assert result.returncode == 7
+        assert [call['args'][1] for call in calls] == ['view', 'upload']
+        return
+    assert result.returncode == 0, result.stderr
+    assert [call['args'][1] for call in calls] == (['view', 'upload', 'edit'] if existing else ['view', 'create'])
+    published = calls[-1]
     args = published['args']
-    assert args[:3] == ['release', 'create', 'v' + version]
-    assert [arg for arg in args if arg.startswith('dist/')] == current_assets
+    assert args[:3] == ['release', 'edit' if existing else 'create', 'v' + version]
+    asset_call = calls[1]['args']
+    assert [arg for arg in asset_call if arg.startswith('dist/')] == current_assets
+    if existing:
+        assert '--clobber' in asset_call
+        assert args[args.index('--target') + 1] == environment['GITHUB_SHA']
+    else:
+        assert '--verify-tag' in args
     assert args[args.index('--title') + 1] == 'EvoInquiry ' + version
-    assert '--verify-tag' in args
     assert published['body'] == body
     if '-' in version:
-        assert '--prerelease' in args
+        assert ('--prerelease=true' if existing else '--prerelease') in args
         assert '--latest=false' in args
         assert '--latest' not in args
     else:
         assert '--latest' in args
         assert '--prerelease' not in args
         assert '--latest=false' not in args
+        if existing:
+            assert '--prerelease=false' in args

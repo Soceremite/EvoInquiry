@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.6.3 — 2026-10-27 revision
+
+- Initialize new session tables from live server resources, with no additional hardware caps or duration ceiling by default. Preserve explicit existing limits and the first-use selection.
+- Remove fixed pilot budgets and repeated timing examples; planning, execution and monitoring use the same user-configured resource table.
+- Support updating an existing release after the same cross-platform publication gates, preserving its version and release URL.
+
 ## 1.6.3 — 2026-10-26
 
 ### Added

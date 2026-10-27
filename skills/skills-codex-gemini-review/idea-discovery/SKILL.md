@@ -33,21 +33,18 @@ Each phase builds on the previous one's output. The final deliverables are a val
 
 ## Constants
 
-Pilot limits below are ceilings, not authorization or evidence of available resources.
-Use the actual established compute/storage budget and requested scope; no pilot
-is launched by a request for ideas or planning alone.
+Pilot duration, reminders, compute and concurrency follow the
+[session resource table](../shared-references/resource-budget.md) and current plan.
+Prefer the smallest informative pilot; ideas or planning alone do not launch one.
 
-- **PILOT_MAX_HOURS = 2** — Skip any pilot experiment estimated to take > 2 hours per GPU. Flag as "needs manual pilot" in the report.
-- **PILOT_TIMEOUT_HOURS = 3** — Hard timeout: kill any running pilot that exceeds 3 hours. Collect partial results if available.
 - **MAX_PILOT_IDEAS = 3** — Run pilots for at most 3 top ideas in parallel. Additional ideas are validated on paper only.
-- **MAX_TOTAL_GPU_HOURS = 8** — Total GPU budget across all pilots. If exceeded, skip remaining pilots and note in report.
 - **AUTO_PROCEED = true** — When `true`, checkpoints are informational: report the selected option and continue in the same turn. Set to `false` to ask for explicit user confirmation and end the turn at each selection checkpoint.
 - **RESUMABLE = true** — Use the existing versioned run state and final evidence gate below.
 - **OUTPUT_DIR = `idea-stage/`** — All idea-stage outputs go here. Create the directory if it doesn't exist.
 - **REVIEWER_MODEL = `gemini-review`** — Gemini reviewer invoked through the local `gemini-review` MCP bridge. Passed to the reviewer-aware sub-skills installed by this overlay.
 - **ARXIV_DOWNLOAD = false** — When `true`, `/research-lit` downloads the top relevant arXiv PDFs during Phase 1. When `false` (default), only fetches metadata. Passed through to `/research-lit`.
 
-> 💡 These are defaults. Override by telling the skill, e.g., `/idea-discovery "topic" — pilot budget: 4h per idea, 20h total` or `/idea-discovery "topic" — arxiv download: true`.
+> 💡 These are defaults. Override by telling the skill, e.g., `/idea-discovery "topic" — arxiv download: true`.
 
 ## Checkpoint execution rule
 

@@ -45,13 +45,23 @@ def selected(root, **overrides):
                          selected_by='fixture-user-choice', overrides=overrides)
 
 
-def test_initialization_waits_for_first_choice_and_continuation_reuses_the_only_table(tmp_path):
+def test_initialization_samples_host_and_continuation_reuses_the_only_table(tmp_path, monkeypatch):
+    live = observation(tmp_path)
+    probes = []
+    def sample(root, storage=()):
+        probes.append(root)
+        return live
+    monkeypatch.setattr(budget, 'probe', sample)
     table = budget.initialize(tmp_path, 'session-a')
     assert table['status'] == 'selection_required'
+    assert table['policy']['auto_approve_job_seconds'] is None
+    assert table['last_check']['observed'] == live
+    assert table['last_check']['effective_capacity']['cpu_cores'] == live['cpu_cores']
     assert budget.evaluate(table, requirements(tmp_path), observation(tmp_path), stage='launch')['status'] == 'SELECTION_REQUIRED'
     approved = selected(tmp_path)
     assert budget.initialize(tmp_path, 'session-a') == approved
     assert selected(tmp_path) == approved
+    assert len(probes) == 1
     assert len(list((tmp_path / '.ei/resource-sessions').glob('*.json'))) == 1
     assert budget.initialize(tmp_path, 'session-b')['status'] == 'selection_required'
     assert budget.read_table(tmp_path, 'session-a') == approved
@@ -85,11 +95,12 @@ def test_host_thread_id_stays_stable_across_skills_and_sessions(tmp_path, monkey
     assert budget.initialize(tmp_path)['status'] == 'selection_required'
 
 
-@pytest.mark.parametrize('seconds,expected', [(5400, 'AUTO_APPROVED'), (43200, 'AUTO_APPROVED'), (43201, 'NEEDS_APPROVAL')])
-def test_90_minutes_and_12_hours_need_no_repeat_approval(tmp_path, seconds, expected):
+@pytest.mark.parametrize('seconds', [1, 43201, 10**8])
+def test_default_duration_has_no_approval_ceiling(tmp_path, seconds):
     result = budget.evaluate(selected(tmp_path), requirements(tmp_path, job_seconds=seconds),
                              observation(tmp_path), stage='launch')
-    assert result['status'] == expected
+    assert result['status'] == 'AUTO_APPROVED'
+    assert result['duration']['approval_limit_seconds'] is None
 
 
 @pytest.mark.parametrize('seconds,expected', [
@@ -98,7 +109,7 @@ def test_90_minutes_and_12_hours_need_no_repeat_approval(tmp_path, seconds, expe
     (12772, 'AUTO_APPROVED'), (43200, 'AUTO_APPROVED'), (43201, 'NEEDS_APPROVAL'),
 ])
 def test_reminder_never_replaces_the_selected_authorization_ceiling(tmp_path, seconds, expected):
-    table = selected(tmp_path, job_notice_after_seconds=7200)
+    table = selected(tmp_path, job_notice_after_seconds=7200, auto_approve_job_seconds=43200)
     result = budget.evaluate(table, requirements(tmp_path, job_seconds=seconds),
                              observation(tmp_path), stage='launch')
     assert result['status'] == expected
@@ -145,8 +156,47 @@ def test_invalid_reminder_is_rejected(tmp_path, value):
         selected(tmp_path, job_notice_after_seconds=value)
 
 
+@pytest.mark.parametrize('value', [-1, 0, True, float('nan'), float('inf')])
+def test_invalid_duration_ceiling_is_rejected(tmp_path, value):
+    with pytest.raises(RegistryError):
+        selected(tmp_path, auto_approve_job_seconds=value)
+
+
+def test_unlimited_duration_round_trips_and_keeps_optional_monitoring_read_only(tmp_path):
+    selected(tmp_path, job_notice_after_seconds=10)
+    path = budget.table_path(tmp_path, 'session-a')
+    before = path.read_bytes()
+    assert json.loads(before)['policy']['auto_approve_job_seconds'] is None
+    assert b'Infinity' not in before
+    result = budget.check_duration(tmp_path, 'session-a', elapsed_seconds=10**8)
+    assert result['status'] == 'NOTICE_CONTINUE'
+    assert result['approval_limit_seconds'] is None
+    assert result['response'] is None and result['action'] == 'continue'
+    stopped = budget.check_duration(tmp_path, 'session-a', elapsed_seconds=10**8, response='stop')
+    assert stopped['status'] == 'STOP_REQUESTED'
+    assert path.read_bytes() == before
+    view = subprocess.run([sys.executable, str(Path(budget.__file__)), '--root', str(tmp_path),
+        '--session', 'session-a', 'show'], capture_output=True, text=True, timeout=15)
+    assert view.returncode == 0 and 'no time limit' in view.stdout, view.stderr
+
+
+def test_user_can_remove_only_the_duration_ceiling(tmp_path):
+    original = selected(tmp_path, auto_approve_job_seconds=30, allowed_gpu_ids=['1'], max_ram_bytes=GIB)
+    changed = budget.select(tmp_path, 'session-a', preset='custom', selected_by='user-unlimited-duration',
+                            overrides={'auto_approve_job_seconds': None})
+    assert changed['revision'] == original['revision'] + 1
+    assert changed['policy']['auto_approve_job_seconds'] is None
+    assert changed['policy']['allowed_gpu_ids'] == ['1']
+    assert changed['policy']['max_ram_bytes'] == GIB
+    request = requirements(tmp_path, job_seconds=10**8, ram_bytes=2 * GIB)
+    result = budget.evaluate(changed, request, observation(tmp_path), stage='launch')
+    assert result['status'] == 'NEEDS_APPROVAL'
+    assert any(row['resource'] == 'ram_bytes_limit' and row['status'] == 'NEEDS_APPROVAL'
+               for row in result['checks'])
+
+
 def test_duration_monitoring_is_read_only_and_a_reply_cannot_reset_the_limit(tmp_path):
-    selected(tmp_path, job_notice_after_seconds=7200)
+    selected(tmp_path, job_notice_after_seconds=7200, auto_approve_job_seconds=43200)
     path = budget.table_path(tmp_path, 'session-a')
     before = path.read_bytes()
     for elapsed in (7200, 9000, 10800, 12772, 43200):
@@ -446,7 +496,7 @@ def test_actual_cpu_launch_uses_90_minute_authorization_and_one_session_table(tm
 
 @pytest.mark.parametrize('seconds,admitted', [(9000, True), (12772, True), (43201, False)])
 def test_frozen_launcher_uses_standing_authorization_without_a_popup_reply(tmp_path, seconds, admitted):
-    selected(tmp_path, job_notice_after_seconds=7200)
+    selected(tmp_path, job_notice_after_seconds=7200, auto_approve_job_seconds=43200)
     prepare_job(tmp_path, request=requirements(tmp_path, job_seconds=seconds))
     if admitted:
         result = execution_registry.launch_execution(tmp_path, 'resource-worker')

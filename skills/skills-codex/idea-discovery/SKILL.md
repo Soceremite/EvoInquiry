@@ -30,14 +30,11 @@ Each phase builds on the previous one's output. The final deliverables are a val
 
 ## Constants
 
-Pilot limits below are ceilings, not authorization or evidence of available resources.
-Use the actual established compute/storage budget and requested scope; no pilot
-is launched by a request for ideas or planning alone.
+Pilot duration, reminders, compute and concurrency follow the
+[session resource table](../shared-references/resource-budget.md) and current plan.
+Prefer the smallest informative pilot; ideas or planning alone do not launch one.
 
-- **PILOT_MAX_HOURS = 2** — Planning target for a cheap pilot, not an authorization ceiling. Scale down when useful; a longer authorized pilot stays with the execution owner under the selected session table.
-- **PILOT_REVIEW_HOURS = 3** — Progress reminder from the first training step; review usefulness and continue observing. A reminder never authorizes interruption, force-kill, a new approval gate, or a blocked host Goal.
 - **MAX_PILOT_IDEAS = 3** — Run pilots for at most 3 top ideas in parallel. Additional ideas are validated on paper only.
-- **MAX_TOTAL_GPU_HOURS = 8** — Total GPU budget across all pilots. If exceeded, skip remaining pilots and note in report.
 - **AUTO_PROCEED = true** — When `true`, checkpoints are informational: report the selected option and continue in the same turn. Set to `false` to ask for explicit user confirmation and end the turn at each selection checkpoint.
 - **REVIEWER_MODEL = `gpt-6-astra`** — Model used via a secondary Codex agent. Must be an OpenAI model (e.g., `gpt-6-astra`, `o3`, `gpt-4o`). Passed to sub-skills.
 - **ARXIV_DOWNLOAD = false** — When `true`, `/research-lit` downloads the top relevant arXiv PDFs during Phase 1. When `false` (default), only fetches metadata. Passed through to `/research-lit`.

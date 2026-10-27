@@ -155,7 +155,8 @@ def test_session_resource_deferral_does_not_launch_or_spend_queue_retry(tmp_path
     from tools import resource_budget
     from tests.test_resource_budget import requirements
     if kind != 'first-choice':
-        resource_budget.select(tmp_path,'queue-session',preset='maximum',selected_by='fixture-user')
+        resource_budget.select(tmp_path, 'queue-session', preset='custom' if kind == 'duration' else 'maximum',
+            selected_by='fixture-user', overrides={'auto_approve_job_seconds': 43200} if kind == 'duration' else None)
     request = requirements(tmp_path)
     if kind == 'capacity':
         request['ram_bytes'] = 10**25
@@ -189,11 +190,13 @@ def test_late_admission_failure_returns_to_pending_instead_of_failed_training(tm
     assert read_record(tmp_path/'runs/queue-attempt-1/execution.json')['status']=='prepared'
 
 
-def test_resource_bound_cpu_dispatch_is_not_held_by_an_unrelated_gpu_idle_gate(tmp_path, monkeypatch):
+@pytest.mark.parametrize('job_seconds', [1, 10**8])
+def test_resource_bound_cpu_dispatch_is_not_held_by_an_unrelated_gpu_idle_gate(tmp_path, monkeypatch, job_seconds):
     from tools import resource_budget
     from tests.test_resource_budget import requirements
     resource_budget.select(tmp_path, 'queue-session', preset='maximum', selected_by='fixture-user')
-    job = queued_job(tmp_path, resource_binding={'session_id':'queue-session', 'request':requirements(tmp_path)})
+    job = queued_job(tmp_path, resource_binding={'session_id':'queue-session',
+        'request':requirements(tmp_path, job_seconds=job_seconds)})
     job['phase'] = 'compare'
     state = {'meta':{}, 'phases':[{'name':'compare', 'depends_on':[], 'status':'active'}], 'jobs':[job]}
     manifest = {'cwd':str(tmp_path), 'gpus':[0], 'max_parallel':1,
@@ -204,7 +207,9 @@ def test_resource_bound_cpu_dispatch_is_not_held_by_an_unrelated_gpu_idle_gate(t
     monkeypatch.setattr(queue, 'launch_job', lambda job, gpu, *a:(launches.append(gpu) or ('fixture-screen', None)))
     queue.step(manifest, state, str(tmp_path/'state.json'), str(tmp_path))
     assert launches == [None] and job['status'] == 'running'
-    assert read_record(tmp_path/'runs/queue-attempt-1/resource-admission.json')['check']['status'] == 'AUTO_APPROVED'
+    check = read_record(tmp_path/'runs/queue-attempt-1/resource-admission.json')['check']
+    assert check['status'] == 'AUTO_APPROVED'
+    assert check['duration']['approval_limit_seconds'] is None
 
 
 def test_existing_screen_collision_never_terminates_its_unknown_occupants(tmp_path, monkeypatch):
