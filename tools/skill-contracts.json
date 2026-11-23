@@ -842,15 +842,15 @@
       "upgrade_baseline_sha256": "e8b4192fd883ac4a8cbf3e11afa567fb76936e8a2d24288afe5f330ab778cee6"
     },
     "skills/experiment-queue/scripts/build_manifest.py": {
-      "reason": "Extend the existing resource-aware queue with priority, validated evaluation profiles and monitored CPU companions.",
-      "review_ref": "docs/OPTIMIZATION_PLAN_CN.md#12",
+      "reason": "Extend the existing resource-aware queue with priority, validated evaluation profiles and monitored CPU companions. Preserve successful output and structured diagnostics on Windows code pages with Unicode artifact paths.",
+      "review_ref": "CHANGELOG.md#170",
       "test_refs": [
         "tests/test_priority_dispatch.py",
         "tests/test_resource_planner.py"
       ],
       "adaptation_version": "1.7.0",
       "baseline_sha256": "2fe0d13d2bba863e9bbde65f8a746f1c0f46b7e2c08e16107786fad6980a5820",
-      "sha256": "ef0d45de6560e14467d9530ad3f0cad1073b8c6353af30f144535143f6ce511c"
+      "sha256": "46193e55fbb617330ee149aeda54a103a2bc06fec81447c58cee116c413feb30"
     },
     "skills/experiment-queue/scripts/queue_manager.py": {
       "reason": "Extend the existing resource-aware queue with priority, validated evaluation profiles and monitored CPU companions.",
@@ -1162,10 +1162,10 @@
     },
     "skills/figure-spec/scripts/figure_renderer.py": {
       "baseline_sha256": "02b4e01e46b51aeca12722ddd7b21bb7da3c3b175bba5d129c45d671fb07a0bc",
-      "sha256": "3f45966aad4993a531822117dee5143ed7b21757706344abc792981d50ba602d",
-      "reason": "Directed 1.4.0 evidence, workflow, figure or distribution adaptation; see scoped implementation review.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "4b6132510c03b25ec75335841d65906d5406d3b1241bf24bec84a48e599a74df",
+      "reason": "Directed 1.4.0 evidence, workflow, figure or distribution adaptation; see scoped implementation review. Preserve successful output and structured diagnostics on Windows code pages with Unicode artifact paths.",
+      "adaptation_version": "1.7.0",
+      "review_ref": "CHANGELOG.md#170",
       "test_refs": [
         "tests/test_evo_inquiry.py",
         "tests/test_workflow_contract_versions.py",
@@ -2734,6 +2734,26 @@
       "review_ref": "CHANGELOG.md#170",
       "test_refs": [
         "tests/test_portability_governance.py"
+      ]
+    },
+    "skills/paper-illustration-image2/scripts/paper_illustration_image2.py": {
+      "baseline_sha256": "bc97f5b1ae14ffaff10c24240b6e93f3c1282ffd340d4756ea80477649f32890",
+      "sha256": "821770701b949bcdfc94a01ecbd843fefeb0614ebd987343f211f44591804926",
+      "adaptation_version": "1.7.0",
+      "reason": "Preserve successful output and structured diagnostics on Windows code pages with Unicode artifact paths.",
+      "review_ref": "CHANGELOG.md#170",
+      "test_refs": [
+        "tests/test_figure_evidence.py"
+      ]
+    },
+    "skills/skills-codex/paper-illustration-image2/scripts/paper_illustration_image2.py": {
+      "baseline_sha256": "bc97f5b1ae14ffaff10c24240b6e93f3c1282ffd340d4756ea80477649f32890",
+      "sha256": "821770701b949bcdfc94a01ecbd843fefeb0614ebd987343f211f44591804926",
+      "adaptation_version": "1.7.0",
+      "reason": "Preserve successful output and structured diagnostics on Windows code pages with Unicode artifact paths.",
+      "review_ref": "CHANGELOG.md#170",
+      "test_refs": [
+        "tests/test_figure_evidence.py"
       ]
     }
   },

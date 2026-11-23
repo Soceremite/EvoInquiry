@@ -18,6 +18,7 @@
 - Recheck the queued GPU UUIDs, policy and lease before launching the frozen job. Keep capacity deferrals pending and include overlapping attempts in launch receipts for comparison logs.
 - Account for clean inactive file cache when estimating Linux cgroup memory headroom.
 - Preserve exit statuses from legacy CLI helpers on Windows and generate Claude overlays through macOS temporary-directory aliases.
+- Keep CLI diagnostics and JSON readable on Windows when figure or queue paths contain Unicode.
 
 ## 1.6.3 — 2026-10-27 revision
 

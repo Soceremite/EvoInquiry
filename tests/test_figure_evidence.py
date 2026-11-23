@@ -2,6 +2,7 @@
 import copy
 import importlib.util
 import json
+import os
 from pathlib import Path
 import subprocess
 import sys
@@ -93,8 +94,21 @@ def test_renderer_is_deterministic_editable_and_legacy_entrypoint_still_works(tm
     ET.fromstring(result)
     assert '问题 &lt;A&gt;' in result
     source = tmp_path / 'spec.json'; source.write_text(json.dumps(value), encoding='utf-8')
-    output = tmp_path / 'legacy.svg'
+    output = tmp_path / '实验图.svg'
     run = subprocess.run([sys.executable, str(ROOT / 'tools/figure_renderer.py'), 'render',
-                          str(source), '--output', str(output)], capture_output=True)
+                          str(source), '--output', str(output)], capture_output=True, timeout=20,
+                         env=dict(os.environ, PYTHONIOENCODING='cp1252:strict'))
     assert run.returncode == 0, run.stderr
     assert output.read_text(encoding='utf-8') == result
+
+
+def test_image_helper_can_report_unicode_paths_on_a_legacy_code_page(tmp_path):
+    workspace = tmp_path / '绘图'
+    workspace.mkdir()
+    run = subprocess.run([sys.executable, str(ROOT / 'tools/paper_illustration_image2.py'), 'verify',
+                          '--workspace', str(workspace)], capture_output=True, timeout=20,
+                         env=dict(os.environ, PYTHONIOENCODING='cp1252:strict'))
+    assert run.returncode == 1, run.stderr
+    report = json.loads(run.stdout)
+    assert report['ok'] is False and report['workspace'] == str(workspace.resolve())
+    assert any('missing artifact' in message for message in report['errors'])

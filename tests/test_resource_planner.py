@@ -1,6 +1,7 @@
 """Exercise P5 from the session table through queue dispatch and its final launcher."""
 import importlib
 import json
+import os
 from pathlib import Path
 import shlex
 import subprocess
@@ -266,21 +267,22 @@ def test_cpu_queue_reuses_the_released_slot_through_the_real_frozen_launcher(tmp
 
 def test_manifest_cli_keeps_explicit_legacy_configuration_and_has_no_implicit_card_count(tmp_path):
     config = tmp_path / 'grid.json'
-    output = tmp_path / 'manifest.json'
+    output = tmp_path / '任务清单.json'
     raw = {'phases': [{'name': 'phase', 'grid': {'seed': [1, 2]},
                      'template': {'id': 'seed-${seed}', 'cmd': 'python train.py --seed ${seed}'}}]}
     command = [sys.executable, str(ROOT / 'tools/experiment_queue/build_manifest.py'),
                '--config', str(config), '--output', str(output)]
+    environment = dict(os.environ, PYTHONIOENCODING='cp1252:strict')
     config.write_text(json.dumps(raw))
-    rejected = subprocess.run(command, capture_output=True, text=True, timeout=10)
+    rejected = subprocess.run(command, capture_output=True, text=True, timeout=10, env=environment)
     assert rejected.returncode == 2 and 'gpus and max_parallel' in rejected.stderr
     config.write_text(json.dumps(dict(raw, gpus=[1], max_parallel=1)))
-    subprocess.run(command, check=True, capture_output=True, timeout=10)
+    subprocess.run(command, check=True, capture_output=True, timeout=10, env=environment)
     manifest = read_record(output)
     assert manifest['gpus'] == [1] and manifest['max_parallel'] == 1
     raw['phases'][0]['template']['execution'] = {'execution_run_id': 'run-${seed}'}
     config.write_text(json.dumps(raw))
-    subprocess.run(command, check=True, capture_output=True, timeout=10)
+    subprocess.run(command, check=True, capture_output=True, timeout=10, env=environment)
     manifest = read_record(output)
     assert 'gpus' not in manifest and 'max_parallel' not in manifest
     assert manifest['phases'][0]['jobs'][1]['execution']['execution_run_id'] == 'run-2'

@@ -48,6 +48,7 @@ import argparse
 import itertools
 import json
 import re
+import sys
 from pathlib import Path
 
 
@@ -117,6 +118,9 @@ def build(config):
 
 
 def main():
+    reconfigure = getattr(sys.stdout, 'reconfigure', None)
+    if reconfigure is not None:
+        reconfigure(errors='backslashreplace')
     ap = argparse.ArgumentParser()
     ap.add_argument("--config", required=True,
                     help="Grid-spec YAML or JSON file")

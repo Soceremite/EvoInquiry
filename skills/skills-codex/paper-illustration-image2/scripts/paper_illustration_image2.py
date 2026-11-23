@@ -43,7 +43,7 @@ def write_json(path: Path, payload: dict) -> None:
 def emit_json(payload: dict, *, json_out: Path | None = None) -> int:
     if json_out is not None:
         write_json(json_out, payload)
-    print(json.dumps(payload, ensure_ascii=False, indent=2))
+    print(json.dumps(payload, indent=2))
     return 0 if payload.get("ok", False) else 1
 
 

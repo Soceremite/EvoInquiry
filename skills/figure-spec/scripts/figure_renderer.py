@@ -756,6 +756,9 @@ FigureSpec JSON Schema:
 # ============================================================
 
 def main():
+    reconfigure = getattr(sys.stdout, "reconfigure", None)
+    if reconfigure is not None:
+        reconfigure(errors="backslashreplace")
     parser = argparse.ArgumentParser(description="ARIS FigureSpec → SVG Renderer")
     subparsers = parser.add_subparsers(dest="command")
 
