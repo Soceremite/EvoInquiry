@@ -8,8 +8,7 @@ This shim keeps the directory-level resolver chain working
 (.ei/tools/experiment_queue/ → tools/experiment_queue/ →
 $ARIS_REPO/tools/experiment_queue/ → same, via the global pointer
 file ~/.ei/repo, #366). Once a SKILL has resolved
-the directory, it runs `python3 $QUEUE_TOOLS/queue_manager.py`,
-which lands here, which os.execv's into the canonical script.
+the directory, this entry point runs the canonical script with the same arguments.
 
 See `skills/experiment-queue/SKILL.md` for the resolver block.
 """
@@ -17,6 +16,7 @@ See `skills/experiment-queue/SKILL.md` for the resolver block.
 from __future__ import annotations
 
 import os
+import subprocess
 import sys
 from pathlib import Path
 
@@ -36,7 +36,10 @@ def main() -> int:
             "       project-local symlink chain.\n"
         )
         return 1
-    os.execv(sys.executable, [sys.executable, str(REAL), *sys.argv[1:]])
+    command = [sys.executable, str(REAL), *sys.argv[1:]]
+    if os.name == "nt":
+        return subprocess.call(command)
+    os.execv(sys.executable, command)
     return 0  # unreachable; os.execv does not return on success
 
 

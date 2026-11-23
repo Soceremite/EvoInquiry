@@ -17,6 +17,7 @@
 - Remove implicit eight-device and eight-job settings from new queue manifests. Legacy command manifests require explicit devices and concurrency.
 - Recheck the queued GPU UUIDs, policy and lease before launching the frozen job. Keep capacity deferrals pending and include overlapping attempts in launch receipts for comparison logs.
 - Account for clean inactive file cache when estimating Linux cgroup memory headroom.
+- Preserve exit statuses from legacy CLI helpers on Windows and generate Claude overlays through macOS temporary-directory aliases.
 
 ## 1.6.3 — 2026-10-27 revision
 

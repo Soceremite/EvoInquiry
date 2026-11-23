@@ -5,6 +5,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import pytest
+
 from tools.generate_codex_claude_review_overrides import (
     FRONTMATTER_RE,
     TARGET_SKILLS,
@@ -68,3 +70,21 @@ def test_generator_retains_and_translates_deferred_reviewer_resources(tmp_path, 
                     if original.suffix == '.md' else original.read_bytes())
         assert (output / relative).read_bytes() == expected
         assert (checked_in / relative).read_bytes() == expected
+
+
+def test_generator_accepts_an_alias_for_the_output_root(tmp_path, monkeypatch):
+    from tools import generate_codex_claude_review_overrides as gen
+
+    output = tmp_path / 'physical'
+    output.mkdir()
+    alias = tmp_path / 'output-alias'
+    try:
+        alias.symlink_to(output, target_is_directory=True)
+    except (OSError, NotImplementedError):
+        pytest.skip('Creating a directory symlink requires platform support')
+    monkeypatch.setattr(gen, 'DEST_ROOT', alias)
+
+    gen.generate_one('research-refine')
+
+    relative = 'research-refine/SKILL.md'
+    assert (output / relative).read_bytes() == (CLAUDE_OVERLAY / relative).read_bytes()

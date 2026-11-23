@@ -24,10 +24,8 @@ valid Python module:
            → this file (when ARIS_REPO is resolved from the global
              pointer file ~/.ei/repo, #366 — no project manifest needed)
 
-Shim semantics: `os.execv` replaces the current Python process with
-the real helper, so the helper sees its own `__file__`, `sys.path[0]`,
-and argv exactly as if it had been invoked directly. No extra
-process layer, no environment pollution.
+The canonical helper receives its own script path and the forwarded arguments.
+On Windows the shim waits for the helper and returns its exit status.
 
 The shim itself is kept minimal so a Python 3.6+ interpreter on any
 platform (including older macOS system python) can run it.
@@ -36,6 +34,7 @@ platform (including older macOS system python) can run it.
 from __future__ import annotations
 
 import os
+import subprocess
 import sys
 from pathlib import Path
 
@@ -59,9 +58,10 @@ def main() -> int:
             "       ARIS repo, or rerun `bash tools/install_aris.sh` to refresh\n"
             "       the project-local symlink chain."
         )
-    # os.execv replaces this Python process; argv[0] is the real path so
-    # the helper sees its own __file__ and computes paths correctly.
-    os.execv(sys.executable, [sys.executable, str(REAL), *sys.argv[1:]])
+    command = [sys.executable, str(REAL), *sys.argv[1:]]
+    if os.name == "nt":
+        return subprocess.call(command)
+    os.execv(sys.executable, command)
     return 0  # unreachable; os.execv does not return on success
 
 

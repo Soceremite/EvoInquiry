@@ -363,7 +363,7 @@ def generate_one(skill_name: str) -> None:
     if skill_name not in TARGET_SKILLS:
         raise ValueError(f"Unknown Claude overlay skill: {skill_name}")
     expected = projection(REPO_ROOT, "claude")
-    write_changes(surface_changes(DEST_ROOT, expected, skill_name))
+    write_changes(surface_changes(DEST_ROOT.resolve(), expected, skill_name))
 
 
 def main() -> None:

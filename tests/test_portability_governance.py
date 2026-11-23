@@ -21,6 +21,19 @@ from tools.registry_common import (RegistryError, atomic_write, fixed_ref, ident
 from tools.state_paths import resolve_state_root, tree_inventory
 
 
+@pytest.mark.parametrize('shim', [
+    'experiment_queue/queue_manager.py',
+    'figure_renderer.py',
+    'paper_illustration_image2.py',
+])
+def test_legacy_command_shim_preserves_usage_error(tmp_path, shim):
+    script = Path(__file__).resolve().parents[1] / 'tools' / shim
+    result = subprocess.run([sys.executable, str(script), '--invalid-option'], cwd=tmp_path,
+                            capture_output=True, timeout=20)
+    assert result.returncode == 2, result.stderr
+    assert b'error:' in result.stderr
+
+
 @pytest.fixture
 def isolated_python(tmp_path):
     directory = tmp_path / 'research 环境 with spaces' / '.venv'

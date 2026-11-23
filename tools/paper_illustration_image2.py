@@ -22,14 +22,14 @@ re-install:
   pre-Phase-3.2 file continue to work standalone (no shim semantics
   needed; the canonical script is self-contained).
 
-`os.execv` replaces the current Python process so the canonical
-helper sees its own `__file__` and computes paths relative to itself,
-not relative to this shim.
+The canonical helper receives its own script path and the forwarded arguments.
+On Windows the shim waits for the helper and returns its exit status.
 """
 
 from __future__ import annotations
 
 import os
+import subprocess
 import sys
 from pathlib import Path
 
@@ -54,7 +54,10 @@ def main() -> int:
             "       ARIS repo, or rerun `bash tools/install_aris.sh` to refresh\n"
             "       the project-local symlink chain."
         )
-    os.execv(sys.executable, [sys.executable, str(REAL), *sys.argv[1:]])
+    command = [sys.executable, str(REAL), *sys.argv[1:]]
+    if os.name == "nt":
+        return subprocess.call(command)
+    os.execv(sys.executable, command)
     return 0  # unreachable; os.execv does not return on success
 
 

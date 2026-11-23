@@ -1766,12 +1766,13 @@
     },
     "tools/generate_codex_claude_review_overrides.py": {
       "baseline_sha256": "5d29ef95777af0bafea264182839926b0b6d429bb5362cb4104a27cb90d45f1c",
-      "sha256": "87a9d3bfa12f5d80f0e22f1af43c75ed471500aab87a0a15c06aeff55edf3c96",
-      "reason": "Generate installed surface files from their canonical skills and explicitly retained host-specific differences.",
-      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
+      "sha256": "5eafde9615cdcf7755a64b85c48e9f13f0f58a78f50c3d9a8e6453c151905fd8",
+      "reason": "Generate installed surface files from their canonical skills and explicitly retained host-specific differences. Resolve the selected Claude output directory before writing to support the macOS temporary-directory alias.",
+      "review_ref": "CHANGELOG.md#170",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
-        "tests/test_evo_inquiry.py"
+        "tests/test_evo_inquiry.py",
+        "tests/test_claude_review_generator.py"
       ],
       "adaptation_version": "1.7.0"
     },
@@ -2500,10 +2501,10 @@
     },
     "tests/test_claude_review_generator.py": {
       "baseline_sha256": "ba9c518d97061204cb21fb1079a35ff6e10db1613fbc48535c5c430eebfbac86",
-      "sha256": "97bf750ea5f3e3cb3e388b54648ebe09fc4c65c40b41e8e9a466b2488ec3bea1",
-      "reason": "Progressively disclose retained refinement/reviewer instructions; retain and translate deferred resources, preserve pending-review recovery and all review gates, and pin deferred runtime bytes during native discovery.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "9cbddc52b89201d7459d9eb90db614c7e91f1b3d8417472383ccfb90091ef311",
+      "reason": "Progressively disclose retained refinement/reviewer instructions; retain and translate deferred resources, preserve pending-review recovery and all review gates, and pin deferred runtime bytes during native discovery. Resolve the selected Claude output directory before writing to support the macOS temporary-directory alias.",
+      "adaptation_version": "1.7.0",
+      "review_ref": "CHANGELOG.md#170",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
         "tests/test_claude_review_generator.py",
@@ -2694,6 +2695,46 @@
         "tests/test_evo_inquiry.py"
       ],
       "adaptation_version": "1.7.0"
+    },
+    "tools/experiment_queue/build_manifest.py": {
+      "baseline_sha256": "e1daa4116e24a36f970e5fddf6d1493e6a7396933c4e21468c85593ca35d4a25",
+      "sha256": "253d561723c6e438bcbb78cbed42860ecfba210be892aa152cc500cc092c6c83",
+      "adaptation_version": "1.7.0",
+      "reason": "Preserve the native Windows exit status of the canonical CLI behind the legacy entry point.",
+      "review_ref": "CHANGELOG.md#170",
+      "test_refs": [
+        "tests/test_resource_planner.py"
+      ]
+    },
+    "tools/experiment_queue/queue_manager.py": {
+      "baseline_sha256": "eac75a1285c81eb1683906cc979486f14bbba612c7cf434c753dfacec1f79dda",
+      "sha256": "dd573d6edc6c68635b88f8172afa8c35662175bb69b3040f16b7b12682254b21",
+      "adaptation_version": "1.7.0",
+      "reason": "Preserve the native Windows exit status of the canonical CLI behind the legacy entry point.",
+      "review_ref": "CHANGELOG.md#170",
+      "test_refs": [
+        "tests/test_portability_governance.py"
+      ]
+    },
+    "tools/figure_renderer.py": {
+      "baseline_sha256": "88f667eb398d491fc49f5f4d24c6ee06de27862d1e9187c2a23f8ff3079b165c",
+      "sha256": "0fb8bcbe87c5d4827b8301b2d07d16c8847b00fafeae473439188023e8bcacdf",
+      "adaptation_version": "1.7.0",
+      "reason": "Preserve the native Windows exit status of the canonical CLI behind the legacy entry point.",
+      "review_ref": "CHANGELOG.md#170",
+      "test_refs": [
+        "tests/test_portability_governance.py"
+      ]
+    },
+    "tools/paper_illustration_image2.py": {
+      "baseline_sha256": "f7c6221f70d00b113646f1c3d481a37a1b04a5bcef2f0e055b3d9b22d8b9c01f",
+      "sha256": "7d7fe32de2cebad2f56b14ae0fd714ef42a121b7ce2ba3845b35d9c1e87981fd",
+      "adaptation_version": "1.7.0",
+      "reason": "Preserve the native Windows exit status of the canonical CLI behind the legacy entry point.",
+      "review_ref": "CHANGELOG.md#170",
+      "test_refs": [
+        "tests/test_portability_governance.py"
+      ]
     }
   },
   "workflow_adaptations": {
