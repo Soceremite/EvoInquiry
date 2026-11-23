@@ -19,6 +19,7 @@ EvoInquiry can now plan experiment placements and queue jobs from the server's c
 - Keep placement outside the frozen scientific configuration. A task can select from declared resource options while reusing the original model, data, arguments and seed.
 - Estimate the container's available RAM with a conservative allowance for clean inactive file cache on Linux.
 - Preserve helper exit codes and Unicode diagnostics when Windows captures CLI output. Resolve macOS temporary-directory aliases when generating Claude overlays.
+- Read Windows CRLF skill sources and generate consistent LF entrypoints. Run the same Windows test modules in development and release CI.
 
 ## 中文说明
 
@@ -30,4 +31,4 @@ v1.7.0 根据会话资源表和服务器遥测安排实验。队列按显存、�
 
 技能入口与 Claude、Gemini 评审 overlay 现在可从源文件生成。十个长入口按阶段加载细节，两个外部评审适配器共用流程。Rebuttal 支持一页 PDF、跨轮讨论和作者承诺核对，旧项目可按迁移说明接续。
 
-修复 Windows 下旧命令入口的退出码转发和重定向输出编码，也修复了 macOS 下 Claude overlay 生成器处理系统临时目录路径的问题。
+修复 Windows 下旧命令入口的退出码转发和重定向输出编码，也修复了 macOS 下 Claude overlay 生成器处理系统临时目录路径的问题。技能生成器支持读取 Windows CRLF 换行的源文件，并统一生成 LF 换行的入口。日常 CI 和发布流程使用同一套 Windows 测试。

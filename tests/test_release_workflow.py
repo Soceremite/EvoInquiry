@@ -45,9 +45,10 @@ def test_release_covers_portable_windows_validation_before_publication():
         'Native Windows validation omits bounded research modules: '
         + ', '.join(sorted(bounded_research - development))
     )
-    assert development <= windows_modules(release), (
-        'Publication omits Windows validation modules: '
-        + ', '.join(sorted(development - windows_modules(release)))
+    publication = windows_modules(release)
+    assert development == publication, (
+        'Windows modules differ between normal CI and publication: '
+        + ', '.join(sorted(development ^ publication))
     )
     assert {'powershell.exe', 'pwsh'} <= set(
         release['jobs']['windows']['strategy']['matrix']['powershell']

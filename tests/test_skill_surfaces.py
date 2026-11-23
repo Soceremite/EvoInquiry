@@ -39,10 +39,10 @@ def test_each_shortened_entry_can_load_workflow_stages():
 
 
 def test_changes_in_shared_source_are_detected_then_regenerated(tmp_path):
-    def write(path, content):
+    def write(path, content, *, newline=None):
         target = tmp_path / path
         target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_text(content, encoding='utf-8')
+        target.write_text(content, encoding='utf-8', newline=newline)
         return target
 
     rule = {'codex': {'destination':'skills/skills-codex', 'remove_frontmatter':['allowed-tools'], 'omit':[]},
@@ -52,13 +52,16 @@ def test_changes_in_shared_source_are_detected_then_regenerated(tmp_path):
     for name in rule:
         write(f'tools/skill-surfaces/{name}/patches.json','{}')
     entry = write('skills/example/SKILL.md',
-                  '---\nname: example\ndescription: Example task.\nallowed-tools: Read\n---\n\nWorkflow.\n')
+                  '---\nname: example\ndescription: Example task.\nallowed-tools: Read\n---\n\nWorkflow.\n',
+                  newline='\r\n')
     command = [sys.executable, str(TOOL), '--root', str(tmp_path)]
-    subprocess.run(command, check=True, capture_output=True, timeout=20)
+    result = subprocess.run(command, text=True, capture_output=True, timeout=20)
+    assert result.returncode == 0, result.stdout + result.stderr
     codex = tmp_path/'skills/skills-codex/example/SKILL.md'
     gemini = tmp_path/'skills/skills-codex-gemini-review/example/SKILL.md'
     assert 'allowed-tools' not in codex.read_text()
-    with entry.open('a', encoding='utf-8') as stream:
+    assert all(b'\r\n' not in path.read_bytes() for path in (codex, gemini))
+    with entry.open('a', encoding='utf-8', newline='\r\n') as stream:
         stream.write('Additional workflow detail.\n')
     result = subprocess.run(command+['--check'], text=True, capture_output=True, timeout=20)
     assert result.returncode == 1

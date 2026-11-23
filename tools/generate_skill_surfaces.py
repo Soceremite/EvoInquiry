@@ -58,11 +58,16 @@ def _sources(root):
         source = folder/'SKILL.md'
         if not source.is_file():
             source = folder/'SKILL.source.md'
-        if not source.is_file() or 'codex' not in _declared(source.read_bytes()):
+        if not source.is_file():
+            continue
+        if 'codex' not in _declared(source.read_bytes().replace(b'\r\n', b'\n')):
             continue
         for relative,data in _files(folder).items():
             target = 'SKILL.md' if relative == 'SKILL.source.md' else relative
-            output[folder.name+'/'+target] = _strip_fields(data, ['surfaces']) if target == 'SKILL.md' else data
+            if target == 'SKILL.md':
+                # Keep generated entrypoints stable across editor line endings.
+                data = _strip_fields(data.replace(b'\r\n', b'\n'), ['surfaces'])
+            output[folder.name+'/'+target] = data
     return output
 
 
