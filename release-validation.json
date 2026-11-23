@@ -52,7 +52,7 @@
     "skill_governance_blocks": "PASS",
     "skill_inventory": "PASS",
     "release_note_wrapping": "PASS",
-    "native_platform_ci": "NOT_RUN",
+    "native_platform_ci": "PASS",
     "migration_fixes": {
       "artifact": "validation/release-1.7.0/migration-fixes.xml",
       "sha256": "f30fbe5e4ffa60852fe70b8d9cba066773ef5104c3e210491acf48eceadbe487",
@@ -144,6 +144,44 @@
       "sha256": "1dbdfa5a8abce62021485549016941bc1f7e38a1ca1971512a421a7d272a0a72",
       "status": "PASS",
       "scope": "The actual Codex app-server exposed Plan, kept an isolated Goal active and read queue state under its read-only sandbox."
+    },
+    "native_platform_ci_evidence": {
+      "url": "https://github.com/Soceremite/EvoInquiry/actions/runs/45185045009",
+      "tested_commit": "2bc37e102ae29d534160622487e6dc1df372a49e",
+      "jobs": [
+        {
+          "name": "pytest (macos-latest)",
+          "url": "https://github.com/Soceremite/EvoInquiry/actions/runs/45185045009/job/137728343992",
+          "passed": 1576,
+          "skipped": 40,
+          "failures": 0,
+          "errors": 0
+        },
+        {
+          "name": "pytest (ubuntu-latest)",
+          "url": "https://github.com/Soceremite/EvoInquiry/actions/runs/45185045009/job/137728344042",
+          "passed": 1581,
+          "skipped": 35,
+          "failures": 0,
+          "errors": 0
+        },
+        {
+          "name": "windows (powershell.exe)",
+          "url": "https://github.com/Soceremite/EvoInquiry/actions/runs/45185045009/job/137728343887",
+          "passed": 687,
+          "skipped": 10,
+          "failures": 0,
+          "errors": 0
+        },
+        {
+          "name": "windows (pwsh)",
+          "url": "https://github.com/Soceremite/EvoInquiry/actions/runs/45185045009/job/137728344323",
+          "passed": 687,
+          "skipped": 10,
+          "failures": 0,
+          "errors": 0
+        }
+      ]
     }
   },
   "previous_checks": {

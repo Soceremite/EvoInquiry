@@ -8,7 +8,7 @@
 [静态封面](docs/assets/evo-inquiry-hero.svg)
 
 <p align="center">
-  <a href="https://github.com/Soceremite/EvoInquiry/releases/tag/v1.6.3"><img src="https://img.shields.io/badge/release-1.6.3-FF927E?style=flat&amp;labelColor=7862E8" alt="版本 1.6.3"></a>
+  <a href="https://github.com/Soceremite/EvoInquiry/releases/tag/v1.7.0"><img src="https://img.shields.io/badge/release-1.7.0-FF927E?style=flat&amp;labelColor=7862E8" alt="版本 1.7.0"></a>
   <a href="docs/SKILLS_CATALOG.md"><img src="https://img.shields.io/badge/Codex_skills-89-59C7A7?style=flat&amp;labelColor=7862E8" alt="89 个 Codex skill"></a>
   <a href="https://github.com/Soceremite/EvoInquiry/actions/workflows/test-suite.yml"><img src="https://github.com/Soceremite/EvoInquiry/actions/workflows/test-suite.yml/badge.svg" alt="回归测试状态"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-FFD95E?style=flat&amp;labelColor=7862E8" alt="MIT 许可证"></a>
@@ -77,14 +77,14 @@
 
 ## 快速开始
 
-从 [正式版 Release](https://github.com/Soceremite/EvoInquiry/releases/tag/v1.6.3)
-下载并解压 `evo-inquiry-1.6.3.tar.gz` 或 `.zip`。
+从 [正式版 Release](https://github.com/Soceremite/EvoInquiry/releases/tag/v1.7.0)
+下载并解压 `evo-inquiry-1.7.0.tar.gz` 或 `.zip`。
 下载包将在对应版本的发布门禁通过后提供。
 请使用提供 `codex plugin` 命令的 Codex 版本；插件安装已在 Linux 上使用
 Codex CLI **0.164.0** 验证。
 
 ```sh
-cd /path/to/evo-inquiry-1.6.3
+cd /path/to/evo-inquiry-1.7.0
 codex plugin marketplace add "$PWD"
 codex plugin add evo-inquiry@evo-inquiry
 ```
@@ -107,7 +107,7 @@ skill 使用 `evo-inquiry:` 命名空间。安装插件使技能可用；
 <summary><strong>源码开发与干净安装</strong></summary>
 
 需要查看和开发源码时，可以使用
-`git clone --branch v1.6.3 https://github.com/Soceremite/EvoInquiry.git EvoInquiry`。
+`git clone --branch v1.7.0 https://github.com/Soceremite/EvoInquiry.git EvoInquiry`。
 安装插件时使用干净的 Release 解压目录。Codex CLI 0.162.1 也会复制来源目录中的
 未跟踪文件；Release 包可以避免把私有验证记录、构建产物和 Git 历史带入安装缓存。
 

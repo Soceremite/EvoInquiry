@@ -8,7 +8,7 @@
 [Static cover](docs/assets/evo-inquiry-hero.svg)
 
 <p align="center">
-  <a href="https://github.com/Soceremite/EvoInquiry/releases/tag/v1.6.3"><img src="https://img.shields.io/badge/release-1.6.3-FF927E?style=flat&amp;labelColor=7862E8" alt="Version 1.6.3"></a>
+  <a href="https://github.com/Soceremite/EvoInquiry/releases/tag/v1.7.0"><img src="https://img.shields.io/badge/release-1.7.0-FF927E?style=flat&amp;labelColor=7862E8" alt="Version 1.7.0"></a>
   <a href="docs/SKILLS_CATALOG.md"><img src="https://img.shields.io/badge/Codex_skills-89-59C7A7?style=flat&amp;labelColor=7862E8" alt="89 Codex skills"></a>
   <a href="https://github.com/Soceremite/EvoInquiry/actions/workflows/test-suite.yml"><img src="https://github.com/Soceremite/EvoInquiry/actions/workflows/test-suite.yml/badge.svg" alt="Regression test status"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-FFD95E?style=flat&amp;labelColor=7862E8" alt="MIT license"></a>
@@ -90,14 +90,14 @@ Your scope, review gates, resource budget and stopping conditions govern the wor
 
 ## Quick start
 
-Download and extract `evo-inquiry-1.6.3.tar.gz` or `.zip` from the
-[stable release](https://github.com/Soceremite/EvoInquiry/releases/tag/v1.6.3).
+Download and extract `evo-inquiry-1.7.0.tar.gz` or `.zip` from the
+[stable release](https://github.com/Soceremite/EvoInquiry/releases/tag/v1.7.0).
 Assets become available after the version's publication checks pass.
 Use a Codex version with the `codex plugin` commands; installation has been checked
 with Codex CLI **0.164.0** on Linux.
 
 ```sh
-cd /path/to/evo-inquiry-1.6.3
+cd /path/to/evo-inquiry-1.7.0
 codex plugin marketplace add "$PWD"
 codex plugin add evo-inquiry@evo-inquiry
 ```
@@ -120,7 +120,7 @@ available; persistent selection preferences are [configured separately](#usage).
 <summary><strong>Source development and a clean installation</strong></summary>
 
 For source development, use
-`git clone --branch v1.6.3 https://github.com/Soceremite/EvoInquiry.git EvoInquiry`.
+`git clone --branch v1.7.0 https://github.com/Soceremite/EvoInquiry.git EvoInquiry`.
 Install the plugin from a clean release archive. Codex CLI 0.162.1 copies local
 untracked files too, so a release archive keeps private validation records,
 build outputs and Git history out of the installed cache.
