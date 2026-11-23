@@ -2,6 +2,7 @@
 name: "novelty-check"
 description: "Check a research idea against recent prior work and identify closest overlaps. Use to assess novelty before implementation; requires literature evidence."
 ---
+<!-- GENERATED from skills/novelty-check/SKILL.md — do not edit directly -->
 
 > Override for Codex users who want **Claude Code**, not a second Codex agent, to act as the reviewer. Install this package **after** `skills/skills-codex/*`.
 >

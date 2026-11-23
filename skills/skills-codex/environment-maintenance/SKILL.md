@@ -2,6 +2,7 @@
 name: environment-maintenance
 description: "Inspect or maintain research environments through independent candidates, validation receipts, frozen revisions and consumer/lease/pin protection. Use for dependency changes, environment reuse and retirement planning."
 ---
+<!-- GENERATED from skills/environment-maintenance/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md), or reuse

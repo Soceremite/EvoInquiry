@@ -2,6 +2,7 @@
 name: "paper-compile"
 description: "Compile a LaTeX paper to PDF, repair compilation errors, and inspect the output. Use for an existing manuscript that needs a verified build."
 ---
+<!-- GENERATED from skills/paper-compile/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

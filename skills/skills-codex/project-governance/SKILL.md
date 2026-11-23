@@ -2,6 +2,7 @@
 name: project-governance
 description: "Initialize or audit research project identities, fixed evidence references and layouts, or plan and execute an authorized state migration to .ei. Use for project governance and reproducibility handoffs."
 ---
+<!-- GENERATED from skills/project-governance/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md), or reuse

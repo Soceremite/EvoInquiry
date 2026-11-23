@@ -4,6 +4,7 @@ description: "Search the web and extract content with Exa, including similar pag
 argument-hint: "[search-query-or-url]"
 allowed-tools: Bash(*), Read, Write
 ---
+<!-- GENERATED from skills/exa-search/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

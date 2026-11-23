@@ -4,6 +4,7 @@ description: "Synchronize a local paper directory with Overleaf in either direct
 argument-hint: "[setup <project-id> | pull | push | status]"
 allowed-tools: Bash(*), Read, Grep, Glob, Edit, Write
 ---
+<!-- GENERATED from skills/overleaf-sync/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

@@ -2,6 +2,7 @@
 name: "mermaid-diagram"
 description: "Create and verify Mermaid diagrams from requirements, saving editable .mmd and .md files. Use for flowcharts, sequences, classes, ER diagrams, or timelines."
 ---
+<!-- GENERATED from skills/mermaid-diagram/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

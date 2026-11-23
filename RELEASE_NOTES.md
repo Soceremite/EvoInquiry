@@ -1,37 +1,28 @@
-# EvoInquiry 1.6.3
+# EvoInquiry 1.7.0
 
-EvoInquiry connects research framing, literature search, fair experiments, implementation, monitoring, objective analysis, case studies and paper preparation through 89 Codex skills. Each skill keeps its own responsibility and reuses the project's evidence and resource policy.
+EvoInquiry can now plan experiment placements and queue jobs from the server's current resources. The planner uses the selected session policy and declared peaks. The queue recalculates how many jobs fit as capacity changes.
 
-**1.6.3 improves sustained research work while keeping routine progress within the user's existing authorization.** This revision also simplifies budget guidance and defaults new sessions to available server resources without a duration ceiling.
+## Added
 
-## New capabilities
+- Maintain one source per workflow and reproduce the Codex and reviewer overlays through the surface generator and CI.
+- Move the detailed instructions for ten long skills into linked stage references. Share review-cycle guidance across the two external API adapters.
+- Upgrade rebuttal with six response modes, a one-page LaTeX template, traceable evidence and revision commitments, optional external rehearsal, and legacy migration guidance.
+- Generate `RESOURCE_PLAN.md` and `resource-request.json` from task requirements and a fresh target-host probe. Set the preference for headroom, minimal resource use or the shortest estimated runtime among declared options.
+- Calculate concurrency from the combined CPU, RAM, per-device VRAM and filesystem peaks. Apply the session and manifest limits together.
+- Share a GPU between resource-bound jobs when both the session and task allow it. Launch receipts record the chosen device UUIDs, overlap and concurrent attempt IDs for comparison logs.
+- Dispatch pending work by priority, reserve the next job's capacity and use spare resources. Select validated evaluation profiles and run authorized CPU companions during a monitored execution.
 
-- Initialize one session resource table from current CPU, GPU, memory and storage. Default to available local capacity without extra hardware caps or a time limit; reuse explicit user choices across skills and continuation.
-- Configure optional reminders separately from user-selected limits. Plan and launch against fresh hardware state, including GPU sharing and storage peaks.
-- Read trainer-owned first-step timing receipts through the existing execution observer, keeping preparation separate and preserving elapsed training across resume.
-- Verify cooperative checkpoint-and-stop receipts while keeping checkpoint validity, user intent and actual process exit distinct.
+## Fixed
 
-## Fixes and corrections
-
-- Remove fixed pilot budgets, default search timeouts and repeated timing examples. Planning, execution and monitoring use the same session policy.
-- Keep healthy training under observation during reflection and unanswered optional notices. Local review or a completed subtask does not automatically stop the whole Goal.
-- Serialize dispatch with review and stop updates. Deferred jobs keep their prepared identity without spending a training retry.
-- Preserve trainer exit codes through log pipelines. Partial output or a missing screen session cannot establish completion of a live or unknown process.
-- Wait for cooperative saves without an implicit force-kill deadline. Forced termination requires separate authorization; uncertain descendants remain protected.
-- Use observed GPU occupants and justified memory peaks instead of blanket idle-memory thresholds, and replace queue state atomically on Windows.
-- Keep notification, deployment, comparison and checkpoint responsibilities with their existing owners. Credentials stay outside project guidance.
-- Update an existing GitHub release through the same publication gates, preserving its version and release URL.
-
-## Validation
-
-Local acceptance covers fresh session initialization against actual server resources, command-line planning and monitoring, and real short CPU dispatch. Resource-table and queue regression passed 101 tests after two old default-dependent fixtures were changed to explicit user limits. Package preservation, skill discovery, dispatch, timing and monitoring checks also passed; overlapping counts are not added together.
-
-The publication workflow checks complete Linux/macOS regression and both native Windows PowerShell suites before updating release assets. Earlier native Codex Goal/Plan acceptance and the original failed checks retain their own source identities in the [audit record](docs/AUDIT_1_6_3_CN.md). Short CPU fixtures do not establish hour-long GPU research or universal model compliance. Timing and stop receipts require trainer integration; existing frozen jobs retain their original contracts.
+- Remove the default eight-GPU and eight-job values. New unbound queue manifests require explicit device and concurrency settings.
+- Recheck the saved assignment, current user policy and active lease before process creation. A capacity deferral preserves the prepared attempt and its retry count.
+- Keep placement outside the frozen scientific configuration. A task can select from declared resource options while reusing the original model, data, arguments and seed.
+- Estimate the container's available RAM with a conservative allowance for clean inactive file cache on Linux.
 
 ## 中文说明
 
-**默认按实际资源初始化，时长不设限。** 每个 session 复用唯一资源表，用户可自行设置资源、提醒和时限。各技能读取同一份配置，避免把具体项目的数值变成通用规则。
+v1.7.0 根据会话资源表和服务器遥测安排实验。队列按显存、内存及各文件系统的叠加峰值计算并发。用户指定的设备和并发上限优先，容量不足的任务保持待运行。
 
-**持续推进，适时回顾，停止有据。** 健康训练与可选通知保持持续观察；回顾暂缓不消耗实验重试。训练从实际首步计时，协作保存不再默认强杀，停止已有进程仍需明确授权。
+资源和租约允许时，同一队列的实验可以共享 GPU。启动记录保留设备 UUID 和重叠作业供比较引用。真实计时比较使用隔离运行。详细用法见[资源配置](docs/CUSTOMIZATION_CN.md#自适应资源配置)。
 
-**保持技能协作和证据边界。** 本次统一了 pilot、搜索、规划、队列与监听的预算规则，修正 Windows 状态覆盖、真实退出码和终态核验等问题。两个独立会话及短 CPU 任务已实测，资源表与队列复测 101 项通过；正式附件经过跨平台发布门禁，完整范围与历史记录见审查文档。
+技能入口与 Claude、Gemini 评审 overlay 现在可从源文件生成。十个长入口按阶段加载细节，两个外部评审适配器共用流程。Rebuttal 支持一页 PDF、跨轮讨论和作者承诺核对，旧项目可按迁移说明接续。

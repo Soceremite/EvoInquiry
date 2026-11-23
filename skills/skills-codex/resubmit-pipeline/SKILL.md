@@ -4,6 +4,7 @@ description: "Adapt an existing paper to a new venue through a text-only resubmi
 argument-hint: "[paper-base-dir] [— target-venue: <name>] [— review-corpus: <path>]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, spawn_agent
 ---
+<!-- GENERATED from skills/resubmit-pipeline/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

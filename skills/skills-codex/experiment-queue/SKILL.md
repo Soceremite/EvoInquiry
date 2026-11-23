@@ -4,6 +4,7 @@ description: "Queue multi-seed or multi-config ML jobs over SSH with OOM retry a
 argument-hint: "[manifest-or-grid-spec]"
 allowed-tools: Bash(*), Read, Grep, Glob, Edit, Write, Skill(run-experiment), Skill(monitor-experiment)
 ---
+<!-- GENERATED from skills/experiment-queue/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),
@@ -22,6 +23,11 @@ For comparison queues, load [comparative-experiments](../shared-references/compa
 
 
 # Experiment Queue
+
+Use [priority dispatch and concurrent work](references/priority-dispatch.md)
+when eligible jobs have different priorities, an evaluation can use a
+verified faster placement, or CPU work can advance during a primary run.
+Use the existing queue for actual dispatch and keep a single scheduler owner.
 
 Orchestrate large batches of ML experiments on SSH remote GPU servers with proper state tracking, OOM retry, stale cleanup, and wave transitions.
 
@@ -82,8 +88,9 @@ preconditions:
   - type: checkpoint_exists
     path: checkpoints/transformer/teacher_L96_K500_N{N}.pt
 
-gpus: [0, 1, 2, 3, 4, 5, 6, 7]
-max_parallel: 8
+# Explicit GPU list and cap for legacy commands.
+gpus: [0, 1]
+max_parallel: 2
 # gpu_free_threshold_mib: deprecated compatibility input; admission uses the session policy and live telemetry
 oom_retry:
   delay: 120
@@ -153,7 +160,15 @@ Save the built manifest to `$LOCAL_RUN_DIR/manifest.json` for reproducibility.
 - Check conda env exists on remote
 - Check `cwd` exists on remote
 - Check all preconditions (checkpoints, input files)
-- Recheck current session admission for each job. `max_parallel` is a concurrency ceiling, not a minimum number of idle GPUs required to start; launch the admitted subset and keep observing the remainder.
+- For governed jobs, bind each frozen snapshot to its session and request or
+  task template as described in the [resource table](../shared-references/resource-budget.md).
+  Omit `gpus` and `max_parallel` to fit pending jobs to real overlapping peaks.
+  When specified, these fields narrow placement and concurrency. New legacy
+  manifests require explicit values for both fields.
+- Carry the complete registry tools, schemas, and the original selected table
+  on the target host. The scheduler saves each UUID assignment with the job.
+  The launcher verifies the saved assignment, lease, and capacity again.
+  Reference the launch receipts in the comparison log when interpreting timing.
 
 Keep resource/control deferrals pending under their original attempt identity without consuming a retry. Report the reason and continue authorized observation/replanning; do not translate queue waiting into a blocked native Goal.
 
@@ -186,6 +201,9 @@ ssh <server> "mkdir -p \"$REMOTE_RUN_DIR/logs\" \"\$HOME/.ei/queue\""
 scp "$QUEUE_TOOLS/queue_manager.py" "$QUEUE_TOOLS/build_manifest.py" <server>:.ei/queue/
 scp "$LOCAL_RUN_DIR/manifest.json" <server>:"$REMOTE_RUN_REL/manifest.json"
 ```
+
+Run these copy steps with the canonical scripts. A bound manifest also needs
+its `registry_tools_dir` to point to the complete EvoInquiry tools on the host.
 
 Launch the scheduler as a detached `nohup` process:
 
@@ -370,7 +388,7 @@ If scheduler crashes / is killed:
 
 ## Key Rules
 
-- **Check actual resource fit** — resource-bound jobs use the current session table and measured phase peaks; exclusive admission checks observed occupants rather than a fixed memory threshold. This queue still reserves one of its own running GPU jobs per assigned device; external sharing follows session permission and actual free capacity.
+- **Check actual resource fit** — resource-bound jobs use the current session table and measured phase peaks; exclusive admission checks observed occupants rather than a fixed memory threshold. Bound jobs can share when peak capacity and policy allow it. Use isolated devices for comparative timing. Legacy jobs use one task per device.
 - **Always write state to disk** — every state change flushed to `queue_state.json`
 - **Idempotent scheduler** — safe to restart; picks up from state file
 - **Verified completion** — an intermediate output or OOM log does not establish exit. Verify terminal execution evidence or actual legacy process exit and its output before retrying.

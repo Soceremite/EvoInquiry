@@ -4,6 +4,7 @@ description: "Write detailed patent embodiments explaining how to practice an in
 argument-hint: "[claims-path-or-embodiment-details]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob
 ---
+<!-- GENERATED from skills/embodiment-description/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

@@ -2,6 +2,7 @@
 name: "feishu-notify"
 description: "Send requested Feishu/Lark notifications or authorized workflow status updates. Use with configured notification credentials and an explicit delivery scope."
 ---
+<!-- GENERATED from skills/feishu-notify/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

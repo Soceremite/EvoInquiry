@@ -7,6 +7,7 @@ JSON is the single stored table; Markdown is a view, never a second policy file.
 from __future__ import annotations
 
 import argparse
+from contextlib import contextmanager
 import csv
 from datetime import datetime, timezone
 import json
@@ -31,16 +32,18 @@ except ImportError:
 
 DEFAULT_POLICY = {
     'allowed_gpu_ids': 'all_visible', 'allow_gpu_sharing': True,
+    'max_parallel_jobs': None,
     'max_cpu_cores': None, 'max_ram_bytes': None, 'max_total_vram_bytes': None,
     'max_dataset_bytes': None, 'max_weight_bytes': None, 'max_disk_bytes': None,
+    'max_io_bytes_per_second': None,
     'auto_approve_job_seconds': None, 'max_new_spend': 0,
     'job_notice_after_seconds': None,
 }
-OPTIONAL_POLICY_FIELDS = {'job_notice_after_seconds'}
+OPTIONAL_POLICY_FIELDS = {'job_notice_after_seconds', 'max_parallel_jobs', 'max_io_bytes_per_second'}
 CHOICES = [
     {'preset': 'maximum', 'description': 'Maximum available local resources; GPU sharing allowed'},
     {'preset': 'exclusive', 'description': 'Maximum available local resources; idle GPUs only'},
-    {'preset': 'custom', 'description': 'Choose GPU IDs, sharing, duration, memory, disk or spending limits'},
+    {'preset': 'custom', 'description': 'Choose GPU IDs, sharing, concurrency, duration, memory, disk or spending limits'},
 ]
 STORAGE_FIELDS = ('dataset_bytes', 'weight_bytes', 'checkpoint_peak_bytes', 'other_bytes', 'reserve_bytes')
 
@@ -48,9 +51,9 @@ STORAGE_FIELDS = ('dataset_bytes', 'weight_bytes', 'checkpoint_peak_bytes', 'oth
 class ResourceAdmissionError(RegistryError):
     """A deferred allocation, carrying its check without implying training failure."""
 
-    def __init__(self, result):
+    def __init__(self, result, message=None):
         self.result = result
-        super().__init__(f"Session resources {result['status']}; inspect {result['table_path']}")
+        super().__init__(message or f"Session resources {result['status']}; inspect {result['table_path']}")
 
 
 def session_id(value=None):
@@ -84,6 +87,9 @@ def _validate_policy(policy):
         raise RegistryError('allowed_gpu_ids must be all_visible or unique GPU IDs (empty means CPU only)')
     if type(policy['allow_gpu_sharing']) is not bool:
         raise RegistryError('allow_gpu_sharing must be boolean')
+    jobs = policy.get('max_parallel_jobs')
+    if jobs is not None and (type(jobs) is not int or jobs < 0):
+        raise RegistryError('max_parallel_jobs must be a nonnegative integer or null')
     for key in set(policy) - {'allowed_gpu_ids', 'allow_gpu_sharing'}:
         _number(policy[key], key, nullable=key != 'max_new_spend',
                 positive=key in ('auto_approve_job_seconds', 'job_notice_after_seconds'))
@@ -156,6 +162,21 @@ def select(root, session=None, *, preset, selected_by, overrides=None):
         return data
 
 
+def _reclaimable_file_cache(stat_path):
+    """Estimate reclaimable cgroup v2 file cache in bytes from memory.stat."""
+    try:
+        stats = dict(line.split() for line in stat_path.read_text().splitlines())
+        # memory.current charges the page cache. Count only inactive, clean pages.
+        # https://docs.kernel.org/admin-guide/cgroup-v2.html#memory-interface-files
+        counters = [int(stats[key]) for key in ('inactive_file', 'file_dirty', 'file_writeback')]
+        if min(counters) >= 0:
+            inactive, dirty, writeback = counters
+            return max(0, inactive - dirty - writeback)
+    except (OSError, KeyError, ValueError):
+        pass
+    return 0
+
+
 def _ram():
     """Return available/total host RAM bytes, or unknown with no fabricated capacity."""
     try:
@@ -166,9 +187,12 @@ def _ram():
             # Respect container memory limits when exposed through cgroup v2.
             limit = Path('/sys/fs/cgroup/memory.max')
             current = Path('/sys/fs/cgroup/memory.current')
-            if limit.is_file() and current.is_file() and limit.read_text().strip().isdigit():
-                ceiling = int(limit.read_text())
-                total, available = min(total, ceiling), min(available, max(0, ceiling - int(current.read_text())))
+            ceiling = limit.read_text().strip() if limit.is_file() else 'max'
+            if ceiling.isdigit() and current.is_file():
+                ceiling, charged = int(ceiling), int(current.read_text())
+                reclaimable = min(charged, _reclaimable_file_cache(limit.with_name('memory.stat')))
+                total = min(total, ceiling)
+                available = min(available, total, max(0, ceiling - charged + reclaimable))
             return {'total_bytes': total, 'available_bytes': available}
         if sys.platform == 'win32':
             import ctypes
@@ -200,7 +224,7 @@ def _gpus():
         result = subprocess.run(['nvidia-smi', '--query-gpu=index,uuid,memory.total,memory.used,memory.free,utilization.gpu',
                                  '--format=csv,noheader,nounits'], capture_output=True, text=True, timeout=8)
         if result.returncode:
-            return [], result.stderr.strip() or 'nvidia-smi failed'
+            return [], result.stderr.strip() or result.stdout.strip() or 'nvidia-smi failed'
         rows, errors = [], []
         visible = os.environ.get('CUDA_VISIBLE_DEVICES')
         allowed = None if visible is None else [item.strip() for item in visible.split(',')]
@@ -312,12 +336,14 @@ def hardware_state(table, observation):
 
 def _request(request):
     fields = {'host', 'job_seconds', 'cpu_cores', 'ram_bytes', 'gpus', 'storage', 'new_spend'}
-    if not isinstance(request, dict) or set(request) != fields:
+    if not isinstance(request, dict) or not fields <= request.keys() or request.keys() - fields - {'io_bytes_per_second'}:
         raise RegistryError('Declare host, job_seconds, cpu_cores, ram_bytes, gpus, storage and new_spend')
     if not isinstance(request['host'], str) or not request['host']:
         raise RegistryError('Declare the actual execution host')
     for key in ('job_seconds', 'cpu_cores', 'ram_bytes', 'new_spend'):
         _number(request[key], key, positive=key == 'job_seconds')
+    if 'io_bytes_per_second' in request:
+        _number(request['io_bytes_per_second'], 'io_bytes_per_second')
     if not isinstance(request['gpus'], list) or not isinstance(request['storage'], list) or not request['storage']:
         raise RegistryError('GPU list and explicit storage peaks are required (GPU list may be empty)')
     ids = []
@@ -461,10 +487,13 @@ def evaluate(table, request, observation, *, stage):
     add('job_seconds', 'OK' if duration['status'] in ('OK', 'NOTICE_CONTINUE') else 'NEEDS_APPROVAL',
         request['job_seconds'], duration['approval_limit_seconds'])
     ceiling('new_spend', request['new_spend'], policy['max_new_spend'])
+    if policy.get('max_parallel_jobs') == 0:
+        add('max_parallel_jobs', 'WAIT_RESOURCE', 1, 0)
     fit('cpu_cores', request['cpu_cores'], observation['cpu_cores'], observation['cpu_cores'])
     fit('ram_bytes', request['ram_bytes'], observation['ram']['available_bytes'], observation['ram']['total_bytes'])
     ceiling('cpu_cores_limit', request['cpu_cores'], policy['max_cpu_cores'])
     ceiling('ram_bytes_limit', request['ram_bytes'], policy['max_ram_bytes'])
+    ceiling('io_bytes_per_second', request.get('io_bytes_per_second'), policy.get('max_io_bytes_per_second'))
     allocated, seen = 0, set()
     for required in request['gpus']:
         device = next((row for row in observation['gpus'] if required['id'] in (row['id'], row['uuid'])), None)
@@ -525,30 +554,77 @@ def check(root, session=None, *, stage, request=None, persist=True):
         _request(request)
     observation = probe(root, request['storage'] if request else ())
     result = evaluate(table, request, observation, stage=stage)
+    return record_check(root, session, table, result, observation, request, stage=stage, persist=persist)
+
+
+def record_check(root, session, table, result, observation, request, *, stage, persist):
+    """Attach the sampled table revision and optionally save the check to that table."""
     result.update(hardware_state(table, observation))
     result.update(stage=stage, table_path=str(table_path(root, session)),
                   policy_revision=table['revision'] if table else None,
                   observed=observation, request=request)
-    if persist and table is not None:
-        session = session_id(session)
-        with state_writer(root) as state, file_lock(state / 'locks' / f'resources-{session}.lock'):
-            current = read_table(root, session)
-            if current['revision'] != table['revision']:
-                raise RegistryError('Resource table changed during check; recheck the current selection')
-            current['last_check'] = result
-            atomic_write(table_path(root, session), current)
+    if persist:
+        save_check(root, session, table, result)
     return result
 
 
-def check_launch(root, binding):
-    """Admission hook for the existing launcher; no launch on an unresolved check."""
-    if (not isinstance(binding, dict) or not {'session_id', 'request'} <= set(binding)
-            or set(binding) - {'session_id', 'request', 'table_root'}):
-        raise RegistryError('Bind resource_budget to session_id and its complete peak request')
+def save_check(root, session, table, result):
+    """Save a check only when the sampled session revision is still current."""
+    if table is not None:
+        session = session_id(session)
+        with state_writer(root) as state, file_lock(state / 'locks' / f'resources-{session}.lock'):
+            current = read_table(root, session)
+            if current is None or current['revision'] != table['revision']:
+                result['status'] = 'WAIT_RESOURCE'
+                result['checks'].append({'resource': 'policy_revision', 'status': 'WAIT_RESOURCE',
+                    'required': table['revision'], 'available': current['revision'] if current else None})
+                raise ResourceAdmissionError(result, 'Session resources WAIT_RESOURCE: resource table changed during check')
+            current['last_check'] = result
+            atomic_write(table_path(root, session), current)
+
+
+@contextmanager
+def verify_checked_policy(root, session, result):
+    """Hold the original session policy stable through the caller's Popen.
+
+    Checks the table revision under its existing writer lock. The caller
+    must have already sampled hardware. The lock protects policy updates.
+    """
+    with state_writer(root) as state, file_lock(state / 'locks' / f'resources-{session_id(session)}.lock'):
+        table = read_table(root, session)
+        current = table['revision'] if table else None
+        if current != result['policy_revision']:
+            deferred = dict(result, status='WAIT_RESOURCE', checks=[*result['checks'], {
+                'resource': 'policy_revision', 'status': 'WAIT_RESOURCE',
+                'required': result['policy_revision'], 'available': current}])
+            raise ResourceAdmissionError(deferred, 'Session resources WAIT_RESOURCE: resource table changed before dispatch')
+        yield
+
+
+def binding_table_root(root, binding):
+    """Resolve one session binding with either a concrete request or a task template."""
+    if (not isinstance(binding, dict) or 'session_id' not in binding
+            or len({'request', 'task'} & binding.keys()) != 1
+            or set(binding) - {'session_id', 'request', 'task', 'table_root'}):
+        raise RegistryError('Bind resource_budget to session_id and one complete request or task template')
     table_root = binding.get('table_root', root)
     if not isinstance(table_root, (str, Path)) or not Path(table_root).is_absolute():
         raise RegistryError('Resource table_root must identify the original absolute project root')
-    result = check(table_root, binding['session_id'], stage='launch', request=binding['request'])
+    return table_root
+
+
+def check_launch(root, binding, *, queue_context=None, placement=None):
+    """Check a frozen request or task on the host, including any queued placement."""
+    table_root = binding_table_root(root, binding)
+    if 'task' in binding or queue_context is not None or placement is not None:
+        if __package__:
+            from .resource_planner import plan
+        else:
+            from resource_planner import plan
+        result = plan(root, binding, stage='launch', persist=True,
+                      queue_context=queue_context, placement=placement)
+    else:
+        result = check(table_root, binding['session_id'], stage='launch', request=binding['request'])
     if result['status'] != 'AUTO_APPROVED':
         raise ResourceAdmissionError(result)
     return result
@@ -579,6 +655,7 @@ def markdown(table, result=None):
     rows = [
         ('GPU IDs', str(policy['allowed_gpu_ids']), gpus, gpu_need),
         ('GPU sharing', 'allowed' if policy['allow_gpu_sharing'] else 'exclusive', 'existing scheduler/leases apply', 'check each device'),
+        ('Parallel jobs', limit(policy.get('max_parallel_jobs')), 'existing scheduler/leases apply', str(result.get('slots', 'not planned'))),
         ('CPU cores', limit(policy['max_cpu_cores']), str(observed.get('cpu_cores', 'unknown')), str(request.get('cpu_cores', 'unknown'))),
         ('Host RAM', limit(policy['max_ram_bytes'], bytes=True), f"{size(ram.get('available_bytes'))} available / {size(ram.get('total_bytes'))} total", size(request.get('ram_bytes'))),
         ('Total GPU VRAM', limit(policy['max_total_vram_bytes'], bytes=True), size(current_vram), size(result.get('projected_total_vram_bytes'))),
@@ -591,6 +668,8 @@ def markdown(table, result=None):
         ('Dataset growth', limit(policy['max_dataset_bytes'], bytes=True), 'existing bytes included in disk usage', size(peaks.get('dataset_bytes'))),
         ('Weights + save peaks', limit(policy['max_weight_bytes'], bytes=True), 'existing bytes included in disk usage', f"weights {size(peaks.get('weight_bytes'))}; checkpoint peak {size(peaks.get('checkpoint_peak_bytes'))}"),
         ('Disk growth', limit(policy['max_disk_bytes'], bytes=True), disk_state, size(total_peak)),
+        ('Disk I/O per second', limit(policy.get('max_io_bytes_per_second'), bytes=True),
+         'sum of concurrent declared peaks', size(request.get('io_bytes_per_second'))),
         ('New spending per job', str(policy['max_new_spend']), 'reuse existing authorized allocations', str(request.get('new_spend', 'unknown'))),
     ]
     lines = [f"Session: {(table or {}).get('session_id', 'uninitialized')}; status: {result.get('status', (table or {}).get('status', 'selection_required'))}",

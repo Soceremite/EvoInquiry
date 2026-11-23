@@ -3,6 +3,7 @@ name: ablation-planner
 description: "Plan and implement controlled or retuned ablations for submission after result-to-claim reports claim_supported=yes or partial. Use to isolate contributions and test alternatives."
 allowed-tools: Bash(*), Read, Grep, Glob, Write, Edit
 ---
+<!-- GENERATED from skills/ablation-planner/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

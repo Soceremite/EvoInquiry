@@ -6,6 +6,8 @@ import os
 import subprocess
 from pathlib import Path
 
+from tools.skill_text import read_workflow
+
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 INSTALL_SCRIPT = REPO_ROOT / "tools" / "install_aris_copilot.sh"
@@ -787,7 +789,7 @@ def test_routing_fail_closed_missing_executor_model(tmp_path: Path) -> None:
     """Explicit compatibility drive mode still requires its declared executor model."""
     # Verify the auto-review-loop SKILL.md contains the fail-closed language
     skill_path = REPO_ROOT / "skills" / "auto-review-loop" / "SKILL.md"
-    skill_text = skill_path.read_text()
+    skill_text = read_workflow(skill_path)
 
     assert "REVIEW_UNAVAILABLE" in skill_text
     assert "--executor-model" in skill_text
@@ -798,7 +800,7 @@ def test_routing_fail_closed_missing_executor_model(tmp_path: Path) -> None:
 def test_routing_fail_closed_unknown_executor_family(tmp_path: Path) -> None:
     """Routing fails closed when executor_family is unknown."""
     skill_path = REPO_ROOT / "skills" / "auto-review-loop" / "SKILL.md"
-    skill_text = skill_path.read_text()
+    skill_text = read_workflow(skill_path)
 
     assert "executor_family" in skill_text
     assert "unknown" in skill_text
@@ -806,7 +808,7 @@ def test_routing_fail_closed_unknown_executor_family(tmp_path: Path) -> None:
 
 def test_copilot_prompt_templates_keep_untrusted_text_out_of_heredocs() -> None:
     """Memory, rebuttal, and round inputs are concatenated as data, not shell source."""
-    skill_text = (REPO_ROOT / "skills" / "auto-review-loop" / "SKILL.md").read_text()
+    skill_text = read_workflow(REPO_ROOT / "skills" / "auto-review-loop" / "SKILL.md")
     routing_text = (REPO_ROOT / "skills" / "shared-references" / "reviewer-routing.md").read_text()
 
     for text in (skill_text, routing_text):
@@ -839,7 +841,7 @@ def test_copilot_round2_templates_do_not_execute_malicious_path_data(tmp_path: P
     )
 
     for index, document in enumerate(documents):
-        text = document.read_text()
+        text = read_workflow(document) if document.name == "SKILL.md" else document.read_text()
         shell = text.split("# ARIS_ROUND2_COPILOT_BEGIN", 1)[1].split(
             "# ARIS_ROUND2_COPILOT_END", 1
         )[0]
@@ -893,7 +895,7 @@ def test_copilot_round2_templates_do_not_execute_malicious_path_data(tmp_path: P
 
 
 def test_stop_gate_uses_snapshotted_state_and_executable_transition_table() -> None:
-    skill_text = (REPO_ROOT / "skills" / "auto-review-loop" / "SKILL.md").read_text()
+    skill_text = read_workflow(REPO_ROOT / "skills" / "auto-review-loop" / "SKILL.md")
 
     assert "branch by `round_backend`" in skill_text
     assert "never by the forward-looking `REVIEWER_BACKEND`" in skill_text
@@ -943,7 +945,7 @@ def test_legacy_review_state_defaults_to_codex_without_finalizer_obligation(tmp_
 def test_modern_review_state_has_backend_field(tmp_path: Path) -> None:
     """Modern REVIEW_STATE.json includes reviewer_backend field."""
     skill_path = REPO_ROOT / "skills" / "auto-review-loop" / "SKILL.md"
-    skill_text = skill_path.read_text()
+    skill_text = read_workflow(skill_path)
 
     assert "reviewer_backend" in skill_text
     assert "reviewer_profile" in skill_text
@@ -1182,7 +1184,7 @@ def test_reviewer_routing_copilot_scope_consistent(tmp_path: Path) -> None:
 
 
 def test_native_copilot_default_is_evidence_gated_end_to_end() -> None:
-    skill_text = (REPO_ROOT / "skills" / "auto-review-loop" / "SKILL.md").read_text()
+    skill_text = read_workflow(REPO_ROOT / "skills" / "auto-review-loop" / "SKILL.md")
     trace_text = (REPO_ROOT / "skills" / "shared-references" / "review-tracing.md").read_text()
     contract_text = (REPO_ROOT / "skills" / "shared-references" / "integration-contract.md").read_text()
 

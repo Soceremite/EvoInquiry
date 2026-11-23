@@ -6,7 +6,6 @@ from __future__ import annotations
 import ast
 import json
 import re
-import shutil
 from pathlib import Path
 
 
@@ -335,12 +334,12 @@ def transform_body(text: str) -> str:
     return append_async_notes(add_artifact_review_tools(text))
 
 
-def generate_one(skill_name: str) -> None:
-    skill_path = SRC_ROOT / skill_name / "SKILL.md"
-    content = skill_path.read_text(encoding="utf-8")
+def render_text(skill_name: str, content: str) -> str:
+    """Render the Claude reviewer adapter from a Codex entrypoint."""
+    content = re.sub(r'^<!-- GENERATED from skills/[^\n]+ -->\n', '', content, flags=re.M)
     match = FRONTMATTER_RE.match(content)
     if not match:
-        raise ValueError(f"Missing frontmatter: {skill_path}")
+        raise ValueError(f"Missing frontmatter: {skill_name}")
 
     frontmatter = match.group(1)
     body = content[match.end():].lstrip("\n")
@@ -351,32 +350,29 @@ def generate_one(skill_name: str) -> None:
     output += OVERRIDE_NOTE + "\n\n"
     output += transform_body(body).rstrip() + "\n"
 
-    target_dir = DEST_ROOT / skill_name
-    if target_dir.exists():
-        shutil.rmtree(target_dir)
-    target_dir.mkdir(parents=True, exist_ok=True)
-    (target_dir / "SKILL.md").write_text(output, encoding="utf-8")
-    # Deferred reviewer prompts are part of the installed skill too. Translate
-    # their backend just like the entrypoint; a verbatim copy would reintroduce
-    # Codex-only tools when the Claude workflow is finally loaded.
-    references = skill_path.parent / "references"
-    if references.is_dir():
-        for source in sorted(references.rglob("*")):
-            if not source.is_file():
-                continue
-            target = target_dir / "references" / source.relative_to(references)
-            target.parent.mkdir(parents=True, exist_ok=True)
-            if source.suffix == ".md":
-                target.write_text(transform_body(source.read_text(encoding="utf-8")),
-                                  encoding="utf-8")
-            else:
-                shutil.copyfile(source, target)
+    return output
+
+
+def generate_one(skill_name: str) -> None:
+    """Keep the single-skill entry point backed by the same source projection."""
+    if __package__:
+        from .generate_skill_surfaces import projection, surface_changes, write_changes
+    else:
+        from generate_skill_surfaces import projection, surface_changes, write_changes
+
+    if skill_name not in TARGET_SKILLS:
+        raise ValueError(f"Unknown Claude overlay skill: {skill_name}")
+    expected = projection(REPO_ROOT, "claude")
+    write_changes(surface_changes(DEST_ROOT, expected, skill_name))
 
 
 def main() -> None:
-    DEST_ROOT.mkdir(parents=True, exist_ok=True)
-    for skill_name in TARGET_SKILLS:
-        generate_one(skill_name)
+    """Preserve the legacy command and delegate to the complete generator."""
+    import subprocess
+    import sys
+
+    raise SystemExit(subprocess.call([sys.executable, str(REPO_ROOT / "tools/generate_skill_surfaces.py"),
+                                     "--surface", "claude", *sys.argv[1:]]))
 
 
 if __name__ == "__main__":

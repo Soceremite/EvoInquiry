@@ -2,6 +2,7 @@
 name: "research-refine-pipeline"
 description: "Refine a research method and then design its detailed experiment roadmap. Use when both the final proposal and experiment plan are requested in one workflow."
 ---
+<!-- GENERATED from skills/research-refine-pipeline/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

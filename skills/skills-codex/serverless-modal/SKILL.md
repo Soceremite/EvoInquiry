@@ -4,6 +4,7 @@ description: "Run training, inference, or batch GPU workloads on Modal. Use when
 argument-hint: "[task-description]"
 allowed-tools: Bash(*), Read, Grep, Glob, Edit, Write
 ---
+<!-- GENERATED from skills/serverless-modal/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

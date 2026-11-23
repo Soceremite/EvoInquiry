@@ -103,7 +103,7 @@ skill	paper-poster-html	paper-visuals	-	学术海报生成(HTML 版)
 skill	paper-slides	paper-visuals	-	会议幻灯(beamer→PDF+PPTX)
 skill	paper-talk	paper-visuals	paper-slides,slides-polish	演讲稿+幻灯一体
 skill	slides-polish	paper-visuals	-	幻灯片打磨
-skill	rebuttal	submission	render-html	W4:审稿意见解析与安全回复
+skill	rebuttal	submission	-	W4:审稿策略、证据和承诺审查、文本或 PDF 回复
 skill	resubmit-pipeline	submission	auto-paper-improvement-loop,proof-checker,paper-claim-audit,citation-audit,kill-argument,paper-compile,integrity-forensics	被拒后重投全流程
 skill	grant-proposal	submission	research-lit,novelty-check,research-review	基金申请书(NSFC/NSF/科研費等)
 skill	patent-pipeline	patent	prior-art-search,patent-novelty-check,invention-structuring,claims-drafting,specification-writing,patent-review,jurisdiction-format	专利撰写全流程

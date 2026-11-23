@@ -2,6 +2,7 @@
 name: "analyze-results"
 description: "Analyse experiment metrics and sample-level behavior, compare methods fairly, and diagnose successes, regressions and failures. Use for result interpretation, error analysis or case studies."
 ---
+<!-- GENERATED from skills/analyze-results/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, first read the Codex mirror's [EvoInquiry](../shared-references/evo-inquiry.md),

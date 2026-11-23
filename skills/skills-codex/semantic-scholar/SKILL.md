@@ -4,6 +4,7 @@ description: "Search published papers through Semantic Scholar with venue, citat
 argument-hint: "query-or-paper-id"
 allowed-tools: Bash(*), Read, Write
 ---
+<!-- GENERATED from skills/semantic-scholar/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

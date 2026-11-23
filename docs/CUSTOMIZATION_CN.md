@@ -32,6 +32,29 @@
 项目专属约束放在项目说明中。按[会话恢复说明](SESSION_RECOVERY_GUIDE_CN.md)
 保存已完成材料与待办事项。
 
+## 自适应资源配置
+
+在目标服务器上用 `tools/resource_planner.py`，为已选定资源表的会话生成
+`RESOURCE_PLAN.md` 和 `resource-request.json`。任务 JSON 沿用会话准入的
+CPU、RAM、存储、费用和单次时长字段，并以 `gpu_options` 声明可互换的设备数量与
+每卡峰值。`--pending-jobs` 用于估算相同需求的待运行任务能同时启动几个。
+命令和字段见[资源表规范](../skills/skills-codex/shared-references/resource-budget.md#plan-candidate-placements)。
+
+有会话绑定的任务可以省略 manifest 的 `gpus` 和 `max_parallel`。队列根据显存、内存
+和各文件系统的叠加峰值发出能容纳的任务，用户在资源表中设置的 `max_parallel_jobs`
+和 manifest 中显式设置的上限取较小值。显式 `gpus` 进一步收窄可用设备。
+使用 `configuration.resource_budget.task` 可在每次派发时重选 UUID，固定的
+`configuration.resource_budget.request` 仍可直接使用。
+
+旧的未绑定队列可使用文件中已有的 GPU 清单与并发设置。新建未绑定队列需要同时明确
+`gpus` 和 `max_parallel`，每张卡只安排一个该队列的任务。绑定队列允许同卡共享时，
+比较日志引用启动收据中的设备和重叠作业。比较运行时间时安排隔离测量。
+
+队列任务可设置整数 `priority`。已有高优先级预约时，剩余资源仍可运行其他
+任务。评测可用经过逐样本验证的 batch size 和多卡配置。运行长任务期间，可
+把已授权的 CPU 工作用 `during` 关联到主任务，在同一资源表内并行推进。
+配置、证据格式和实际命令见[优先级派发规范](../skills/skills-codex/experiment-queue/references/priority-dispatch.md)。
+
 ## 实验存储
 
 在算力限制之外，明确存储要求，例如：

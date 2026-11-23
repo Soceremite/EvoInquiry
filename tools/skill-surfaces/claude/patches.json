@@ -1,0 +1,270 @@
+{
+  "auto-paper-improvement-loop/SKILL.md": [
+    [
+      1,
+      [
+        "name: \"auto-paper-improvement-loop\"\n",
+        "description: \"Improve a generated paper through bounded review, revision, and recompilation rounds. Use for iterative paper polishing after an initial draft exists.\"\n",
+        "---\n",
+        "\n",
+        "> Override for Codex users who want **Claude Code**, not a second Codex agent, to act as the reviewer. Install this package **after** `skills/skills-codex/*`.\n",
+        ">\n",
+        "> Verify the actual returned reviewer identity before recording `review_independence: cross-family`. A phase receipt may record `acceptance_status: accepted` only after a positive verdict and the required evidence closure. Negative, unavailable and budget-stop outcomes grant no phase acceptance; same-family responses retain the base provisional contract.\n",
+        "\n",
+        "<!-- EVO-INQUIRY:BEGIN -->\n",
+        "For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),\n"
+      ],
+      [
+        "name: \"auto-paper-improvement-loop\"\n",
+        "description: \"Improve a generated paper through bounded review, revision, and recompilation rounds. Use for iterative paper polishing after an initial draft exists.\"\n",
+        "---\n",
+        "\n",
+        "<!-- EVO-INQUIRY:BEGIN -->\n",
+        "For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),\n"
+      ]
+    ],
+    [
+      24,
+      [
+        "\n",
+        "Use the applicable stages in order. Load the referenced instructions when the stage is needed.\n",
+        "\n",
+        "- [Context through Step 1: Collect Paper Text](references/workflow-01-context.md)\n",
+        "- [Step 2: Round 1 Review through Step 4.5: Restatement Regression Test](references/workflow-02-step-2-round-1-review.md)\n",
+        "- [Step 5: Round 2 Review through Step 8: Format Check](references/workflow-03-step-5-round-2-review.md)\n",
+        "- [Step 9: Document Results through Review Tracing](references/workflow-04-step-9-document-results.md)\n"
+      ],
+      [
+        "\n",
+        "Use the applicable stages in order. Load the referenced instructions when the stage is needed.\n",
+        "\n",
+        "- [Context through Step 0: Preserve Original](references/workflow-01-context.md)\n",
+        "- [Step 1: Collect Paper Text through Step 4.5: Restatement Regression Test](references/workflow-02-step-1-collect-paper-text.md)\n",
+        "- [Step 5: Round 2 Review through Step 8: Format Check](references/workflow-03-step-5-round-2-review.md)\n",
+        "- [Step 9: Document Results through Review Tracing](references/workflow-04-step-9-document-results.md)\n"
+      ]
+    ]
+  ],
+  "auto-paper-improvement-loop/references/workflow-01-context.md": [
+    [
+      1,
+      [
+        "\n",
+        "# Context\n",
+        "\n",
+        "Read this file when the workflow reaches Context through Step 1: Collect Paper Text. In commands and examples, interpret relative skill paths from the entrypoint directory.\n",
+        "\n",
+        "\n",
+        "\n",
+        "\n"
+      ],
+      [
+        "\n",
+        "# Context\n",
+        "\n",
+        "Read this file when the workflow reaches Context through Step 0: Preserve Original. In commands and examples, interpret relative skill paths from the entrypoint directory.\n",
+        "\n",
+        "\n",
+        "> Override for Codex users who want **Claude Code**, not a second Codex agent, to act as the reviewer. Install this package **after** `skills/skills-codex/*`.\n",
+        ">\n",
+        "> Verify the actual returned reviewer identity before recording `review_independence: cross-family`. A phase receipt may record `acceptance_status: accepted` only after a positive verdict and the required evidence closure. Negative, unavailable and budget-stop outcomes grant no phase acceptance; same-family responses retain the base provisional contract.\n",
+        "\n",
+        "\n",
+        "\n"
+      ]
+    ],
+    [
+      179,
+      [
+        "cp paper/main.pdf paper/main_round0_original.pdf\n",
+        "```\n",
+        "\n",
+        "### Step 1: Collect Paper Text\n",
+        "\n",
+        "Concatenate all section files into a single text block for the review prompt:\n",
+        "\n",
+        "```bash\n",
+        "# Collect all sections in order\n",
+        "for f in paper/sections/*.tex; do\n",
+        "    echo \"% === $(basename $f) ===\"\n",
+        "    cat \"$f\"\n",
+        "done > /tmp/paper_full_text.txt\n",
+        "```\n",
+        "\n"
+      ],
+      [
+        "cp paper/main.pdf paper/main_round0_original.pdf\n",
+        "```\n",
+        "\n"
+      ]
+    ]
+  ],
+  "auto-review-loop/SKILL.md": [
+    [
+      1,
+      [
+        "name: \"auto-review-loop\"\n",
+        "description: \"Run repeated research review, implement fixes, and re-review until the assessment or round limit stops the loop. Use for autonomous iterative improvement.\"\n",
+        "---\n",
+        "\n",
+        "> Override for Codex users who want **Claude Code**, not a second Codex agent, to act as the reviewer. Install this package **after** `skills/skills-codex/*`.\n",
+        ">\n",
+        "> Verify the actual returned reviewer identity before recording `review_independence: cross-family`. A phase receipt may record `acceptance_status: accepted` only after a positive verdict and the required evidence closure. Negative, unavailable and budget-stop outcomes grant no phase acceptance; same-family responses retain the base provisional contract.\n",
+        "\n",
+        "<!-- EVO-INQUIRY:BEGIN -->\n",
+        "For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),\n"
+      ],
+      [
+        "name: \"auto-review-loop\"\n",
+        "description: \"Run repeated research review, implement fixes, and re-review until the assessment or round limit stops the loop. Use for autonomous iterative improvement.\"\n",
+        "---\n",
+        "\n",
+        "<!-- EVO-INQUIRY:BEGIN -->\n",
+        "For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),\n"
+      ]
+    ],
+    [
+      26,
+      [
+        "\n",
+        "Use the applicable stages in order. Load the referenced instructions when the stage is needed.\n",
+        "\n",
+        "- [Context: $ARGUMENTS through Phase B: Parse Assessment](references/workflow-01-context-arguments.md)\n",
+        "- [Phase B.5: Reviewer Memory Update through Review Tracing](references/workflow-02-phase-b-5-reviewer-memory-update.md)\n",
+        "- [Termination through Test 4: Append-Only Integrity](references/workflow-03-termination.md)\n"
+      ],
+      [
+        "\n",
+        "Use the applicable stages in order. Load the referenced instructions when the stage is needed.\n",
+        "\n",
+        "- [Context: $ARGUMENTS through Phase A: Review](references/workflow-01-context-arguments.md)\n",
+        "- [Phase B: Parse Assessment through Status](references/workflow-02-phase-b-parse-assessment.md)\n",
+        "- [Review Tracing through Test 4: Append-Only Integrity](references/workflow-03-review-tracing.md)\n"
+      ]
+    ]
+  ],
+  "auto-review-loop/references/workflow-01-context-arguments.md": [
+    [
+      1,
+      [
+        "\n",
+        "# Context: $ARGUMENTS\n",
+        "\n",
+        "Read this file when the workflow reaches Context: $ARGUMENTS through Phase B: Parse Assessment. In commands and examples, interpret relative skill paths from the entrypoint directory.\n",
+        "\n",
+        "\n",
+        "\n",
+        "\n"
+      ],
+      [
+        "\n",
+        "# Context: $ARGUMENTS\n",
+        "\n",
+        "Read this file when the workflow reaches Context: $ARGUMENTS through Phase A: Review. In commands and examples, interpret relative skill paths from the entrypoint directory.\n",
+        "\n",
+        "\n",
+        "> Override for Codex users who want **Claude Code**, not a second Codex agent, to act as the reviewer. Install this package **after** `skills/skills-codex/*`.\n",
+        ">\n",
+        "> Verify the actual returned reviewer identity before recording `review_independence: cross-family`. A phase receipt may record `acceptance_status: accepted` only after a positive verdict and the required evidence closure. Negative, unavailable and budget-stop outcomes grant no phase acceptance; same-family responses retain the base provisional contract.\n",
+        "\n",
+        "\n",
+        "\n"
+      ]
+    ],
+    [
+      181,
+      [
+        "\n",
+        "Use everything in hard mode, then ask an additional fresh adversarial reviewer to verify claims against repository files, logs, result files, and paper drafts instead of trusting executor summaries. Preserve the fresh review as a separate raw response and trace. That reviewer is fresh, so it does not inherit the scope limits from the medium/hard prompt — repeat the block from [`review-scope-limits.md`](../../shared-references/review-scope-limits.md) in its prompt. This is the mode with the widest repository access and the one most likely to propose defensive scaffolding.\n",
+        "\n",
+        "#### Phase B: Parse Assessment\n",
+        "\n",
+        "**CRITICAL: Save the FULL raw response** from the external reviewer verbatim (store in a variable for Phase E). Do NOT discard or summarize — the raw text is the primary record.\n",
+        "\n",
+        "Then extract structured fields:\n",
+        "- **Score** (numeric 1-10)\n",
+        "- **Verdict** (\"ready\" / \"almost\" / \"not ready\")\n",
+        "- **Action items** (ranked list of fixes)\n",
+        "\n"
+      ],
+      [
+        "\n",
+        "Use everything in hard mode, then ask an additional fresh adversarial reviewer to verify claims against repository files, logs, result files, and paper drafts instead of trusting executor summaries. Preserve the fresh review as a separate raw response and trace. That reviewer is fresh, so it does not inherit the scope limits from the medium/hard prompt — repeat the block from [`review-scope-limits.md`](../../shared-references/review-scope-limits.md) in its prompt. This is the mode with the widest repository access and the one most likely to propose defensive scaffolding.\n",
+        "\n"
+      ]
+    ]
+  ],
+  "paper-write/SKILL.md": [
+    [
+      1,
+      [
+        "name: \"paper-write\"\n",
+        "description: \"Draft requested LaTeX sections from a paper outline and supporting evidence. Use for manuscript text; paper-writing covers the complete paper-production workflow.\"\n",
+        "---\n",
+        "\n",
+        "> Override for Codex users who want **Claude Code**, not a second Codex agent, to act as the reviewer. Install this package **after** `skills/skills-codex/*`.\n",
+        ">\n",
+        "> Verify the actual returned reviewer identity before recording `review_independence: cross-family`. A phase receipt may record `acceptance_status: accepted` only after a positive verdict and the required evidence closure. Negative, unavailable and budget-stop outcomes grant no phase acceptance; same-family responses retain the base provisional contract.\n",
+        "\n",
+        "<!-- EVO-INQUIRY:BEGIN -->\n",
+        "For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),\n"
+      ],
+      [
+        "name: \"paper-write\"\n",
+        "description: \"Draft requested LaTeX sections from a paper outline and supporting evidence. Use for manuscript text; paper-writing covers the complete paper-production workflow.\"\n",
+        "---\n",
+        "\n",
+        "<!-- EVO-INQUIRY:BEGIN -->\n",
+        "For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),\n"
+      ]
+    ]
+  ],
+  "paper-write/references/workflow-01-constants.md": [
+    [
+      3,
+      [
+        "\n",
+        "Read this file when the workflow reaches Constants through Step 3: Write Each Section. In commands and examples, interpret relative skill paths from the entrypoint directory.\n",
+        "\n",
+        "\n",
+        "\n",
+        "\n"
+      ],
+      [
+        "\n",
+        "Read this file when the workflow reaches Constants through Step 3: Write Each Section. In commands and examples, interpret relative skill paths from the entrypoint directory.\n",
+        "\n",
+        "\n",
+        "> Override for Codex users who want **Claude Code**, not a second Codex agent, to act as the reviewer. Install this package **after** `skills/skills-codex/*`.\n",
+        ">\n",
+        "> Verify the actual returned reviewer identity before recording `review_independence: cross-family`. A phase receipt may record `acceptance_status: accepted` only after a positive verdict and the required evidence closure. Negative, unavailable and budget-stop outcomes grant no phase acceptance; same-family responses retain the base provisional contract.\n",
+        "\n",
+        "\n",
+        "\n"
+      ]
+    ]
+  ],
+  "research-review/SKILL.md": [
+    [
+      13,
+      [
+        "standards, and recovery contracts. Carry them into nested research tasks and\n",
+        "reviewer briefs. Continue authorized work through its necessary steps; honor\n",
+        "budgets, blocking checkpoints, and stopping conditions.\n",
+        "\n",
+        "For a bounded review, use [bounded inquiry](../shared-references/bounded-inquiry.md): give scope, evidence, deadline and output path; save INCOMPLETE coverage first and update progressively. Bind the reviewed revision to actual call/result evidence; missing provenance or interrupted coverage cannot certify independence or close a gate.\n",
+        "<!-- EVO-INQUIRY:END -->\n",
+        "\n",
+        "\n"
+      ],
+      [
+        "standards, and recovery contracts. Carry them into nested research tasks and\n",
+        "reviewer briefs. Continue authorized work through its necessary steps; honor\n",
+        "budgets, blocking checkpoints, and stopping conditions.\n",
+        "<!-- EVO-INQUIRY:END -->\n",
+        "\n",
+        "\n"
+      ]
+    ]
+  ]
+}

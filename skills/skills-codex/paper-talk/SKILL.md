@@ -4,6 +4,7 @@ description: "Run the full conference-talk workflow: outline, slides, page-level
 argument-hint: "[paper-dir] [— talk_type: oral | spotlight | poster-talk | invited] [— minutes: N] [— assurance: draft | polished | conference-ready] [— reference: <pdf>] [— style: generic | why-rf | <venue>] [— style-ref: <paper-source>] [— effort: lite | balanced | max | beast] [— anonymous]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, Skill, spawn_agent
 ---
+<!-- GENERATED from skills/paper-talk/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

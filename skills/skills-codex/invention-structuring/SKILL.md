@@ -4,6 +4,7 @@ description: "Turn a rough invention into a structured invention disclosure: tec
 argument-hint: "[invention-description-or-brief-path]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob
 ---
+<!-- GENERATED from skills/invention-structuring/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

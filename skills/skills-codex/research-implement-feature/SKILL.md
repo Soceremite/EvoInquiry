@@ -4,6 +4,7 @@ description: "Build a runnable research prototype from a capability request, rec
 argument-hint: "[what-to-build] [— effort: lite|balanced|max|beast] [— ask: never|semantic] [— base repo: <url>]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, AskUserQuestion
 ---
+<!-- GENERATED from skills/research-implement-feature/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

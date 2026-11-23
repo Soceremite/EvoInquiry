@@ -2,6 +2,7 @@
 name: "research-refine"
 description: "Refine a vague research idea into a focused, implementable method proposal using prior work and critical review. Use for method design; experiment-plan designs its tests."
 ---
+<!-- GENERATED from skills/research-refine/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

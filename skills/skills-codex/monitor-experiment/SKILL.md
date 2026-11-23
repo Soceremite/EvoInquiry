@@ -2,6 +2,7 @@
 name: "monitor-experiment"
 description: "Check a running experiment once, inspect progress, and collect available outputs. Use for status or result queries; use training-check for continued monitoring."
 ---
+<!-- GENERATED from skills/monitor-experiment/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

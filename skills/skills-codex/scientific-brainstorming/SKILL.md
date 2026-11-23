@@ -2,6 +2,7 @@
 name: scientific-brainstorming
 description: "Frame a vague research direction and explore alternative questions or explanations before a method is fixed. Use for early brainstorming or a research pivot; use idea-creator for concrete contributions within an established problem."
 ---
+<!-- GENERATED from skills/scientific-brainstorming/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

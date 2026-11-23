@@ -12,6 +12,8 @@ import re
 import subprocess
 from pathlib import Path
 
+from tools.skill_text import read_workflow
+
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 SCANNER = REPO_ROOT / "tools" / "threat_scan.py"
@@ -32,7 +34,7 @@ END = "# ARIS_QUERY_PACK_SCAN_END"
 
 
 def _scan_contract(skill: Path) -> str:
-    text = skill.read_text(encoding="utf-8")
+    text = read_workflow(skill)
     match = re.search(
         rf"^{re.escape(START)}.*?\n(?P<body>.*?)^{re.escape(END)}$",
         text,
@@ -43,7 +45,7 @@ def _scan_contract(skill: Path) -> str:
 
 
 def _phase_zero_shell(skill: Path) -> str:
-    text = skill.read_text(encoding="utf-8")
+    text = read_workflow(skill)
     phase = text.split("### Phase 0: Load Research Wiki (if active)", 1)[1]
     match = re.search(r"```bash\n(?P<body>.*?)\n```", phase, flags=re.DOTALL)
     assert match, f"Phase-0 resolver block missing from {skill}"
@@ -198,7 +200,7 @@ def test_skill_wiring_keeps_immediate_scan_on_read_contract() -> None:
     assert contracts[0] == contracts[1], "main and Codex scan contracts drifted"
 
     for skill in SKILLS:
-        text = skill.read_text(encoding="utf-8")
+        text = read_workflow(skill)
         phase_zero = _phase_zero_shell(skill)
         manifest = (
             "installed-skills-codex.txt"

@@ -4,6 +4,7 @@ description: "Review and fix an existing academic slide deck page by page: typog
 argument-hint: "[slides-dir-or-pptx] — reference: <ref-pdf> [— style: generic | why-rf | neurips | icml | iclr | cvpr] [— effort: lite | balanced | max | beast] [— interactive]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, spawn_agent
 ---
+<!-- GENERATED from skills/slides-polish/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

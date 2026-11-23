@@ -114,8 +114,9 @@ python <package>/tools/resource_budget.py --root <project> --session <id> durati
 数据与权重包含在磁盘已用量中，不再作为新增数据重复计费；各目录的现有占用
 由数据/权重所有者提供已有清单或针对性测量，不自动扫描整个数据盘。
 
-冻结执行配置通过 `resource_budget.session_id` 与 `resource_budget.request`
-绑定该表。已有实验启动器在环境核验后执行实时检查，未通过则保持任务未启动；
+冻结执行配置通过 `resource_budget.session_id` 绑定该表，同时保存固定的 `request`，
+或保存供 v1.7.0 在派发时选设备的 `task`。使用候选规划器生成资源计划，队列按同一批
+作业的叠加峰值和用户并发上限选设备。已有启动器在环境核验后复查资源和租约。
 同一 session 跨项目时，绑定原表的绝对 `table_root`，避免创建第二份表。当前
 session 已有资源表时，该启动器也会拒绝没有绑定表格的新派发。
 队列将表格选择、额度例外与容量不足保留为待处理任务，不消耗未启动训练的重试
@@ -123,7 +124,8 @@ session 已有资源表时，该启动器也会拒绝没有绑定表格的新派
 治理队列复用同一入口。其他运行器需要接入相同检查。该工具不替代调度器，不
 自动覆盖未绑定的旧启动器，也不承诺 GPU 的原子预留或运行中资源硬隔离。
 
-共享规范：[Session resource table](../skills/shared-references/resource-budget.md)。
+配置方法见[自适应资源配置](CUSTOMIZATION_CN.md#自适应资源配置)及
+[会话资源规范](../skills/shared-references/resource-budget.md)。
 
 ## Integration review
 

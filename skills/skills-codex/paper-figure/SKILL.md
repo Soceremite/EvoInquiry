@@ -2,6 +2,7 @@
 name: "paper-figure"
 description: "Create publication-quality data plots, tables and qualitative case panels from real experiment outputs. Use for paper result figures, visual comparisons or statistical displays."
 ---
+<!-- GENERATED from skills/paper-figure/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

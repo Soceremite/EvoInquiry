@@ -4,6 +4,7 @@ description: "Build or query a persistent research knowledge base linking papers
 argument-hint: "[subcommand: init|ingest|sync|query|update|lint|stats]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, WebSearch, WebFetch
 ---
+<!-- GENERATED from skills/research-wiki/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

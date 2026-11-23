@@ -4,6 +4,7 @@ description: "Land approved meta-optimize patches to the skill corpus through it
 argument-hint: "[patch-number-or-all]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob
 ---
+<!-- GENERATED from skills/meta-apply/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

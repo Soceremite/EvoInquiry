@@ -4,6 +4,7 @@ description: "Draft patent claims from an invention disclosure. Use for independ
 argument-hint: "[invention-disclosure-path]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, WebSearch, WebFetch
 ---
+<!-- GENERATED from skills/claims-drafting/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

@@ -15,3 +15,8 @@ EvoInquiry 1.4.0 methodology references (no external runtime collection bundled)
 - wp-a/nature-academic-search at 725c2ec894a2f40b7d3f811528b9cc7e4ebff6c8; MIT, copyright (c) 2026 wp-a. Interface audit only; optional integration not enabled.
 - Imbad0202/academic-research-skills-codex at 52228e8280dd1770e18ecfc3b1fdf16b13b58104; CC BY-NC 4.0, copyright (c) 2026 Cheng-I Wu. Routing reference evaluated only, no source copied or bundled.
 See docs/UPSTREAM_ADOPTION_1_4_0.json for exact selected sources and decisions.
+
+Awesome Rebuttal workflow, references, and snapshot renderer
+Copyright (c) 2026 awesome-rebuttal contributors (MIT).
+Source https://github.com/xiongqi123123/awesome-rebuttal/tree/3434455fb2460b85793b4e3082bd28bf86ff7323
+See skills/rebuttal/LICENSE and the one-page template's author-kit attribution.

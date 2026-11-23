@@ -2,6 +2,7 @@
 name: "dse-loop"
 description: "Run bounded design-space exploration for computer architecture or EDA: evaluate, analyze, tune parameters, and repeat toward an objective or timeout."
 ---
+<!-- GENERATED from skills/dse-loop/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

@@ -2,6 +2,7 @@
 name: "idea-discovery"
 description: "Run the complete idea-discovery workflow: literature, ideation, novelty checks, review, and pilots. Use when the full direction-exploration process is requested."
 ---
+<!-- GENERATED from skills/idea-discovery/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),
@@ -32,9 +33,10 @@ Each phase builds on the previous one's output. The final deliverables are a val
 
 Pilot duration, reminders, compute and concurrency follow the
 [session resource table](../shared-references/resource-budget.md) and current plan.
-Prefer the smallest informative pilot; ideas or planning alone do not launch one.
+Estimate the smallest informative pilot and use the resource planner to fit
+its declared task peaks to available capacity.
 
-- **MAX_PILOT_IDEAS = 3** — Run pilots for at most 3 top ideas in parallel. Additional ideas are validated on paper only.
+- **MAX_PILOT_IDEAS = 3** — Select at most 3 ideas for pilots. Schedule the admitted subset using the session resource table. Review additional ideas on paper.
 - **AUTO_PROCEED = true** — When `true`, checkpoints are informational: report the selected option and continue in the same turn. Set to `false` to ask for explicit user confirmation and end the turn at each selection checkpoint.
 - **REVIEWER_MODEL = `gpt-6-astra`** — Model used via a secondary Codex agent. Must be an OpenAI model (e.g., `gpt-6-astra`, `o3`, `gpt-4o`). Passed to sub-skills.
 - **ARXIV_DOWNLOAD = false** — When `true`, `/research-lit` downloads the top relevant arXiv PDFs during Phase 1. When `false` (default), only fetches metadata. Passed through to `/research-lit`.

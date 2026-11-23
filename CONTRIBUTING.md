@@ -1,5 +1,15 @@
 # Contributing to EvoInquiry
 
+## Editing skills
+
+Edit the canonical entrypoint or reference below `skills/<name>/`.
+The Codex-only `research-guide` uses `SKILL.source.md` with a `surfaces`
+declaration. Host-specific differences live in `tools/skill-surfaces/`; see
+[the migration audit](docs/SURFACE_DIFF_AUDIT.md). After editing, run
+`python tools/generate_skill_surfaces.py --surface all`, then
+`python tools/generate_skill_surfaces.py --surface all --check`.
+Commit the generated files with their sources.
+
 [中文](CONTRIBUTING_CN.md)
 
 Report reproducible issues and proposed improvements through this repository's

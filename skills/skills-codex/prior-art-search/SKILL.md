@@ -4,6 +4,7 @@ description: "Search patent databases and academic sources for an invention's pr
 argument-hint: "[invention-description-or-path]"
 allowed-tools: Bash(*), Read, Glob, Grep, WebSearch, WebFetch, Write
 ---
+<!-- GENERATED from skills/prior-art-search/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

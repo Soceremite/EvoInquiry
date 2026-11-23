@@ -4,6 +4,7 @@ description: "Build an academic poster as HTML/CSS with real paper figures, meas
 argument-hint: "[paper-dir-or-pdf] [— venue: ICLR, canvas: 185x90cm landscape, venue-colors: true]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob
 ---
+<!-- GENERATED from skills/paper-poster-html/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

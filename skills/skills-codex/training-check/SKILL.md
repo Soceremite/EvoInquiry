@@ -4,6 +4,7 @@ description: "Continuously monitor training metrics in the current session using
 argument-hint: "[wandb-run-or-monitoring-brief]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob
 ---
+<!-- GENERATED from skills/training-check/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),
@@ -20,6 +21,12 @@ Apply its [monitoring and mode boundaries](../shared-references/bounded-inquiry.
 
 
 # Training Check
+
+Between observations, check for authorized CPU work that can inform the next
+decision while the primary run continues. Hand off useful work to the existing
+research owner. For a governed queue, use the [companion and health controls](../experiment-queue/references/priority-dispatch.md)
+to publish observations and pause new companions on anomalies or results
+requiring review. Keep monitoring during those decisions.
 
 You are now in **interactive watch** / 交互式训练监控模式.
 

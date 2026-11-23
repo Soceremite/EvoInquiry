@@ -2,6 +2,7 @@
 name: "experiment-plan"
 description: "Design fair comparative experiments for a fixed research proposal: controls, data and training budgets, tuning, seeds, evaluation, ablations and run order. Use for an experiment roadmap or comparison design."
 ---
+<!-- GENERATED from skills/experiment-plan/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),
@@ -37,6 +38,10 @@ For authorized multi-wave work, use [bounded inquiry](../shared-references/bound
 # Experiment Plan: Claim-Driven, Paper-Oriented Validation
 
 Refine and concretize: **$ARGUMENTS**
+
+When device placement or concurrency is open, use the resource planner to
+compare declared task peaks and keep the chosen placement with the experiment
+plan. Specify isolation for comparisons based on training or inference time.
 
 ## Overview
 

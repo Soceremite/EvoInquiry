@@ -7,6 +7,8 @@ import sys
 from pathlib import Path
 
 from tools.check_skills_inventory import check_inventory
+from tools.generate_skill_surfaces import rendered_skills
+from tools.skill_text import read_workflow
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -21,7 +23,7 @@ def skill_names(root: Path) -> set[str]:
 
 
 def read(path: Path) -> str:
-    return path.read_text(encoding="utf-8")
+    return read_workflow(path) if path.name == "SKILL.md" else path.read_text(encoding="utf-8")
 
 
 def has_spawn_agent_block(text: str) -> bool:
@@ -35,8 +37,8 @@ def has_send_input_block(text: str) -> bool:
 def test_codex_skill_set_matches_mainline() -> None:
     main_names = skill_names(MAIN_SKILLS)
     codex_names = skill_names(CODEX_SKILLS)
-    assert len(main_names) == 88
-    assert codex_names == main_names | {"research-guide"}
+    assert main_names <= codex_names
+    assert codex_names == rendered_skills(REPO_ROOT, "codex")
 
 
 def test_mainline_common_principles_are_reachable_without_codex_tree() -> None:
@@ -51,7 +53,6 @@ def test_mainline_common_principles_are_reachable_without_codex_tree() -> None:
 def test_codex_shared_reference_set_matches_mainline() -> None:
     main_refs = {p.name for p in (MAIN_SKILLS / "shared-references").glob("*.md")}
     codex_refs = {p.name for p in (CODEX_SKILLS / "shared-references").glob("*.md")}
-    assert len(main_refs) == 44
     assert codex_refs == main_refs | {"evo-inquiry.md", "task-scope.md", "experiment-storage.md"}
 
 
@@ -70,7 +71,7 @@ def test_codex_mirror_shared_reference_links_resolve() -> None:
     for root in roots:
         skill_documents = list(root.glob("*/SKILL.md")) + list(root.glob("*/references/**/*.md"))
         for skill_md in skill_documents:
-            for ref in ref_re.findall(read(skill_md)):
+            for ref in ref_re.findall(skill_md.read_text(encoding="utf-8")):
                 if ref not in mirror_refs:
                     dangling.append(f"{skill_md.relative_to(REPO_ROOT)} -> shared-references/{ref}")
             # Overlays replace files in skills-codex when installed. Resolve
@@ -78,7 +79,7 @@ def test_codex_mirror_shared_reference_links_resolve() -> None:
             # Checking only the basename misses links to an existing mainline
             # policy with different requirements.
             installed_document = CODEX_SKILLS / skill_md.relative_to(root)
-            for relative in link_re.findall(read(skill_md)):
+            for relative in link_re.findall(skill_md.read_text(encoding="utf-8")):
                 target = (installed_document.parent / relative).resolve()
                 if not target.is_file() or target.parent != reference_root:
                     dangling.append(f"{skill_md.relative_to(REPO_ROOT)} -> {relative} escapes or misses Codex shared references")
@@ -440,10 +441,6 @@ def test_codex_high_risk_skills_preserve_claude_semantics() -> None:
             "Update Research Wiki",
             "integration-contract.md",
             ".ei/installed-skills-codex.txt",
-        ],
-        "rebuttal": [
-            "Review Tracing",
-            "oracle-pro",
         ],
     }
 

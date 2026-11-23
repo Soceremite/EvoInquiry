@@ -3,6 +3,7 @@ name: problem-synthesis
 description: "Assess whether multiple unresolved research problems share a cause, should remain separate, or need a different abstraction. Use after repeated local fixes, overlapping failures or branch growth; ordinary trajectory review belongs to the active workflow owner."
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob
 ---
+<!-- GENERATED from skills/problem-synthesis/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

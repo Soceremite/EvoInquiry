@@ -4,6 +4,7 @@ description: "Fill evidence-based summaries and analysis into existing research-
 argument-hint: "[target: slug|missing|all] [--source alphaxiv|deepxiv|arxiv|auto] [--force] [--max N]"
 allowed-tools: Bash(*), Read, Write, Edit, Glob, Grep, WebFetch
 ---
+<!-- GENERATED from skills/wiki-enrich/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

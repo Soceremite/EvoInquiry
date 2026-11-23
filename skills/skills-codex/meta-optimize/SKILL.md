@@ -4,6 +4,7 @@ description: "Analyze toolkit usage logs and propose changes to skill instructio
 argument-hint: "[target-skill-or-all]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob
 ---
+<!-- GENERATED from skills/meta-optimize/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

@@ -4,6 +4,7 @@ description: "Check paper numbers, comparisons, and scope claims against raw res
 argument-hint: "[paper-directory]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob
 ---
+<!-- GENERATED from skills/paper-claim-audit/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

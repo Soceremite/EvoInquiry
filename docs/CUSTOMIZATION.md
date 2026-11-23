@@ -36,6 +36,25 @@ it does not authorize unrelated actions or additional spending.
 Set project-specific constraints in the project's instructions. Save completed
 artifacts and pending work using [session recovery](SESSION_RECOVERY_GUIDE.md).
 
+## Adaptive experiment resources
+
+Run `tools/resource_planner.py` on the execution host after selecting the
+session's resource policy. It writes `RESOURCE_PLAN.md` and
+`resource-request.json` from the declared task peaks. A template lists
+interchangeable device counts and per-device peaks in `gpu_options` alongside
+the usual CPU, RAM, storage, cost and duration fields. Use `--pending-jobs` to
+estimate parallel capacity for identical jobs. See the
+[resource contract](../skills/skills-codex/shared-references/resource-budget.md#plan-candidate-placements).
+
+Governed manifests can omit `gpus` and `max_parallel`. The queue checks the
+combined peaks of live jobs, and an explicit device list or concurrency cap
+narrows the session's limits. Freeze a `configuration.resource_budget.task` to
+let the queue choose UUIDs at dispatch, or use `request` for a fixed placement.
+Legacy manifests retain their declared settings, with one queue job per GPU.
+New unbound manifests require both an explicit GPU list and a concurrency cap.
+Reference launch receipts in the comparison log when devices are shared, and
+use isolated runs when comparing elapsed times.
+
 ## Experiment storage
 
 Specify a storage budget together with compute resources, for example:

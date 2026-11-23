@@ -4,6 +4,7 @@ description: "Deprecated poster entrypoint; redirects to paper-poster-html. Reta
 argument-hint: "[paper-dir-or-pdf]"
 allowed-tools: Read
 ---
+<!-- GENERATED from skills/paper-poster/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

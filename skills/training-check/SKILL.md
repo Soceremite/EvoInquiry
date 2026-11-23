@@ -19,6 +19,12 @@ Apply its [monitoring and mode boundaries](../shared-references/bounded-inquiry.
 
 # Training Check
 
+Between observations, check for authorized CPU work that can inform the next
+decision while the primary run continues. Hand off useful work to the existing
+research owner. For a governed queue, use the [companion and health controls](../experiment-queue/references/priority-dispatch.md)
+to publish observations and pause new companions on anomalies or results
+requiring review. Keep monitoring during those decisions.
+
 Periodically read WandB metrics during training to catch problems early. Do not wait until training finishes to discover it was a waste of GPU time.
 
 > ⏱ This skill is **correctly** cron-wired (see below): it polls

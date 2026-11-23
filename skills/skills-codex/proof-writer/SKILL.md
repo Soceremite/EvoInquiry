@@ -2,6 +2,7 @@
 name: "proof-writer"
 description: "Write a rigorous proof of a specified theorem, lemma, proposition, or corollary. Use to formalize a sketch, fill proof steps, or test whether assumptions suffice."
 ---
+<!-- GENERATED from skills/proof-writer/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

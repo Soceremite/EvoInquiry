@@ -3,6 +3,7 @@ name: integrity-forensics
 description: "Run SHA-pinned deterministic numeric/rules integrity forensics and record policy obligations. Codex mode can flag issues but cannot certify CLEAN or full semantic coverage."
 argument-hint: "[paper-dir | pdf | arxiv-id]"
 ---
+<!-- GENERATED from skills/integrity-forensics/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

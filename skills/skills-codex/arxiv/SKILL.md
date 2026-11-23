@@ -2,6 +2,7 @@
 name: "arxiv"
 description: "Search arXiv preprints, retrieve metadata, download PDFs, and summarize papers. Use when arXiv search or saving papers to a local library is requested."
 ---
+<!-- GENERATED from skills/arxiv/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

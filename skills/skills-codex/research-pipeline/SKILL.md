@@ -2,6 +2,7 @@
 name: research-pipeline
 description: "Run the full research lifecycle from direction discovery through experiments, review, and a paper PDF. Use when the complete end-to-end workflow is requested."
 ---
+<!-- GENERATED from skills/research-pipeline/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

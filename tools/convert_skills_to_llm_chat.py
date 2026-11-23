@@ -25,6 +25,11 @@ import shutil
 import sys
 from pathlib import Path
 
+if __package__:
+    from .skill_text import read_workflow, workflow_paths
+else:
+    from skill_text import read_workflow, workflow_paths
+
 
 # ── Codex → llm-chat text replacements ──────────────────────────────────
 
@@ -165,16 +170,18 @@ def convert_content(text: str) -> str:
 
 
 def convert_file(src: Path, dst: Path) -> bool:
-    """Convert a single SKILL.md file. Returns True if changes were made."""
-    content = src.read_text(encoding="utf-8")
-    converted = convert_content(content)
-
-    if converted == content:
-        return False
-
-    dst.parent.mkdir(parents=True, exist_ok=True)
-    dst.write_text(converted, encoding="utf-8")
-    return True
+    """Convert an entrypoint and its deferred workflow files together."""
+    sources = workflow_paths(src)
+    changes = False
+    for path in sources:
+        content = path.read_text(encoding="utf-8")
+        converted = convert_content(content)
+        changes |= converted != content
+        target = dst.parent / path.relative_to(src.parent)
+        if target != path or converted != content:
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text(converted, encoding="utf-8")
+    return changes
 
 
 def find_skills(source_dir: Path) -> list[Path]:
@@ -191,7 +198,7 @@ def find_skills(source_dir: Path) -> list[Path]:
         if any(d in parts for d in exclude_dirs):
             continue
         # Skip skills that already use llm-chat
-        content = skill_md.read_text(encoding="utf-8")
+        content = read_workflow(skill_md)
         if "mcp__llm-chat__chat" in content and "mcp__codex__codex" not in content:
             continue
         # Only include files that reference codex

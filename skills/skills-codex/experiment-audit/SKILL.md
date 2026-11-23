@@ -4,6 +4,7 @@ description: "Assess experiment integrity and comparative fairness from supplied
 argument-hint: "[experiment-dir-or-results-path]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob
 ---
+<!-- GENERATED from skills/experiment-audit/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

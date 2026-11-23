@@ -4,6 +4,7 @@ description: "Compile a patent application into CN, US, or EP filing format. Use
 argument-hint: "[patent-directory-or-jurisdiction]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob
 ---
+<!-- GENERATED from skills/jurisdiction-format/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

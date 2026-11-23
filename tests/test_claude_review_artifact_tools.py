@@ -144,34 +144,17 @@ class BridgeDefaultTests(unittest.TestCase):
 
 class GeneratorDriftTests(unittest.TestCase):
     def test_checked_in_overlay_matches_generator_output(self) -> None:
-        """The overlay is generated; hand-edits to SKILL.md would be lost."""
+        """The legacy generator writes the installed Claude entrypoints byte for byte."""
         from tools import generate_codex_claude_review_overrides as gen
+        from tempfile import TemporaryDirectory
 
-        for skill in gen.TARGET_SKILLS:
-            source = (gen.SRC_ROOT / skill / "SKILL.md").read_text(encoding="utf-8")
-            match = gen.FRONTMATTER_RE.match(source)
-            assert match is not None
-            body = source[match.end():].lstrip("\n")
-            name = gen.extract_field(match.group(1), "name") or skill
-            description = gen.normalize_description(
-                gen.extract_field(match.group(1), "description")
-            )
-            expected = gen.build_frontmatter(name, description)
-            expected += gen.OVERRIDE_NOTE + "\n\n"
-            expected += gen.transform_body(body).rstrip() + "\n"
-
-            actual = (gen.DEST_ROOT / skill / "SKILL.md").read_text(encoding="utf-8")
-            with self.subTest(skill=skill):
-                from tools.skill_contracts import skill_parts
-                # Keep the installed optional overlay unchanged while the base
-                # discovery descriptions evolve. All other fields and generated
-                # reviewer workflow bytes must still match exactly.
-                self.assertEqual(
-                    skill_parts(actual)[:2],
-                    skill_parts(expected)[:2],
-                    f"{skill} overlay is stale; run "
-                    "python tools/generate_codex_claude_review_overrides.py",
-                )
+        with TemporaryDirectory() as directory, mock.patch.object(gen, "DEST_ROOT", Path(directory)):
+            for skill in gen.TARGET_SKILLS:
+                with self.subTest(skill=skill):
+                    gen.generate_one(skill)
+                    generated = Path(directory) / skill / "SKILL.md"
+                    checked_in = OVERLAY / skill / "SKILL.md"
+                    self.assertEqual(generated.read_bytes(), checked_in.read_bytes())
 
 
 if __name__ == "__main__":

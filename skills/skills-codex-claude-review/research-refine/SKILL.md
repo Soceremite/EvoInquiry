@@ -2,6 +2,7 @@
 name: "research-refine"
 description: "Refine a vague research idea into a focused, implementable method proposal using prior work and critical review. Use for method design; experiment-plan designs its tests."
 ---
+<!-- GENERATED from skills/research-refine/SKILL.md — do not edit directly -->
 
 > Override for Codex users who want **Claude Code**, not a second Codex agent, to act as the reviewer. Install this package **after** `skills/skills-codex/*`.
 >

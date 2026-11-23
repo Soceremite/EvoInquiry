@@ -42,18 +42,15 @@ weights, recovering from interruptions and keeping storage under control.
 regressions openly, and keep validating when the evidence is incomplete. A
 research tool should help us see the problem more clearly.
 
-**EvoInquiry 1.6.3 is open source.** Try it on your own research tasks and share
+**EvoInquiry is open source.** Try it on your own research tasks and share
 the problems and suggestions you encounter. Help us make this research companion
 more dependable and more useful.
 
-**[New in 1.6.3](RELEASE_NOTES.md):** initialize each session from current server
-resources, with no extra hardware caps or time limit by default. Keep optional
-reminders separate from user-selected limits. Count training from its first
-actual step, refresh hardware before each experiment, and continue observing
-while optional notices are unanswered. Review deferrals retain the original
-prepared attempt; cooperative checkpoint saves have no implicit force-kill
-deadline. See the [resource contract](skills/shared-references/resource-budget.md)
-and [1.6.3 validation](docs/AUDIT_1_6_3_CN.md).
+**EvoInquiry 1.7.0 adapts experiment placement to the target host.** The planner
+uses the session's resource ceilings and declared peak demand. The queue adjusts
+concurrency as GPU memory, RAM and storage change, and records the devices and
+overlapping jobs for interpreting comparisons. See the
+[release notes](RELEASE_NOTES.md) and [resource configuration](docs/CUSTOMIZATION.md#adaptive-experiment-resources).
 
 ## From a rough direction to an evidence-backed next step
 

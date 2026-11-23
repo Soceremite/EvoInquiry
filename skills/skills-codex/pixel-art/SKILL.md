@@ -2,6 +2,7 @@
 name: "pixel-art"
 description: "Create pixel-art SVG illustrations for documentation or slides. Use for requested pixel-style artwork, README hero images, or decorative vector assets."
 ---
+<!-- GENERATED from skills/pixel-art/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

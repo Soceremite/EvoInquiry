@@ -4,6 +4,7 @@ description: "Manage GPU jobs on the Qizhi platform with qzcli, including comput
 argument-hint: "[login|avail|list|create|stop <job-id>|batch|status|watch]"
 allowed-tools: Bash(*), Read, Write
 ---
+<!-- GENERATED from skills/qzcli/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

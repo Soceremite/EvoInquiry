@@ -24,9 +24,10 @@ try:
                                   validate_schema, verify_ref)
     from .state_paths import resolve_state_root, state_writer
     from .environment_registry import verify_environment
+    from .evaluation_profiles import read_profiles
     from .resource_budget import check_launch as check_session_resources
     from .resource_budget import table_path as session_resource_table
-    from .resource_budget import ResourceAdmissionError
+    from .resource_budget import ResourceAdmissionError, binding_table_root, verify_checked_policy
     from .resource_budget import check_duration as check_training_duration
     from .run_state import coordination_guard
 except ImportError:
@@ -35,9 +36,10 @@ except ImportError:
                                  validate_schema, verify_ref)
     from state_paths import resolve_state_root, state_writer
     from environment_registry import verify_environment
+    from evaluation_profiles import read_profiles
     from resource_budget import check_launch as check_session_resources
     from resource_budget import table_path as session_resource_table
-    from resource_budget import ResourceAdmissionError
+    from resource_budget import ResourceAdmissionError, binding_table_root, verify_checked_policy
     from resource_budget import check_duration as check_training_duration
     from run_state import coordination_guard
 
@@ -50,7 +52,7 @@ class DispatchDeferred(RegistryError):
         super().__init__(f"Workflow dispatch {result['status']}: {result['reason']}")
 
 
-def check_execution_dispatch(root, record, *, require_bound=False):
+def check_execution_dispatch(root, record, *, require_bound=False, persist=True):
     """Check the original coordinator; preserve a structured queue deferral.
 
     The final caller must hold coordination_guard through Popen. Earlier queue
@@ -68,29 +70,42 @@ def check_execution_dispatch(root, record, *, require_bound=False):
         elif (directive['timing']['dispatch_seconds_remaining'] is not None
               and directive['timing']['dispatch_seconds_remaining'] <= 0):
             status, reason = 'DISPATCH_BUDGET_EXHAUSTED', 'Original workflow dispatch budget exhausted before launch'
-    if record.get('workflow_run_id'):
-        with state_writer(root):
-            atomic_write(local_path(root, f"runs/{record['execution_run_id']}/dispatch-admission.json"), {
-                'execution_run_id': record['execution_run_id'], 'snapshot_ref': record['snapshot_ref'],
-                'check': {'status': status, 'reason': reason, 'checked_at': now()}})
+    if persist and record.get('workflow_run_id'):
+        _dispatch_receipt(root, record, {'status': status, 'reason': reason})
     if status != 'AUTO_APPROVED':
         raise DispatchDeferred({'status': status, 'reason': reason})
     return directive
 
 
-def _dispatch_process(root, directory, record, observed, command, log, environment, *, require_bound):
+def _dispatch_receipt(root, record, result):
+    with state_writer(root):
+        atomic_write(local_path(root, f"runs/{record['execution_run_id']}/dispatch-admission.json"), {
+            'execution_run_id': record['execution_run_id'], 'snapshot_ref': record['snapshot_ref'],
+            'check': dict(result, checked_at=now())})
+
+
+def _dispatch_process(root, directory, record, observed, command, log, environment, *, require_bound,
+                      resource_binding=None, admission=None, queue_binding=None):
     """Linearize control validation, state transition and creation of one child."""
     guard = coordination_guard(str(root), record['workflow_run_id']) if record.get('workflow_run_id') else nullcontext()
-    with guard, state_writer(root) as state, file_lock(state / 'locks/executions.lock'):
-        current = read_record(directory / 'execution.json')
-        if current['status'] != 'prepared':
-            raise RegistryError('Another writer already launched this execution')
-        directive = check_execution_dispatch(root, record, require_bound=require_bound)
-        record.update(status='running', observed_fingerprint=observed, updated_at=now())
-        atomic_write(directory / 'execution.json', record)
-        process = subprocess.Popen(command, cwd=directory / 'snapshot', stdout=log,
-                                   stderr=subprocess.STDOUT, start_new_session=os.name == 'posix', env=environment)
-        return process, directive
+    policy_guard = (verify_checked_policy(binding_table_root(root, resource_binding),
+                    resource_binding['session_id'], admission) if admission else nullcontext())
+    with guard, state_writer(root) as state, file_lock(state / 'locks/executions.lock'), policy_guard:
+        lease_guard = file_lock(state / 'locks/environments.lock') if queue_binding else nullcontext()
+        with lease_guard:
+            current = read_record(directory / 'execution.json')
+            if current['status'] != 'prepared':
+                raise RegistryError('Another writer already launched this execution')
+            if queue_binding:
+                _verify_queued_lease(root, current, queue_binding)
+                if companion := queue_binding.get('companion_execution'):
+                    check_companion_window(root, companion)
+            directive = check_execution_dispatch(root, record, require_bound=require_bound)
+            record.update(status='running', observed_fingerprint=observed, updated_at=now())
+            atomic_write(directory / 'execution.json', record)
+            process = subprocess.Popen(command, cwd=directory / 'snapshot', stdout=log,
+                                       stderr=subprocess.STDOUT, start_new_session=os.name == 'posix', env=environment)
+            return process, directive
 
 
 def spec_digest(spec):
@@ -148,6 +163,12 @@ def freeze_snapshot(root, execution_run_id, spec_ref, env_revision, source_paths
         raise RegistryError('Expanded configuration differs from the frozen variant/seed')
     _reject_secrets(configuration)
     verify_ref(root, env_revision)
+    profile_ref = (configuration.get('resource_budget') or {}).get('task', {}).get('evaluation_profiles_ref')
+    if profile_ref:
+        read_profiles(root, profile_ref, revalidate=True,
+                      execution={'spec_ref': spec_ref, 'env_revision': env_revision,
+                                 'variant_id': variant_id, 'seed': seed,
+                                 'evaluation_input_refs': configuration.get('evaluation_input_refs', [])})
     sources = sorted(set(Path(path).as_posix() for path in source_paths))
     if entrypoint not in sources:
         raise RegistryError('Entrypoint must be in the explicit source allowlist')
@@ -366,6 +387,11 @@ def verify_queue_binding(root, binding):
     snapshot = verify_snapshot(root, record['snapshot_ref'])
     if 'arguments' not in snapshot or snapshot['arguments'] != binding.get('arguments', []):
         raise RegistryError('Governed queue requires arguments fixed in the execution snapshot')
+    _check_queue_lease(root, record, binding)
+    return record
+
+
+def _check_queue_lease(root, record, binding):
     state = resolve_state_root(root, 'read')
     consumer = validate_schema('consumer', read_record(state / 'consumers' / (identifier(binding['consumer_id']) + '.json')))
     lease = validate_schema('lease', read_record(state / 'leases' / (identifier(binding['lease_id']) + '.json')))
@@ -374,7 +400,6 @@ def verify_queue_binding(root, binding):
             or lease['job_ref'] != consumer['job_ref'] or record['job_ref'] != lease['job_ref']
             or lease['status'] not in ('queued', 'running') or consumer['lifecycle'] not in ('queued', 'running')):
         raise RegistryError('Queued snapshot/environment lacks its matching active consumer lease')
-    return record
 
 
 def finish_execution(root, execution_run_id, exit_code, result_refs=(), *, stopped=False):
@@ -761,7 +786,7 @@ def _wait_controlled(root, directory, record, process, timeout, bound_workflow, 
     return process.returncode, False
 
 
-def check_execution_resources(root, record):
+def check_execution_resources(root, record, *, queue_context=None, placement=None):
     """Reuse one session table at queue admission and after environment validation.
 
     The per-execution receipt is evidence of this check, not another policy
@@ -770,29 +795,141 @@ def check_execution_resources(root, record):
     root = Path(root).resolve()
     directory = local_path(root, f"runs/{identifier(record['execution_run_id'])}")
     snapshot_dir = verify_ref(root, record['snapshot_ref']).parent
-    binding = read_record(snapshot_dir / 'configuration.json').get('resource_budget')
+    configuration = read_record(snapshot_dir / 'configuration.json')
+    binding = configuration.get('resource_budget')
     if (binding is None and (os.environ.get('CODEX_THREAD_ID') or os.environ.get('CODEX_SESSION_ID'))
             and session_resource_table(root).exists()):
         raise RegistryError('Bind the current session resource table before launching this execution')
     if binding is None:
+        if placement is not None:
+            raise RegistryError('A queue placement requires a frozen session resource binding')
         return None
+    profile_ref = binding.get('task', {}).get('evaluation_profiles_ref')
+    if profile_ref:
+        read_profiles(root, profile_ref, execution=dict(
+            record, evaluation_input_refs=configuration.get('evaluation_input_refs', [])))
+    if queue_context and queue_context.get('cpu_only'):
+        task = binding.get('task')
+        if (profile_ref or (task and any(option['count'] for option in task['gpu_options']))
+                or binding.get('request', {}).get('gpus')):
+            raise RegistryError('A companion job requires a frozen CPU-only request')
     try:
-        result = check_session_resources(root, binding)
+        result = (check_session_resources(root, binding) if queue_context is None and placement is None else
+                  check_session_resources(root, binding, queue_context=queue_context, placement=placement))
     except ResourceAdmissionError as error:
-        result = error.result
-        with state_writer(root):
-            atomic_write(directory / 'resource-admission.json', {
-                'execution_run_id': record['execution_run_id'], 'snapshot_ref': record['snapshot_ref'],
-                'check': result})
+        _resource_receipt(root, directory, record, error.result)
         raise
+    _resource_receipt(root, directory, record, result)
+    return result
+
+
+def _resource_receipt(root, directory, record, result):
     with state_writer(root):
         atomic_write(directory / 'resource-admission.json', {
             'execution_run_id': record['execution_run_id'], 'snapshot_ref': record['snapshot_ref'],
             'check': result})
+
+
+def _queued_resources(root, record, queue_state):
+    """Resolve the persisted assignment and verify its lease in the launch process."""
+    if __package__:
+        from .resource_planner import queue_context
+    else:
+        from resource_planner import queue_context
+    try:
+        state = read_record(queue_state)
+        matches = [job for job in state['jobs'] if job.get('execution')
+                   and Path(job['execution']['project_root']).resolve() == root
+                   and job['execution']['execution_run_id'] == record['execution_run_id']]
+        if len(matches) != 1 or matches[0]['status'] != 'running' or not matches[0].get('resource_assignment'):
+            raise RegistryError('No current queue placement matches this prepared execution')
+        job = matches[0]
+        if any(job['execution'][key] != record[key] for key in ('snapshot_ref', 'env_revision')):
+            raise RegistryError('Queue placement refers to a different frozen execution')
+        _check_queue_lease(root, record, job['execution'])
+        binding = dict(job['execution'])
+        if parent_id := job.get('during'):
+            parent = next((row for row in state['jobs'] if row['id'] == parent_id), {})
+            parent_binding = parent.get('execution', {})
+            if parent.get('status') != 'running' or Path(parent_binding['project_root']).resolve() != root:
+                raise DispatchDeferred({'status': 'WAIT_PRIMARY', 'reason': 'Companion requires its same-project active parent'})
+            binding['companion_execution'] = parent_binding['execution_run_id']
+            check_companion_window(root, binding['companion_execution'])
+        return queue_context(state, job), job['resource_assignment'], binding
+    except DispatchDeferred:
+        raise
+    except (OSError, ValueError, TypeError, KeyError, AttributeError) as error:
+        result = {'status': 'NEEDS_ESTIMATE', 'table_path': str(queue_state),
+                  'checks': [{'resource': 'verified_queue_placement', 'status': 'NEEDS_ESTIMATE',
+                              'required': record['execution_run_id'], 'available': str(error)}]}
+        _resource_receipt(root, local_path(root, f"runs/{record['execution_run_id']}"), record, result)
+        raise ResourceAdmissionError(result) from error
+
+
+def _verify_queued_lease(root, record, binding):
+    try:
+        _check_queue_lease(root, record, binding)
+    except (RegistryError, OSError) as error:
+        result = {'status': 'NEEDS_ESTIMATE', 'table_path': str(root),
+                  'checks': [{'resource': 'active_queue_lease', 'status': 'NEEDS_ESTIMATE',
+                              'required': record['execution_run_id'], 'available': str(error)}]}
+        raise ResourceAdmissionError(result) from error
+
+
+def monitor_health(root, execution_run_id, observation=None):
+    """Read live identity and the latest monitor decision, optionally record an observation."""
+    root = Path(root).resolve()
+    execution_run_id = identifier(execution_run_id)
+    directory = local_path(root, f'runs/{execution_run_id}')
+    record = read_record(directory / 'execution.json')
+    result = {'execution_run_id': execution_run_id, 'status': record['status'], 'decision': 'WAIT',
+              'reason': 'Wait for the actual process identity', 'snapshot_ref': record['snapshot_ref']}
+    path = directory / 'process.json'
+    if record['status'] != 'running' or not path.is_file() or (directory / 'execution.final.json').is_file():
+        return result
+    process = read_record(path)
+    if (process.get('execution_run_id') != execution_run_id or process.get('host') != platform.node()
+            or type(process.get('pid')) is not int or process['pid'] <= 0):
+        return result
+    if os.name == 'posix':
+        try:
+            os.kill(process['pid'], 0)
+        except (ProcessLookupError, PermissionError):
+            return result
+    process_ref = fixed_ref(root, path.relative_to(root))
+    result.update(process_ref=process_ref, decision='CONTINUE', reason='Observed active execution identity')
+    health_file = directory / 'monitor-health.json'
+    if observation is not None:
+        decision, reason = observation.get('decision'), observation.get('reason')
+        if decision not in ('CONTINUE', 'WAIT', 'STOP', 'RESULT') or not isinstance(reason, str) or not reason:
+            raise RegistryError('Record a monitoring decision and its reason')
+        evidence = observation.get('evidence_refs', [])
+        if not isinstance(evidence, list):
+            raise RegistryError('Provide a list of fixed monitoring evidence references')
+        for ref in evidence:
+            verify_ref(root, ref)
+        result.update(decision=decision, reason=reason, observed_at=now(), evidence_refs=evidence)
+        with state_writer(root) as state, file_lock(state / 'locks/executions.lock'):
+            if read_record(directory / 'execution.json')['status'] == 'running':
+                atomic_write(health_file, result)
+            else:
+                return monitor_health(root, execution_run_id)
+    elif health_file.is_file():
+        latest = read_record(health_file)
+        if latest['process_ref'] == process_ref and latest['snapshot_ref'] == record['snapshot_ref']:
+            result = latest
     return result
 
 
-def launch_execution(root, execution_run_id, arguments=(), *, timeout=None):
+def check_companion_window(root, execution_run_id):
+    """Allow new CPU work only during the parent execution and its current observation."""
+    health = monitor_health(root, execution_run_id)
+    if health['status'] != 'running' or health['decision'] != 'CONTINUE':
+        raise DispatchDeferred({'status': 'WAIT_PRIMARY', 'reason': health['reason']})
+    return health
+
+
+def launch_execution(root, execution_run_id, arguments=(), *, timeout=None, queue_state=None):
     """Launch an authorized local CPU/GPU entry from its verified snapshot and interpreter.
 
     Resource authorization/budgets belong to the calling execution skill. Imports
@@ -808,6 +945,8 @@ def launch_execution(root, execution_run_id, arguments=(), *, timeout=None):
     process that was already launched.
     A termination.json receipt records actual exit and its enforcement scope;
     Windows parent termination does not certify a descendant process tree.
+    The optional queue_state path supplies the persisted placement and other
+    active assignments for a resource-bound dispatch.
     """
     root = Path(root).resolve()
     directory = local_path(root, f'runs/{identifier(execution_run_id)}')
@@ -842,10 +981,18 @@ def launch_execution(root, execution_run_id, arguments=(), *, timeout=None):
     effective_timeout = min(bounds) if bounds else None
     snapshot_dir = verify_ref(root, record['snapshot_ref']).parent
     configuration = read_record(snapshot_dir / 'configuration.json')
-    resource_binding = configuration.get('resource_budget')
     stop_authorization = _stop_authorization(configuration)
     _validate_monitor_bindings(root, record, configuration)
-    resource_admission = check_execution_resources(root, record)
+    queue_binding = None
+    if queue_state is None:
+        resource_admission = check_execution_resources(root, record)
+    else:
+        try:
+            context, placement, queue_binding = _queued_resources(root, record, queue_state)
+        except DispatchDeferred as error:
+            _dispatch_receipt(root, record, error.result)
+            raise
+        resource_admission = check_execution_resources(root, record, queue_context=context, placement=placement)
     bootstrap = r'''
 import importlib.abc, importlib.machinery, json, pathlib, runpy, sys, sysconfig
 sys.stdout.reconfigure(encoding='utf-8', errors='backslashreplace')
@@ -882,16 +1029,32 @@ finally:
     if resource_admission is not None:
         # Restrict the actual child to the admitted physical devices; host indices
         # can differ from CUDA's process-local numbering. Empty means CPU-only.
-        admitted = resource_binding['request']['gpus']
+        admitted = resource_admission['request']['gpus']
         devices = resource_admission['observed']['gpus']
         uuids = [next(row['uuid'] for row in devices if item['id'] in (row['id'], row['uuid']))
                  for item in admitted]
         launch_environment = dict(os.environ, CUDA_VISIBLE_DEVICES=','.join(uuids))
+        if not uuids:
+            launch_environment.update(HIP_VISIBLE_DEVICES='', ROCR_VISIBLE_DEVICES='')
+        if profile := resource_admission.get('evaluation_profile'):
+            launch_environment.update(EVOINQUIRY_EVAL_BATCH_SIZE=str(profile['batch_size']),
+                                      EVOINQUIRY_EVAL_GPU_COUNT=str(len(uuids)),
+                                      EVOINQUIRY_EVAL_PROFILE=profile['id'],
+                                      EVOINQUIRY_EVAL_PRECISION=profile['precision'])
     with state_writer(root):
         with (directory / 'process.log').open('wb') as log:
             try:
                 process, directive = _dispatch_process(root, directory, record, observed, command, log,
-                                                        launch_environment, require_bound=directive is not None)
+                    launch_environment, require_bound=directive is not None,
+                    resource_binding=configuration.get('resource_budget'), admission=resource_admission,
+                    queue_binding=queue_binding)
+            except ResourceAdmissionError as error:
+                _resource_receipt(root, directory, record, error.result)
+                raise
+            except DispatchDeferred as error:
+                if error.result['status'] == 'WAIT_PRIMARY':
+                    _dispatch_receipt(root, record, error.result)
+                raise
             except OSError as error:
                 log.write(str(error).encode())
                 exit_code, stopped = 127, False
@@ -1011,6 +1174,7 @@ def main():
     launch = sub.add_parser('launch')
     launch.add_argument('--execution-id', required=True)
     launch.add_argument('--timeout', type=float)
+    launch.add_argument('--queue-state', type=Path, help='Queue state containing this execution’s admitted resource placement')
     launch.add_argument('arguments', nargs=argparse.REMAINDER)
     recover = sub.add_parser('reconcile')
     recover.add_argument('--execution-id', required=True)
@@ -1021,6 +1185,9 @@ def main():
     stop.add_argument('--reason', required=True)
     stop.add_argument('--confirmed-by', required=True, help='Actual user stop choice reference for this execution')
     stop.add_argument('--force-after-seconds', type=float, help='Only when that user choice explicitly authorizes forced termination')
+    health = sub.add_parser('health', help='Read the monitored execution or record a latest health decision')
+    health.add_argument('--execution-id', required=True)
+    health.add_argument('--observation', type=Path, help='JSON observation for the active process identity')
     args = parser.parse_args()
     try:
         if args.command == 'register-spec':
@@ -1040,8 +1207,12 @@ def main():
         elif args.command == 'stop':
             result = request_stop_execution(args.root, args.execution_id, args.reason, confirmed_by=args.confirmed_by,
                                             force_after_seconds=args.force_after_seconds)
+        elif args.command == 'health':
+            result = monitor_health(args.root, args.execution_id,
+                                    read_record(args.observation) if args.observation else None)
         else:
-            result = launch_execution(args.root, args.execution_id, args.arguments, timeout=args.timeout)
+            result = launch_execution(args.root, args.execution_id, args.arguments,
+                                      timeout=args.timeout, queue_state=args.queue_state)
         print(json.dumps(result, ensure_ascii=False, indent=2))
         return result.get('exit_code', 0) if isinstance(result, dict) else 0
     except (RegistryError, OSError, subprocess.SubprocessError) as error:

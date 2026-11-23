@@ -4,6 +4,7 @@ description: "Search OpenAlex for papers, citation links, institutions, and fund
 argument-hint: "[search-query]"
 allowed-tools: Bash(*), Read, Write
 ---
+<!-- GENERATED from skills/openalex/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

@@ -10,8 +10,10 @@ from pathlib import Path
 
 try:
     from tools.skill_contracts import contract_errors, load_contract
+    from tools.skill_text import read_workflow
 except ModuleNotFoundError:
     from skill_contracts import contract_errors, load_contract
+    from skill_text import read_workflow
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -171,7 +173,7 @@ def check_inventory() -> list[str]:
         text = read(skill_file)
         if "Agent" not in allowed_tools(text):
             continue
-        if "fan-out-pattern.md" not in frontmatter_split(text):
+        if "fan-out-pattern.md" not in frontmatter_split(read_workflow(skill_file)):
             rel = skill_file.relative_to(REPO_ROOT)
             failures.append(
                 f"{rel} grants `Agent` in allowed-tools but its body does not "
@@ -225,7 +227,7 @@ def check_inventory() -> list[str]:
     # layer is dead code (the exact orphan-writer trap). Same dead-code guard as above:
     # the writer and its single birth point must BOTH be present.
     rwiki = read(REPO_ROOT / "tools" / "research_wiki.py")
-    pchk = read(SKILLS_ROOT / "proof-checker" / "SKILL.md")
+    pchk = read_workflow(SKILLS_ROOT / "proof-checker" / "SKILL.md")
     tool_claim = bool(re.search(r"def add_claim\b", rwiki)) and bool(re.search(r'add_parser\("add_claim"', rwiki))
     # Prove the trigger is real (anchored to the actual command line, not a prose
     # mention or comment): proof-checker must literally invoke the resolved helper.
@@ -236,7 +238,7 @@ def check_inventory() -> list[str]:
     # research_wiki.py upsert_idea (idea layer) ⇔ its documented write-back in
     # /idea-creator Phase 7. Same orphan-writer guard: the deterministic idea writer
     # and the skill that calls it must BOTH be present, anchored to the real command.
-    icreator = read(SKILLS_ROOT / "idea-creator" / "SKILL.md")
+    icreator = read_workflow(SKILLS_ROOT / "idea-creator" / "SKILL.md")
     tool_idea = bool(re.search(r"def upsert_idea\b", rwiki)) and bool(re.search(r'add_parser\("upsert_idea"', rwiki))
     idea_written = re.search(r'python3\s+"\$WIKI_SCRIPT"\s+upsert_idea\b', icreator) is not None
     require(tool_idea, "tools/research_wiki.py must implement the upsert_idea idea-layer writer + its CLI", failures)

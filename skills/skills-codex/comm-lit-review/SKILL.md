@@ -3,6 +3,7 @@ name: comm-lit-review
 description: "Review communications research literature using the local knowledge base first. Use for related work in wireless, networking, satellite, MAC/PHY, and transport."
 allowed-tools: Bash(*), Read, Glob, Grep, WebSearch, WebFetch, Write, mcp__zotero__*, mcp__obsidian-vault__*
 ---
+<!-- GENERATED from skills/comm-lit-review/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

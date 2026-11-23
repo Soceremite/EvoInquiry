@@ -17,6 +17,7 @@ import sys
 REPO = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 sys.path.insert(0, os.path.join(REPO, "tools"))
 from convert_skills_to_llm_chat import convert_content  # noqa: E402
+from skill_text import workflow_paths  # noqa: E402
 
 FIXTURES = [
     "skills/proof-checker/SKILL.md",
@@ -33,7 +34,7 @@ FORBIDDEN = re.compile(r"mcp__codex__|model_reasoning_effort|model_#|model:\s*[\
 
 
 def offending_lines(path):
-    src = open(os.path.join(REPO, path), encoding="utf-8").read()
+    src = "\n".join(p.read_text(encoding="utf-8") for p in workflow_paths(os.path.join(REPO, path)))
     out = convert_content(src)
     bad = []
     for i, line in enumerate(out.split("\n"), 1):

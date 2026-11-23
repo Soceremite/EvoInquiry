@@ -4,6 +4,7 @@ description: "Search developer sources for software errors, API usage, compatibi
 argument-hint: "[error-or-question] [— sources: auto|github|stackexchange|chinese-tech|general-web|all (comma-separated)] [— language: auto|en|zh|both]"
 allowed-tools: WebSearch, WebFetch
 ---
+<!-- GENERATED from skills/web-debug-search/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

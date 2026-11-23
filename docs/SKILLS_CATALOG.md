@@ -29,7 +29,7 @@ or dependency does not establish that an integration is configured.
 | [`/auto-review-loop-llm`](../skills/skills-codex/auto-review-loop-llm/SKILL.md) | Same as Workflow 2 but uses any OpenAI-compatible LLM via [`llm-chat`](../mcp-servers/llm-chat/) MCP server | llm-chat MCP |
 | [`/auto-review-loop-minimax`](../skills/skills-codex/auto-review-loop-minimax/SKILL.md) | Workflow 2 variant pinned to MiniMax API | MiniMax API key |
 | [`/paper-writing`](../skills/skills-codex/paper-writing/SKILL.md) | **Workflow 3** — paper-plan → paper-figure → illustration → paper-write → paper-compile → auto-paper-improvement-loop | Native Codex review, LaTeX |
-| [`/rebuttal`](../skills/skills-codex/rebuttal/SKILL.md) | **Workflow 4** — parse reviews → atomize → strategy → draft → safety check → stress test → 2-version output → follow-ups | Native Codex review |
+| [`/rebuttal`](../skills/skills-codex/rebuttal/SKILL.md) | **Workflow 4** — review analysis → strategy → format-aware response → evidence and commitment checks → follow-ups | Optional external review |
 | [`/resubmit-pipeline`](../skills/skills-codex/resubmit-pipeline/SKILL.md) | **Workflow 5** — text-only port across venues (no new experiments, no bib edits) — isolation → anonymity → audits `--soft-only` → microedit → kill-argument gate → compile + push | Native Codex review, LaTeX |
 | [`/paper-talk`](../skills/skills-codex/paper-talk/SKILL.md) | **Workflow 6** — paper → slide outline → Beamer + PPTX → per-page polish → assurance audits → final report | Native Codex review, LaTeX, python-pptx |
 | [`/research-refine-pipeline`](../skills/skills-codex/research-refine-pipeline/SKILL.md) | Sub-pipeline used by `/idea-discovery` — refine method + plan experiments in one chain | Native Codex review |

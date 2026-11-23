@@ -4,6 +4,7 @@ description: "Create paper illustrations through a local Codex app-server image 
 argument-hint: "[description-or-method-file]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, WebSearch, mcp__codex-image2__generate, mcp__codex-image2__generate_start, mcp__codex-image2__generate_status, spawn_agent, send_input
 ---
+<!-- GENERATED from skills/paper-illustration-image2/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

@@ -2,6 +2,7 @@
 name: experiment-bridge
 description: "Implement an existing experiment plan, sanity-check code, deploy where available, and collect initial results. Use to move from an approved plan to execution."
 ---
+<!-- GENERATED from skills/experiment-bridge/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

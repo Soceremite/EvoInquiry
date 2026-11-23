@@ -2,6 +2,8 @@
 
 from pathlib import Path
 
+from tools.skill_text import read_workflow
+
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 MAIN = REPO_ROOT / "skills"
@@ -33,7 +35,7 @@ def test_retired_checker_is_not_shipped() -> None:
 
 def test_existing_paper_workflows_keep_the_original_proof_checker() -> None:
     for name in ("paper-writing", "auto-paper-improvement-loop", "resubmit-pipeline"):
-        text = read(MAIN / name / "SKILL.md")
+        text = read_workflow(MAIN / name / "SKILL.md")
         assert "/proof-checker" in text
         assert REMOVED_CHECKER not in text
 

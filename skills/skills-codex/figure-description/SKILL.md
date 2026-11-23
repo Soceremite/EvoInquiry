@@ -4,6 +4,7 @@ description: "Describe supplied patent drawings with formal figure references an
 argument-hint: "[figure-directory-or-figure-list]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, WebSearch, WebFetch
 ---
+<!-- GENERATED from skills/figure-description/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

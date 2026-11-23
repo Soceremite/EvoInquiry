@@ -4,6 +4,7 @@ description: "Write a detailed Chinese ML/LLM interview guide with derivations, 
 argument-hint: '<topic> [--effort balanced|max] [--byline "Name (姓名), Affiliation"] [--commit false]'
 allowed-tools: Bash(*), Read, Write, Edit, spawn_agent
 ---
+<!-- GENERATED from skills/interview-cheatsheet/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

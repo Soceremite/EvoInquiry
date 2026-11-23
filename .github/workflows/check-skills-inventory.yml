@@ -9,6 +9,10 @@ on:
       - 'README_CN.md'
       - 'AGENT_GUIDE.md'
       - 'tools/check_skills_inventory.py'
+      - 'tools/generate_skill_surfaces.py'
+      - 'tools/surface_rules.json'
+      - 'tools/skill-surfaces/**'
+      - 'tools/skill_text.py'
       - 'tools/verify_evo_inquiry.py'
       - 'tools/skill_contracts.py'
       - 'tools/skill-contracts.json'
@@ -16,6 +20,7 @@ on:
       - 'tools/publication-policy.json'
       - 'tests/test_codex_skill_mirror.py'
       - 'tests/test_evo_inquiry.py'
+      - 'tests/test_skill_surfaces.py'
       - '.github/workflows/check-skills-inventory.yml'
   workflow_dispatch:
 
@@ -32,7 +37,9 @@ jobs:
         run: python -m pip install pytest
       - name: Check skill inventory drift
         run: python tools/check_skills_inventory.py
+      - name: Check generated skill surfaces
+        run: python tools/generate_skill_surfaces.py --surface all --check
       - name: Check frozen skill contracts
         run: python tools/verify_evo_inquiry.py
       - name: Check Codex skill mirror semantics
-        run: python -m pytest tests/test_codex_skill_mirror.py tests/test_evo_inquiry.py -q
+        run: python -m pytest tests/test_codex_skill_mirror.py tests/test_evo_inquiry.py tests/test_skill_surfaces.py -q

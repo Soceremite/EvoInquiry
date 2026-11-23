@@ -4,6 +4,7 @@ description: "Plan paragraph-level structure and page allocation for systems pap
 argument-hint: "[venue-or-section]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, WebSearch, WebFetch
 ---
+<!-- GENERATED from skills/writing-systems-papers/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

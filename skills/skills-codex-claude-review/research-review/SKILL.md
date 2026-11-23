@@ -2,6 +2,7 @@
 name: "research-review"
 description: "Obtain one fresh critical review of a research proposal, paper, or results. Use for review feedback; auto-review-loop handles repeated revision and re-review."
 ---
+<!-- GENERATED from skills/research-review/SKILL.md — do not edit directly -->
 
 > Override for Codex users who want **Claude Code**, not a second Codex agent, to act as the reviewer. Install this package **after** `skills/skills-codex/*`.
 >

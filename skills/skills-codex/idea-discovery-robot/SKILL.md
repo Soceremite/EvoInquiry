@@ -2,6 +2,7 @@
 name: "idea-discovery-robot"
 description: "Run robotics or embodied-AI idea discovery with benchmark-grounded, simulation-first validation. Use for robot learning, manipulation, navigation, or locomotion."
 ---
+<!-- GENERATED from skills/idea-discovery-robot/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

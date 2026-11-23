@@ -4,6 +4,7 @@ description: "Write a complete patent specification from claims and an invention
 argument-hint: "[claims-path]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, Skill, WebSearch, WebFetch
 ---
+<!-- GENERATED from skills/specification-writing/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

@@ -4,6 +4,7 @@ description: "Assess whether completed experiments support a specified research 
 argument-hint: "[experiment-description-or-wandb-run]"
 allowed-tools: Bash(*), Read, Grep, Glob, Write, Edit
 ---
+<!-- GENERATED from skills/result-to-claim/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

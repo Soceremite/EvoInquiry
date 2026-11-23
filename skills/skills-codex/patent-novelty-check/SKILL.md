@@ -4,6 +4,7 @@ description: "Assess patent novelty and non-obviousness against prior art. Use f
 argument-hint: "[invention-description-or-brief-path]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, WebSearch, WebFetch
 ---
+<!-- GENERATED from skills/patent-novelty-check/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

@@ -4,6 +4,7 @@ description: "Render a research Markdown or JSON artifact as a self-contained re
 argument-hint: "<input.md> [--template academic|dashboard] [--out <path>] [--title ...] [--state <state.json>] [--json <sidecar.json>] [--offline] [--review|--no-review]"
 allowed-tools: Bash(*), Read, Write, spawn_agent
 ---
+<!-- GENERATED from skills/render-html/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

@@ -4,6 +4,7 @@ description: "Render structured FigureSpec JSON into deterministic, editable SVG
 argument-hint: "[description-of-diagram]"
 allowed-tools: Bash(*), Read, Write, Edit
 ---
+<!-- GENERATED from skills/figure-spec/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

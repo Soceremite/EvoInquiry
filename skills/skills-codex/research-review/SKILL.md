@@ -2,6 +2,7 @@
 name: "research-review"
 description: "Obtain one fresh critical review of a research proposal, paper, or results. Use for review feedback; auto-review-loop handles repeated revision and re-review."
 ---
+<!-- GENERATED from skills/research-review/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

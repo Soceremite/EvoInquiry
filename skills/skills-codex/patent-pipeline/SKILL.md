@@ -4,6 +4,7 @@ description: "Draft a complete patent application from an invention through clai
 argument-hint: "[invention-description — jurisdiction]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, WebSearch, WebFetch, Skill
 ---
+<!-- GENERATED from skills/patent-pipeline/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

@@ -2,6 +2,7 @@
 name: "novelty-check"
 description: "Check a research idea against recent prior work and identify closest overlaps. Use to assess novelty before implementation; requires literature evidence."
 ---
+<!-- GENERATED from skills/novelty-check/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

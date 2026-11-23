@@ -4,6 +4,7 @@ description: "DEFAULT poster pipeline — build an academic conference poster (I
 argument-hint: "[paper-dir-or-pdf] [— venue: ICLR, canvas: 185x90cm landscape, venue-colors: true]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, mcp__gemini-review__review, mcp__gemini-review__review_start, mcp__gemini-review__review_reply_start, mcp__gemini-review__review_status
 ---
+<!-- GENERATED from skills/paper-poster-html/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

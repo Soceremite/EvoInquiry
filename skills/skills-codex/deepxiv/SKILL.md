@@ -2,6 +2,7 @@
 name: "deepxiv"
 description: "Search and progressively read papers with DeepXiv, including section-level access and trending papers. Use when DeepXiv-backed retrieval is requested."
 ---
+<!-- GENERATED from skills/deepxiv/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

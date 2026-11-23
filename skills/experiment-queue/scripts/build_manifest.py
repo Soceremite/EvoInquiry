@@ -11,8 +11,10 @@ Grid spec YAML format:
 project: my_grid_experiment
 cwd: /home/user/your_project
 conda: my_env
-gpus: [0, 1, 2, 3, 4, 5, 6, 7]
-max_parallel: 8
+# Legacy command jobs require explicit devices and a cap. Governed jobs
+# with a session resource binding may omit both.
+gpus: [0, 1]
+max_parallel: 2
 oom_retry:
   delay: 120
   max_attempts: 3
@@ -72,15 +74,23 @@ def expand_grid(grid):
 
 
 def build(config):
+    """Expand the grid, carrying device and concurrency ceilings only when supplied."""
     out = {
+        "schema_version": 2,
         "project": config.get("project", "unknown"),
         "cwd": config.get("cwd", "."),
         "conda": config.get("conda", "base"),
-        "gpus": config.get("gpus", list(range(8))),
-        "max_parallel": config.get("max_parallel", 8),
         "oom_retry": config.get("oom_retry", {"delay": 120, "max_attempts": 3}),
         "phases": [],
     }
+    for key in ('gpus', 'max_parallel', 'conda_hook'):
+        if key in config:
+            out[key] = config[key]
+    if 'gpus' in out and (not isinstance(out['gpus'], list)
+            or any(type(item) not in (int, str) or not str(item) for item in out['gpus'])):
+        raise ValueError('gpus must list explicit GPU indices or UUIDs')
+    if 'max_parallel' in out and (type(out['max_parallel']) is not int or out['max_parallel'] < 0):
+        raise ValueError('max_parallel must be a nonnegative integer')
     for phase in config.get("phases", []):
         phase_out = {
             "name": phase["name"],
@@ -89,26 +99,19 @@ def build(config):
         }
         grid = phase.get("grid", {})
         template = phase.get("template", {})
-        if not grid:
-            # Single job in this phase
-            phase_out["jobs"].append({
-                "id": template.get("id", phase["name"]),
-                "cmd": template["cmd"],
-                "expected_output": template.get("expected_output"),
-                **({'execution': substitute(template['execution'], {})} if 'execution' in template else {}),
-            })
-        else:
-            for values in expand_grid(grid):
-                job = {
-                    "id": substitute(template["id"], values),
-                    "cmd": substitute(template["cmd"], values),
-                }
-                if "expected_output" in template:
-                    job["expected_output"] = substitute(
-                        template["expected_output"], values)
-                if 'execution' in template:
-                    job['execution'] = substitute(template['execution'], values)
-                phase_out["jobs"].append(job)
+        for values in expand_grid(grid):
+            name = template['id'] if grid else template.get('id', phase['name'])
+            job = {'id': substitute(name, values)}
+            for key in ('cmd', 'expected_output', 'execution', 'priority', 'ready_at',
+                        'backfill', 'during', 'isolate_host'):
+                if key in template:
+                    job[key] = substitute(template[key], values)
+            if not job.get('execution'):
+                if not out.get('gpus') or 'max_parallel' not in out:
+                    raise ValueError('Bind jobs to a governed session or specify both gpus and max_parallel')
+                if not job.get('cmd'):
+                    raise ValueError(f"Legacy job {job['id']} requires a command")
+            phase_out['jobs'].append(job)
         out["phases"].append(phase_out)
     return out
 
@@ -132,7 +135,10 @@ def main():
     else:
         config = json.loads(p.read_text())
 
-    manifest = build(config)
+    try:
+        manifest = build(config)
+    except ValueError as error:
+        ap.error(str(error))
     Path(args.output).write_text(json.dumps(manifest, indent=2))
 
     total_jobs = sum(len(ph["jobs"]) for ph in manifest["phases"])

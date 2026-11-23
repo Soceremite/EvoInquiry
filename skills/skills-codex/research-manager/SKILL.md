@@ -2,6 +2,7 @@
 name: research-manager
 description: "Record research decisions, evidence-driven pivots, deferred branches and cross-session handoffs in existing project records. Use to consolidate research history; research-guide selects the next workflow and research-wiki stores knowledge."
 ---
+<!-- GENERATED from skills/research-manager/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

@@ -4,6 +4,7 @@ description: "Obtain an external examiner-style review of patent claims and spec
 argument-hint: "[patent-directory-or-scope]"
 allowed-tools: Bash(*), Read, Grep, Glob, Write, Edit
 ---
+<!-- GENERATED from skills/patent-review/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

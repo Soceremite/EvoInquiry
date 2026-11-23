@@ -2,6 +2,7 @@
 name: "paper-plan"
 description: "Build a structured paper outline from results and review conclusions. Use to plan the narrative, sections, evidence, and figures before drafting."
 ---
+<!-- GENERATED from skills/paper-plan/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

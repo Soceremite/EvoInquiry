@@ -4,6 +4,7 @@ description: "Verify bibliography entries and citation context against real sour
 argument-hint: "[paper-directory-or-bib-file] [--uncited] [— soft-only]"
 allowed-tools: Bash(*), Read, Grep, Glob, Edit, Write, WebSearch, WebFetch
 ---
+<!-- GENERATED from skills/citation-audit/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

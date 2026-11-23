@@ -40,6 +40,10 @@ For comparative planning, load [comparative-experiments](../shared-references/co
 
 Refine and concretize: **$ARGUMENTS**
 
+When device placement or concurrency is open, use the resource planner to
+compare declared task peaks and keep the chosen placement with the experiment
+plan. Specify isolation for comparisons based on training or inference time.
+
 ## Overview
 
 Use this skill after the method is stable enough that the next question becomes: **what exact experiments should we run, in what order, to test the proposal and distinguish alternative explanations?** If the user wants the full chain in one request, prefer `/research-refine-pipeline`.

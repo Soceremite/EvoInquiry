@@ -1,5 +1,13 @@
 # 参与 EvoInquiry
 
+## 修改技能
+
+编辑 `skills/<name>/` 下的入口或参考文档。Codex 专用的 `research-guide`
+通过 `SKILL.source.md` 声明目标表面。宿主专属差异见
+`tools/skill-surfaces/` 和[迁移审计](docs/SURFACE_DIFF_AUDIT.md)。
+修改后运行 `python tools/generate_skill_surfaces.py --surface all`，
+再用 `--check` 核对。生成产物与源文件一起提交。
+
 [English](CONTRIBUTING.md)
 
 通过本仓库的 Issues 和 pull request 提交可复现问题与改进。请提供受影响的

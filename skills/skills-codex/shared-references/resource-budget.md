@@ -21,7 +21,7 @@ On first use, run `init`, inspect the target host, show the table and offer:
    when memory fits and the existing scheduler/leases permit it; available CPU,
    RAM and disk without extra policy caps; no time limit.
 2. **Exclusive GPUs (when GPUs are in scope):** the same ceilings, with idle GPUs required.
-3. **Custom:** choose GPU IDs/UUIDs, sharing, duration, memory, storage or costs.
+3. **Custom:** choose GPU IDs/UUIDs, sharing, concurrent jobs, duration, memory, storage or costs.
 
 An ordinary planning request in a writable session initializes this policy
 record before resource scheduling; it does not initialize an experiment runtime
@@ -52,7 +52,7 @@ an old table may be offered as an option, never silently inherited.
 | Process interruption | Actual user stop consent or a specifically preauthorized condition | Unanswered notices keep observation active; never stop another job to reclaim capacity |
 | Dataset storage | Available disk, no extra policy cap | Existing cache, new download/unpack/copies and concurrent temporary peaks |
 | Weights / checkpoints | Available disk, no extra policy cap | Existing weights, retained recovery points, complete new save, best/final outputs and simultaneous writers |
-| Other disk / concurrency | Available capacity, controlled by the existing runner | Sum simultaneous work on each real filesystem; never count the same free space twice |
+| Other disk / concurrency | Available capacity, controlled by the existing runner | Sum simultaneous peaks on each real filesystem. An explicit `max_parallel_jobs` caps the queue |
 | External spending | Reuse established service/compute allocations; no new purchase by default | Existing explicit financial authorization; new spending needs a chosen allowance |
 
 These are ceilings, not targets. Use the smallest adequate investigation. A
@@ -128,8 +128,10 @@ peaks. A complete comparison can still count as one reflection block.
 
 For registered executions, bind
 `configuration.resource_budget = {"session_id": <id>, "request": <requirements>}`
-in the frozen configuration. The existing launcher performs another fresh check
-after environment verification; the governed queue reaches that same launcher.
+in the frozen configuration. For device selection at dispatch, freeze a `task`
+template in place of `request`. The launcher resolves the placement from current
+hardware after environment verification. The governed queue stores the selected
+UUIDs and the final launcher rechecks that assignment and its active lease.
 If the table belongs to another project root in the same session, include its
 absolute `table_root` in that binding. An existing current-session table also
 prevents that launcher from silently dispatching an unbound new execution.
@@ -146,6 +148,38 @@ planning, not launch. `SELECTION_REQUIRED` needs the first session choice;
 decisions do not stop healthy jobs. Recheck after changing requirements or policy.
 This helper samples and compares peaks; it does not meter or atomically reserve
 hardware, and does not cover an unbound legacy launcher automatically.
+
+## Plan candidate placements
+
+Use the [priority and companion rules](../experiment-queue/references/priority-dispatch.md)
+for competing tasks and concurrent CPU work. When there is a session I/O
+ceiling, supply `io_bytes_per_second` with the expected combined read and
+write peak for each request. Queue admission checks the overlapping peaks
+against `max_io_bytes_per_second`.
+
+Use `tools/resource_planner.py` when GPU IDs or feasible concurrency are open.
+Give it the same CPU, RAM, duration, storage and spending fields as a request.
+Replace `gpus` with `gpu_options`, a list of `{"count": N, "peak_bytes": B}`
+objects, including an explicit count and peak of zero for an available CPU
+implementation. An option may include its own `job_seconds`. Supply only options
+that the frozen entrypoint supports under the same comparison protocol. For a
+timing study, set `allow_gpu_sharing: false` or use isolated measurement runs.
+The session table's `max_parallel_jobs` is the user ceiling. A task template or
+manifest may narrow it. Record explicit user choices with `select --preset custom`.
+
+```text
+python <package>/tools/resource_planner.py --root <project> --session <id> --task <task.json> --pending-jobs <count> --output-dir <experiment-output> --markdown
+```
+
+`RESOURCE_PLAN.md` records the sampled host, eligible devices, checks and slot
+count for the given number of identical jobs. `resource-request.json` contains
+the selected single-job request or `null` when none is admitted. Use `balanced`
+for minimal sufficient devices with headroom, `lowest_resource` to pack into
+tighter fits, or `fastest` to prefer the shortest declared runtime. The queue
+plans individual jobs against the full declared peaks of active assignments.
+Record concurrent attempt IDs, shared GPUs and hardware conditions from the
+launch receipt in the comparison log. Coordinate across independent queues and
+other processes through the external scheduler or its existing allocations.
 
 ## Reminders and nonblocking notices
 

@@ -4,6 +4,7 @@ description: "Run adversarial rejection and defense reviews in separate fresh co
 argument-hint: "[paper-directory]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, spawn_agent
 ---
+<!-- GENERATED from skills/kill-argument/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

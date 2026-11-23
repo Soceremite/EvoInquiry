@@ -4,6 +4,7 @@ description: "Develop a coherent research derivation: choose mathematical object
 argument-hint: "[problem-goal-current-formulas-or-notes]"
 allowed-tools: Read, Write, Edit, Grep, Glob
 ---
+<!-- GENERATED from skills/formula-derivation/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

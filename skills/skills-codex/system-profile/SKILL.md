@@ -3,6 +3,7 @@ name: system-profile
 description: "Profile scripts, processes, GPUs, memory, or interconnects to identify performance bottlenecks. Use for measured systems-performance analysis and benchmarking."
 argument-hint: '<target, e.g. "train.py", "gpu", "pid 1234", "vllm serving">'
 ---
+<!-- GENERATED from skills/system-profile/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

@@ -1,5 +1,23 @@
 # Changelog
 
+## 1.7.0
+
+### Added
+
+- Generate and check the Codex tree and both reviewer overlays from canonical skill sources and recorded host differences.
+- Route ten long workflows to stage-specific references. Share the review-cycle instructions between the OpenAI-compatible and MiniMax adapters.
+- Upgrade rebuttal to the pinned Awesome Rebuttal workflow. Add format-aware responses, one-page PDF templates, experiment triage, optional AC summaries, and final checks for evidence, venue limits and revision commitments.
+- Preserve legacy rebuttal entrypoints under `docs/archive/rebuttal-legacy/`. Use the existing state resolver for new rebuttal memory. Rich drafts and external stress tests are optional. HTML rendering remains available through the dedicated skill.
+- Plan experiment placements from target-host telemetry, session ceilings and task peaks. Export a human-readable plan and a request for the existing admission tool.
+- Fit concurrent jobs using their combined CPU, RAM, per-device VRAM and filesystem growth. Support shared devices where the session and task both permit sharing.
+- Order pending jobs by priority and preserve capacity for the next feasible reservation. Add controlled backfill, measured evaluation profiles, and CPU work linked to a monitored primary execution.
+
+### Fixed
+
+- Remove implicit eight-device and eight-job settings from new queue manifests. Legacy command manifests require explicit devices and concurrency.
+- Recheck the queued GPU UUIDs, policy and lease before launching the frozen job. Keep capacity deferrals pending and include overlapping attempts in launch receipts for comparison logs.
+- Account for clean inactive file cache when estimating Linux cgroup memory headroom.
+
 ## 1.6.3 — 2026-10-27 revision
 
 - Initialize new session tables from live server resources, with no additional hardware caps or duration ceiling by default. Preserve explicit existing limits and the first-use selection.

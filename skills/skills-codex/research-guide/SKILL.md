@@ -2,6 +2,7 @@
 name: research-guide
 description: "Resume a research project or choose its next step when the stage is unclear or spans workflows. Coordinate relevant skills using existing evidence, goals, and constraints."
 ---
+<!-- GENERATED from skills/research-guide/SKILL.source.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),
@@ -131,6 +132,13 @@ Waiting for healthy long training is active monitoring, not a zero-finding resea
 iteration or a reason to mark the Goal blocked/stalled. Use available host waits
 and continuation; Plan-only does not guarantee automatic continuation after a turn.
 Do not claim to switch modes or persist background work without host support.
+During a healthy long execution, proactively check the existing research
+backlog for authorized CPU work that could change the next decision. Keep the
+current monitor and use the [queue's companion rules](../experiment-queue/references/priority-dispatch.md)
+for executable jobs. Use the session table and separate outputs when work can
+affect the live run. Revisit the work when the primary run reports an anomaly,
+new evidence, or completion. In observation-only Plan, inspect and propose
+these tasks within the current investigation.
 For ongoing authorized work, prefer reflection after N complete experimental
 blocks; a multi-method, multi-seed comparison counts once after analysis. Choose
 N for the project and review earlier when evidence warrants it. Do not invent a

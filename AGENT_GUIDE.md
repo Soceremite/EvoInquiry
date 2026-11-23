@@ -1,6 +1,6 @@
 # EvoInquiry agent guide
 
-Full catalog: [skill catalog](docs/SKILLS_CATALOG.md) — **89 skills** in EvoInquiry 1.6.0:
+Full catalog: [skill catalog](docs/SKILLS_CATALOG.md) — **89 skills** in EvoInquiry 1.7.0:
 83 retained workflows plus the research routing, governance, problem-synthesis and
 manager extensions.
 Install and invoke the Codex plugin using [README.md](README.md).
@@ -30,3 +30,8 @@ Project state uses the shared .ei resolver. Read the
 [upgrade implementation plan](docs/UPGRADE_IMPLEMENTATION_CN.md) for governance,
 environment, code reuse and compatibility boundaries. Existing installations
 remain independent until explicitly upgraded from a clean release package.
+
+Maintainers edit the canonical source under `skills/<name>/` and regenerate the
+installed surfaces with `tools/generate_skill_surfaces.py`. Resolve references
+within the installed surface during a workflow. Workflow 4 uses the [rebuttal
+migration and capability map](docs/REBUTTAL_UPSTREAM_SYNC.md).

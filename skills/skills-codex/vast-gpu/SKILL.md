@@ -4,6 +4,7 @@ description: "Rent, inspect, manage, or destroy vast.ai GPU instances. Use when 
 argument-hint: "[task-description or action]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob
 ---
+<!-- GENERATED from skills/vast-gpu/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

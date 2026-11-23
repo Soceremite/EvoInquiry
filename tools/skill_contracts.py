@@ -54,7 +54,8 @@ def skill_parts(text: str) -> tuple[str, str, str]:
     else:
         description = value.strip("'")
     stable_frontmatter = "".join(lines[:i] + lines[i + 1:]).rstrip("\n")
-    return stable_frontmatter, HOOK.sub("", text[match.end():]), description
+    body = re.sub(r"\A<!-- GENERATED from skills/[^\n]+ -->\n", "", text[match.end():], count=1)
+    return stable_frontmatter, HOOK.sub("", body), description
 
 
 def load_contract(root: Path) -> dict:
@@ -102,7 +103,7 @@ def load_contract(root: Path) -> dict:
             raise ValueError(f'{relative}: invalid protected-file adaptation')
         if record.get('baseline_sha256') != data['protected_files'][relative]:
             raise ValueError(f'{relative}: protected-file baseline mismatch')
-        if record.get('adaptation_version') in ('1.4.0', '1.5.0', '1.6.0', '1.6.1', '1.6.2', '1.6.3'):
+        if record.get('adaptation_version') in ('1.4.0', '1.5.0', '1.6.0', '1.6.1', '1.6.2', '1.6.3', '1.7.0'):
             refs = record.get('test_refs')
             if (not isinstance(refs, list) or not refs
                     or not all(_local_reference(root, ref) for ref in [record.get('review_ref')] + refs)):

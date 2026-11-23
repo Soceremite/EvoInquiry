@@ -2,6 +2,7 @@
 name: "run-experiment"
 description: "Launch and collect ML experiments on local or remote GPU resources. Use to execute a ready implementation; experiment-bridge implements an existing plan first."
 ---
+<!-- GENERATED from skills/run-experiment/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),
@@ -225,7 +226,9 @@ If any artifact copy fails, do not destroy the instance.
 - Use `tee` with `set -o pipefail`; retain the trainer exit code and an attempt-bound terminal receipt. A screen disappearing or an output file appearing is not proof of successful training
 - Run deployment commands with `run_in_background: true` to keep conversation responsive
 - Report back: which GPU, which screen/process, what command, estimated time
-- If multiple experiments, launch them in parallel on different GPUs
+- Delegate multi-job scheduling to `experiment-queue` for aggregate admission. Record actual hardware and overlap for timing comparisons.
+- Use the [evaluation profile protocol](../experiment-queue/references/priority-dispatch.md#choosing-a-validated-evaluation-configuration)
+  for a compatible evaluator with equivalent batching or sharding options. Verify final sample coverage and keep timing conditions in the run record.
 
 ## AGENTS.md Example
 

@@ -2,6 +2,7 @@
 name: proof-orchestrator
 description: "Resume stateful proof projects across run directories and prepare manual GPT Pro handoffs. Use for cross-run coordination; ordinary proofs use proof-writer/checker."
 ---
+<!-- GENERATED from skills/proof-orchestrator/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

@@ -9,6 +9,8 @@ bucket), so completeness is enforced here.
 import unittest
 from pathlib import Path
 
+from tools.skill_text import read_workflow
+
 REPO_ROOT = Path(__file__).resolve().parent.parent
 CATALOG = REPO_ROOT / "tools" / "skill-groups.tsv"
 SKILLS_DIR = REPO_ROOT / "skills"
@@ -86,8 +88,8 @@ class CatalogTest(unittest.TestCase):
         """Coarse anti-drift guard for the `requires` column.
 
         Every requires edge A→B must at least be textually referenced as
-        `/B` inside A's SKILL.md. This catches the omission-by-refactor
-        direction (SKILL.md drops a phase, catalog keeps the stale edge);
+        `/B` in A's entrypoint or a linked stage. This catches omitted phases
+        whose edges are still present in the catalog;
         the judgment call "is this reference an unconditional invocation
         rather than a see-also" remains a manual curation duty — see the
         criterion documented in the catalog header.
@@ -97,7 +99,7 @@ class CatalogTest(unittest.TestCase):
         for name, (_, requires) in sorted(self.skills.items()):
             if requires == "-":
                 continue
-            text = (SKILLS_DIR / name / "SKILL.md").read_text()
+            text = read_workflow(SKILLS_DIR / name / "SKILL.md")
             for dep in requires.split(","):
                 self.assertTrue(
                     re.search(r"/" + re.escape(dep) + r"\b", text),

@@ -297,7 +297,9 @@ After the experiment completes (detected via `/monitor-experiment` or screen ses
 - Use `tee` with `set -o pipefail`; retain the trainer exit code and an attempt-bound terminal receipt. A screen disappearing or an output file appearing is not proof of successful training
 - Run deployment commands with `run_in_background: true` to keep conversation responsive
 - Report back: which GPU, which screen/process, what command, estimated time
-- If multiple experiments, launch them in parallel on different GPUs
+- Delegate multi-job scheduling to `experiment-queue` for aggregate admission. Record actual hardware and overlap for timing comparisons.
+- Use the [evaluation profile protocol](../experiment-queue/references/priority-dispatch.md#choosing-a-validated-evaluation-configuration)
+  for a compatible evaluator with equivalent batching or sharding options. Verify final sample coverage and keep timing conditions in the run record.
 - **Vast.ai cost awareness**: When using `gpu: vast`, always report the running cost. If `auto_destroy: true`, destroy the instance as soon as all experiments on it complete
 - **Modal cost awareness**: Always estimate and display cost before running. Modal auto-scales to zero — no idle billing, no manual cleanup
 

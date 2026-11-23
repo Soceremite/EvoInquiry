@@ -4,6 +4,7 @@ description: "Explain one paper from an arXiv/AlphaXiv URL or arXiv ID, using Al
 argument-hint: "[arxiv-id-or-url]"
 allowed-tools: Bash(*), Read, Write, Glob
 ---
+<!-- GENERATED from skills/alphaxiv/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

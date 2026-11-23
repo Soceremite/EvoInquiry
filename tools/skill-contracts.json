@@ -842,28 +842,26 @@
       "upgrade_baseline_sha256": "e8b4192fd883ac4a8cbf3e11afa567fb76936e8a2d24288afe5f330ab778cee6"
     },
     "skills/experiment-queue/scripts/build_manifest.py": {
-      "sha256": "7d08ae9bf3cbf2948a17cb0ec8e891fc9119aa404bbbd868b3f70053e480f0f2",
+      "reason": "Extend the existing resource-aware queue with priority, validated evaluation profiles and monitored CPU companions.",
+      "review_ref": "docs/OPTIMIZATION_PLAN_CN.md#12",
+      "test_refs": [
+        "tests/test_priority_dispatch.py",
+        "tests/test_resource_planner.py"
+      ],
+      "adaptation_version": "1.7.0",
       "baseline_sha256": "2fe0d13d2bba863e9bbde65f8a746f1c0f46b7e2c08e16107786fad6980a5820",
-      "reason": "Carry explicit frozen execution bindings into single/grid jobs.",
-      "upgrade_baseline_sha256": "2fe0d13d2bba863e9bbde65f8a746f1c0f46b7e2c08e16107786fad6980a5820"
+      "sha256": "ef0d45de6560e14467d9530ad3f0cad1073b8c6353af30f144535143f6ce511c"
     },
     "skills/experiment-queue/scripts/queue_manager.py": {
-      "sha256": "c66f4d471a30b8d172ebfb91e1b42a640746c152aff3b7b7da355eb78df5e63f",
-      "baseline_sha256": "9b53e554bda3fec88d9d293e323e26f531d8c074b7544a8ca7b4c3b529ab0129",
-      "reason": "User-authorized 1.6.3 audit repair: align pilot, dispatch, queue, timing, cooperative stop, resource, notification and deployment ownership without replacing preserved baselines. Native Windows CI follow-up: use atomic replacement for existing state and forward-slash paths for actual Git Bash wrappers; preserve trainer exit evidence.",
-      "upgrade_baseline_sha256": "9b53e554bda3fec88d9d293e323e26f531d8c074b7544a8ca7b4c3b529ab0129",
-      "previous_sha256": "c491d1adce036a0fe66ae5149e171b4193475b8636e6331fb1cc4a6ea6a080bf",
-      "adaptation_version": "1.6.3",
-      "review_ref": "docs/AUDIT_1_6_3_CN.md#发布前原生-windows-修正",
+      "reason": "Extend the existing resource-aware queue with priority, validated evaluation profiles and monitored CPU companions.",
+      "review_ref": "docs/OPTIMIZATION_PLAN_CN.md#12",
       "test_refs": [
-        "tests/test_dispatch_monitor_repairs.py",
-        "tests/test_execution_governance.py",
-        "tests/test_governed_queue.py",
-        "tests/test_training_budget_clock.py",
-        "tests/test_resource_budget.py",
-        "tests/test_codex_skill_mirror.py",
-        "tests/test_evo_inquiry.py"
-      ]
+        "tests/test_priority_dispatch.py",
+        "tests/test_resource_planner.py"
+      ],
+      "adaptation_version": "1.7.0",
+      "baseline_sha256": "9b53e554bda3fec88d9d293e323e26f531d8c074b7544a8ca7b4c3b529ab0129",
+      "sha256": "380e12104d755ffee5ab4820716cee9c4217d4342f909e40c0f1ff747e6e7b36"
     },
     "skills/shared-references/output-versioning.md": {
       "sha256": "420caadf96438fbe987cdd8b4ee9b7b3f0d59f71f47522ac1f5697020e60b53d",
@@ -967,26 +965,15 @@
       "upgrade_baseline_sha256": "052896125aa6f655ff1b6c5f8262766fa6f3c3f758cb5b0ec142f46ee38a9de0"
     },
     "tools/skill-groups.tsv": {
-      "sha256": "8ba0e5dfd11ad33d678d71f276c04ee4f8b2b0974e07fe57ded5184c83ee8c7a",
       "baseline_sha256": "403397ba3d9c04a6c7698f40fdf130534f9eefe9c119f403ebdbe82496ae32e6",
-      "reason": "1.6.0 bounded problem-synthesis integration: append reflection records to the existing iteration ledger and catalog the new optional skill without adding a scheduler or state database.",
-      "upgrade_baseline_sha256": "403397ba3d9c04a6c7698f40fdf130534f9eefe9c119f403ebdbe82496ae32e6",
-      "previous_adaptations": [
-        {
-          "sha256": "e08822158015cb45f5df32e1956343a5a8f2555e7e4711fca87d338fc4ad0263",
-          "reason": "Governance upgrade: reviewed resolver, publication, execution/queue integration, catalog or current-inventory regression adaptation"
-        }
-      ],
-      "adaptation_version": "1.6.0",
-      "review_ref": "docs/VALIDATION_1_6_0.md#verification-record",
+      "sha256": "05e042841e2bd16fa15042ecdce9b3088d4b80e00dbb64a2a885970d05097063",
+      "reason": "Generate installed surface files from their canonical skills and explicitly retained host-specific differences.",
+      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
       "test_refs": [
-        "tests/test_problem_synthesis.py",
-        "tests/test_iteration_log.py",
         "tests/test_codex_skill_mirror.py",
-        "tests/test_skill_groups.py",
         "tests/test_evo_inquiry.py"
       ],
-      "previous_sha256": "2a9e7db67f36eacaa813437e8dc6820e9864da017bb9d45739373902ce0ef1c4"
+      "adaptation_version": "1.7.0"
     },
     "tools/verify_paper_audits.sh": {
       "sha256": "bf37d78d065bfc1f3e08bcd18997088c5297301d0aa87e27ab4e4189d7397065",
@@ -1067,68 +1054,57 @@
       "reason": "Compare canonical directory identity on both sides of installer assertions; selection, reconcile, manifest ownership and exact-target deletion checks are preserved. Real directory-alias regressions exercise the original contracts."
     },
     "tests/test_copilot_install.py": {
-      "sha256": "7a88b482a486a8f564d314b7a60fd08425739b9c93d9dec83beefc9a40e2ed6e",
       "baseline_sha256": "77d4ae91cf3e396d867b99776b95a93deb16e8f4a496aa1f06172f53178a2832",
-      "upgrade_baseline_sha256": "77d4ae91cf3e396d867b99776b95a93deb16e8f4a496aa1f06172f53178a2832",
-      "reason": "Compare canonical directory identity on both sides of installer assertions; selection, reconcile, manifest ownership and exact-target deletion checks are preserved. Real directory-alias regressions exercise the original contracts."
+      "sha256": "9ce563599abc2a0b3246dc936a11cb849f75096b709b597cd9f54e50f935e058",
+      "reason": "Generate installed surface files from their canonical skills and explicitly retained host-specific differences.",
+      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_evo_inquiry.py"
+      ],
+      "adaptation_version": "1.7.0"
     },
     "NOTICE": {
       "baseline_sha256": "f3f91a31eac755d4f3446c55a1f4b62d22483093767b91ad17ce6f09cb2b58f8",
-      "sha256": "eb5eb252950c8ba2163b4d8e73e5b2c9ecf18f9a929791881c346266fab303bd",
-      "reason": "Refresh product description while preserving copyright and attribution.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "bd44a4d3619d0f1ee53a5ffc288847d754d43791a0acaf0d313ef0722ccd9592",
+      "reason": "Generate installed surface files from their canonical skills and explicitly retained host-specific differences.",
+      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
-        "docs/VALIDATION_1_4_0.md"
-      ]
+        "tests/test_evo_inquiry.py"
+      ],
+      "adaptation_version": "1.7.0"
     },
     "skills/auto-review-loop-llm/SKILL.md": {
       "baseline_sha256": "f46c40b1a3edcc63b07cf263253fc01e706d2335bd851d672d66099b29774cf8",
-      "sha256": "5e5586ac52a4c873e183bb3731659bc5630a880593acec7ace2d4708873d4c10",
-      "reason": "User-approved 1.6.0 functional consolidation: share review-cycle/recovery rules across backends, retain backend gates and receipt sites, keep the poster compatibility alias, and remove age-based deletion/budget resets. Frozen baseline identities remain unchanged.",
-      "adaptation_version": "1.6.0",
-      "review_ref": "docs/VALIDATION_1_6_0.md#functional-consolidation-and-hourly-run",
+      "sha256": "5400118c51d3025433353215b15192d01dac74337fd193dfbb196515038ca53c",
+      "reason": "Extract shared external reviewer recovery and evidence rules while preserving backend entrypoints.",
+      "review_ref": "docs/OPTIMIZATION_PLAN_CN.md",
       "test_refs": [
-        "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_generator.py",
-        "tests/test_evo_inquiry.py",
-        "tests/test_review_gate.py",
         "tests/test_review_loop_adapters.py"
       ],
-      "prior_candidate_sha256": "838c2826a85c5004bc4c7260cfbcb2c8490652cbabea679e65307da600c4d512",
-      "previous_sha256": "23afabc28fe62ecb70355d1524fc88ee91ffb0f5becaa9713c619b525d4a4ca3"
+      "adaptation_version": "1.7.0"
     },
     "skills/auto-review-loop-minimax/SKILL.md": {
       "baseline_sha256": "70f4952522747030f4ee8011c0e29c7670a289bd0bff73fffbcb9bac232a4102",
-      "sha256": "1026b8729a5a34d0e456bb07d6ebfa1003dbadd695db186414259b85bb111775",
-      "reason": "User-approved 1.6.0 functional consolidation: share review-cycle/recovery rules across backends, retain backend gates and receipt sites, keep the poster compatibility alias, and remove age-based deletion/budget resets. Frozen baseline identities remain unchanged.",
-      "adaptation_version": "1.6.0",
-      "review_ref": "docs/VALIDATION_1_6_0.md#functional-consolidation-and-hourly-run",
+      "sha256": "3176f116078a2975280acd897181a5f6663eb52867d729f1151e68c379ec8e10",
+      "reason": "Extract shared external reviewer recovery and evidence rules while preserving backend entrypoints.",
+      "review_ref": "docs/OPTIMIZATION_PLAN_CN.md",
       "test_refs": [
-        "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_generator.py",
-        "tests/test_evo_inquiry.py",
-        "tests/test_review_gate.py",
         "tests/test_review_loop_adapters.py"
       ],
-      "prior_candidate_sha256": "9d8335be5da4217a1707121ad8424a16f412923f2ec7df96d6191dc1523c312e",
-      "previous_sha256": "a5b7e7a90f45d664c79ff5ecccc13b5f3a4dff2a4e16cfe6578d3d1a9000c310"
+      "adaptation_version": "1.7.0"
     },
     "skills/auto-review-loop/SKILL.md": {
       "baseline_sha256": "071a28ed4653dd20604b0933cee34eb1337e272ecbe6b93fc86ee698a327d298",
-      "sha256": "1115e20c49f45626721091e05e083fcb2eaa74e9a405ab3af1dd7d2ee5e6b775",
-      "reason": "User-approved 1.6.0 functional consolidation: share review-cycle/recovery rules across backends, retain backend gates and receipt sites, keep the poster compatibility alias, and remove age-based deletion/budget resets. Frozen baseline identities remain unchanged.",
-      "adaptation_version": "1.6.0",
-      "review_ref": "docs/VALIDATION_1_6_0.md#functional-consolidation-and-hourly-run",
+      "sha256": "e9ef53443d186b8a27a3229c74840c8519a93a161da09bc46bb01e0f8a0dc173",
+      "reason": "Move workflow sections into linked references and keep their original runtime and output contracts.",
+      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_generator.py",
-        "tests/test_evo_inquiry.py",
-        "tests/test_review_gate.py"
+        "tests/test_skill_behavior_harness.py"
       ],
-      "previous_sha256": "90cb069d6686e2fb1fb0b9c3f2976cef91fea63108b4131dd329899170359a60",
-      "prior_candidate_sha256": "d7475f85beb20786591747862cc215e8d2879f138442e13ba83a73bbc13efbc4"
+      "adaptation_version": "1.7.0"
     },
     "skills/citation-audit/SKILL.md": {
       "baseline_sha256": "7f68355f009a93077c76ba8d999cc00df0a3a87fbe3e4cba1b5f5e0df0810c2e",
@@ -1161,16 +1137,15 @@
     },
     "skills/experiment-plan/SKILL.md": {
       "baseline_sha256": "c5b53692ff95b0b55e80702e33afc79d9fe8d4f55a69e2a39714013f97ac595e",
-      "sha256": "3649609f46cd099ef62c88d0c0153dfae0b3436a59070b588b956c355382f882",
-      "reason": "Keep experiment runtime initialization deferred in planning-only requests while initializing the separate session resource policy and offering its first choice before scheduling; preserve actual host Plan-mode restrictions.",
-      "adaptation_version": "1.6.2",
-      "review_ref": "docs/VALIDATION_1_6_2.md#native-session-validation",
+      "sha256": "7fc093ac16a07eb88f55168e0d8dd2138e718b1823b4cd01542757e19379de32",
+      "adaptation_version": "1.7.0",
+      "reason": "Implement the v1.7.0 adaptive experiment placement plan using the existing session table, resource admission and queue. Preserve frozen science, lease checks and explicit legacy scheduling.",
+      "review_ref": "docs/OPTIMIZATION_PLAN_CN.md#107-验收用例",
       "test_refs": [
-        "tests/test_resource_budget.py",
-        "tests/test_codex_skill_mirror.py",
-        "tests/test_evo_inquiry.py"
-      ],
-      "previous_sha256": "ca42d921ba9d62bc0d018595b21d1acee88ef89680ae11874eda5895765bb9a8"
+        "tests/test_resource_planner.py",
+        "tests/test_governed_queue.py",
+        "tests/test_resource_budget.py"
+      ]
     },
     "skills/figure-spec/SKILL.md": {
       "baseline_sha256": "090a28a1b6464d3b88cf32b9bf59f6a1008e7e63d638801070f0b888c3ef9c5b",
@@ -1202,35 +1177,26 @@
     },
     "skills/idea-creator/SKILL.md": {
       "baseline_sha256": "e78e20b2eff657953ba95134e89779954c77399779eee0134459b77d84efb602",
-      "sha256": "b406fdc2cf480f95ed0234d98332eb472be564d64578e0ef40dd37996a1fac07",
-      "reason": "User-requested follow-up: take resource limits from the session policy, default new sessions to no duration ceiling, and remove fixed pilot/search timing rules without changing scientific review or execution ownership.",
-      "adaptation_version": "1.6.3",
-      "review_ref": "docs/SESSION_RESOURCE_BUDGET_CN.md#resource-defaults-follow-up",
+      "sha256": "2981ababa4909b3cffa972124d099322285b32bf108fbc78fcf3847358aea123",
+      "reason": "Move workflow sections into linked references and keep their original runtime and output contracts.",
+      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
       "test_refs": [
-        "tests/test_resource_budget.py",
-        "tests/test_training_budget_clock.py",
-        "tests/test_dispatch_monitor_repairs.py",
         "tests/test_codex_skill_mirror.py",
-        "tests/test_evo_inquiry.py",
-        "tests/test_governed_queue.py"
+        "tests/test_skill_behavior_harness.py"
       ],
-      "previous_sha256": "74306ca1c0a92d940e77dbefd168a8731fe9ddbd61861f842bd8b75115daf218"
+      "adaptation_version": "1.7.0"
     },
     "skills/idea-discovery/SKILL.md": {
       "baseline_sha256": "ac2d06bde65bf7335d9e9a290cc1c10bbc813b6256480e7d1da9cf102a76fa23",
-      "sha256": "08bbd361dded58991d9445e0f10a1c01ddf5d3695dba5870d0a1d0630917fdf2",
-      "reason": "User-requested follow-up: take resource limits from the session policy, default new sessions to no duration ceiling, and remove fixed pilot/search timing rules without changing scientific review or execution ownership.",
-      "adaptation_version": "1.6.3",
-      "review_ref": "docs/SESSION_RESOURCE_BUDGET_CN.md#resource-defaults-follow-up",
+      "sha256": "e673ec5d8c193736d488da68cbc2090109a7ef36e8242e346efd7b3101de6d82",
+      "adaptation_version": "1.7.0",
+      "reason": "Implement the v1.7.0 adaptive experiment placement plan using the existing session table, resource admission and queue. Preserve frozen science, lease checks and explicit legacy scheduling.",
+      "review_ref": "docs/OPTIMIZATION_PLAN_CN.md#107-验收用例",
       "test_refs": [
-        "tests/test_resource_budget.py",
-        "tests/test_training_budget_clock.py",
-        "tests/test_dispatch_monitor_repairs.py",
-        "tests/test_codex_skill_mirror.py",
-        "tests/test_evo_inquiry.py",
-        "tests/test_governed_queue.py"
-      ],
-      "previous_sha256": "784dcc332ff8c233b791aa8bc87d2a8776c0103ea603d663c76a0c355e900e90"
+        "tests/test_resource_planner.py",
+        "tests/test_governed_queue.py",
+        "tests/test_resource_budget.py"
+      ]
     },
     "skills/kill-argument/SKILL.md": {
       "baseline_sha256": "7a222081ddd9548f7ce560a202c3888783cc34ee0fe81c35ee87c5a7b652aa59",
@@ -1319,29 +1285,25 @@
     },
     "skills/paper-write/SKILL.md": {
       "baseline_sha256": "dc4f4024d6cdcb639d8bf75b796132408f75d14a4b4b316f388c884e35a62366",
-      "sha256": "e7d95fbac553d41cc0b492d6929419cd71d7cee627c96341b4f11418f4b95ddb",
-      "reason": "Directed 1.4.0 evidence, workflow, figure or distribution adaptation; see scoped implementation review. The existing common principles hook is now reachable from this mainline entrypoint; that hook itself changes no workflow body.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "e147b5ae7c2acb7f2bcc9087c86d671043e12af58f332bb54d82bbc26d906cc9",
+      "reason": "Move workflow sections into linked references and keep their original runtime and output contracts.",
+      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py"
-      ]
+        "tests/test_skill_behavior_harness.py"
+      ],
+      "adaptation_version": "1.7.0"
     },
     "skills/paper-writing/SKILL.md": {
       "baseline_sha256": "310a9b29b6869eec0690f953095ffe57488e3ec60a23523fe83ea3ecff536dfd",
-      "sha256": "c0693f2581888985a51572a86d951800da02c792d8e91406524f40be4551012f",
-      "reason": "Directed 1.4.0 evidence, workflow, figure or distribution adaptation; see scoped implementation review. The existing common principles hook is now reachable from this mainline entrypoint; that hook itself changes no workflow body.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "d630b7ace5df93a47f7190ad16e48b274f58f1488bc12a7ab76e6bc396ae64ec",
+      "reason": "Move workflow sections into linked references and keep their original runtime and output contracts.",
+      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py"
-      ]
+        "tests/test_skill_behavior_harness.py"
+      ],
+      "adaptation_version": "1.7.0"
     },
     "skills/research-implement-feature/SKILL.md": {
       "baseline_sha256": "453416dee9d15117f950244115a22dce6ebb33f5fe4792374369d799b6a1a88f",
@@ -1360,16 +1322,14 @@
     },
     "skills/research-lit/SKILL.md": {
       "baseline_sha256": "00d9f549e4db72f3b02d55b9f6dcd61b20403f5a7e25cf3396160423140b9183",
-      "sha256": "5b6eeea5c2db59f0a6b260c8631a00151605f83495488b66d6856565a15dbcb0",
-      "reason": "Directed 1.4.0 follow-up: primary evidence fidelity, real reviewer access, common principles and conditional receipts, mechanical framing completion, literature discovery clarity and actual installed-path identity.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "109b9e7ea06aeb8e9d5c6e337142ea165dfa54402d44fe33597a692472b81d9f",
+      "reason": "Move workflow sections into linked references and keep their original runtime and output contracts.",
+      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py"
-      ]
+        "tests/test_skill_behavior_harness.py"
+      ],
+      "adaptation_version": "1.7.0"
     },
     "skills/research-pipeline/SKILL.md": {
       "baseline_sha256": "3dd1f071770ffd700c55e607f8a6f641b7be5d4fbd3c2e0ab203bbfe22fd2d3b",
@@ -1438,115 +1398,91 @@
     },
     "skills/skills-codex-claude-review/auto-paper-improvement-loop/SKILL.md": {
       "baseline_sha256": "b0a8a6a64f8ac0403bc75d25aaec2d8add7dfba987a11c52de95a581e231d4bf",
-      "sha256": "14beb2b9e2bd05524ff073ef28fa7859f7fe3cc420197bd11bfe8e62ddbfa101",
-      "reason": "Directed 1.4.0 follow-up: evidence fidelity in paper improvements, real read-only reviewer access, common principles and conditional review receipts across overlays, and mechanical v2 framing completion without semantic acceptance.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "f87c0a28dfb33bc367e9ff3c8da5dc2628b30ccae72278e044366822cde8c87f",
+      "reason": "Move workflow sections into linked references and keep their original runtime and output contracts.",
+      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py"
-      ]
+        "tests/test_skill_behavior_harness.py"
+      ],
+      "adaptation_version": "1.7.0"
     },
     "skills/skills-codex-claude-review/auto-review-loop/SKILL.md": {
       "baseline_sha256": "cd2e877606a8b3eb2d636edff19f8ff068a2ef021928abcd17ece0fbfff2917b",
-      "sha256": "90a1dbb513d62084a7698c59da1aed3a66512e23e720e7994ca4304001553c7d",
-      "adaptation_version": "1.6.0",
-      "previous_sha256": "5b104d442f8ac309440a848c91b3dd5876684af177d26aa3635b00234f9735b7",
-      "reason": "User-approved 1.6.0 functional consolidation: share review-cycle/recovery rules across backends, retain backend gates and receipt sites, keep the poster compatibility alias, and remove age-based deletion/budget resets. Frozen baseline identities remain unchanged.",
-      "review_ref": "docs/VALIDATION_1_6_0.md#functional-consolidation-and-hourly-run",
+      "sha256": "35a9f742f49c21add30dc14d447f72768d5e1e70bd12a18dba8bd4918b8bb151",
+      "reason": "Move workflow sections into linked references and keep their original runtime and output contracts.",
+      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_generator.py",
-        "tests/test_evo_inquiry.py",
-        "tests/test_review_gate.py"
-      ]
+        "tests/test_skill_behavior_harness.py"
+      ],
+      "adaptation_version": "1.7.0"
     },
     "skills/skills-codex-claude-review/novelty-check/SKILL.md": {
       "baseline_sha256": "6727fe56d02e44611a0a4a8be090532c223d0f753034544cbdd2d5c5ba9ec0fd",
-      "sha256": "b0d6407c48dd68b2ac6261b80b40775b7d9cf389baec0822996c8348c10a9873",
-      "reason": "Directed 1.4.0 follow-up: primary evidence fidelity, real reviewer access, common principles and conditional receipts, mechanical framing completion, literature discovery clarity and actual installed-path identity.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "fb4cbf19c02db99f4ea7989e8d82898f861092e551ed33c5b3e3847509c593bc",
+      "reason": "Generate installed surface files from their canonical skills and explicitly retained host-specific differences.",
+      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py"
-      ]
+        "tests/test_evo_inquiry.py"
+      ],
+      "adaptation_version": "1.7.0"
     },
     "skills/skills-codex-claude-review/paper-figure/SKILL.md": {
       "baseline_sha256": "1e2ec8dfeff340a6b42adac53a096b2f6b9ef628d579f94230e4b113cdebb1fe",
-      "sha256": "319e909ae8c604ed176530a7702549cd8aec525b66a9c6430b0a0f34679fd53c",
-      "reason": "Route figures by purpose and retain real data, independent units, missing runs and source identities; arrange actual paired case assets with disclosed selection and transforms, preserving renderer and statistical boundaries.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "a1c2361c0741867ef895dfedb108b25e448cea3c2d897ee20ccc3c2d6a579c7e",
+      "reason": "Generate installed surface files from their canonical skills and explicitly retained host-specific differences.",
+      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py",
-        "tests/behavior/evo-inquiry-case-study-cases.json",
-        "tests/test_comparison_packaging.py"
-      ]
+        "tests/test_evo_inquiry.py"
+      ],
+      "adaptation_version": "1.7.0"
     },
     "skills/skills-codex-claude-review/paper-plan/SKILL.md": {
       "baseline_sha256": "273a99d453145e2da7c5361137c163c77034992d9d03d7f2499779e134a74d9e",
-      "sha256": "c4a0fd883f76e20f82f4417d7116427d85fe434b9d9e4cd8671847c65cbadd00",
-      "reason": "Keep primary and material negative evidence visible; allocate useful case diagnosis from actual artifacts without fabricating panels, overriding aggregate evidence or expanding the requested outline into experiments. Correct shared output protocol links to the installed Codex reference tree; do not mix mainline manifest or versioning policy into Codex and reviewer overlays.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "5d1e82dbfcb7f40647e83ebbc83affeae841d17acf1fd9122ffc5a857b19a409",
+      "reason": "Generate installed surface files from their canonical skills and explicitly retained host-specific differences.",
+      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py",
-        "tests/behavior/evo-inquiry-case-study-cases.json",
-        "tests/test_comparison_packaging.py",
-        "tests/test_claude_review_generator.py",
         "tests/test_evo_inquiry.py"
-      ]
+      ],
+      "adaptation_version": "1.7.0"
     },
     "skills/skills-codex-claude-review/paper-write/SKILL.md": {
       "baseline_sha256": "f30d2b055883fcb9b34d7904c8690d1a1c8ecd2ee444e25b9ceaaa165833478f",
-      "sha256": "41d46857eb47084b53efd88104eae38143fa161364bec84fc757aef22c520ac8",
-      "reason": "Directed 1.4.0 follow-up: evidence fidelity in paper improvements, real read-only reviewer access, common principles and conditional review receipts across overlays, and mechanical v2 framing completion without semantic acceptance.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "e17c2a583d29115f534ac3d441da25cae1206c823150289ca7ef0f70de30060a",
+      "reason": "Move workflow sections into linked references and keep their original runtime and output contracts.",
+      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py"
-      ]
+        "tests/test_skill_behavior_harness.py"
+      ],
+      "adaptation_version": "1.7.0"
     },
     "skills/skills-codex-claude-review/research-refine/SKILL.md": {
       "baseline_sha256": "9cb8f40b527028e4dd71321f70f4a76e5e432dd140d4c7be582cc480ae8f2579",
-      "sha256": "722cb18abc6b12984e8b2c2cec6321b65e7816859289a1d700e3db2b3450461f",
-      "reason": "Progressively disclose retained refinement/reviewer instructions; retain and translate deferred resources, preserve pending-review recovery and all review gates, and pin deferred runtime bytes during native discovery.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "5fd4e0286b112d9e9b800669796bc9c53653d602c6ff7fc2e8384e9f509107f4",
+      "reason": "Generate installed surface files from their canonical skills and explicitly retained host-specific differences.",
+      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_generator.py",
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_skill_behavior_harness.py",
-        "tests/behavior/evo-inquiry-cases.json"
-      ]
+        "tests/test_evo_inquiry.py"
+      ],
+      "adaptation_version": "1.7.0"
     },
     "skills/skills-codex-claude-review/research-review/SKILL.md": {
       "baseline_sha256": "250861cd3cb6b1a650cfcd1fcdac0a468582b44f9b645f24670aae5fae0729c0",
-      "sha256": "b96d7e8f2dde564ba5e7e7fff58f384b8447ef9b034cdca2550fc22344265621",
-      "reason": "Directed 1.4.0 follow-up: evidence fidelity in paper improvements, real read-only reviewer access, common principles and conditional review receipts across overlays, and mechanical v2 framing completion without semantic acceptance.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "80533ea23cf68943e76cc722a58de93578b38f3200bee625e34d1b82c3aa7c07",
+      "reason": "Generate installed surface files from their canonical skills and explicitly retained host-specific differences.",
+      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py"
-      ]
+        "tests/test_evo_inquiry.py"
+      ],
+      "adaptation_version": "1.7.0"
     },
     "skills/skills-codex/shared-references/review-scope-limits.md": {
       "baseline_sha256": "e383dbaa57aed6f8fd2c2bb6bcaefc6806648126d11b21cb6c39eeeec76100f6",
@@ -1654,251 +1590,190 @@
     },
     "skills/auto-paper-improvement-loop/SKILL.md": {
       "baseline_sha256": "e0179353625706ea567a1ecc849cbc84c2f41503cf8bfb71744a7b9078e2f938",
-      "sha256": "49de3c39c4fd6cda08f9ac8fcccafba447ef1c54569157812813bc95d86c9e7a",
-      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "8dc11a3d468d6892b97ab28a1ddc67101c3940ed1e8a6e4e75785807c0096ae6",
+      "reason": "Move workflow sections into linked references and keep their original runtime and output contracts.",
+      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py"
-      ]
+        "tests/test_skill_behavior_harness.py"
+      ],
+      "adaptation_version": "1.7.0"
     },
     "skills/skills-codex-gemini-review/auto-paper-improvement-loop/SKILL.md": {
       "baseline_sha256": "418edbee8d6c61bff9ab871fd84a06f2ae37eb129df7b815b52f9778c2ee75b2",
-      "sha256": "59b27a9bbb56619987c6fdbbba96326f1c8c4b3fab3b6016697593492f24ce40",
-      "reason": "Directed 1.4.0 follow-up: evidence fidelity in paper improvements, real read-only reviewer access, common principles and conditional review receipts across overlays, and mechanical v2 framing completion without semantic acceptance. Correct shared output protocol links to the installed Codex reference tree; do not mix mainline manifest or versioning policy into Codex and reviewer overlays.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "f8c786fd5ca8e36ee0959244d42dd38e00f3488c5625ac08248d6a84a6645d89",
+      "reason": "Move workflow sections into linked references and keep their original runtime and output contracts.",
+      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py",
-        "tests/test_claude_review_generator.py",
-        "tests/test_evo_inquiry.py"
-      ]
+        "tests/test_skill_behavior_harness.py"
+      ],
+      "adaptation_version": "1.7.0"
     },
     "skills/skills-codex-gemini-review/auto-review-loop/SKILL.md": {
       "baseline_sha256": "b98a321c39d4285ff8383b76881077466ca2b45d6f4cc9cf4dddd8524e7d1771",
-      "sha256": "4bae2a6dd599163193ba9d22d48f58a198f9c6ea5e07adeb4cb371027fef843f",
-      "reason": "User-approved 1.6.0 functional consolidation: share review-cycle/recovery rules across backends, retain backend gates and receipt sites, keep the poster compatibility alias, and remove age-based deletion/budget resets. Frozen baseline identities remain unchanged.",
-      "adaptation_version": "1.6.0",
-      "review_ref": "docs/VALIDATION_1_6_0.md#functional-consolidation-and-hourly-run",
+      "sha256": "c6b1c862b3c8b51df9bafc21ca2022ce39b7b634753678c80a378bc5588bd5b5",
+      "reason": "Move workflow sections into linked references and keep their original runtime and output contracts.",
+      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_generator.py",
-        "tests/test_evo_inquiry.py",
-        "tests/test_review_gate.py"
+        "tests/test_skill_behavior_harness.py"
       ],
-      "previous_sha256": "5e2d2ae69f03e8874f1e078fe8a1b1343733bc6714201543993197543c6401f2"
+      "adaptation_version": "1.7.0"
     },
     "skills/skills-codex-gemini-review/grant-proposal/SKILL.md": {
       "baseline_sha256": "8e834ea2ce5fc82591140bf57d7a723a5e74b6232039fb793fe3d9f8a025a72c",
-      "sha256": "e0db37970513d9086cf1b71369a1e59b1dca3d302c2e6e2ccda27d3ca2991ed4",
-      "reason": "Directed 1.4.0 follow-up: evidence fidelity in paper improvements, real read-only reviewer access, common principles and conditional review receipts across overlays, and mechanical v2 framing completion without semantic acceptance. Correct shared output protocol links to the installed Codex reference tree; do not mix mainline manifest or versioning policy into Codex and reviewer overlays.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "47128e34c196e8b4e910a6456334193d592d470801f5172c8eed9c9987453fdc",
+      "reason": "Move workflow sections into linked references and keep their original runtime and output contracts.",
+      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py",
-        "tests/test_claude_review_generator.py",
-        "tests/test_evo_inquiry.py"
-      ]
+        "tests/test_skill_behavior_harness.py"
+      ],
+      "adaptation_version": "1.7.0"
     },
     "skills/skills-codex-gemini-review/idea-creator/SKILL.md": {
       "baseline_sha256": "eabd84c6e6b0ad5d02cda0c24582d73417306a187530bf5c9b366019416ceeb2",
-      "sha256": "40e02ed909723bda53921bedeae4075c700668ec5b6fa7827b39cc8235d79640",
-      "reason": "User-requested follow-up: take resource limits from the session policy, default new sessions to no duration ceiling, and remove fixed pilot/search timing rules without changing scientific review or execution ownership.",
-      "adaptation_version": "1.6.3",
-      "review_ref": "docs/SESSION_RESOURCE_BUDGET_CN.md#resource-defaults-follow-up",
+      "sha256": "8b096818b40f821ff43f59e79ab46cb9e0cfa4d17500f4c02884c04c448d4230",
+      "reason": "Move workflow sections into linked references and keep their original runtime and output contracts.",
+      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
       "test_refs": [
-        "tests/test_resource_budget.py",
-        "tests/test_training_budget_clock.py",
-        "tests/test_dispatch_monitor_repairs.py",
         "tests/test_codex_skill_mirror.py",
-        "tests/test_evo_inquiry.py",
-        "tests/test_governed_queue.py"
+        "tests/test_skill_behavior_harness.py"
       ],
-      "previous_sha256": "8a73d4056bc13a28644bb2a69f54f85c191d07048aa6575b9e12b615215a62b5"
+      "adaptation_version": "1.7.0"
     },
     "skills/skills-codex-gemini-review/idea-discovery-robot/SKILL.md": {
       "baseline_sha256": "dd0e7f33bff7b7a16fd4fca3bca1b475e3acd7ce24de68af6fdd20ad778c7e29",
-      "sha256": "edb077eb87cffc1f4536375d8fe6c716d3862f4ecd0028680a2b221fbfdd8527",
-      "reason": "Directed 1.4.0 follow-up: evidence fidelity in paper improvements, real read-only reviewer access, common principles and conditional review receipts across overlays, and mechanical v2 framing completion without semantic acceptance. Correct shared output protocol links to the installed Codex reference tree; do not mix mainline manifest or versioning policy into Codex and reviewer overlays.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "bba8e1888b6220776fbd759eb31797b56cefc0befd7075365464166356feefa3",
+      "reason": "Generate installed surface files from their canonical skills and explicitly retained host-specific differences.",
+      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py",
-        "tests/test_claude_review_generator.py",
         "tests/test_evo_inquiry.py"
-      ]
+      ],
+      "adaptation_version": "1.7.0"
     },
     "skills/skills-codex-gemini-review/idea-discovery/SKILL.md": {
       "baseline_sha256": "618a9f8aa7ea804e162d8e1ab3b10ee1e393a966107401fcc661b2a1d8f7de78",
-      "sha256": "8f8cf906a61bdf9db83eb3b1914f990897ac7e23677f0ba17dc6ef4b3e4ad52d",
-      "reason": "User-requested follow-up: take resource limits from the session policy, default new sessions to no duration ceiling, and remove fixed pilot/search timing rules without changing scientific review or execution ownership.",
-      "adaptation_version": "1.6.3",
-      "review_ref": "docs/SESSION_RESOURCE_BUDGET_CN.md#resource-defaults-follow-up",
+      "sha256": "1dea269692b5b9cda1c9eee937116e4492642237945a1a7edd0e1db55fb38176",
+      "reason": "Generate installed surface files from their canonical skills and explicitly retained host-specific differences.",
+      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
       "test_refs": [
-        "tests/test_resource_budget.py",
-        "tests/test_training_budget_clock.py",
-        "tests/test_dispatch_monitor_repairs.py",
         "tests/test_codex_skill_mirror.py",
-        "tests/test_evo_inquiry.py",
-        "tests/test_governed_queue.py"
+        "tests/test_evo_inquiry.py"
       ],
-      "previous_sha256": "43fa51edf43a918b33420c0a40ef430298f9590a82cd90e14fe9dfc41e7504fc"
+      "adaptation_version": "1.7.0"
     },
     "skills/skills-codex-gemini-review/novelty-check/SKILL.md": {
       "baseline_sha256": "5ef22b3605664b41a42ecaea22175e26aba19dda59eb701dca7ba602b8181e49",
-      "sha256": "df48067d454d09b126ff6576f0116fb5cce684373881a1fe259492d4c1264735",
-      "reason": "Directed 1.4.0 follow-up: evidence fidelity in paper improvements, real read-only reviewer access, common principles and conditional review receipts across overlays, and mechanical v2 framing completion without semantic acceptance.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "7c896706331d5b97264274aa87dc10429ff62996f9712c0736bbe31aae32162c",
+      "reason": "Generate installed surface files from their canonical skills and explicitly retained host-specific differences.",
+      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py"
-      ]
+        "tests/test_evo_inquiry.py"
+      ],
+      "adaptation_version": "1.7.0"
     },
     "skills/skills-codex-gemini-review/paper-figure/SKILL.md": {
       "baseline_sha256": "5dc702aa809cf4a53f906167f292643fb76748ee66998aa4da3e1e945ee134d2",
-      "sha256": "6b268ffd23e50ad709061ab15295a541458501b1aa233abedab028f483eae316",
-      "reason": "Route figures by purpose and retain real data, independent units, missing runs and source identities; arrange actual paired case assets with disclosed selection and transforms, preserving renderer and statistical boundaries. Correct shared output protocol links to the installed Codex reference tree; do not mix mainline manifest or versioning policy into Codex and reviewer overlays.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "4ba50e7f42ff9c8b3a280f363c0cfbb69920c15a29f8b0fcbf553c31ea403eba",
+      "reason": "Generate installed surface files from their canonical skills and explicitly retained host-specific differences.",
+      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py",
-        "tests/behavior/evo-inquiry-case-study-cases.json",
-        "tests/test_comparison_packaging.py",
-        "tests/test_claude_review_generator.py",
         "tests/test_evo_inquiry.py"
-      ]
+      ],
+      "adaptation_version": "1.7.0"
     },
     "skills/skills-codex-gemini-review/paper-plan/SKILL.md": {
       "baseline_sha256": "74cb50a2ca3f09611eb557af7d10b4511ecb6762535366178d8f925599e44a38",
-      "sha256": "3a144d86c671be33d60277be9f54e420cf611f7a5924dff4449cc303c3057db8",
-      "reason": "Keep primary and material negative evidence visible; allocate useful case diagnosis from actual artifacts without fabricating panels, overriding aggregate evidence or expanding the requested outline into experiments. Correct shared output protocol links to the installed Codex reference tree; do not mix mainline manifest or versioning policy into Codex and reviewer overlays.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "777cf52624ea7a6f7191d67c0b92e59a389a0e8790525b590c74e5b90d9855f3",
+      "reason": "Generate installed surface files from their canonical skills and explicitly retained host-specific differences.",
+      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/behavior/evo-inquiry-case-study-cases.json",
-        "tests/test_comparison_packaging.py",
-        "tests/test_claude_review_generator.py",
         "tests/test_evo_inquiry.py"
-      ]
+      ],
+      "adaptation_version": "1.7.0"
     },
     "skills/skills-codex-gemini-review/paper-poster-html/SKILL.md": {
       "baseline_sha256": "618fa29802098c59bcb3ad449b2db00b50f7f72bf09343b443809664e527bac3",
-      "sha256": "586735053fb2e36b5b6de24336ef14d6bed73b466a161e000490f5efb78087f4",
-      "reason": "Directed 1.4.0 follow-up: evidence fidelity in paper improvements, real read-only reviewer access, common principles and conditional review receipts across overlays, and mechanical v2 framing completion without semantic acceptance.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "c0603a7989c1cc838ff78c7d801ec1643b0ee1a067503112ccfc1b39658be9e8",
+      "reason": "Generate installed surface files from their canonical skills and explicitly retained host-specific differences.",
+      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py"
-      ]
+        "tests/test_evo_inquiry.py"
+      ],
+      "adaptation_version": "1.7.0"
     },
     "skills/skills-codex-gemini-review/paper-slides/SKILL.md": {
       "baseline_sha256": "3cca23fa611bacd9c0838de2eed702a320163a429e90079227f6387bc5c8fdd4",
-      "sha256": "8a166098d319e451a37e53c87e1c6212029ebb9ab088a9633ad316b696b73d85",
-      "reason": "Directed 1.4.0 follow-up: evidence fidelity in paper improvements, real read-only reviewer access, common principles and conditional review receipts across overlays, and mechanical v2 framing completion without semantic acceptance. Correct shared output protocol links to the installed Codex reference tree; do not mix mainline manifest or versioning policy into Codex and reviewer overlays.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "b329dd66a0db9ec15906416ef7b8e11bae946f447b64ebc8a66eeb39f29d3468",
+      "reason": "Move workflow sections into linked references and keep their original runtime and output contracts.",
+      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py",
-        "tests/test_claude_review_generator.py",
-        "tests/test_evo_inquiry.py"
-      ]
+        "tests/test_skill_behavior_harness.py"
+      ],
+      "adaptation_version": "1.7.0"
     },
     "skills/skills-codex-gemini-review/paper-write/SKILL.md": {
       "baseline_sha256": "1b37c50aaa69fad1814e319911a7e65af3189586403e15016371a10e07a740c4",
-      "sha256": "aeeae7f3eb360784d879734ec39488953472499add988678cef227cb559e0f03",
-      "reason": "Directed 1.4.0 follow-up: evidence fidelity in paper improvements, real read-only reviewer access, common principles and conditional review receipts across overlays, and mechanical v2 framing completion without semantic acceptance. Correct shared output protocol links to the installed Codex reference tree; do not mix mainline manifest or versioning policy into Codex and reviewer overlays.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "d339dbe6d23c3600a213e967e27d33365058e0d08033ef4368bd58aca81304b4",
+      "reason": "Move workflow sections into linked references and keep their original runtime and output contracts.",
+      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py",
-        "tests/test_claude_review_generator.py",
-        "tests/test_evo_inquiry.py"
-      ]
+        "tests/test_skill_behavior_harness.py"
+      ],
+      "adaptation_version": "1.7.0"
     },
     "skills/skills-codex-gemini-review/paper-writing/SKILL.md": {
       "baseline_sha256": "dac8f71654be7fd575e968a701d1e6d821bfc7b0be0278becb6eb7fc63b4283f",
-      "sha256": "c5b945f84e7cc7d7e15bc2b49ccb103daa4bbbdc34a810c87e897ff2377e3508",
-      "reason": "Directed 1.4.0 follow-up: evidence fidelity in paper improvements, real read-only reviewer access, common principles and conditional review receipts across overlays, and mechanical v2 framing completion without semantic acceptance. Correct shared output protocol links to the installed Codex reference tree; do not mix mainline manifest or versioning policy into Codex and reviewer overlays.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "7dc6b5f9b261ffa3487e230e5888d80b1830e9ee723153464136d915cec19492",
+      "reason": "Move workflow sections into linked references and keep their original runtime and output contracts.",
+      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py",
-        "tests/test_claude_review_generator.py",
-        "tests/test_evo_inquiry.py"
-      ]
+        "tests/test_skill_behavior_harness.py"
+      ],
+      "adaptation_version": "1.7.0"
     },
     "skills/skills-codex-gemini-review/research-refine/SKILL.md": {
       "baseline_sha256": "e70c912082ebe40709b3684e254e823e61536a992d50694ae1a7c7a6e8982772",
-      "sha256": "52ba4aea620ac4ec23061ea2ed865e6ddb406508cf9bb2653466277638ac8740",
-      "reason": "Progressively disclose retained refinement/reviewer instructions; retain and translate deferred resources, preserve pending-review recovery and all review gates, and pin deferred runtime bytes during native discovery.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "7b390fd24e524c928ce5f94f3a2ebb7cbb38b541dc11360a6993727a6fbb7e5e",
+      "reason": "Generate installed surface files from their canonical skills and explicitly retained host-specific differences.",
+      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_generator.py",
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_skill_behavior_harness.py",
-        "tests/behavior/evo-inquiry-cases.json"
-      ]
+        "tests/test_evo_inquiry.py"
+      ],
+      "adaptation_version": "1.7.0"
     },
     "skills/skills-codex-gemini-review/research-review/SKILL.md": {
       "baseline_sha256": "098ddea8057fa492b7abcad890be4ce2d1fbd6b3d6f7c2383d1499480d88c04f",
-      "sha256": "b22af6248f07337c3c96f03e15f869479a446092a4cbfd5ed21f9f9d20d4582f",
-      "reason": "Directed 1.4.0 follow-up: evidence fidelity in paper improvements, real read-only reviewer access, common principles and conditional review receipts across overlays, and mechanical v2 framing completion without semantic acceptance.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "3828468b95d4fc411350e4f1d428e253d528ca0166061d696e60e4d36377ffdf",
+      "reason": "Generate installed surface files from their canonical skills and explicitly retained host-specific differences.",
+      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py"
-      ]
+        "tests/test_evo_inquiry.py"
+      ],
+      "adaptation_version": "1.7.0"
     },
     "tools/generate_codex_claude_review_overrides.py": {
       "baseline_sha256": "5d29ef95777af0bafea264182839926b0b6d429bb5362cb4104a27cb90d45f1c",
-      "sha256": "014e1b164684558014776c7952a1f72924074e2efd0c940ec1ea8929f9560595",
-      "reason": "Progressively disclose retained refinement/reviewer instructions; retain and translate deferred resources, preserve pending-review recovery and all review gates, and pin deferred runtime bytes during native discovery.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "87a9d3bfa12f5d80f0e22f1af43c75ed471500aab87a0a15c06aeff55edf3c96",
+      "reason": "Generate installed surface files from their canonical skills and explicitly retained host-specific differences.",
+      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_generator.py",
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_skill_behavior_harness.py",
-        "tests/behavior/evo-inquiry-cases.json"
-      ]
+        "tests/test_evo_inquiry.py"
+      ],
+      "adaptation_version": "1.7.0"
     },
     "skills/ablation-planner/SKILL.md": {
       "baseline_sha256": "ce51bfff265e5f0a6e8fd03333bfa8dee679e728e0d325830988ca5bd31307da",
@@ -2010,21 +1885,15 @@
       ]
     },
     "skills/experiment-queue/SKILL.md": {
-      "baseline_sha256": "6da32285f905d77664334bba7f7bbc2c069814ff5c3bc266ecc00f6c77d77208",
-      "sha256": "771b1d50991a7de4b040230d0dc297bfd790a98e0f3c6751c4bb047ca7dc54c8",
-      "reason": "User-authorized 1.6.3 audit repair: align pilot, dispatch, queue, timing, cooperative stop, resource, notification and deployment ownership without replacing preserved baselines.",
-      "adaptation_version": "1.6.3",
-      "review_ref": "docs/AUDIT_1_6_3_CN.md#修复实施记录",
+      "reason": "Extend the existing resource-aware queue with priority, validated evaluation profiles and monitored CPU companions.",
+      "review_ref": "docs/OPTIMIZATION_PLAN_CN.md#12",
       "test_refs": [
-        "tests/test_dispatch_monitor_repairs.py",
-        "tests/test_execution_governance.py",
-        "tests/test_governed_queue.py",
-        "tests/test_training_budget_clock.py",
-        "tests/test_resource_budget.py",
-        "tests/test_codex_skill_mirror.py",
-        "tests/test_evo_inquiry.py"
+        "tests/test_priority_dispatch.py",
+        "tests/test_resource_planner.py"
       ],
-      "previous_sha256": "f2d08a523740b48d818cb615aa7cc6a30f377994619e153409de489c5b0de587"
+      "adaptation_version": "1.7.0",
+      "baseline_sha256": "6da32285f905d77664334bba7f7bbc2c069814ff5c3bc266ecc00f6c77d77208",
+      "sha256": "ec1658e918bf0d0e58e8ba9737928760c96aae3c6122cda80b39295999086dde"
     },
     "skills/feishu-notify/SKILL.md": {
       "baseline_sha256": "1a6c2e7a92b4f10c25cb7a9c647919a9dcc9b1fc9a6c99a86e73d757c8a6edbf",
@@ -2071,16 +1940,14 @@
     },
     "skills/grant-proposal/SKILL.md": {
       "baseline_sha256": "b7870c8f02db4da3be64f77b4225818306ced16c771331143768c3f9b1fc46ac",
-      "sha256": "7d999e08cabaaa6c277e58d065cac3b3099a934cab3b1c1a5f9ff8ea04334c21",
-      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "329371f235b138d425df13ded32f97a4ce5b4efb549518cec48d643777a77756",
+      "reason": "Move workflow sections into linked references and keep their original runtime and output contracts.",
+      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py"
-      ]
+        "tests/test_skill_behavior_harness.py"
+      ],
+      "adaptation_version": "1.7.0"
     },
     "skills/integrity-forensics/SKILL.md": {
       "baseline_sha256": "33cdf3f4fd2a8dea073a73e2cba870576c576b1d201efa3d0a4bde2e7e7256ed",
@@ -2230,16 +2097,14 @@
     },
     "skills/paper-illustration/SKILL.md": {
       "baseline_sha256": "af9307d178b8242c9a8d2e94c1264add91d5aa2bbc6444556b51b501c1918e65",
-      "sha256": "2d5aedeb1283d778b61b6f73fbbe47fe3220fa2246f272d4f6f7e3de122c8059",
-      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "2b77524ecb543952df0710b2e1a1cc59f103090b77a5ee160430ee66e33c2acb",
+      "reason": "Move workflow sections into linked references and keep their original runtime and output contracts.",
+      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py"
-      ]
+        "tests/test_skill_behavior_harness.py"
+      ],
+      "adaptation_version": "1.7.0"
     },
     "skills/paper-poster-html/SKILL.md": {
       "baseline_sha256": "b3c55d212f5c0cbccc94ec62813ad8df9302467edd825c62959edb4ba2778f8e",
@@ -2270,16 +2135,14 @@
     },
     "skills/paper-slides/SKILL.md": {
       "baseline_sha256": "e887b9b393753f9e8af1aabfc1ce93e9b01a500ebf2c2ace775b45a3f93fd3fc",
-      "sha256": "5d04abe9e590473c6567f181da8705ddf6cb04c0cf40e65eff51b85d3089aa38",
-      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "f49ac467e0d3753656f1cb96de21cb409b038074b8f1dbf19845b52ee3330b48",
+      "reason": "Move workflow sections into linked references and keep their original runtime and output contracts.",
+      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py"
-      ]
+        "tests/test_skill_behavior_harness.py"
+      ],
+      "adaptation_version": "1.7.0"
     },
     "skills/paper-talk/SKILL.md": {
       "baseline_sha256": "0bd7722963e9dc721cff4d66fda72e5e4242a116370dfae2fc9669b408d2f199",
@@ -2361,16 +2224,14 @@
     },
     "skills/proof-checker/SKILL.md": {
       "baseline_sha256": "65900678dc8d68c5157971c087497094c8cc0e05b3c6d22e6a9351b88882657e",
-      "sha256": "6c3266f9cc5b7cdfc7c3c2569a4800f09ea10023e441fd1c06b2d6393c6049fe",
-      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "e2c1f25aa394554197661747a9ad1cf21831d4707d88960efd9cd3fe91e166fb",
+      "reason": "Move workflow sections into linked references and keep their original runtime and output contracts.",
+      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py"
-      ]
+        "tests/test_skill_behavior_harness.py"
+      ],
+      "adaptation_version": "1.7.0"
     },
     "skills/proof-orchestrator/SKILL.md": {
       "baseline_sha256": "bde239fa93e051281a529fb436c9dc277b82221cffe0941e1aab54c203fbc9f5",
@@ -2413,16 +2274,13 @@
     },
     "skills/rebuttal/SKILL.md": {
       "baseline_sha256": "36b9f570181c5afcf4149e4a911613f421733d4f3fcb84579709c8097d514f02",
-      "sha256": "41ef60a321a476fb11265313876782a066f4e5d95e08f7c253316e5721ec7784",
-      "reason": "Add the existing common research-principles hook; original mainline workflow and frontmatter preserved.",
-      "adaptation_version": "1.4.0",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "sha256": "e7339d145db434e6ef0128ff7cb432476d6b9f59f2f4cde043b49dc13d5425ae",
+      "reason": "Adopt the pinned MIT rebuttal workflow and preserve venue, coverage, commitment and reviewer provenance gates.",
+      "review_ref": "docs/REBUTTAL_UPSTREAM_SYNC.md",
       "test_refs": [
-        "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/test_idea_discovery_gate.py"
-      ]
+        "tests/test_rebuttal_contract.py"
+      ],
+      "adaptation_version": "1.7.0"
     },
     "skills/render-html/SKILL.md": {
       "baseline_sha256": "2d34c2a878194209e1d4679147cfa8eef47eaa75271d4abbee6721060bead97b",
@@ -2478,21 +2336,15 @@
       ]
     },
     "skills/run-experiment/SKILL.md": {
-      "baseline_sha256": "4d481ce95d8bcadb93b095c3dd9bda51d68b6edea6b710316d6c0c74bb5bcfa8",
-      "sha256": "141621836b814b4871c8919d78a0672e4282bf06e20d5fcf578718422215b8f7",
-      "reason": "User-authorized 1.6.3 audit repair: align pilot, dispatch, queue, timing, cooperative stop, resource, notification and deployment ownership without replacing preserved baselines.",
-      "adaptation_version": "1.6.3",
-      "review_ref": "docs/AUDIT_1_6_3_CN.md#修复实施记录",
+      "reason": "Extend the existing resource-aware queue with priority, validated evaluation profiles and monitored CPU companions.",
+      "review_ref": "docs/OPTIMIZATION_PLAN_CN.md#12",
       "test_refs": [
-        "tests/test_dispatch_monitor_repairs.py",
-        "tests/test_execution_governance.py",
-        "tests/test_governed_queue.py",
-        "tests/test_training_budget_clock.py",
-        "tests/test_resource_budget.py",
-        "tests/test_codex_skill_mirror.py",
-        "tests/test_evo_inquiry.py"
+        "tests/test_priority_dispatch.py",
+        "tests/test_resource_planner.py"
       ],
-      "previous_sha256": "95e6ff86d9c9bead79fd11333606780b22a60078931537ca0868a115c7fabcd4"
+      "adaptation_version": "1.7.0",
+      "baseline_sha256": "4d481ce95d8bcadb93b095c3dd9bda51d68b6edea6b710316d6c0c74bb5bcfa8",
+      "sha256": "a05b36799023b1bfa5fad7bb54e3ea54456201800301632f99d25268e55db615"
     },
     "skills/semantic-scholar/SKILL.md": {
       "baseline_sha256": "41be9cd7d08d2d795d4fe0c87d23288712febd2807b8d4d38a2ea9c54ebb31e8",
@@ -2560,21 +2412,15 @@
       ]
     },
     "skills/training-check/SKILL.md": {
-      "baseline_sha256": "b4f27bbc58aaae314d8c51fe309fb41e42f47dce4f69ba07fac1ce7f0080c789",
-      "sha256": "6dfca152bcfec0c3ebbb35466556b6211b88c955381b9ec66fbfb79260ae440a",
-      "reason": "User-authorized 1.6.3 audit repair: align pilot, dispatch, queue, timing, cooperative stop, resource, notification and deployment ownership without replacing preserved baselines.",
-      "adaptation_version": "1.6.3",
-      "review_ref": "docs/AUDIT_1_6_3_CN.md#修复实施记录",
+      "reason": "Extend the existing resource-aware queue with priority, validated evaluation profiles and monitored CPU companions.",
+      "review_ref": "docs/OPTIMIZATION_PLAN_CN.md#12",
       "test_refs": [
-        "tests/test_dispatch_monitor_repairs.py",
-        "tests/test_execution_governance.py",
-        "tests/test_governed_queue.py",
-        "tests/test_training_budget_clock.py",
-        "tests/test_resource_budget.py",
-        "tests/test_codex_skill_mirror.py",
-        "tests/test_evo_inquiry.py"
+        "tests/test_priority_dispatch.py",
+        "tests/test_resource_planner.py"
       ],
-      "previous_sha256": "0c1a30df616a3a29650b1d666f78b7119ec2313444d8da8e4dcd38392c012382"
+      "adaptation_version": "1.7.0",
+      "baseline_sha256": "b4f27bbc58aaae314d8c51fe309fb41e42f47dce4f69ba07fac1ce7f0080c789",
+      "sha256": "726505e5f9cdb4a5df7a16ffdf993fb343384d03a765f49e49b38897dac7bedc"
     },
     "skills/vast-gpu/SKILL.md": {
       "baseline_sha256": "69aabce36540fd6fce55bf47b6f043166fc118fd708d03efddb57d168a99f4e5",
@@ -2718,17 +2564,15 @@
       ]
     },
     "tools/publication-policy.json": {
-      "baseline_sha256": "b6b65bede8a5d21a5040d9543e41b71bcf2bad71990013e5b49225151f3c7c52",
-      "sha256": "3d45ff1e4d58040e6acf9a36c0665df5576ae8b90e4471d80b56b8856d6e1cc6",
-      "adaptation_version": "1.6.2",
-      "reason": "Register the session resource checker, shared contract and usage guide; retain original retired-file exclusions and frozen baseline.",
-      "review_ref": "docs/VALIDATION_1_6_2.md#changes-reviewed",
+      "reason": "Extend the existing resource-aware queue with priority, validated evaluation profiles and monitored CPU companions.",
+      "review_ref": "docs/OPTIMIZATION_PLAN_CN.md#12",
       "test_refs": [
-        "tests/test_resource_budget.py",
-        "tests/test_evo_inquiry.py",
-        "tests/test_codex_skill_mirror.py"
+        "tests/test_priority_dispatch.py",
+        "tests/test_resource_planner.py"
       ],
-      "previous_sha256": "a632b8bf05d34f4990039ee8b5e569b0f012ecf876dfe32e7ebe0175d12f8e57"
+      "adaptation_version": "1.7.0",
+      "baseline_sha256": "b6b65bede8a5d21a5040d9543e41b71bcf2bad71990013e5b49225151f3c7c52",
+      "sha256": "dfc981a9de17e26098b0df3f8805b71949947962179d4676c479f1c112e22fd1"
     },
     "skills/shared-references/external-cadence.md": {
       "baseline_sha256": "d0d8e92c9c8f5e60555c8ddf32cf15c78d0bdc61a367ef35d8b0fef8dab906f3",
@@ -2773,52 +2617,116 @@
         "tests/test_run_state.py",
         "tests/test_research_control.py"
       ]
+    },
+    "tests/test_idea_creator_query_pack_scan.py": {
+      "baseline_sha256": "7e945c66c992f9d7710eee3bfcb4a1db77f6b4b5b1424c93f2b0d1eded053f96",
+      "sha256": "13ca7afc6e0a1f56eebe3038865b447bcca8ed6034f3cac3edc91e157e845cac",
+      "reason": "Generate installed surface files from their canonical skills and explicitly retained host-specific differences.",
+      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_evo_inquiry.py"
+      ],
+      "adaptation_version": "1.7.0"
+    },
+    "tests/test_llm_chat_converter.py": {
+      "baseline_sha256": "7a95ddf18d566c15f6cc089c5830b2ac82c4445b51a089366f8e77fffc969e30",
+      "sha256": "1a17ff53b21072849fa4f049e7a8563b07b42ffe8b6c84887efb9bfc968a5b12",
+      "reason": "Generate installed surface files from their canonical skills and explicitly retained host-specific differences.",
+      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_evo_inquiry.py"
+      ],
+      "adaptation_version": "1.7.0"
+    },
+    "tools/convert_skills_to_llm_chat.py": {
+      "baseline_sha256": "3e263414dc6d240096067ddb89f734d8938c66be0319a75824643187ae918a4a",
+      "sha256": "da377cf897664d9524cd87e8198ae1212f7bfe6a4b85d550eee39b7f13f79440",
+      "reason": "Generate installed surface files from their canonical skills and explicitly retained host-specific differences.",
+      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_evo_inquiry.py"
+      ],
+      "adaptation_version": "1.7.0"
+    },
+    "CONTRIBUTING.md": {
+      "baseline_sha256": "2e4e0acb2fe8163d52fc9a49d136bab042d88a80e99893044608e76ccf2d31e4",
+      "sha256": "fd242269de561fcb7abb1f56ab58b4e3c109453c46a5cfc44847db1d7b8cae43",
+      "reason": "Generate installed surface files from their canonical skills and explicitly retained host-specific differences.",
+      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_evo_inquiry.py"
+      ],
+      "adaptation_version": "1.7.0"
+    },
+    "CONTRIBUTING_CN.md": {
+      "baseline_sha256": "30050a36064cd720d56ad764d5a4b7bb792ed8269a79e797e9678e2b2f9aebfe",
+      "sha256": "9b62b57865838e5994f6fdfa102c4c58e7e3806574b64ac0343b0e385e512384",
+      "reason": "Generate installed surface files from their canonical skills and explicitly retained host-specific differences.",
+      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_evo_inquiry.py"
+      ],
+      "adaptation_version": "1.7.0"
+    },
+    "tests/test_proof_suite_integration.py": {
+      "baseline_sha256": "d622eb8ccf8b430755f8e8559424f37a77ffad93c9b143b68a81c60e814ffdcb",
+      "sha256": "c10cb1639b2a566e824cdc4a777a6c2dd238f7489cdaaf8cecfc0893f8b388e2",
+      "reason": "Generate installed surface files from their canonical skills and explicitly retained host-specific differences.",
+      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_evo_inquiry.py"
+      ],
+      "adaptation_version": "1.7.0"
+    },
+    "tests/test_skill_groups.py": {
+      "baseline_sha256": "9988232082ec54099acd5b7b39edfae48506cec9fca0684d3f089123203e4cef",
+      "sha256": "b23729f0d5ad33c623d68e20e73bee6c1564ab9bfa10b6523ca118cb9fecb0d4",
+      "reason": "Generate installed surface files from their canonical skills and explicitly retained host-specific differences.",
+      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_evo_inquiry.py"
+      ],
+      "adaptation_version": "1.7.0"
     }
   },
   "workflow_adaptations": {
     "auto-review-loop-llm": {
       "baseline_body_sha256": "c3ae350a727daf707b640808e6532ebe2f03fba897567c3ab990897d8cc473c6",
-      "body_sha256": "19e4639f6e7be115cf54ec98d254ce48766bfe7c382710993bc8917cdbc5fee6",
-      "reason": "User-approved 1.6.0 functional consolidation: share review-cycle/recovery rules across backends, retain backend gates and receipt sites, keep the poster compatibility alias, and remove age-based deletion/budget resets. Frozen baseline identities remain unchanged.",
-      "review_ref": "docs/VALIDATION_1_6_0.md#functional-consolidation-and-hourly-run",
+      "body_sha256": "c0eeda5f9a0b11a19c633c04b08cb0c349e7ab29d448e6ebae7851f0230c0a60",
+      "reason": "Extract shared external reviewer recovery and evidence rules while preserving backend entrypoints.",
+      "review_ref": "docs/OPTIMIZATION_PLAN_CN.md",
       "test_refs": [
-        "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_generator.py",
-        "tests/test_evo_inquiry.py",
-        "tests/test_review_gate.py",
         "tests/test_review_loop_adapters.py"
       ],
-      "previous_body_sha256": "d97a9d114cc8cad6109ebad30ef416715690ed7db9705e0de3da5ac334770cab",
-      "adaptation_version": "1.6.0"
+      "adaptation_version": "1.7.0"
     },
     "auto-review-loop-minimax": {
       "baseline_body_sha256": "5627f765f5b3c74c472fb2dee67a4bf6e02bfebedf88cc6da391c7c6848f4644",
-      "body_sha256": "d9a2c854b59ec31ccc52243e78cb9a3517cff1beee1132bf7c6bf28d63104b3f",
-      "reason": "User-approved 1.6.0 functional consolidation: share review-cycle/recovery rules across backends, retain backend gates and receipt sites, keep the poster compatibility alias, and remove age-based deletion/budget resets. Frozen baseline identities remain unchanged.",
-      "review_ref": "docs/VALIDATION_1_6_0.md#functional-consolidation-and-hourly-run",
+      "body_sha256": "f630e4ab16dad0d84d4ff6054d085441a64e5622082c401a59d949deaac20d86",
+      "reason": "Extract shared external reviewer recovery and evidence rules while preserving backend entrypoints.",
+      "review_ref": "docs/OPTIMIZATION_PLAN_CN.md",
       "test_refs": [
-        "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_generator.py",
-        "tests/test_evo_inquiry.py",
-        "tests/test_review_gate.py",
         "tests/test_review_loop_adapters.py"
       ],
-      "previous_body_sha256": "d5c4373a28cb16157e5751ec75845fa7871477b99864699b342c66b3614213f1",
-      "adaptation_version": "1.6.0"
+      "adaptation_version": "1.7.0"
     },
     "auto-review-loop": {
       "baseline_body_sha256": "fc4f79364d869e0c8e91a35aa00d621e4e3ed9ca4a4b13ad13a25f779fb56512",
-      "body_sha256": "a8b3cea07c2492159f2d6451644c75e34b587180e74cc379df4ce5cb233b70e7",
-      "reason": "User-approved 1.6.0 functional consolidation: share review-cycle/recovery rules across backends, retain backend gates and receipt sites, keep the poster compatibility alias, and remove age-based deletion/budget resets. Frozen baseline identities remain unchanged.",
-      "review_ref": "docs/VALIDATION_1_6_0.md#functional-consolidation-and-hourly-run",
+      "body_sha256": "60db39dfa37f2140117bd596240ad46d309830c102bd9313551dd9500360ca2b",
+      "reason": "Move workflow sections into linked references and keep their original runtime and output contracts.",
+      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_generator.py",
-        "tests/test_evo_inquiry.py",
-        "tests/test_review_gate.py"
+        "tests/test_skill_behavior_harness.py"
       ],
-      "adaptation_version": "1.6.0",
-      "previous_body_sha256": "dc56291321fe7484a96f4f822c8281c215ebe55af024661c1498fd3a7fc3f373"
+      "adaptation_version": "1.7.0"
     },
     "citation-audit": {
       "baseline_body_sha256": "69d870b26a3c44b07252984af52f9269632f72435715ab601856387b64f0b917",
@@ -2847,18 +2755,15 @@
     },
     "experiment-plan": {
       "baseline_body_sha256": "aa1c87c9c2836d7276a3e19932916f2eb6157705a45e1a16f7f3cc2b70c5687f",
-      "body_sha256": "fc434b16232c8bdb6ac6ebce8397f9bfeb0a21aa7b8df9fa2da5eaa4a91fd11b",
-      "reason": "1.6.0 problem-level reflection checkpoint: preserve the existing execution, planning, review and run-state owners while routing structural synthesis through the new bounded skill.",
-      "review_ref": "docs/VALIDATION_1_6_0.md#verification-record",
+      "body_sha256": "ba3c77764636d6468be0599cd01be83a57bc021dee2e19931a380d046c7162fc",
+      "adaptation_version": "1.7.0",
+      "reason": "Implement the v1.7.0 adaptive experiment placement plan using the existing session table, resource admission and queue. Preserve frozen science, lease checks and explicit legacy scheduling.",
+      "review_ref": "docs/OPTIMIZATION_PLAN_CN.md#107-验收用例",
       "test_refs": [
-        "tests/test_problem_synthesis.py",
-        "tests/test_iteration_log.py",
-        "tests/test_codex_skill_mirror.py",
-        "tests/test_skill_groups.py",
-        "tests/test_evo_inquiry.py"
-      ],
-      "adaptation_version": "1.6.0",
-      "previous_body_sha256": "8701a2458928e0a39761c6c3f54d83a16ee6df32c6f278b1d7018c9a06abcc45"
+        "tests/test_resource_planner.py",
+        "tests/test_governed_queue.py",
+        "tests/test_resource_budget.py"
+      ]
     },
     "figure-spec": {
       "baseline_body_sha256": "2426de32a23ba21cfbde3eb94f6ca53e2431eda73b95df267a65f7ee9a460d89",
@@ -2871,35 +2776,26 @@
     },
     "idea-creator": {
       "baseline_body_sha256": "1332cc28285d17e410bfa71fd6d5c3c9de246155a25c43ad215ccf64fdcdbe78",
-      "body_sha256": "543ac3ea1c8fb7f9c62bd564760ad8a953f461669d6c8a3914b90cba27ed7c1c",
-      "reason": "User-requested follow-up: take resource limits from the session policy, default new sessions to no duration ceiling, and remove fixed pilot/search timing rules without changing scientific review or execution ownership.",
-      "review_ref": "docs/SESSION_RESOURCE_BUDGET_CN.md#resource-defaults-follow-up",
+      "body_sha256": "3122d87750efafb25e9c6d4add4eeb98317fea6e378b1d973331d85b9eb76520",
+      "reason": "Move workflow sections into linked references and keep their original runtime and output contracts.",
+      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
       "test_refs": [
-        "tests/test_resource_budget.py",
-        "tests/test_training_budget_clock.py",
-        "tests/test_dispatch_monitor_repairs.py",
         "tests/test_codex_skill_mirror.py",
-        "tests/test_evo_inquiry.py",
-        "tests/test_governed_queue.py"
+        "tests/test_skill_behavior_harness.py"
       ],
-      "previous_body_sha256": "c9baf5ae4065e72d98d299bbd63438a6ce93d37480b025cd18cdd35a5afed7f4",
-      "adaptation_version": "1.6.3"
+      "adaptation_version": "1.7.0"
     },
     "idea-discovery": {
       "baseline_body_sha256": "ce3cf409b6b113353161d2621811c15843d549db2488ba6240f2465c5d65fb13",
-      "body_sha256": "d5dceb90d553d5ac2a3cf9db8346d516a5eca4f1101349152a9e490c8068debb",
-      "reason": "User-requested follow-up: take resource limits from the session policy, default new sessions to no duration ceiling, and remove fixed pilot/search timing rules without changing scientific review or execution ownership.",
-      "review_ref": "docs/SESSION_RESOURCE_BUDGET_CN.md#resource-defaults-follow-up",
+      "body_sha256": "3a8281d9192c51b3b66ebd757cf0bbd87d173d8958f0f529048a083b39a1966a",
+      "adaptation_version": "1.7.0",
+      "reason": "Implement the v1.7.0 adaptive experiment placement plan using the existing session table, resource admission and queue. Preserve frozen science, lease checks and explicit legacy scheduling.",
+      "review_ref": "docs/OPTIMIZATION_PLAN_CN.md#107-验收用例",
       "test_refs": [
-        "tests/test_resource_budget.py",
-        "tests/test_training_budget_clock.py",
-        "tests/test_dispatch_monitor_repairs.py",
-        "tests/test_codex_skill_mirror.py",
-        "tests/test_evo_inquiry.py",
-        "tests/test_governed_queue.py"
-      ],
-      "previous_body_sha256": "30882e10c7f2e84881d02d2e00a7625f0520c97ca8867e20195acec9599125ca",
-      "adaptation_version": "1.6.3"
+        "tests/test_resource_planner.py",
+        "tests/test_governed_queue.py",
+        "tests/test_resource_budget.py"
+      ]
     },
     "kill-argument": {
       "baseline_body_sha256": "8a7905483411a1b2638e8a4d8c52634107cb72fcab76be43629f1f6100d1b81e",
@@ -2974,23 +2870,25 @@
     },
     "paper-write": {
       "baseline_body_sha256": "d6bfa9e0b0c2664c48d29e461384e415cf67bea4c3bf62fa895dbb5344728023",
-      "body_sha256": "fb4085d2987d45d9518aa9b25b0bc33efad8f4ecc9f49b0ebf9ff9a3b9f13f32",
-      "reason": "Evidence-calibrated, scoped review or writing; retain original inputs, outputs, enums, independence and resource boundaries.",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "body_sha256": "4bd95443d2ab669b7aed513ba4b8f8f62fc5cd7a7e06a7b5f0f05bf7e04a84ff",
+      "reason": "Move workflow sections into linked references and keep their original runtime and output contracts.",
+      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
       "test_refs": [
-        "tests/behavior/evo-inquiry-v140-development-cases.json",
-        "tests/test_evo_inquiry.py"
-      ]
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_skill_behavior_harness.py"
+      ],
+      "adaptation_version": "1.7.0"
     },
     "paper-writing": {
       "baseline_body_sha256": "4bec73fbe664c0420f04d0c8d129358c688c1ef81d0b1323b6689facdc2f7d2e",
-      "body_sha256": "e5a7da19f1338699c6e1e384ba619aea3f52d06f0bf0b5cda24e95c8dbe32183",
-      "reason": "Evidence-calibrated, scoped review or writing; retain original inputs, outputs, enums, independence and resource boundaries.",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "body_sha256": "f5740846e7be4505fe3b3e5287b41d6f1badadcea5c70541451e1b4a499b89e0",
+      "reason": "Move workflow sections into linked references and keep their original runtime and output contracts.",
+      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
       "test_refs": [
-        "tests/behavior/evo-inquiry-v140-development-cases.json",
-        "tests/test_evo_inquiry.py"
-      ]
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_skill_behavior_harness.py"
+      ],
+      "adaptation_version": "1.7.0"
     },
     "research-implement-feature": {
       "baseline_body_sha256": "19da3e65515962e7e472b509e46eecbdd314538745012714e5cc8cf12e34c4be",
@@ -3004,13 +2902,14 @@
     },
     "research-lit": {
       "baseline_body_sha256": "0a237ff7588876810c996dfe72133b3de3707906e398afd14629ae1932019b2d",
-      "body_sha256": "52e7e6cae43a99fe8fa5b8fdc1f4dce76a88eeb639303841b8cc845e771904f0",
-      "reason": "Question-dependent auto source planning, source failures, reading scope and traceable offline literature records; legacy all preserved.",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "body_sha256": "ca3402f78a4ba33ea342a662b62c224891e512c980ac32bdd35cddc9220b30fb",
+      "reason": "Move workflow sections into linked references and keep their original runtime and output contracts.",
+      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
       "test_refs": [
-        "tests/test_literature_records.py",
-        "tests/behavior/evo-inquiry-v140-development-cases.json"
-      ]
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_skill_behavior_harness.py"
+      ],
+      "adaptation_version": "1.7.0"
     },
     "research-pipeline": {
       "baseline_body_sha256": "fd923d4b77b6a23b5f4627a7bd0a95f7f1dca7892037298173a4d43877043485",
@@ -3113,14 +3012,14 @@
     },
     "auto-paper-improvement-loop": {
       "baseline_body_sha256": "d8464d7d1f31bda3ba7b96eb5624e6d5bbf30049f8e85d8a920a59b3a67e412d",
-      "body_sha256": "1262ad5459d56ee7136483fa3f3a4df5deb1098b47e3b6df5f5ecdf16cc86cbf",
-      "reason": "Retain primary outcomes and material negative findings through paper revisions, with actual read-only reviewer access.",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "body_sha256": "2e8b9dc5e01327c2dc217d2551f156383ba09dc9669080e4e8f324f5938a4073",
+      "reason": "Move workflow sections into linked references and keep their original runtime and output contracts.",
+      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
       "test_refs": [
-        "tests/test_claude_review_artifact_tools.py",
-        "tests/test_workflow_contract_versions.py",
-        "tests/behavior/evo-inquiry-v140-development-cases.json"
-      ]
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_skill_behavior_harness.py"
+      ],
+      "adaptation_version": "1.7.0"
     },
     "analyze-results": {
       "baseline_body_sha256": "a51bcf45953fe6b539d9c7dd7d54083b2c3916de95505b134a20e3eb2087e48d",
@@ -3151,14 +3050,14 @@
     },
     "grant-proposal": {
       "baseline_body_sha256": "d62c0a35d880d4d7f6229944f16f2c82d6cb868a9abc83c70b18d1d3711c4339",
-      "reason": "Correct shared output protocol links to the installed Codex reference tree; do not mix mainline manifest or versioning policy into Codex and reviewer overlays.",
-      "review_ref": "docs/ADAPTATIONS_1_4_0.md",
+      "body_sha256": "d24bd2bcb601e12e0a4086e460634528eb35a8acb35a23485b3df311068024b6",
+      "reason": "Move workflow sections into linked references and keep their original runtime and output contracts.",
+      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
       "test_refs": [
         "tests/test_codex_skill_mirror.py",
-        "tests/test_claude_review_generator.py",
-        "tests/test_evo_inquiry.py"
+        "tests/test_skill_behavior_harness.py"
       ],
-      "body_sha256": "f746856ba331e126019aea9e03d951953c645b4da878313297b3a3bd3b2f3f4d"
+      "adaptation_version": "1.7.0"
     },
     "research-refine-pipeline": {
       "baseline_body_sha256": "f663e47cfb82f051a8591253daf733cac119721e77d219c4666a5cf850526096",
@@ -3200,55 +3099,37 @@
       ]
     },
     "training-check": {
-      "baseline_body_sha256": "1f6399fb9233344064a2bafabb79a5a4a4de5a372db72e202efb482a1e379526",
-      "body_sha256": "fb4742f67d791018bfd425dc8efb6b3a9fa3e4a92fefe773f0b91c449a0fe9d2",
-      "adaptation_version": "1.6.3",
-      "review_ref": "docs/AUDIT_1_6_3_CN.md#修复实施记录",
+      "reason": "Extend the existing resource-aware queue with priority, validated evaluation profiles and monitored CPU companions.",
+      "review_ref": "docs/OPTIMIZATION_PLAN_CN.md#12",
       "test_refs": [
-        "tests/test_dispatch_monitor_repairs.py",
-        "tests/test_execution_governance.py",
-        "tests/test_governed_queue.py",
-        "tests/test_training_budget_clock.py",
-        "tests/test_resource_budget.py",
-        "tests/test_codex_skill_mirror.py",
-        "tests/test_evo_inquiry.py"
+        "tests/test_priority_dispatch.py",
+        "tests/test_resource_planner.py"
       ],
-      "reason": "User-authorized 1.6.3 audit repair: align pilot, dispatch, queue, timing, cooperative stop, resource, notification and deployment ownership without replacing preserved baselines.",
-      "previous_body_sha256": "b2c43509739b51c0f87875a0b5d3e2341d591f9f08a92847a83d999c2f998511"
+      "adaptation_version": "1.7.0",
+      "baseline_body_sha256": "1f6399fb9233344064a2bafabb79a5a4a4de5a372db72e202efb482a1e379526",
+      "body_sha256": "cad481a0048cdddf52e064a28497e539836c9aef4515d6349377d5ffca46101a"
     },
     "experiment-queue": {
-      "baseline_body_sha256": "0c494b930562d1d47f658e09268dd925727cef9b8559cf991f48eb4ff445c988",
-      "body_sha256": "4160a131d717445387d61e6581271dfcfcbf71496505eebc3787199e6b432d94",
-      "adaptation_version": "1.6.3",
-      "review_ref": "docs/AUDIT_1_6_3_CN.md#修复实施记录",
+      "reason": "Extend the existing resource-aware queue with priority, validated evaluation profiles and monitored CPU companions.",
+      "review_ref": "docs/OPTIMIZATION_PLAN_CN.md#12",
       "test_refs": [
-        "tests/test_dispatch_monitor_repairs.py",
-        "tests/test_execution_governance.py",
-        "tests/test_governed_queue.py",
-        "tests/test_training_budget_clock.py",
-        "tests/test_resource_budget.py",
-        "tests/test_codex_skill_mirror.py",
-        "tests/test_evo_inquiry.py"
+        "tests/test_priority_dispatch.py",
+        "tests/test_resource_planner.py"
       ],
-      "reason": "User-authorized 1.6.3 audit repair: align pilot, dispatch, queue, timing, cooperative stop, resource, notification and deployment ownership without replacing preserved baselines.",
-      "previous_body_sha256": "75c874e4456b3f50886a494fa391cd1e145a5090792e7c12c1981d6c13c41910"
+      "adaptation_version": "1.7.0",
+      "baseline_body_sha256": "0c494b930562d1d47f658e09268dd925727cef9b8559cf991f48eb4ff445c988",
+      "body_sha256": "e109f76bf35550d425b3ed3a0aed5fe621332e83fcaa12aa66ab7ae7d5fedacf"
     },
     "run-experiment": {
-      "baseline_body_sha256": "5633588230e7f8e56f96a0cf5c9d35ef5c39cf6ec2bccc4cf33f27f52715077f",
-      "previous_body_sha256": "5633588230e7f8e56f96a0cf5c9d35ef5c39cf6ec2bccc4cf33f27f52715077f",
-      "body_sha256": "659a42b8647cbf97890823343b8be99a52dd7a7994ad23e7f91a51199d34431b",
-      "adaptation_version": "1.6.3",
-      "review_ref": "docs/AUDIT_1_6_3_CN.md#修复实施记录",
+      "reason": "Extend the existing resource-aware queue with priority, validated evaluation profiles and monitored CPU companions.",
+      "review_ref": "docs/OPTIMIZATION_PLAN_CN.md#12",
       "test_refs": [
-        "tests/test_dispatch_monitor_repairs.py",
-        "tests/test_execution_governance.py",
-        "tests/test_governed_queue.py",
-        "tests/test_training_budget_clock.py",
-        "tests/test_resource_budget.py",
-        "tests/test_codex_skill_mirror.py",
-        "tests/test_evo_inquiry.py"
+        "tests/test_priority_dispatch.py",
+        "tests/test_resource_planner.py"
       ],
-      "reason": "User-authorized 1.6.3 audit repair: align pilot, dispatch, queue, timing, cooperative stop, resource, notification and deployment ownership without replacing preserved baselines."
+      "adaptation_version": "1.7.0",
+      "baseline_body_sha256": "5633588230e7f8e56f96a0cf5c9d35ef5c39cf6ec2bccc4cf33f27f52715077f",
+      "body_sha256": "abeff622d67942efe1c983f8f360041d26b829044a08e9f1aeb41968d70b4e5a"
     },
     "feishu-notify": {
       "baseline_body_sha256": "7ebcfebbddb679f0e35a76f0899beb74a70cbfd04b8019e5aff951a1eccde76c",
@@ -3281,6 +3162,49 @@
         "tests/test_governed_queue.py"
       ],
       "adaptation_version": "1.6.3"
+    },
+    "paper-illustration": {
+      "baseline_body_sha256": "01e43a3edb61c3ce0caad9a1b759ca6f45d932589e14d3066b5604a146cc28b2",
+      "body_sha256": "bb84288e7257b77f98231e3a9f3d72e0afd8df779eed9d853f301208cdb10423",
+      "reason": "Move workflow sections into linked references and keep their original runtime and output contracts.",
+      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_skill_behavior_harness.py"
+      ],
+      "adaptation_version": "1.7.0"
+    },
+    "paper-slides": {
+      "baseline_body_sha256": "55cb36001ec094c819bfb68d781cedf7513005de674222b9e8d29c556dbf193d",
+      "body_sha256": "864c8b0c556983b760e1c321dd996b02d62b8532c16824cfbbb70bf494684222",
+      "reason": "Move workflow sections into linked references and keep their original runtime and output contracts.",
+      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_skill_behavior_harness.py"
+      ],
+      "adaptation_version": "1.7.0"
+    },
+    "proof-checker": {
+      "baseline_body_sha256": "725149afa5bad1e31103a4cd8c163aec45f210557450755a890b202c267a0006",
+      "body_sha256": "d75929634bc0c9d2e430465a15a9137031b86e7dfd45504bfb439a99bb21fa9f",
+      "reason": "Move workflow sections into linked references and keep their original runtime and output contracts.",
+      "review_ref": "docs/SURFACE_DIFF_AUDIT.md",
+      "test_refs": [
+        "tests/test_codex_skill_mirror.py",
+        "tests/test_skill_behavior_harness.py"
+      ],
+      "adaptation_version": "1.7.0"
+    },
+    "rebuttal": {
+      "baseline_body_sha256": "eecd60b04d8b02f89d3a43ae8d6be4a7ad8550acd25ebcdc05ca7d260add5751",
+      "body_sha256": "32af2ca6d95bf561253b9a538c43765cccc31216b1771dfaea9864c56f508cae",
+      "reason": "Adopt the pinned MIT rebuttal workflow and preserve venue, coverage, commitment and reviewer provenance gates.",
+      "review_ref": "docs/REBUTTAL_UPSTREAM_SYNC.md",
+      "test_refs": [
+        "tests/test_rebuttal_contract.py"
+      ],
+      "adaptation_version": "1.7.0"
     }
   }
 }

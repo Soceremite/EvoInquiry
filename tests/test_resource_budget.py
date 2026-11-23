@@ -296,6 +296,29 @@ def test_ram_is_current_available_capacity_not_just_total_memory(tmp_path):
     assert budget.evaluate(selected(tmp_path), request, observation(tmp_path), stage='launch')['status'] == 'WAIT_RESOURCE'
 
 
+@pytest.mark.parametrize('stats,expected', [
+    (f'inactive_file {2 * GIB}\nfile_dirty {GIB // 2}\nfile_writeback {GIB // 2}\n', 2 * GIB),
+    (f'inactive_file {GIB}\nfile_dirty {GIB}\nfile_writeback 0\n', GIB),
+    (None, GIB),
+])
+def test_cgroup_ram_counts_only_observed_clean_inactive_file_cache(monkeypatch, stats, expected):
+    entries = {'/proc/meminfo': f'MemTotal: {16 * GIB // 1024} kB\nMemAvailable: {4 * GIB // 1024} kB\n',
+               '/sys/fs/cgroup/memory.max': str(8 * GIB),
+               '/sys/fs/cgroup/memory.current': str(7 * GIB)}
+    if stats is not None:
+        entries['/sys/fs/cgroup/memory.stat'] = stats
+
+    def read(path, *args, **kwargs):
+        if path.as_posix() not in entries:
+            raise FileNotFoundError(path)
+        return entries[path.as_posix()]
+
+    monkeypatch.setattr(budget.sys, 'platform', 'linux')
+    monkeypatch.setattr(Path, 'read_text', read)
+    monkeypatch.setattr(Path, 'is_file', lambda path: path.as_posix() in entries)
+    assert budget._ram() == {'total_bytes': 8 * GIB, 'available_bytes': expected}
+
+
 def test_datasets_weights_and_concurrent_checkpoint_saves_share_one_disk_budget(tmp_path):
     request = requirements(tmp_path)
     request['storage'][0].update(dataset_bytes=9 * GIB, other_bytes=2 * GIB)

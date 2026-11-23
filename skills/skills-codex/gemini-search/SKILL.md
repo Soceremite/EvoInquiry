@@ -4,6 +4,7 @@ description: "Discover research literature through Gemini. Use for explicitly re
 argument-hint: "[search-query]"
 allowed-tools: Bash(*), Read, Write, mcp__gemini-cli__*
 ---
+<!-- GENERATED from skills/gemini-search/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),

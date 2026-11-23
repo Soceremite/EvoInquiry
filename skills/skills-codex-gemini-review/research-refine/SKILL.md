@@ -2,6 +2,7 @@
 name: "research-refine"
 description: "Turn a vague research direction into a problem-anchored, elegant, frontier-aware, implementation-oriented method plan via iterative Gemini review. Use when the user says \"refine my approach\", \"帮我细化方案\", \"decompose this problem\", \"打磨idea\", \"refine research plan\", \"细化研究方案\", or wants a concrete research method that stays simple, focused, and top-venue ready instead of a vague or overbuilt idea."
 ---
+<!-- GENERATED from skills/research-refine/SKILL.md — do not edit directly -->
 
 <!-- EVO-INQUIRY:BEGIN -->
 For research work, read [EvoInquiry](../shared-references/evo-inquiry.md),
